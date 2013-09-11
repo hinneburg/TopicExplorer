@@ -9,7 +9,6 @@
   </parent>
 
   <artifactId>core-preprocessing</artifactId>
-  <version>1.0-SNAPSHOT</version>
   <name>core-preprocessing</name>
   <dependencies>
     <dependency>

@@ -9,7 +9,6 @@
   </parent>
 
   <artifactId>plugin-text-preprocessing</artifactId>
-  <version>1.0-SNAPSHOT</version>
   <name>plugin-text-preprocessing</name>
   <dependencies>
     <dependency>

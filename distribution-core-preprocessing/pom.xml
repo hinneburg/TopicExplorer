@@ -11,8 +11,6 @@
   </parent>
 
   <artifactId>distribution-core-preprocessing</artifactId>
-  <version>1.0-SNAPSHOT</version>
-
   <packaging>pom</packaging>
 
   <name>Distribution-Core-Preprocessing</name>

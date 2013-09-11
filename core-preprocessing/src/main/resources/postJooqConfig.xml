@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog>
+
+	<command name="DocumentTermTopicFill" className="cc.topicexplorer.database.tables.documenttermtopic.DocumentTermTopicFill"/>	
+
+	<command name="TopicFill" className="cc.topicexplorer.database.tables.topic.TopicFill"/>
+	<command name="DocumentFill" className="cc.topicexplorer.database.tables.document.DocumentFill"/>
+	
+	<command name="DocumentTopicFill" className="cc.topicexplorer.database.tables.documenttopic.DocumentTopicFill"/>
+	
+	<command name="TermFill" className="cc.topicexplorer.database.tables.term.TermFill"/>
+	
+	<command name="TermTopicFill" className="cc.topicexplorer.database.tables.termtopic.TermTopicFill"/>
+	
+	<command name="InFilePreperation" className="cc.topicexplorer.tools.InFilePreperation" />
+	<command name="Mallet" className="cc.topicexplorer.TopicModelling.mallet.Mallet" />	
+	<command name="TokenTopicAssociator" className="cc.topicexplorer.tools.TokenTopicAssociator" />
+	
+	<command name="TopicMetaData" className="cc.topicexplorer.tools.TopicMetaData"/>
+		
+	<!--  
+	<command name="Text_Document" className="plugins.text.tables.Document"/>
+	<command name="Link_Document" className="plugins.link.tables.Document"/>
+	<command name="Fulltext_Document" className="plugins.fulltext.tables.Document"/>
+	
+	<command name="CatDoc" className="plugins.category.tables.CategoryDocument"/>
+	<command name="DocTopic" className="database.tables.DocTopic"/>
+	<command name="TopicDoc" className="database.tables.TopicDoc"/>
+	<command name="DocumentTopic" className="database.tables.DocumentTopic"/>
+	
+	
+	<command name="Term" className="database.tables.Term"/>
+	<command name="TermTopic" className="database.tables.TermTopic"/>
+	<command name="KeyTopic2" className="database.tables.KeyTopic2"/>  
+	
+	
+	<command name="TopicMetaData" className="database.tables.TopicMetaData"/>
+	
+			
+	<command name="TopKeywordsTopic" className="database.tables.TopKeywordsTopic"/>
+	<command name="Molecule_KeywordMeta" className="plugins.molecule.tables.KeywordMeta"/>
+	<command name="Molecule_Drawing" className="plugins.molecule.tables.Drawing"/>
+	<command name="Molecule_SingleView" className="plugins.molecule.tables.SingleView"/>
+	
+				
+	<command name="TermFrequency" className="database.tables.TermFrequency"/>
+	<command name="HashFkt" className="database.tables.HashFkt"/>
+	<command name="HashWerte" className="database.tables.HashWerte"/>
+	<command name="TimeDocument" className="plugins.time.tables.Document"/>
+	<command name="TimeDocumentTermTopic" className="plugins.time.tables.DocumentTermTopic"/>
+	<command name="TimeWordsPerTopicPerWeek" className="plugins.time.tables.WordsPerTopicPerWeek"/>
+	
+	<command name="FillCommand" className="chain.commands.FillCommand"/>	
+	
+	<command name="RandomDocs" className="database.procedures.RandomDocs"/>	
+	
+	<command name="PropertiesCommand" className="chain.commands.PropertiesCommand" />		
+	<command name="Prune" className="tools.Prune" />
+	<command name="InFilePreperation" className="topicModelling.mallet.InFilePreperation" />
+	<command name="Mallet" className="topicModelling.mallet.Mallet" />	
+	<command name="TokenTopicAssociator" className="topicModelling.mallet.TokenTopicAssociator" />	
+-->
+</catalog>

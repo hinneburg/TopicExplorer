@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog>	
+
+	<command name="DocumentTermTopicCreate" className="cc.topicexplorer.database.tables.documenttermtopic.DocumentTermTopicCreate"/>
+
+	<command name="TopicCreate" className="cc.topicexplorer.database.tables.topic.TopicCreate"/>
+	<command name="DocumentCreate" className="cc.topicexplorer.database.tables.document.DocumentCreate"/>
+	
+	<command name="DocumentTopicCreate" className="cc.topicexplorer.database.tables.documenttopic.DocumentTopicCreate"/>
+	
+	<command name="TermCreate" className="cc.topicexplorer.database.tables.term.TermCreate"/>
+	
+	<command name="TermTopicCreate" className="cc.topicexplorer.database.tables.termtopic.TermTopicCreate"/>
+	
+	<command name="TopicCreate" className="cc.topicexplorer.database.tables.topic.TopicCreate"/>
+</catalog>

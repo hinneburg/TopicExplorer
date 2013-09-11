@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog>	
+
+	<command name="DocumentTermTopicCreate" className="cc.topicexplorer.database.tables.documenttermtopic.DocumentTermTopicCreate"/>
+
+	<command name="TopicCreate" className="cc.topicexplorer.database.tables.topic.TopicCreate"/>
+	<command name="DocumentCreate" className="cc.topicexplorer.database.tables.document.DocumentCreate"/>
+	
+	<command name="DocumentTopicCreate" className="cc.topicexplorer.database.tables.documenttopic.DocumentTopicCreate"/>
+	
+	<command name="TermCreate" className="cc.topicexplorer.database.tables.term.TermCreate"/>
+	
+	<command name="TermTopicCreate" className="cc.topicexplorer.database.tables.termtopic.TermTopicCreate"/>
+	
+	<command name="TopicCreate" className="cc.topicexplorer.database.tables.topic.TopicCreate"/>
+
+	<command name="DocumentTermTopicFill" className="cc.topicexplorer.database.tables.documenttermtopic.DocumentTermTopicFill"/>	
+
+	<command name="TopicFill" className="cc.topicexplorer.database.tables.topic.TopicFill"/>
+	<command name="DocumentFill" className="cc.topicexplorer.database.tables.document.DocumentFill"/>
+	
+	<command name="DocumentTopicFill" className="cc.topicexplorer.database.tables.documenttopic.DocumentTopicFill"/>
+	
+	<command name="TermFill" className="cc.topicexplorer.database.tables.term.TermFill"/>
+	
+	<command name="TermTopicFill" className="cc.topicexplorer.database.tables.termtopic.TermTopicFill"/>
+	
+	<command name="InFilePreperation" className="cc.topicexplorer.tools.InFilePreperation" />
+	<command name="Mallet" className="cc.topicexplorer.TopicModelling.mallet.Mallet" />	
+	<command name="TokenTopicAssociator" className="cc.topicexplorer.tools.TokenTopicAssociator" />
+	
+	<command name="TopicMetaData" className="cc.topicexplorer.tools.TopicMetaData"/>
+
+</catalog>

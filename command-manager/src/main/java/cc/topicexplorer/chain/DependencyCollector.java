@@ -31,6 +31,7 @@ public class DependencyCollector {
 	private Map<String, List<String>> composedDependencies = null;
 	private Map<String, List<String>> dependencies = null;
 	private Map<String, List<String>> optionalDependencies = null;
+	private Map<String, List<String>> newDependencies = new HashMap<String, List<String>>();
 	private Logger logger = Logger.getRootLogger();
 
 	/**
@@ -251,6 +252,48 @@ public class DependencyCollector {
 
 		return orderedCommands;
 
+	}
+	
+	public void getStrongComponents() {
+		
+		List<String> startCommands = new ArrayList<String>();
+		startCommands.add("TopicFill");
+		startCommands.add("TermFill");
+		
+		List<String> endCommands = new ArrayList<String>();
+		endCommands.add("InFilePreperation");
+		
+		for (String command : startCommands) {
+			newDependencies.put(command, composedDependencies.get(command));			
+			iterateDependenciesUp(command);
+		}
+		
+		for (String command : endCommands) {
+			iterateDependenciesDown(command);
+			newDependencies.put(command, new ArrayList<String>());
+		}
+
+		composedDependencies = newDependencies;
+	}
+	
+	public void iterateDependenciesUp(String command) {
+		for (String elem : composedDependencies.get(command)) {
+			newDependencies.put(elem, composedDependencies.get(elem));
+			iterateDependenciesUp(elem);
+		}
+	}
+	
+	public void iterateDependenciesDown(String command) {
+		List<String> list = new ArrayList<String>(newDependencies.get(command));
+		
+//		pruefe ob command auch von anderen gebraucht wird, dazu muss es mehr als einmal in den values vorkommen
+		if (!newDependencies.containsValue(command)) {
+			newDependencies.remove(command);
+		}
+		
+		for (String elem : list) {
+			iterateDependenciesDown(elem);
+		}
 	}
 
 }

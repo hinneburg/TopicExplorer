@@ -12,7 +12,7 @@
     <module>command-manager</module>
     <module>core-preprocessing</module>
     <module>plugin-text-preprocessing</module>
-    <module>distribution-core-preprocessing</module>
+    <module>distribution</module>
   </modules>
 
  <build>

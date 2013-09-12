@@ -17,6 +17,16 @@
         <include>cc.topicexplorer:core-preprocessing</include>
         <include>cc.topicexplorer:plugin-text-preprocessing</include>
      </includes>
+     <sources>
+       <outputDirectoryMapping>/</outputDirectoryMapping>
+       <excludeSubModuleDirectories>false</excludeSubModuleDirectories>
+       <fileSets>
+         <fileSet>
+           <directory>local/main/resources</directory>
+           <outputDirectory>/resources</outputDirectory>
+         </fileSet>
+       </fileSets>
+     </sources>
 
       <binaries>
         <includeDependencies>true</includeDependencies>

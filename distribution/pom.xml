@@ -13,7 +13,7 @@
   <artifactId>distribution</artifactId>
   <packaging>pom</packaging>
 
-  <name>Distribution</name>
+  <name>distribution</name>
   
   <!-- NOTE: These dependency declarations are only required to sort this project to the 
        end of the line in the multimodule build. 

@@ -1,29 +1,54 @@
-<assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
-  <id>distribution-core-preprocessing</id>
-  <formats>
-    <format>jar</format>
-  </formats>
-  <includeBaseDirectory>false</includeBaseDirectory>
-  <moduleSets>
-    <moduleSet>
-      <!-- Enable access to all projects in the current multimodule build! -->
-      <useAllReactorProjects>true</useAllReactorProjects>
-      
-      <!-- Now, select which projects to include in this module-set. -->
-      <includes>
-        <include>cc.topicexplorer:command-manager</include>
-        <include>cc.topicexplorer:core-preprocessing</include>
-        <include>cc.topicexplorer:plugin-text-preprocessing</include>
-     </includes>
+<assembly
+	xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
+	<id>core-plugins-text-preprocessing</id>
+	<formats>
+		<format>dir</format>
+	</formats>
+	<includeBaseDirectory>false</includeBaseDirectory>
+	<moduleSets>
+		<moduleSet>
+			<!-- Enable access to all projects in the current multimodule build! -->
+			<useAllReactorProjects>true</useAllReactorProjects>
 
-      <binaries>
-        <includeDependencies>true</includeDependencies>
-        <outputDirectory>/</outputDirectory>
-        <unpack>true</unpack>
-      </binaries>
-    </moduleSet>
-  </moduleSets>
+			<!-- Now, select which projects to include in this module-set. -->
+			<includes>
+				<include>cc.topicexplorer:command-manager</include>
+				<include>cc.topicexplorer:core-preprocessing</include>
+				<include>cc.topicexplorer:plugin-colortopic-preprocessing</include>
+				<include>cc.topicexplorer:plugin-hierarchicaltopic-preprocessing</include>
+				<include>cc.topicexplorer:plugin-prune-preprocessing</include>
+				<include>cc.topicexplorer:plugin-category-preprocessing</include>
+				<include>cc.topicexplorer:plugin-fulltext-preprocessing</include>
+				<include>cc.topicexplorer:plugin-link-preprocessing</include>
+				<include>cc.topicexplorer:plugin-text-preprocessing</include>
+				<include>cc.topicexplorer:plugin-time-preprocessing</include>
+				<include>cc.topicexplorer:plugin-wiki-preprocessing</include>
+			</includes>
+			<sources>
+				<outputDirectoryMapping>/</outputDirectoryMapping>
+				<excludeSubModuleDirectories>false</excludeSubModuleDirectories>
+				<fileSets>
+					<fileSet>
+						<directory>local/main/resources</directory>
+						<outputDirectory>/resources</outputDirectory>
+					</fileSet>
+				</fileSets>
+			</sources>
+
+			<binaries>
+				<includeDependencies>true</includeDependencies>
+				<outputDirectory>/lib/modules/</outputDirectory>
+				<unpack>false</unpack>
+				<dependencySets>
+					<dependencySet>
+						<unpack>false</unpack>
+						<scope>runtime</scope>
+						<outputDirectory>/lib/dependencies</outputDirectory>
+					</dependencySet>
+				</dependencySets>
+			</binaries>
+		</moduleSet>
+	</moduleSets>
 </assembly>
-

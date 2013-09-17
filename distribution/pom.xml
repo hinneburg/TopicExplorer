@@ -34,6 +34,56 @@
       <artifactId>plugin-text-preprocessing</artifactId>
       <version>1.0-SNAPSHOT</version>
     </dependency>
+   <dependency>
+      <groupId>cc.topicexplorer</groupId>
+      <artifactId>plugin-category-preprocessing</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
+   <dependency>
+      <groupId>cc.topicexplorer</groupId>
+      <artifactId>plugin-colortopic-preprocessing</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>cc.topicexplorer</groupId>
+      <artifactId>plugin-hierarchicaltopic-preprocessing</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>cc.topicexplorer</groupId>
+      <artifactId>plugin-prune-preprocessing</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>cc.topicexplorer</groupId>
+      <artifactId>plugin-category-preprocessing</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>cc.topicexplorer</groupId>
+      <artifactId>plugin-fulltext-preprocessing</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>cc.topicexplorer</groupId>
+      <artifactId>plugin-link-preprocessing</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>cc.topicexplorer</groupId>
+      <artifactId>plugin-time-preprocessing</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>cc.topicexplorer</groupId>
+      <artifactId>plugin-wiki-preprocessing</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>cc.topicexplorer</groupId>
+      <artifactId>plugin-wordtype-preprocessing</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>    
   </dependencies>
 
   <build>

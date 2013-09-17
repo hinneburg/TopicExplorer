@@ -109,7 +109,7 @@ public class ChainManagement {
 	}
 
 	public static void main(String[] args) throws Exception {
-
+		System.out.println("huhu");
 		ChainManagement chainManager = new ChainManagement();
 		ChainCommandLineParser commandLineParser = new ChainCommandLineParser(
 				args);

@@ -11,7 +11,8 @@ import java.util.Properties;
 import org.apache.commons.chain.Command;
 import org.apache.commons.chain.Context;
 
-import cc.topicexplorer.chain.DatabaseContext;
+import cc.topicexplorer.chain.CommunicationContext;
+import cc.topicexplorer.database.Database;
 
 public class Prune_pb implements Command {
 	private String root;
@@ -66,11 +67,10 @@ public class Prune_pb implements Command {
 	@Override
 	public boolean execute(Context context) throws Exception {
 		System.out.println("[ " + getClass() + " ] - " + "pruning vocabular");
-		if (DatabaseContext.class.isInstance(context)) {
-			DatabaseContext databaseContext = (DatabaseContext) context;
-	
-			properties = databaseContext.getProperties();
-			database = databaseContext.getDatabase();
+
+		CommunicationContext communicationContext = (CommunicationContext) context;
+		properties = (Properties) communicationContext.get("properties");
+		database = (Database) communicationContext.get("database");
 		
 			root = properties.getProperty("projectRoot");
 	
@@ -110,9 +110,7 @@ public class Prune_pb implements Command {
 					+ ".pruned.Lower." + this.lowerBound + ".Upper."
 					+ this.upperBound + ".csv", this.root
 					+ properties.getProperty("InCSVFile"));
-		} else {
 
-		}
 		return false;
 	}
 

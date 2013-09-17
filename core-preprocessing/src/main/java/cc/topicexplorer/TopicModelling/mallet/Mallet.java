@@ -2,19 +2,14 @@ package cc.topicexplorer.TopicModelling.mallet;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Properties;
 
-import org.apache.commons.chain.Command;
 import org.apache.commons.chain.Context;
 import org.apache.log4j.Logger;
 
 import cc.mallet.classify.tui.Csv2Vectors;
 import cc.mallet.topics.tui.Vectors2Topics;
-
-import cc.topicexplorer.chain.DatabaseContext;
-import cc.topicexplorer.chain.DependencyContext;
-import cc.topicexplorer.chain.PropertyContext;
+import cc.topicexplorer.chain.CommunicationContext;
 import cc.topicexplorer.chain.commands.DependencyCommand;
 
 public class Mallet extends DependencyCommand {
@@ -59,12 +54,11 @@ public class Mallet extends DependencyCommand {
 		logger.info("[ " + getClass() + " ] - "
 					+ "run mallet");
 			
-			PropertyContext propertyContext = (PropertyContext) context;
-			
-			this.properties = propertyContext.getProperties();
+		CommunicationContext communicationContext = (CommunicationContext) context;
+		properties = (Properties) communicationContext.get("properties");
 	
-			this.importFile();
-			this.trainTopics();
+		this.importFile();
+		this.trainTopics();
 	}
 	
 	@Override

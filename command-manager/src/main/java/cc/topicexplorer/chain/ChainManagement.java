@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.apache.commons.chain.Catalog;
 import org.apache.commons.chain.Command;
-import org.apache.commons.chain.Context;
 import org.apache.commons.chain.config.ConfigParser;
 import org.apache.commons.chain.impl.CatalogFactoryBase;
 import org.apache.commons.cli.BasicParser;
@@ -12,11 +11,11 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
-import org.apache.log4j.*;
+import org.apache.log4j.Logger;
 
 import cc.topicexplorer.chain.commands.DbConnectionCommand;
-import cc.topicexplorer.chain.commands.PropertiesCommand;
 import cc.topicexplorer.chain.commands.LoggerCommand;
+import cc.topicexplorer.chain.commands.PropertiesCommand;
 
 /**
  * This class is used for the controlled execution of commands. Commands to be
@@ -32,16 +31,8 @@ import cc.topicexplorer.chain.commands.LoggerCommand;
 public class ChainManagement {
 	private ConfigParser configParser;
 	private Catalog catalog;
-	private Context databaseContext;
-	private LoggerContext loggerContext;
+	private CommunicationContext communicationContext;
 	private static Logger logger;
-
-	public ChainManagement() {
-		configParser = new ConfigParser();
-		databaseContext = new DatabaseContext();
-		loggerContext = new LoggerContext();
-		executeInitCommands();
-	}
 
 	/**
 	 * This method takes a location to retrieve a catalog. If there is a valid
@@ -52,6 +43,8 @@ public class ChainManagement {
 	 * @throws Exception
 	 */
 	public void getCatalog(String catalogLocation) throws Exception {
+		configParser = new ConfigParser();
+		
 		try {
 			logger.info("this.getClass().getResource(catalogLocation)"
 					+ this.getClass().getResource(catalogLocation));
@@ -72,45 +65,19 @@ public class ChainManagement {
 	 * should be executed before other commands or tasks. Information are saved
 	 * in the databaseContext.
 	 */
-	public void executeInitCommands() {
+	public void init() {
 		try {
+			
 			Command propertiesCommand = new PropertiesCommand();
 			Command dbConnectionCommand = new DbConnectionCommand();
 			Command loggerCommand = new LoggerCommand();
 
-			loggerCommand.execute(loggerContext);
-			propertiesCommand.execute(databaseContext);
-			dbConnectionCommand.execute(databaseContext);
+			loggerCommand.execute(communicationContext);
+			propertiesCommand.execute(communicationContext);
+			dbConnectionCommand.execute(communicationContext);
 		} catch (Exception e) {
 			logger.error(e);
 		}
-	}
-
-	/**
-	 * Takes the complete commandList, removes all commands in front of the
-	 * startCommand and all commands after the endCommand. The startCommand and
-	 * endCommand are included in the returned sublist.
-	 * 
-	 * @param commandList
-	 * @param startCommand
-	 * @param endCommand
-	 * @return A sublist starting and ending with given commands.
-	 */
-	public List<String> setStartEndCommand(List<String> commandList,
-			String startCommand, String endCommand) {
-		int positionStartCommand = 0;
-		int positionEndCommand = commandList.size();
-		// size() and not size() -1 because subList() excludes the toIndex
-
-		if (startCommand != null && commandList.contains(startCommand)) {
-			positionStartCommand = commandList.indexOf(startCommand);
-		}
-
-		if (endCommand != null && commandList.contains(endCommand)) {
-			positionEndCommand = commandList.indexOf(endCommand);
-		}
-
-		return commandList.subList(positionStartCommand, positionEndCommand);
 	}
 
 	/**
@@ -119,6 +86,7 @@ public class ChainManagement {
 	 * @return A ordered list containing the commands of the catalog.
 	 */
 	public List<String> getOrderedCommands() {
+		init();
 		DependencyCollector dependencyCollector = new DependencyCollector(
 				catalog);
 
@@ -133,7 +101,7 @@ public class ChainManagement {
 			Command command;
 			for (String commandName : commandList) {
 				command = catalog.getCommand(commandName);
-				command.execute(databaseContext);
+				command.execute(communicationContext);
 			}
 		} catch (Exception e) {
 			logger.error(e);
@@ -147,21 +115,14 @@ public class ChainManagement {
 				args);
 		List<String> orderedCommands;
 		String catalogLocation;
-		String startCommand;
-		String endCommand;
 		
 		logger = Logger.getRootLogger();
 
 		catalogLocation = commandLineParser.getCatalogLocation();
-		startCommand = commandLineParser.getStartCommand();
-		endCommand = commandLineParser.getEndCommand();
 
 		chainManager.getCatalog(catalogLocation);
 
 		orderedCommands = chainManager.getOrderedCommands();
-
-		orderedCommands = chainManager.setStartEndCommand(orderedCommands,
-				startCommand, endCommand);
 
 		logger.info("ordered commands: " + orderedCommands);
 

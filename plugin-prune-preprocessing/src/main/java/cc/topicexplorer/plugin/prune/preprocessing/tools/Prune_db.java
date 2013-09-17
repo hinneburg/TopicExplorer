@@ -1,14 +1,15 @@
 package cc.topicexplorer.plugin.prune.preprocessing.tools;
 
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.io.BufferedOutputStream;
 import java.io.PrintWriter;
+import java.nio.charset.Charset;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.Types;
@@ -16,10 +17,10 @@ import java.util.Properties;
 
 import org.apache.commons.chain.Context;
 
-import cc.topicexplorer.chain.DatabaseContext;
+import cc.topicexplorer.chain.CommunicationContext;
 import cc.topicexplorer.chain.commands.DependencyCommand;
+import cc.topicexplorer.database.Database;
 
-import java.nio.charset.Charset;
 import com.csvreader.CsvReader;
 
 /** MIT-JOOQ-START 
@@ -46,10 +47,9 @@ public class Prune_db extends DependencyCommand {
 
 		System.out.println("[ " + getClass() + " ] - " + "pruning vocabular");
 
-		DatabaseContext databaseContext = (DatabaseContext) context;
-
-		properties = databaseContext.getProperties();
-		database = databaseContext.getDatabase();
+		CommunicationContext communicationContext = (CommunicationContext) context;
+		properties = (Properties) communicationContext.get("properties");
+		database = (Database) communicationContext.get("database");
 
 		String root = properties.getProperty("projectRoot");
 

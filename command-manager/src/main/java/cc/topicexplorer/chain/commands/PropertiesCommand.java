@@ -1,19 +1,14 @@
 package cc.topicexplorer.chain.commands;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Properties;
 
-import org.apache.commons.chain.Command;
 import org.apache.commons.chain.Context;
 import org.apache.log4j.Logger;
 
-import cc.topicexplorer.chain.DependencyContext;
-import cc.topicexplorer.chain.PropertyContext;
-import java.net.URL;
+import cc.topicexplorer.chain.CommunicationContext;
 
 
 public class PropertiesCommand extends DependencyCommand {
@@ -63,7 +58,8 @@ public class PropertiesCommand extends DependencyCommand {
 	@Override
 	public void specialExecute(Context context) throws Exception {
 		
-		PropertyContext propertyContext = (PropertyContext) context;
+		CommunicationContext communicationContext = (CommunicationContext) context;
+		
 		InputStream propertyInput = this.getClass().getResourceAsStream("/config.global.properties");
 		if(propertyInput != null) {
 			// global init
@@ -96,7 +92,7 @@ public class PropertiesCommand extends DependencyCommand {
 				}
 			}
 			
-			propertyContext.setProperties(properties);
+			communicationContext.put("properties", properties);
 			
 		} else {
 			logger.fatal("config.global.properties not found");

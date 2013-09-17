@@ -53,7 +53,7 @@ public abstract class DependencyCommand implements Command {
 	public boolean execute(Context context) throws Exception {
 
 		logger.info("Current Command : [ " + getClass() + " ]");
-
+		
 		if (DependencyContext.class.isInstance(context)) {
 			DependencyContext dependencyContext = (DependencyContext) context;
 			addDependencies();

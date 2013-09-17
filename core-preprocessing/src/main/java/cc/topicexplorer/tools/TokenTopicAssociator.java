@@ -10,19 +10,16 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.zip.GZIPInputStream;
-import java.sql.SQLException;
 
-import org.apache.commons.chain.Command;
 import org.apache.commons.chain.Context;
 import org.apache.log4j.Logger;
 
-import cc.topicexplorer.chain.DatabaseContext;
-import cc.topicexplorer.chain.DependencyContext;
-import cc.topicexplorer.chain.PropertyContext;
+import cc.topicexplorer.chain.CommunicationContext;
 import cc.topicexplorer.chain.commands.DependencyCommand;
 
 //import tools.tokenTopicAssignment.*;
@@ -164,9 +161,8 @@ public class TokenTopicAssociator extends DependencyCommand {
 
 		logger.info("Current Command : [ " + getClass() + " ] ");
 
-		PropertyContext propertyContext = (PropertyContext) context;
-
-		properties = propertyContext.getProperties();
+		CommunicationContext communicationContext = (CommunicationContext) context;
+		properties = (Properties) communicationContext.get("properties");
 
 		String stateFile = properties.getProperty("projectRoot")
 				+ "temp/out.topic-state.gz";

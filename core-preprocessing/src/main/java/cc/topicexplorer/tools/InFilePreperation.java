@@ -1,32 +1,26 @@
 package cc.topicexplorer.tools;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Properties;
+import java.nio.charset.Charset;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
 
-import org.apache.commons.chain.Command;
 import org.apache.commons.chain.Context;
 import org.apache.log4j.Logger;
 
-import cc.topicexplorer.chain.DatabaseContext;
-import cc.topicexplorer.chain.DependencyContext;
-import cc.topicexplorer.chain.PropertyContext;
+import cc.topicexplorer.chain.CommunicationContext;
 import cc.topicexplorer.chain.commands.DependencyCommand;
+import cc.topicexplorer.database.Database;
 
-import java.nio.charset.Charset;
 import com.csvreader.CsvReader;
 
 /** MIT-JOOQ-START 
@@ -156,9 +150,9 @@ public class InFilePreperation extends DependencyCommand {
 		logger.info("[ " + getClass() + " ] - "
 				+ "preparing the in-file for mallet");
 
-		DatabaseContext databaseContext = (DatabaseContext) context;
-		database = databaseContext.getDatabase();
-		properties = databaseContext.getProperties();
+		CommunicationContext communicationContext = (CommunicationContext) context;
+		properties = (Properties) communicationContext.get("properties");
+		database = (Database) communicationContext.get("database");
 		malletPreparedFile = properties.getProperty("projectRoot")
 				+ properties.getProperty("InFile");
 		String inFile = properties.getProperty("projectRoot")

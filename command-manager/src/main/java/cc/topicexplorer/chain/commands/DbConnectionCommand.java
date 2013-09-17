@@ -1,13 +1,11 @@
 package cc.topicexplorer.chain.commands;
 
-import java.util.ArrayList;
+import java.util.Properties;
 
-import org.apache.commons.chain.Command;
 import org.apache.commons.chain.Context;
 import org.apache.log4j.Logger;
 
-import cc.topicexplorer.chain.DatabaseContext;
-import cc.topicexplorer.chain.DependencyContext;
+import cc.topicexplorer.chain.CommunicationContext;
 import cc.topicexplorer.database.Database;
 
 public class DbConnectionCommand extends DependencyCommand {
@@ -19,9 +17,9 @@ public class DbConnectionCommand extends DependencyCommand {
 
 		logger.info("Current Command : [ " + getClass() + " ]");
 
-		DatabaseContext databaseContext = (DatabaseContext) context;
-		Database database = new Database(databaseContext.getProperties(), false);
-		databaseContext.setDatabase(database);
+		CommunicationContext communicationContext = (CommunicationContext) context;
+		Database database = new Database((Properties) communicationContext.get("properties"), false);
+		communicationContext.put("database", database);
 	}
 	
 	@Override

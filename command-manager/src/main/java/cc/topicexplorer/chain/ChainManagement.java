@@ -29,10 +29,21 @@ import cc.topicexplorer.chain.commands.PropertiesCommand;
  * 
  */
 public class ChainManagement {
-	private ConfigParser configParser;
 	private Catalog catalog;
 	private CommunicationContext communicationContext;
 	private static Logger logger;
+
+	public ChainManagement() {
+		communicationContext = new CommunicationContext();
+		Command loggerCommand = new LoggerCommand();
+
+		try {
+			loggerCommand.execute(communicationContext);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			logger.error(e);
+		}
+	}
 
 	/**
 	 * This method takes a location to retrieve a catalog. If there is a valid
@@ -43,8 +54,8 @@ public class ChainManagement {
 	 * @throws Exception
 	 */
 	public void getCatalog(String catalogLocation) throws Exception {
-		configParser = new ConfigParser();
-		
+		ConfigParser configParser = new ConfigParser();
+
 		try {
 			logger.info("this.getClass().getResource(catalogLocation)"
 					+ this.getClass().getResource(catalogLocation));
@@ -52,7 +63,7 @@ public class ChainManagement {
 			configParser.parse(this.getClass().getResource(catalogLocation));
 
 			catalog = CatalogFactoryBase.getInstance().getCatalog();
-			
+
 		} catch (Exception e) {
 			logger.fatal("There is no valid catalog at the given path:"
 					+ catalogLocation + "." + e);
@@ -67,12 +78,9 @@ public class ChainManagement {
 	 */
 	public void init() {
 		try {
-			
 			Command propertiesCommand = new PropertiesCommand();
 			Command dbConnectionCommand = new DbConnectionCommand();
-			Command loggerCommand = new LoggerCommand();
 
-			loggerCommand.execute(communicationContext);
 			propertiesCommand.execute(communicationContext);
 			dbConnectionCommand.execute(communicationContext);
 		} catch (Exception e) {
@@ -86,7 +94,6 @@ public class ChainManagement {
 	 * @return A ordered list containing the commands of the catalog.
 	 */
 	public List<String> getOrderedCommands() {
-		init();
 		DependencyCollector dependencyCollector = new DependencyCollector(
 				catalog);
 
@@ -98,6 +105,8 @@ public class ChainManagement {
 	 */
 	public void executeOrderedCommands(List<String> commandList) {
 		try {
+			init();
+			
 			Command command;
 			for (String commandName : commandList) {
 				command = catalog.getCommand(commandName);
@@ -109,13 +118,12 @@ public class ChainManagement {
 	}
 
 	public static void main(String[] args) throws Exception {
-		System.out.println("huhu");
 		ChainManagement chainManager = new ChainManagement();
 		ChainCommandLineParser commandLineParser = new ChainCommandLineParser(
 				args);
 		List<String> orderedCommands;
 		String catalogLocation;
-		
+
 		logger = Logger.getRootLogger();
 
 		catalogLocation = commandLineParser.getCatalogLocation();
@@ -148,7 +156,7 @@ public class ChainManagement {
 		private String endCommand;
 
 		private String[] args;
-		
+
 		private Logger logger = Logger.getRootLogger();
 
 		/**

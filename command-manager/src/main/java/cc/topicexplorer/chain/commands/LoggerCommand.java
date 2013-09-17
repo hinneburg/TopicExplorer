@@ -26,10 +26,7 @@ public class LoggerCommand implements Command {
 
 		logger.info("Current Command : [ " + getClass().toString()
 				+ " ]");
-		
-		LoggerContext loggerContext = (LoggerContext) context;
 
-		loggerContext.setLogger(logger);
 		return false;
 	}
 

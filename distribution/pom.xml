@@ -10,10 +10,10 @@
     <version>1.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>distribution</artifactId>
+  <artifactId>distribution-core-preprocessing</artifactId>
   <packaging>pom</packaging>
 
-  <name>distribution</name>
+  <name>Distribution-Core-Preprocessing</name>
   
   <!-- NOTE: These dependency declarations are only required to sort this project to the 
        end of the line in the multimodule build. 

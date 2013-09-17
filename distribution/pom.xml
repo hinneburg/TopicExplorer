@@ -10,7 +10,7 @@
     <version>1.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>distribution-core-preprocessing</artifactId>
+  <artifactId>distribution</artifactId>
   <packaging>pom</packaging>
 
   <name>Distribution-Core-Preprocessing</name>

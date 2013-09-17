@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog>	
+  
+	<command name="HierarchicalTopic_TopicCreate" className="plugin_hierarchicalTopic.tables.topic.TopicCreate"/>
+	
+</catalog>

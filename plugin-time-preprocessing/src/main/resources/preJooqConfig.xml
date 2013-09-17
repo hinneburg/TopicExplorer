@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog>	
+  
+	<command name="Time_DocumentCreate" className="plugin_time.tables.document.DocumentCreate"/>
+	<command name="Time_DocumentTermTopicCreate" className="plugin_time.tables.documenttermtopic.DocumentTermTopicCreate"/>
+	<command name="Time_WordsPerTopicPerWeekCreate" className="plugin_time.tables.wordspertopicperweek.WordsPerTopicPerWeekCreate"/>
+</catalog>

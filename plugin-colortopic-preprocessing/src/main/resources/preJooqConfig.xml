@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog>	
+  
+	<command name="ColorTopic_TopicCreate" className="plugin_colorTopic.tables.topic.TopicCreate"/>
+
+</catalog>

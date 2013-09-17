@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog>	
+  
+	<command name="Fulltext_DocumentCreate" className="plugin_fulltext.tables.document.DocumentCreate"/>
+
+</catalog>

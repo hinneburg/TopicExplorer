@@ -13,6 +13,15 @@
     <module>core-preprocessing</module>
     <module>plugin-text-preprocessing</module>
     <module>distribution</module>
+    <module>plugin-colortopic-preprocessing</module>
+    <module>plugin-hierarchicaltopic-preprocessing</module>
+    <module>plugin-prune-preprocessing</module>
+    <module>plugin-category-preprocessing</module>
+    <module>plugin-fulltext-preprocessing</module>
+    <module>plugin-link-preprocessing</module>
+    <module>plugin-time-preprocessing</module>
+    <module>plugin-wiki-preprocessing</module>
+    <module>plugin-wordtype-preprocessing</module>
   </modules>
 
  <build>
@@ -36,11 +45,13 @@
       </plugin>
     </plugins>
     <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-      </resource>
-   </resources>
-    
+     <resource>
+       <directory>src/main/resources</directory>
+     </resource>
+     <resource>
+       <directory>local/main/resources</directory>
+     </resource>
+    </resources> 
   </build>
 
 </project>

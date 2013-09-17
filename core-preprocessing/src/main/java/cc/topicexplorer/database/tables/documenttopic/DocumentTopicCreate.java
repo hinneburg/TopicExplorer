@@ -1,7 +1,6 @@
 package cc.topicexplorer.database.tables.documenttopic;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 import cc.topicexplorer.chain.commands.TableCreateCommand;
 

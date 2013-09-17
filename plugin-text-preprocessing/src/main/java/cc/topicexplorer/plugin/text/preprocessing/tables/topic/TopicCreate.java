@@ -1,13 +1,8 @@
 package cc.topicexplorer.plugin.text.preprocessing.tables.topic;
 
-import java.io.IOException;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
 
 import cc.topicexplorer.chain.commands.TableCreateCommand;
-import cc.topicexplorer.chain.commands.TableCommand;
 
 /**
  * angefangen von Mattes weiterverarbeitet von Gert Kommaersetzung, Pfadangabe

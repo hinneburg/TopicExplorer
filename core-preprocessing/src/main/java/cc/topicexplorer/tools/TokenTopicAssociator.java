@@ -38,8 +38,6 @@ public class TokenTopicAssociator extends DependencyCommand {
 
 	private static boolean setTokenTopicAssignment() {
 
-		int errorCount = 0;
-
 		BufferedWriter outListSQLWriter = null;
 
 		try {
@@ -92,7 +90,6 @@ public class TokenTopicAssociator extends DependencyCommand {
 		BufferedReader inListinBufferedReader = null;
 
 		String inListcurrentLine;
-		String[] inlistsplittedCurrentLine;
 
 		String stateCurrentLine;
 		String[] stateSplittedCurrentLine;

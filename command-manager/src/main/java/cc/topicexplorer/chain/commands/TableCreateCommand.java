@@ -1,10 +1,8 @@
 package cc.topicexplorer.chain.commands;
 
 import java.sql.SQLException;
-import java.util.Properties;
 
 import org.apache.commons.chain.Context;
-import org.jooq.impl.Factory;
 
 public abstract class TableCreateCommand extends TableCommand {
 

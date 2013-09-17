@@ -2,7 +2,6 @@ package cc.topicexplorer.database.tables.term;
 
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 import cc.topicexplorer.chain.commands.TableCreateCommand;
 

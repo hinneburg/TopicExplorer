@@ -1,7 +1,6 @@
 package cc.topicexplorer.plugin.text.preprocessing.tables.document;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 import cc.topicexplorer.chain.commands.TableFillCommand;
 

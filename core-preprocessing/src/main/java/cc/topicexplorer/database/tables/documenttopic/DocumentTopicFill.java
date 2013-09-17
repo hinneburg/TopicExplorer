@@ -6,7 +6,6 @@ import static jooq.generated.Tables.DOCUMENT;
 import static jooq.generated.Tables.TOPIC; 
  MIT-JOOQ-ENDE */ 
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 import cc.topicexplorer.chain.commands.TableFillCommand;
 

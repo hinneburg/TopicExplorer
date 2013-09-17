@@ -5,14 +5,12 @@ import static jooq.generated.Tables.DOCUMENT_TERM_TOPIC;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.sql.SQLException;
-import java.util.ArrayList;
-
-import cc.topicexplorer.tools.TokenTopicAssociator;
 
 import cc.topicexplorer.chain.commands.TableFillCommand;
+import cc.topicexplorer.tools.TokenTopicAssociator;
 
-import java.nio.charset.Charset;
 import com.csvreader.CsvReader;
 
 public class DocumentTermTopicFill extends TableFillCommand {

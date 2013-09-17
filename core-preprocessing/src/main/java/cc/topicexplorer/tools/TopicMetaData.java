@@ -6,20 +6,17 @@ import static jooq.generated.Tables.TERM_TOPIC;
  MIT-JOOQ-ENDE */ 
 
 import java.io.BufferedReader;
-
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-
-import cc.topicexplorer.chain.commands.TableCommand;
-import cc.topicexplorer.chain.commands.DependencyCommand;
-import org.apache.log4j.Logger;
 
 import org.apache.commons.chain.Context;
+import org.apache.log4j.Logger;
+
+import cc.topicexplorer.chain.commands.TableCommand;
 
 /**
  * angefangen von Mattes weiterverarbeitet von Gert Kommaersetzung, Pfadangabe

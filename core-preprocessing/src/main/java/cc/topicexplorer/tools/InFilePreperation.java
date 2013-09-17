@@ -107,7 +107,6 @@ public class InFilePreperation extends DependencyCommand {
 		BufferedWriter malletInFileWriter = new BufferedWriter(
 				new OutputStreamWriter(
 						new FileOutputStream(malletPreparedFile), "UTF-8"));
-		String currentLine;
 		int currentDocID = -1;
 		String documentString = "";
 

@@ -22,6 +22,7 @@
     <module>plugin-time-preprocessing</module>
     <module>plugin-wiki-preprocessing</module>
     <module>plugin-wordtype-preprocessing</module>
+    <module>distribution-aggregated</module>
   </modules>
 
  <build>

@@ -7,12 +7,18 @@
 		<format>dir</format>
 	</formats>
 	<includeBaseDirectory>false</includeBaseDirectory>
+	<dependencySets>
+		<dependencySet>
+			<useProjectArtifact>false</useProjectArtifact>
+			<unpack>false</unpack>
+			<scope>runtime</scope>
+			<outputDirectory>/lib</outputDirectory>
+		</dependencySet>
+	</dependencySets>
+
 	<moduleSets>
 		<moduleSet>
-			<!-- Enable access to all projects in the current multimodule build! -->
 			<useAllReactorProjects>true</useAllReactorProjects>
-
-			<!-- Now, select which projects to include in this module-set. -->
 			<includes>
 				<include>cc.topicexplorer:command-manager</include>
 				<include>cc.topicexplorer:core-preprocessing</include>
@@ -37,7 +43,7 @@
 					</fileSet>
 				</fileSets>
 			</sources>
-
+<!-- 
 			<binaries>
 				<includeDependencies>true</includeDependencies>
 				<outputDirectory>/lib</outputDirectory>
@@ -51,21 +57,12 @@
 					</dependencySet>
 				</dependencySets>
 			</binaries>
+ -->
 		</moduleSet>
-<!-- 
-		<moduleSet>
-			<useAllReactorProjects>true</useAllReactorProjects>
 
-			<includes>
-				<include>cc.topicexplorer:distribution-aggregated</include>
-			</includes>
-			<binaries>
-				<includeDependencies>false</includeDependencies>
-				<outputDirectory>/catalogs/</outputDirectory>
-				<unpack>true</unpack>
-			</binaries>
-
-		</moduleSet>
-		 -->
+		<!-- <moduleSet> <useAllReactorProjects>true</useAllReactorProjects> <includes> 
+			<include>cc.topicexplorer:distribution-aggregated</include> </includes> <binaries> 
+			<includeDependencies>false</includeDependencies> <outputDirectory>/catalogs/</outputDirectory> 
+			<unpack>true</unpack> </binaries> </moduleSet> -->
 	</moduleSets>
 </assembly>

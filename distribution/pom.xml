@@ -83,12 +83,12 @@
       <groupId>cc.topicexplorer</groupId>
       <artifactId>plugin-wordtype-preprocessing</artifactId>
       <version>1.0-SNAPSHOT</version>
-    </dependency>    
+    </dependency> 
     <dependency>
       <groupId>cc.topicexplorer</groupId>
-      <artifactId>distribution-aggregated</artifactId>
+      <artifactId>run-preprocessing</artifactId>
       <version>1.0-SNAPSHOT</version>
-    </dependency>    
+    </dependency>        
   </dependencies>
 
   <build>

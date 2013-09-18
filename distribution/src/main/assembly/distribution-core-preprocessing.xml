@@ -25,6 +25,7 @@
 				<include>cc.topicexplorer:plugin-text-preprocessing</include>
 				<include>cc.topicexplorer:plugin-time-preprocessing</include>
 				<include>cc.topicexplorer:plugin-wiki-preprocessing</include>
+				<include>cc.topicexplorer:run-preprocessing</include>
 			</includes>
 			<sources>
 				<outputDirectoryMapping>/</outputDirectoryMapping>

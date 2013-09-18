@@ -24,6 +24,7 @@
 		<module>plugin-wiki-preprocessing</module>
 		<module>plugin-wordtype-preprocessing</module>
 <!--  		<module>distribution-aggregated</module>-->
+		<module>run-preprocessing</module>
 	</modules>
 
 	<build>

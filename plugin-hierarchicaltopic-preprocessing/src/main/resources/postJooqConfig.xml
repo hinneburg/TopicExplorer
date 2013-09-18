@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <catalog>	
   
-	<command name="HierarchicalTopic_TopicFill" className="plugin_hierarchicalTopic.tables.topic.TopicFill"/>
-	<command name="HierarchicalTopic_TermTopicFill" className="plugin_hierarchicalTopic.tables.termtopic.TermTopicFill"/>
-	<command name="HierarchicalTopic_DocumentTopicFill" className="plugin_hierarchicalTopic.tables.documenttopic.DocumentTopicFill"/>
+	<command name="HierarchicalTopic_TopicFill" className="cc.topicexplorer.plugin.hierarchicaltopic.preprocessing.tables.topic.TopicFill"/>
+	<command name="HierarchicalTopic_TermTopicFill" className="cc.topicexplorer.plugin.hierarchicaltopic.preprocessing.tables.termtopic.TermTopicFill"/>
+	<command name="HierarchicalTopic_DocumentTopicFill" className="cc.topicexplorer.plugin.hierarchicaltopic.preprocessing.tables.documenttopic.DocumentTopicFill"/>
 
 </catalog>

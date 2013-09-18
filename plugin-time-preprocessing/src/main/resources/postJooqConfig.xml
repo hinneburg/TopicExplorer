@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <catalog>	
   
-	<command name="Time_DocumentFill" className="plugin_time.tables.document.DocumentFill"/>
-	<command name="Time_DocumentTermTopicFill" className="plugin_time.tables.documenttermtopic.DocumentTermTopicFill"/>
-	<command name="Time_WordsPerTopicPerWeekFill" className="plugin_time.tables.wordspertopicperweek.WordsPerTopicPerWeekFill"/>
+	<command name="Time_DocumentFill" className="cc.topicexplorer.plugin.time.preprocessing.tables.document.DocumentFill"/>
+	<command name="Time_DocumentTermTopicFill" className="cc.topicexplorer.plugin.time.preprocessing.tables.documenttermtopic.DocumentTermTopicFill"/>
+	<command name="Time_WordsPerTopicPerWeekFill" className="cc.topicexplorer.plugin.time.preprocessing.tables.wordspertopicperweek.WordsPerTopicPerWeekFill"/>
 
 </catalog>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <catalog>	
   
-	<command name="Text_DocumentCreate" className="plugin_text.tables.document.DocumentCreate"/>
-	<command name="Text_TopicCreate" className="plugin_text.tables.topic.TopicCreate"/>
+	<command name="Text_DocumentCreate" className="cc.topicexplorer.plugin.text.preprocessing.tables.document.DocumentCreate"/>
+	<command name="Text_TopicCreate" className="cc.topicexplorer.plugin.text.preprocessing.tables.topic.TopicCreate"/>
 
 </catalog>

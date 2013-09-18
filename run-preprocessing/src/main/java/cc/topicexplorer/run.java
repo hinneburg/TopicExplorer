@@ -1,10 +1,15 @@
 package cc.topicexplorer;
 
+import java.util.List;
 import java.util.Properties;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.io.Writer;
 
@@ -34,8 +39,9 @@ public class run {
 		NodeList nodes = xmlFile2.getElementsByTagName("catalog").item(0)
 				.getChildNodes();
 		for (int i = 0; i < nodes.getLength(); i++) {
+			Node importNode = xmlFile1.importNode(nodes.item(i), true);
 			xmlFile1.getElementsByTagName("catalog").item(0)
-					.appendChild(nodes.item(i));
+					.appendChild(importNode);
 		}
 		return xmlFile1;
 	}
@@ -43,6 +49,7 @@ public class run {
 	private void makeCatalog(String plugins)
 			throws ParserConfigurationException, TransformerException,
 			IOException, SAXException {
+		run run = new run();
 		DocumentBuilderFactory domFactory = DocumentBuilderFactory
 				.newInstance();
 		domFactory.setIgnoringComments(true);
@@ -52,8 +59,8 @@ public class run {
 
 		// init
 		Document doc = this.getMergedXML(
-				builder.parse(this.getClass().getResourceAsStream("cc/topicexplorer/core-preprocessing/catalog/preJooqCatalog.xml")),
-				builder.parse(this.getClass().getResourceAsStream("cc/topicexplorer/core-preprocessing/catalog/postJooqCatalog.xml")));
+				builder.parse(this.getClass().getResourceAsStream("/cc/topicexplorer/core-preprocessing/catalog/preJooqConfig.xml")),
+				builder.parse(this.getClass().getResourceAsStream("/cc/topicexplorer/core-preprocessing/catalog/postJooqConfig.xml")));
 
 		// process plugin catalogs
 		for (String plugin : plugins.split(",")) {
@@ -61,8 +68,8 @@ public class run {
 			try {
 				doc = this.getMergedXML(
 						doc,
-						builder.parse(this.getClass().getResourceAsStream("cc/topicexplorer/plugin/"
-								+ plugin + "/catalog/preJooqConfig.xml")));
+						builder.parse(this.getClass().getResourceAsStream("/cc/topicexplorer/plugin-"
+								+ plugin + "-preprocessing/catalog/preJooqConfig.xml")));
 			} catch (Exception e) {
 				//logger.warn
 				System.out.println("cc/topicexplorer/plugin/"
@@ -71,8 +78,8 @@ public class run {
 			try {
 				doc = this.getMergedXML(
 						doc,
-						builder.parse(this.getClass().getResourceAsStream("cc/topicexplorer/plugin/"
-								+ plugin + "/catalog/postJooqConfig.xml")));
+						builder.parse(this.getClass().getResourceAsStream("/cc/topicexplorer/plugin-"
+								+ plugin + "-preprocessing/catalog/postJooqConfig.xml")));
 			} catch (Exception e) {
 				//logger.warn
 				System.out.println("cc/topicexplorer/plugin/"
@@ -96,8 +103,7 @@ public class run {
 
 	}
 
-	public static void main(String[] args) throws IOException, SAXException,
-			ParserConfigurationException, TransformerException {
+	public static void main(String[] args) throws Exception {
 		// TODO Auto-generated method stub
 		run run = new run();
 		logger = Logger.getRootLogger();
@@ -115,16 +121,16 @@ public class run {
 
 		run.makeCatalog(properties.getProperty("plugins"));
 
-		/*
-		 * ChainManagement chainManager = new ChainManagement();
-		 * chainManager.getCatalog(catalogLocation);
-		 * 
-		 * orderedCommands = chainManager.getOrderedCommands();
-		 * 
-		 * logger.info("ordered commands: " + orderedCommands);
-		 * 
-		 * chainManager.executeOrderedCommands(orderedCommands);
-		 */
+		
+		 ChainManagement chainManager = new ChainManagement();
+		 chainManager.getCatalog("catalog.xml");
+		 
+		 List<String> orderedCommands = chainManager.getOrderedCommands();
+		 
+		 logger.info("ordered commands: " + orderedCommands);
+		 
+		 chainManager.executeOrderedCommands(orderedCommands);
+		 
 	}
 
 }

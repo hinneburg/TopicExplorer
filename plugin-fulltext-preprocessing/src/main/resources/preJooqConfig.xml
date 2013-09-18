@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <catalog>	
   
-	<command name="Fulltext_DocumentCreate" className="plugin_fulltext.tables.document.DocumentCreate"/>
+	<command name="Fulltext_DocumentCreate" className="cc.topicexplorer.plugin.fulltext.preprocessing.tables.document.DocumentCreate"/>
 
 </catalog>

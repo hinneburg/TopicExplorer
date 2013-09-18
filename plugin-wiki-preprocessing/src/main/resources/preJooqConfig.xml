@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <catalog>	
   
-	<command name="Wiki_DocumentTermTopicCreate" className="plugin_wiki.tables.documenttermtopic.DocumentTermTopicCreate"/>
+	<command name="Wiki_DocumentTermTopicCreate" className="cc.topicexplorer.plugin.wiki.preprocessing.tables.documenttermtopic.DocumentTermTopicCreate"/>
 
 </catalog>

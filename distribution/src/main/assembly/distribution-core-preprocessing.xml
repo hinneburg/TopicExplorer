@@ -39,31 +39,32 @@
 
 			<binaries>
 				<includeDependencies>true</includeDependencies>
-				<outputDirectory>/lib/modules/</outputDirectory>
+				<outputDirectory>/lib</outputDirectory>
 				<unpack>false</unpack>
-
 				<dependencySets>
 					<dependencySet>
+						<useProjectArtifact>false</useProjectArtifact>
 						<unpack>false</unpack>
 						<scope>runtime</scope>
-						<outputDirectory>/lib/dependencies</outputDirectory>
+						<outputDirectory>/lib</outputDirectory>
 					</dependencySet>
 				</dependencySets>
 			</binaries>
 		</moduleSet>
+<!-- 
 		<moduleSet>
-				<useAllReactorProjects>true</useAllReactorProjects>
+			<useAllReactorProjects>true</useAllReactorProjects>
 
-			<!-- Now, select which projects to include in this module-set. -->
 			<includes>
 				<include>cc.topicexplorer:distribution-aggregated</include>
 			</includes>
-				<binaries>
+			<binaries>
 				<includeDependencies>false</includeDependencies>
 				<outputDirectory>/catalogs/</outputDirectory>
 				<unpack>true</unpack>
 			</binaries>
-		
+
 		</moduleSet>
+		 -->
 	</moduleSets>
 </assembly>

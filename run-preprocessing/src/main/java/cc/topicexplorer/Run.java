@@ -27,7 +27,7 @@ import org.xml.sax.SAXException;
 import cc.topicexplorer.chain.ChainManagement;
 
 public class Run {
-	private static Logger logger;
+	private static Logger logger = Logger.getRootLogger();
 
 	private Document getMergedXML(Document xmlFile1, Document xmlFile2) {
 		NodeList nodes = xmlFile2.getElementsByTagName("catalog").item(0)
@@ -76,9 +76,8 @@ public class Run {
 														+ plugin
 														+ "-preprocessing/catalog/preJooqConfig.xml")));
 			} catch (Exception e) {
-				// logger.warn
-				System.out.println("cc/topicexplorer/plugin/" + plugin
-						+ "/catalog/preJooqConfig.xml not found");
+				logger.warn("/cc/topicexplorer/plugin-" + plugin
+						+ "-preprocessing/catalog/preJooqConfig.xml not found");
 			}
 			try {
 				doc = this
@@ -91,9 +90,8 @@ public class Run {
 														+ plugin
 														+ "-preprocessing/catalog/postJooqConfig.xml")));
 			} catch (Exception e) {
-				// logger.warn
-				System.out.println("cc/topicexplorer/plugin/" + plugin
-						+ "/catalog/postJooqConfig.xml not found");
+				logger.warn("/cc/topicexplorer/plugin-" + plugin
+						+ "-preprocessing/catalog/postJooqConfig.xml not found");
 			}
 		}
 
@@ -116,23 +114,30 @@ public class Run {
 	public static void main(String[] args) throws Exception {
 		// TODO Auto-generated method stub
 		Run run = new Run();
-		logger = Logger.getRootLogger();
+		ChainManagement chainManager = new ChainManagement();
 		Properties properties = new Properties();
-		properties.load(run.getClass().getResourceAsStream(
+
+		chainManager.init();
+
+		try {
+			properties.load(run.getClass().getResourceAsStream(
 				"/config.global.properties"));
+		} catch (Exception e) {
+			logger.error("config.global.properties not found");
+			System.exit(0);
+		}
+		
 		try {
 			properties.load(run.getClass().getResourceAsStream(
 					"/config.local.properties"));
 		} catch (Exception e) {
-			// logger.warn
-			System.out.println("config.local.properties not found");
+			logger.warn("config.local.properties not found");
 		}
-		System.out.println(properties.getProperty("plugins"));
+		logger.info("Activated plugins: " + properties.getProperty("plugins"));
 
 		run.makeCatalog(properties.getProperty("plugins"));
 
-		ChainManagement chainManager = new ChainManagement();
-		chainManager.getCatalog("catalog.xml");
+		chainManager.getCatalog("/catalog.xml");
 
 		List<String> orderedCommands = chainManager.getOrderedCommands();
 

@@ -55,7 +55,7 @@ public class ChainManagement {
 	 */
 	public void getCatalog(String catalogLocation) throws Exception {
 		ConfigParser configParser = new ConfigParser();
-
+		
 		try {
 			logger.info("this.getClass().getResource(catalogLocation)"
 					+ this.getClass().getResource(catalogLocation));
@@ -105,7 +105,7 @@ public class ChainManagement {
 	 */
 	public void executeOrderedCommands(List<String> commandList) {
 		try {
-			init();
+			
 			
 			Command command;
 			for (String commandName : commandList) {
@@ -123,7 +123,7 @@ public class ChainManagement {
 				args);
 		List<String> orderedCommands;
 		String catalogLocation;
-
+		chainManager.init();
 		logger = Logger.getRootLogger();
 
 		catalogLocation = commandLineParser.getCatalogLocation();

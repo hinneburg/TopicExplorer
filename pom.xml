@@ -25,6 +25,7 @@
 		<module>plugin-wordtype-preprocessing</module>
 <!--  		<module>distribution-aggregated</module>-->
 		<module>run-preprocessing</module>
+		<module>distribution-preprocessing</module>
 	</modules>
 
 	<build>

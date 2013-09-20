@@ -41,23 +41,23 @@
 						<directory>local/main/resources</directory>
 						<outputDirectory>/resources</outputDirectory>
 					</fileSet>
+					<fileSet>
+						<directory>src/main/resources/skripts</directory>
+						<outputDirectory>/skripts</outputDirectory>
+					</fileSet>
+					<fileSet>
+						<directory>src/main/resources</directory>
+						<outputDirectory>/etc</outputDirectory>
+						<excludes>
+							<exclude>**/*</exclude>
+						</excludes>
+					</fileSet>
 				</fileSets>
 			</sources>
-<!-- 
-			<binaries>
-				<includeDependencies>true</includeDependencies>
-				<outputDirectory>/lib</outputDirectory>
-				<unpack>false</unpack>
-				<dependencySets>
-					<dependencySet>
-						<useProjectArtifact>false</useProjectArtifact>
-						<unpack>false</unpack>
-						<scope>runtime</scope>
-						<outputDirectory>/lib</outputDirectory>
-					</dependencySet>
-				</dependencySets>
-			</binaries>
- -->
+			<!-- <binaries> <includeDependencies>true</includeDependencies> <outputDirectory>/lib</outputDirectory> 
+				<unpack>false</unpack> <dependencySets> <dependencySet> <useProjectArtifact>false</useProjectArtifact> 
+				<unpack>false</unpack> <scope>runtime</scope> <outputDirectory>/lib</outputDirectory> 
+				</dependencySet> </dependencySets> </binaries> -->
 		</moduleSet>
 
 		<!-- <moduleSet> <useAllReactorProjects>true</useAllReactorProjects> <includes> 

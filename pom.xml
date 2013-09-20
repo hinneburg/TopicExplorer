@@ -61,6 +61,7 @@
 				<directory>src/main/resources</directory>
 				<excludes>
 					<exclude>**/*.xml</exclude>
+					<exclude>skripts/*</exclude>
 				</excludes>
 			</resource>
 			<resource>

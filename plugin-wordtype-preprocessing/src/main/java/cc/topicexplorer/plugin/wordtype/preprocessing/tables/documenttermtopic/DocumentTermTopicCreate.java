@@ -23,8 +23,7 @@ public class DocumentTermTopicCreate extends TableCreateCommand {
 			this.database.executeUpdateQuery("ALTER TABLE " + this.tableName
 					+ " DROP COLUMN WORDTYPE$WORDTYPE");
 		} catch (Exception e) {
-			System.err
-					.println("Document.dropColumns: Cannot drop column, perhaps it doesn't exists. Doesn't matter ;)");
+			logger.warn("Document.dropColumns: Cannot drop column, perhaps it doesn't exists. Doesn't matter ;)");
 
 		}
 	}
@@ -37,5 +36,6 @@ public class DocumentTermTopicCreate extends TableCreateCommand {
 	@Override
 	public void addDependencies() {
 		beforeDependencies.add("DocumentTermTopicCreate");
+		afterDependencies.add("InFilePreparation");
 	}	
 }

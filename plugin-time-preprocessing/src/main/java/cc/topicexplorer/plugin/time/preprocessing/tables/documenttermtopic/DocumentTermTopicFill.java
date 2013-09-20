@@ -29,9 +29,9 @@ public class DocumentTermTopicFill extends TableFillCommand {
 	/** OHNE_JOOQ-START */ 	
 			database.executeUpdateQuery("UPDATE " + "DOCUMENT_TERM_TOPIC" + " tta, " 
 					+ properties.getProperty("OrgTableName") 
-					+ " org SET tta." + "DOCUMENT_TERM_TOPIC.TIME$WEEK"
+					+ " org SET tta." + "TIME$WEEK"
 					+ " = YEARWEEK(FROM_UNIXTIME(org." + properties.getProperty("Time_OrgTableTstamp")
-					+ ")) WHERE tta." + "DOCUMENT_TERM_TOPIC.DOCUMENT_ID"
+					+ ")) WHERE tta." + "DOCUMENT_ID"
 					+ " = org." + properties.getProperty("OrgTableId"));
 	/** OHNE_JOOQ-ENDE */ 
 		}

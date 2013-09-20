@@ -37,24 +37,24 @@ public class Prune_db extends DependencyCommand {
 		File destinationFile = new File(destination);
 
 		if (!sourceFile.renameTo(destinationFile)) {
-			System.out.println("[ " + getClass() + " ] - "
+			logger.fatal("[ " + getClass() + " ] - "
 					+ "Fehler beim Umbenennen der Datei: " + source);
+			System.exit(0);
 		}
 	}
 
 	@Override
 	public void specialExecute(Context context) throws Exception {
 
-		System.out.println("[ " + getClass() + " ] - " + "pruning vocabular");
+		logger.info("[ " + getClass() + " ] - " + "pruning vocabular");
 
 		CommunicationContext communicationContext = (CommunicationContext) context;
 		properties = (Properties) communicationContext.get("properties");
 		database = (Database) communicationContext.get("database");
 
-		String root = properties.getProperty("projectRoot");
-
+		
 		float upperBound, lowerBound;
-		String inFilePath = root + properties.getProperty("InCSVFile");
+		String inFilePath = properties.getProperty("InCSVFile");
 		try {
 			inCsv = new CsvReader(new FileInputStream(inFilePath), ';',
 					Charset.forName("UTF-8"));
@@ -78,7 +78,7 @@ public class Prune_db extends DependencyCommand {
 							|| upperBoundPercent > 100
 							|| lowerBoundPercent > 100
 							|| upperBoundPercent < lowerBoundPercent) {
-						System.out.println("Stop: Invalid Pruning Bounds!");
+						logger.fatal("Stop: Invalid Pruning Bounds!");
 						System.exit(0);
 					}
 
@@ -101,8 +101,7 @@ public class Prune_db extends DependencyCommand {
 							new OutputStreamWriter(
 									new BufferedOutputStream(
 											new FileOutputStream(
-													root
-															+ properties
+													properties
 																	.getProperty("InCSVFile")
 															+ ".pruned.Lower."
 															+ lowerBound
@@ -171,29 +170,28 @@ public class Prune_db extends DependencyCommand {
 					database.executeUpdateQuery("DROP TABLE TEMP4PRUNE2;");
 
 					this.renameFile(
-							root + properties.getProperty("InCSVFile"),
-							root + properties.getProperty("InCSVFile")
+							properties.getProperty("InCSVFile"),
+							properties.getProperty("InCSVFile")
 									+ ".org." + System.currentTimeMillis());
 
 					this.renameFile(
-							root + properties.getProperty("InCSVFile")
+							properties.getProperty("InCSVFile")
 									+ ".pruned.Lower." + lowerBound
-									+ ".Upper." + upperBound + ".csv", root
-									+ properties.getProperty("InCSVFile"));
+									+ ".Upper." + upperBound + ".csv",
+									properties.getProperty("InCSVFile"));
 				} else {
-					System.err.println("CSV-Header not read");
+					logger.fatal("CSV-Header not read");
 					System.exit(1);
 				}
 
 			} catch (IOException e) {
-				System.err.println("CSV-Header not read");
+				logger.fatal("CSV-Header not read");
 				e.printStackTrace();
 				System.exit(2);
 			}
 			inCsv.close();
 		} catch (FileNotFoundException e) {
-			System.err
-					.println("Input CSV-File couldn't be read - maybe the path is incorrect");
+			logger.fatal("Input CSV-File couldn't be read - maybe the path is incorrect");
 			e.printStackTrace();
 			System.exit(3);
 		}
@@ -202,6 +200,6 @@ public class Prune_db extends DependencyCommand {
 	@Override
 	public void addDependencies() {
 		beforeDependencies.add("DocumentTermTopicCreate");
-		afterDependencies.add("InFilePreperation");
+		afterDependencies.add("InFilePreparation");
 	}	
 }

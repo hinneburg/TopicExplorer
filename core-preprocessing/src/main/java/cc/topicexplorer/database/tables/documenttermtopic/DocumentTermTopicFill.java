@@ -18,17 +18,15 @@ public class DocumentTermTopicFill extends TableFillCommand {
 	@Override
 	public void fillTable() throws SQLException {
 
-		// String inFilePath = properties.getProperty("projectRoot")
-		// + TokenTopicAssociator.TOKENTOPICASSIGNMENTSQLFILE;
+		
 		String inFilePath = TokenTopicAssociator.TOKENTOPICASSIGNMENTSQLFILE;
 /** MIT-JOOQ-START 
-		System.out.println("load data into table "
+		logger.info("load data into table "
 				+ DOCUMENT_TERM_TOPIC.getName());
 
 		try {
 			inCsv = new CsvReader(new FileInputStream(
-					properties.getProperty("projectRoot")
-							+ properties.getProperty("InCSVFile")), ';',
+					properties.getProperty("InCSVFile")), ';',
 					Charset.forName("UTF-8"));
 			try {
 				if (inCsv.readHeaders()) {
@@ -66,32 +64,30 @@ public class DocumentTermTopicFill extends TableFillCommand {
 							+ DOCUMENT_TERM_TOPIC.TERM.getName() + "`,`"
 							+ DOCUMENT_TERM_TOPIC.TOPIC_ID.getName() + "`) ");
 
-					System.out.println("load data into table " + this.tableName
+					logger.info("load data into table " + this.tableName
 							+ " done.");
 				} else {
-					System.err.println("CSV-Header not read");
+					logger.fatal("CSV-Header not read");
 					System.exit(1);
 				}
 			} catch (IOException e) {
-				System.err.println("CSV-Header not read");
+				logger.fatal("CSV-Header not read");
 				e.printStackTrace();
 				System.exit(2);
 			}
 		} catch (FileNotFoundException e) {
-			System.err
-					.println("Input CSV-File couldn't be read - maybe the path is incorrect");
+			logger.fatal("Input CSV-File couldn't be read - maybe the path is incorrect");
 			e.printStackTrace();
 			System.exit(3);
 		}
  MIT-JOOQ-ENDE */ 
 /** OHNE_JOOQ-START */		
-		System.out.println("load data into table "
+		logger.info("load data into table "
 				+ "DOCUMENT_TERM_TOPIC");
 
 		try {
 			inCsv = new CsvReader(new FileInputStream(
-					properties.getProperty("projectRoot")
-							+ properties.getProperty("InCSVFile")), ';',
+							properties.getProperty("InCSVFile")), ';',
 					Charset.forName("UTF-8"));
 			try {
 				if (inCsv.readHeaders()) {
@@ -109,40 +105,39 @@ public class DocumentTermTopicFill extends TableFillCommand {
 					database.executeUpdateQuery("ALTER TABLE "
 							+ "DOCUMENT_TERM_TOPIC"
 							+ " ADD KEY IDX0 (`"
-							+ "DOCUMENT_TERM_TOPIC.DOCUMENT_ID"
+							+ "DOCUMENT_ID"
 							+ "`,`"
-							+ "DOCUMENT_TERM_TOPIC.TOPIC_ID"
+							+ "TOPIC_ID"
 							+ "`,`"
-							+ "DOCUMENT_TERM_TOPIC.POSITION_OF_TOKEN_IN_DOCUMENT" 
+							+ "POSITION_OF_TOKEN_IN_DOCUMENT" 
 							+ "`), " + " ADD KEY IDX1 (`"
-							+ "DOCUMENT_TERM_TOPIC.DOCUMENT_ID"
+							+ "DOCUMENT_ID"
 							+ "`), " + " ADD KEY IDX2 (`"
-							+ "DOCUMENT_TERM_TOPIC.TERM" + "`), "
+							+ "TERM" + "`), "
 							+ " ADD KEY IDX3 (`"
-							+ "DOCUMENT_TERM_TOPIC.DOCUMENT_ID" + "`,`"
-							+ "DOCUMENT_TERM_TOPIC.TERM" + "`,`"
-							+ "DOCUMENT_TERM_TOPIC.TOPIC_ID" + "`), "
+							+ "DOCUMENT_ID" + "`,`"
+							+ "TERM" + "`,`"
+							+ "TOPIC_ID" + "`), "
 							+ " ADD KEY IDX4 (`"
-							+ "DOCUMENT_TERM_TOPIC.DOCUMENT_ID" + "`,`"
-							+ "DOCUMENT_TERM_TOPIC.TOPIC_ID" + "`), "
+							+ "DOCUMENT_ID" + "`,`"
+							+ "TOPIC_ID" + "`), "
 							+ " ADD KEY IDX5 (`"
-							+ "DOCUMENT_TERM_TOPIC.TERM" + "`,`"
-							+ "DOCUMENT_TERM_TOPIC.TOPIC_ID" + "`) ");
+							+ "TERM" + "`,`"
+							+ "TOPIC_ID" + "`) ");
 
-					System.out.println("load data into table " + this.tableName
+					logger.info("load data into table " + this.tableName
 							+ " done.");
 				} else {
-					System.err.println("CSV-Header not read");
+					logger.fatal("CSV-Header not read");
 					System.exit(1);
 				}
 			} catch (IOException e) {
-				System.err.println("CSV-Header not read");
+				logger.fatal("CSV-Header not read");
 				e.printStackTrace();
 				System.exit(2);
 			}
 		} catch (FileNotFoundException e) {
-			System.err
-					.println("Input CSV-File couldn't be read - maybe the path is incorrect");
+			logger.fatal("Input CSV-File couldn't be read - maybe the path is incorrect");
 			e.printStackTrace();
 			System.exit(3);
 		}

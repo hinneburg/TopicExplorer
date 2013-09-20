@@ -79,13 +79,12 @@ public class TopicFill extends TableFillCommand {
 						+ name + "' " + " WHERE "
 						+ TOPIC.TOPIC_ID.getName() + " = " + i + "; ");
 			} else {
-				System.out.println("Error fetching name data");
+				logger.fatal("Error fetching name data");
 				System.exit(0);
 			}
 		}
 
-		System.out
-				.println("Starting batch execution TopicMetaData update themen.");
+		logger.info("Starting batch execution TopicMetaData update themen.");
 		stmt.executeBatch();
 MIT-JOOQ-ENDE */
 		/** OHNE_JOOQ-START */ 
@@ -95,33 +94,33 @@ MIT-JOOQ-ENDE */
 		for (int i = 0; i < Integer.parseInt(this.properties
 				.getProperty("malletNumTopics")); i++) {
 
-			String sql = "SELECT CONCAT((select k." + "TERM.TERM_NAME"
+			String sql = "SELECT CONCAT((select k." + "TERM_NAME"
 					+ " from " + "TERM" + " k, (SELECT "
 					+ "TERM_TOPIC.TOPIC_ID" + ", "
 					+ "TERM_TOPIC.TERM_ID" + " FROM `"
 					+ "TERM_TOPIC" + "` WHERE "
 					+ "TERM_TOPIC.TOPIC_ID" + "=" + i + " order by "
 					+ "TERM_TOPIC.PR_TERM_GIVEN_TOPIC"
-					+ " desc limit 0,1) x where k." + "TERM.TERM_ID"
-					+ "=x." + "TERM_TOPIC.TERM_ID"
-					+ "),', ',(select k." + "TERM.TERM_NAME" + " from "
+					+ " desc limit 0,1) x where k." + "TERM_ID"
+					+ "=x." + "TERM_ID"
+					+ "),', ',(select k." + "TERM_NAME" + " from "
 					+ "TERM" + " k, (SELECT "
 					+ "TERM_TOPIC.TOPIC_ID" + ", "
 					+ "TERM_TOPIC.TERM_ID" + " FROM `"
 					+ "TERM_TOPIC" + "` WHERE "
 					+ "TERM_TOPIC.TOPIC_ID" + "=" + i + " order by "
 					+ "TERM_TOPIC.PR_TERM_GIVEN_TOPIC"
-					+ " desc limit 1,1) x where k." + "TERM.TERM_ID"
-					+ "=x." + "TERM_TOPIC.TERM_ID"
-					+ "),', ',(select k." + "TERM.TERM_NAME" + " from "
+					+ " desc limit 1,1) x where k." + "TERM_ID"
+					+ "=x." + "TERM_ID"
+					+ "),', ',(select k." + "TERM_NAME" + " from "
 					+ "TERM" + " k, (SELECT "
 					+ "TERM_TOPIC.TOPIC_ID" + ", "
 					+ "TERM_TOPIC.TERM_ID" + " FROM `"
 					+ "TERM_TOPIC" + "` WHERE "
 					+ "TERM_TOPIC.TOPIC_ID" + "=" + i + " order by "
 					+ "TERM_TOPIC.PR_TERM_GIVEN_TOPIC"
-					+ " desc limit 2,1) x where k." + "TERM.TERM_ID"
-					+ "=x." + "TERM_TOPIC.TERM_ID" + "))";
+					+ " desc limit 2,1) x where k." + "TERM_ID"
+					+ "=x." + "TERM_ID" + "))";
  
 			rsNames = database.executeQuery(sql);
 
@@ -133,13 +132,12 @@ MIT-JOOQ-ENDE */
 						+ name + "' " + " WHERE "
 						+ "TOPIC.TOPIC_ID" + " = " + i + "; ");
 			} else {
-				System.out.println("Error fetching name data");
+				logger.fatal("Error fetching name data");
 				System.exit(0);
 			}
 		}
 
-		System.out
-				.println("Starting batch execution TopicMetaData update themen.");
+		logger.info("Starting batch execution TopicMetaData update themen.");
 		stmt.executeBatch();
 
 		/** OHNE_JOOQ-ENDE */ 

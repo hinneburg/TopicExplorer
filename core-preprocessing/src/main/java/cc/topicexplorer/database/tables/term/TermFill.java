@@ -52,41 +52,41 @@ public class TermFill extends TableFillCommand {
 				+ "	ADD KEY CF_IDF_IDX (" + TERM.CF_IDF.getName() + ")");
  MIT-JOOQ-ENDE */ 
 /** OHNE_JOOQ-START */ 		
-		String query = "insert into `"
+		String query = "insert into "
 				+ "TERM"
-				+ "` (`"
+				+ " ("
 				+ "TERM.TERM_NAME"
-				+ "`, `"
+				+ ", "
 				+ "TERM.CORPUS_FREQUENCY"
-				+ "`, `"
+				+ ", "
 				+ "TERM.DOCUMENT_FREQUENCY"
-				+ "`, `"
+				+ ", "
 				+ "TERM.INVERSE_DOCUMENT_FREQUENCY"
-				+ "`, `"
+				+ ", "
 				+ "TERM.CF_IDF"
-				+ "`) select `nested1`.`"
-				+ "DOCUMENT_TERM_TOPIC.TERM"
-				+ "`, `nested1`.`cfcount`, `nested1`.`dfcount`, log(10, ((select count(*) as `numberOfDocuments` from `"
-				+ "DOCUMENT" + "`) / `nested1`.`dfcount`))"
-				+ ", (log(10, ((select count(*) as `numberOfDocuments` from `"
+				+ ") select nested1."
+				+ "TERM"
+				+ ", nested1.cfcount, nested1.dfcount, log(10, ((select count(*) as numberOfDocuments from "
+				+ "DOCUMENT" + ") / nested1.dfcount))"
+				+ ", (log(10, ((select count(*) as numberOfDocuments from "
 				+ "DOCUMENT"
-				+ "`) / `nested1`.`dfcount`)) * `nested1`.`cfcount`)"
-				+ " from (select `" + "DOCUMENT_TERM_TOPIC.TERM"
-				+ "`, count(*) as `cfcount`, count(distinct `"
+				+ ") / nested1.dfcount)) * nested1.cfcount)"
+				+ " from (select " + "DOCUMENT_TERM_TOPIC.TERM"
+				+ ", count(*) as cfcount, count(distinct "
 				+ "DOCUMENT_TERM_TOPIC.DOCUMENT_ID"
-				+ "`) as `dfcount` from `" + "DOCUMENT_TERM_TOPIC"
-				+ "` group by `" + "DOCUMENT_TERM_TOPIC.TERM"
-				+ "`) as `nested1`";
+				+ ") as dfcount from " + "DOCUMENT_TERM_TOPIC"
+				+ " group by " + "DOCUMENT_TERM_TOPIC.TERM"
+				+ ") as nested1";
 
 		database.executeUpdateQuery(query);
 		database.executeUpdateQuery("ALTER TABLE " + "TERM"
-				+ "	ADD UNIQUE KEY `TERM_NAME_IDX` (`"
-				+ "TERM.TERM_NAME" + "`)," + "	ADD KEY DF_IDX ("
-				+ "TERM.DOCUMENT_FREQUENCY" + "),"
-				+ "	ADD KEY CD_IDX (" + "TERM.CORPUS_FREQUENCY" + "),"
+				+ "	ADD UNIQUE KEY TERM_NAME_IDX ("
+				+ "TERM_NAME" + ")," + "	ADD KEY DF_IDX ("
+				+ "DOCUMENT_FREQUENCY" + "),"
+				+ "	ADD KEY CD_IDX (" + "CORPUS_FREQUENCY" + "),"
 				+ "	ADD KEY IDF_IDX ("
-				+ "TERM.INVERSE_DOCUMENT_FREQUENCY" + "),"
-				+ "	ADD KEY CF_IDF_IDX (" + "TERM.CF_IDF" + ")");
+				+ "INVERSE_DOCUMENT_FREQUENCY" + "),"
+				+ "	ADD KEY CF_IDF_IDX (" + "CF_IDF" + ")");
 /** OHNE_JOOQ-ENDE */ 
 	}
 

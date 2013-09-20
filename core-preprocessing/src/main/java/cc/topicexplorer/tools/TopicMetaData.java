@@ -42,8 +42,7 @@ public class TopicMetaData extends TableCommand {
 	private void prepareRscriptInput() throws IOException, SQLException {
 		// @STARTONLYSECONDRUN@//
 
-		FileWriter fos = new FileWriter(properties.getProperty("projectRoot")
-				+ "temp/similarities.out");
+		FileWriter fos = new FileWriter("temp/similarities.out");
 		ResultSet rsSim;
 
 		fos.write("tid\ttid\tsim\n");
@@ -78,11 +77,11 @@ public class TopicMetaData extends TableCommand {
 				+ TERM_TOPIC.TOPIC_ID.getName() + " ;";
  MIT-JOOQ-ENDE */
 /** OHNE_JOOQ-START */ 
-		String sql = "SELECT kt1." + "TERM_TOPIC.TOPIC_ID"
-				+ " AS tid1, kt2." + "TERM_TOPIC.TOPIC_ID"
+		String sql = "SELECT kt1." + "TOPIC_ID"
+				+ " AS tid1, kt2." + "TOPIC_ID"
 				+ " AS tid2, sum(kt1."
-				+ "TERM_TOPIC.PR_TERM_GIVEN_TOPIC" + "*kt2."
-				+ "TERM_TOPIC.PR_TERM_GIVEN_TOPIC"
+				+ "PR_TERM_GIVEN_TOPIC" + "*kt2."
+				+ "PR_TERM_GIVEN_TOPIC"
 				+ ")/sqrt(t1.n1* t2.n2) AS sim " + "FROM "
 				+ "TERM_TOPIC" + " kt1, " + "TERM_TOPIC"
 				+ " kt2, " + "  ( select " + "TERM_TOPIC.TOPIC_ID"
@@ -95,16 +94,16 @@ public class TopicMetaData extends TableCommand {
 				+ "TERM_TOPIC.PR_TERM_GIVEN_TOPIC" + ") as n2 from "
 				+ "TERM_TOPIC" + " group by "
 				+ "TERM_TOPIC.TOPIC_ID" + ") t2 WHERE kt1."
-				+ "TERM_TOPIC.TERM_ID" + "=kt2."
-				+ "TERM_TOPIC.TERM_ID" + " and t1."
-				+ "TERM_TOPIC.TOPIC_ID" + "=kt1."
-				+ "TERM_TOPIC.TOPIC_ID" + " and  t2."
-				+ "TERM_TOPIC.TOPIC_ID" + "=kt2."
-				+ "TERM_TOPIC.TOPIC_ID" + " " + "GROUP BY kt1."
-				+ "TERM_TOPIC.TOPIC_ID" + ", kt2."
-				+ "TERM_TOPIC.TOPIC_ID" + ", t1.n1, t2.n2 "
-				+ "ORDER BY kt1." + "TERM_TOPIC.TOPIC_ID" + ", kt2."
-				+ "TERM_TOPIC.TOPIC_ID" + " ;";
+				+ "TERM_ID" + "=kt2."
+				+ "TERM_ID" + " and t1."
+				+ "TOPIC_ID" + "=kt1."
+				+ "TOPIC_ID" + " and  t2."
+				+ "TOPIC_ID" + "=kt2."
+				+ "TOPIC_ID" + " " + "GROUP BY kt1."
+				+ "TOPIC_ID" + ", kt2."
+				+ "TOPIC_ID" + ", t1.n1, t2.n2 "
+				+ "ORDER BY kt1." + "TOPIC_ID" + ", kt2."
+				+ "TOPIC_ID" + " ;";
 		/** OHNE_JOOQ-ENDE */ 
 		
 		rsSim = this.database.executeQuery(sql);
@@ -115,19 +114,14 @@ public class TopicMetaData extends TableCommand {
 		}
 		fos.close();
 		logger.info("R-Script input successfully generated");
-
-		// @ENDONLYSECONDRUN@//
 	}
 
 	private void processRscript() {
 
 		ProcessBuilder p = new ProcessBuilder("bash", "-c", "Rscript "
-				+ properties.getProperty("projectRoot")
 				+ "skripts/topic_order.R "
-				+ properties.getProperty("projectRoot")
 				+ "temp/similarities.out "
 				+ properties.getProperty("malletNumTopics") + " "
-				+ properties.getProperty("projectRoot")
 				+ "temp/topic_order.csv");
 
 		Process process = null;

@@ -27,8 +27,7 @@ public class TopicCreate extends TableCreateCommand {
 							+ this.tableName
 							+ " DROP COLUMN TOPIC.TEXT$TOPIC_LABEL");
 		} catch (Exception e) {
-			System.err
-					.println("TopicMetaData.dropColumns: Cannot drop column, perhaps it doesn't exists. Doesn't matter ;)");
+			logger.warn("TopicMetaData.dropColumns: Cannot drop column, perhaps it doesn't exists. Doesn't matter ;)");
 
 		}
 	}	

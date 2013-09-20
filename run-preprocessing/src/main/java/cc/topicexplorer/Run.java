@@ -123,7 +123,7 @@ public class Run {
 			properties.load(run.getClass().getResourceAsStream(
 				"/config.global.properties"));
 		} catch (Exception e) {
-			logger.error("config.global.properties not found");
+			logger.fatal("config.global.properties not found");
 			System.exit(0);
 		}
 		

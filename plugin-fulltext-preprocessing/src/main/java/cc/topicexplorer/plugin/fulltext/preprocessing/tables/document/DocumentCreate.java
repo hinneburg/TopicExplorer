@@ -23,8 +23,7 @@ public class DocumentCreate extends TableCreateCommand {
 			this.database.executeUpdateQuery("ALTER TABLE " + this.tableName
 					+ " DROP COLUMN ADD COLUMN FULLTEXT$FULLTEXT");
 		} catch (Exception e) {
-			System.err
-					.println("Document.dropColumns: Cannot drop column, perhaps it doesn't exists. Doesn't matter ;)");
+			logger.warn("Document.dropColumns: Cannot drop column, perhaps it doesn't exists. Doesn't matter ;)");
 
 		}
 	}

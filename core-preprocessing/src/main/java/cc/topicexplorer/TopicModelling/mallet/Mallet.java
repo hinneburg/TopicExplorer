@@ -15,16 +15,12 @@ import cc.topicexplorer.chain.commands.DependencyCommand;
 public class Mallet extends DependencyCommand {
 	private Properties properties;
 	private Logger logger = Logger.getRootLogger();
-//	
-//	public Mallet(Properties prop){
-//		properties = prop;
-//	}
 	
 	public void importFile() throws FileNotFoundException, IOException {
 		String[] malletArgs = { 
 				"--keep-sequence", "TRUE", 
-				"--input", this.properties.getProperty("projectRoot") + this.properties.getProperty("InFile"), 
-				"--output", this.properties.getProperty("projectRoot") + "temp/out.sequence.input",
+				"--input", "temp/malletinput.txt", 
+				"--output", "temp/out.sequence.input",
 				"--print-output", "FALSE",		
 				"--token-regex", "[\\p{L}\\p{N}_]+|[\\p{P}]+" };
 		Csv2Vectors.main(malletArgs);
@@ -33,17 +29,17 @@ public class Mallet extends DependencyCommand {
 
 	public void trainTopics() throws IOException {
 		String[] malletArgs = { 
-				"--input", this.properties.getProperty("projectRoot") + "temp/out.sequence.input",
+				"--input", "temp/out.sequence.input",
 				"--num-topics", this.properties.getProperty("malletNumTopics"), 
 				"--num-iterations", "500",
 				"--optimize-interval", "10", 
 				"--optimize-burn-in", "1000",
-				"--output-state", this.properties.getProperty("projectRoot") + "temp/out.topic-state.gz",
-				"--output-doc-topics", this.properties.getProperty("projectRoot") + "temp/out.doc-topics",
-				"--inferencer-filename", this.properties.getProperty("projectRoot") + "temp/out.inferencer",
+				"--output-state", "temp/out.topic-state.gz",
+				"--output-doc-topics", "temp/out.doc-topics",
+				"--inferencer-filename", "temp/out.inferencer",
 				"--num-threads", "4", 
 				"--num-top-words", "20", 
-				"--output-topic-keys", this.properties.getProperty("projectRoot") + "temp/out.topic-keys" };
+				"--output-topic-keys", "temp/out.topic-keys" };
 		Vectors2Topics.main(malletArgs);
 		logger.info("train topics done");
 	}
@@ -63,6 +59,6 @@ public class Mallet extends DependencyCommand {
 	
 	@Override
 	public void addDependencies() {
-		beforeDependencies.add("InFilePreperation");
+		beforeDependencies.add("InFilePreparation");
 	}	
 }

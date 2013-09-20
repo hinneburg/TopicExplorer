@@ -23,8 +23,7 @@ public class DocumentTermTopicCreate extends TableCreateCommand {
 					.executeUpdateQuery("ALTER TABLE " + this.tableName
 							+ " DROP COLUMN TIME$WEEK");
 		} catch (Exception e) {
-			System.err
-					.println("DocumentTermTopic.dropColumns: Cannot drop column, perhaps it doesn't exists. Doesn't matter ;)");
+			logger.warn("DocumentTermTopic.dropColumns: Cannot drop column, perhaps it doesn't exists. Doesn't matter ;)");
 
 		}
 	}

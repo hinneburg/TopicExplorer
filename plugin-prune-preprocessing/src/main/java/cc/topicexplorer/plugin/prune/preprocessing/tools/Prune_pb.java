@@ -8,14 +8,13 @@ import java.io.InputStreamReader;
 import java.sql.ResultSet;
 import java.util.Properties;
 
-import org.apache.commons.chain.Command;
 import org.apache.commons.chain.Context;
 
 import cc.topicexplorer.chain.CommunicationContext;
+import cc.topicexplorer.chain.commands.DependencyCommand;
 import cc.topicexplorer.database.Database;
 
-public class Prune_pb implements Command {
-	private String root;
+public class Prune_pb extends DependencyCommand {
 	private Properties properties;
 	private float lowerBound;
 	private float upperBound;
@@ -23,8 +22,7 @@ public class Prune_pb implements Command {
 
 	private void processPrune() {
 		// TODO Auto-generated method stub
-		ProcessBuilder p = new ProcessBuilder("bash", "-c", root
-				+ "skripts/prune.sh " + root
+		ProcessBuilder p = new ProcessBuilder("bash", "-c", "skripts/prune.sh "
 				+ properties.getProperty("InCSVFile") + " " + this.lowerBound
 				+ " " + this.upperBound);
 
@@ -43,14 +41,15 @@ public class Prune_pb implements Command {
 
 		try {
 			while ((line = br.readLine()) != null) {
-				System.out.println("processing prune " + line);
+				logger.info("processing prune " + line);
 			}
 			br.close();
 			process.destroy();
-			System.out.println("Pruning successfully executed");
+			logger.info("Pruning successfully executed");
 		} catch (IOException e) {
 			e.printStackTrace();
-			System.out.println("Pruning execution failed");
+			logger.fatal("Pruning execution failed");
+			System.exit(0);
 		}
 	}
 
@@ -59,21 +58,20 @@ public class Prune_pb implements Command {
 		File destinationFile = new File(destination);
 
 		if (!sourceFile.renameTo(destinationFile)) {
-			System.out.println("[ " + getClass() + " ] - "
+			logger.fatal("[ " + getClass() + " ] - "
 					+ "Fehler beim Umbenennen der Datei: " + source);
+			System.exit(0);
 		}
 	}
 
 	@Override
-	public boolean execute(Context context) throws Exception {
-		System.out.println("[ " + getClass() + " ] - " + "pruning vocabular");
+	public void specialExecute(Context context) throws Exception {
+		logger.info("[ " + getClass() + " ] - " + "pruning vocabular");
 
 		CommunicationContext communicationContext = (CommunicationContext) context;
 		properties = (Properties) communicationContext.get("properties");
 		database = (Database) communicationContext.get("database");
 		
-			root = properties.getProperty("projectRoot");
-	
 			float upperBoundPercent = Float.parseFloat(properties
 					.getProperty("prune_upperBound"));
 			float lowerBoundPercent = Float.parseFloat(properties
@@ -83,7 +81,7 @@ public class Prune_pb implements Command {
 			if (upperBoundPercent < 0 || lowerBoundPercent < 0
 					|| upperBoundPercent > 100 || lowerBoundPercent > 100
 					|| upperBoundPercent < lowerBoundPercent) {
-				System.out.println("Stop: Invalid Pruning Bounds!");
+				logger.fatal("Stop Puning: Invalid Pruning Bounds!");
 				System.exit(0);
 			}
 	
@@ -102,16 +100,20 @@ public class Prune_pb implements Command {
 			
 			this.processPrune();
 	
-			this.renameFile(this.root + properties.getProperty("InCSVFile"),
-					this.root + properties.getProperty("InCSVFile") + ".org."
+			this.renameFile(properties.getProperty("InCSVFile"),
+					properties.getProperty("InCSVFile") + ".org."
 							+ System.currentTimeMillis());
 			
-			this.renameFile(this.root + properties.getProperty("InCSVFile")
+			this.renameFile(properties.getProperty("InCSVFile")
 					+ ".pruned.Lower." + this.lowerBound + ".Upper."
-					+ this.upperBound + ".csv", this.root
-					+ properties.getProperty("InCSVFile"));
-
-		return false;
+					+ this.upperBound + ".csv", 
+					properties.getProperty("InCSVFile"));
 	}
+	
+	@Override
+	public void addDependencies() {
+		beforeDependencies.add("DocumentTermTopicCreate");
+		afterDependencies.add("InFilePreparation");
+	}	
 
 }

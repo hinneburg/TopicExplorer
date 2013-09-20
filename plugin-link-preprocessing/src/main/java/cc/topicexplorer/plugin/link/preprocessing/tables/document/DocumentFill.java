@@ -28,16 +28,17 @@ public class DocumentFill extends TableFillCommand {
 					+ DOCUMENT.LINK$IN_DEGREE.getName() + " = org.indeg"
 					+ " WHERE org.id = d." + DOCUMENT.DOCUMENT_ID.getName());
 			MIT-JOOQ-ENDE */ 
-			/** OHNE_JOOQ-START */ 	
+			/** OHNE_JOOQ-START */ 
+
 			database.executeUpdateQuery("UPDATE " + this.tableName + " d, "
 					+ " (SELECT " + properties.getProperty("Link_OrgTableIndegree")
 					+ " AS indeg, " + properties.getProperty("Link_OrgTableLink")
 					+ " AS link, " + properties.getProperty("OrgTableId")
 					+ " AS id FROM " + properties.getProperty("OrgTableName")
 					+ " ) AS org SET "
-					+ "DOCUMENT.LINK$URL" + " = org.link, "
-					+ "DOCUMENT.LINK$IN_DEGREE" + " = org.indeg"
-					+ " WHERE org.id = d." + "DOCUMENT.DOCUMENT_ID");
+					+ "d.LINK$URL" + " = org.link, "
+					+ "d.LINK$IN_DEGREE" + " = org.indeg"
+					+ " WHERE org.id = d." + "DOCUMENT_ID");
 			/** OHNE_JOOQ-ENDE */ 
 		}
 

@@ -104,24 +104,23 @@ public class DocumentTopicFill extends TableFillCommand {
 					+ "SUM(" + "DOCUMENT_TOPIC.NUMBER_OF_TOKEN_TOPIC_IN_DOCUMENT" + ")," 
 					+ "SUM(" + "DOCUMENT_TOPIC.PR_TOPIC_GIVEN_DOCUMENT" + ")," 
 					+ "SUM(" + "DOCUMENT_TOPIC.NUMBER_OF_TOKEN_TOPIC_IN_DOCUMENT" + ") / T." 
-					+ "TOPIC.NUMBER_OF_TOKENS"
+					+ "NUMBER_OF_TOKENS"
 					+ " FROM "
 					+ "DOCUMENT_TOPIC" + "," 
 					+ "TOPIC" + " TB,"
 					+ "TOPIC" + " T WHERE "
-					+ "DOCUMENT_TOPIC" + "." 
 					+ "DOCUMENT_TOPIC.TOPIC_ID" + "=TB."
-					+ "TOPIC.TOPIC_ID" + " AND "
-					+ "TB." + "TOPIC.HIERARCHICAL_TOPIC$START" + "="
-					+ "TB." + "TOPIC.HIERARCHICAL_TOPIC$END" + " AND "
-					+ "TB." + "TOPIC.HIERARCHICAL_TOPIC$START" + ">="
+					+ "TOPIC_ID" + " AND "
+					+ "TB." + "HIERARCHICAL_TOPIC$START" + "="
+					+ "TB." + "HIERARCHICAL_TOPIC$END" + " AND "
+					+ "TB." + "HIERARCHICAL_TOPIC$START" + ">="
 					+ clusterStart[i] + " AND "
-					+ "TB." + "TOPIC.HIERARCHICAL_TOPIC$END" + "<="
+					+ "TB." + "HIERARCHICAL_TOPIC$END" + "<="
 					+ clusterEnd[i] + " AND "
-					+ "T." + "TOPIC.TOPIC_ID" + "="
+					+ "T." + "TOPIC_ID" + "="
 					+ topicIds[i]
 					+ " GROUP BY " + "DOCUMENT_TOPIC.DOCUMENT_ID"
-					+ ", T." + "TOPIC.NUMBER_OF_TOKENS");
+					+ ", T." + "NUMBER_OF_TOKENS");
 			
 		}
 		/** OHNE_JOOQ-ENDE */ 

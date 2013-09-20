@@ -84,7 +84,7 @@ public class Database {
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.err.println("DB-Driver-Jooq-Error");
+			logger.error("DB-Driver-Jooq-Error");
 		}
 
 		statement = connection.createStatement();
@@ -103,8 +103,6 @@ public class Database {
 	 * 
 	 */
 	public ResultSet executeQuery(String query) throws SQLException {
-
-//		System.out.println(query);
 		statement = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
 				ResultSet.CONCUR_UPDATABLE);
 		return statement.executeQuery(query);
@@ -123,7 +121,6 @@ public class Database {
 		// damit das RS offen bleibt, sonst funktionierten die alten
 		// keywords_themen2 bzw tables.keytopic2 nicht
 		// da es zur exception gekommen ist (cannot perfom ... rs is closed)
-//		System.out.println(query);
 		statement = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
 				ResultSet.CONCUR_UPDATABLE);
 		return statement.executeUpdate(query);
@@ -139,7 +136,6 @@ public class Database {
 	 */
 	public int executeUpdateQuery(String query) throws SQLException {
 		// for manipulation , executeQuery couldn't manipulate database
-		// System.out.println(query);
 
 		return statement.executeUpdate(query);
 	}

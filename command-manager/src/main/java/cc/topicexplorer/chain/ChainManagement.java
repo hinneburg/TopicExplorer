@@ -31,7 +31,7 @@ import cc.topicexplorer.chain.commands.PropertiesCommand;
 public class ChainManagement {
 	private Catalog catalog;
 	private CommunicationContext communicationContext;
-	private static Logger logger;
+	private static Logger logger = Logger.getRootLogger();
 
 	public ChainManagement() {
 		communicationContext = new CommunicationContext();
@@ -124,7 +124,7 @@ public class ChainManagement {
 		List<String> orderedCommands;
 		String catalogLocation;
 		chainManager.init();
-		logger = Logger.getRootLogger();
+	//	logger = Logger.getRootLogger();
 
 		catalogLocation = commandLineParser.getCatalogLocation();
 

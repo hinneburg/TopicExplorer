@@ -38,15 +38,15 @@ public class DocumentFill extends TableFillCommand {
 		if (Boolean.parseBoolean(properties.getProperty("plugin_text"))) {
 			database.executeUpdateQuery("UPDATE " + "DOCUMENT" + " d, "
 					+ properties.getProperty("OrgTableName") + " org SET d."
-					+ "DOCUMENT.TEXT$FULLTEXT" + " = org."
+					+ "TEXT$FULLTEXT" + " = org."
 					+ properties.getProperty("Text_OrgTableTxt") + ", "
-					+ "DOCUMENT.TEXT$TITLE" + " = org."
+					+ "d.TEXT$TITLE" + " = org."
 					+ properties.getProperty("Text_OrgTableTitle") 					
-					+ " WHERE d." + "DOCUMENT.DOCUMENT_ID" + " = org."
+					+ " WHERE d." + "DOCUMENT_ID" + " = org."
 					+ properties.getProperty("OrgTableId"));
-			database.executeUpdateQuery("ALTER IGNORE TABLE `" + "DOCUMENT"
-					+ "` ADD KEY TEXT$TITLE_IDX (" + "DOCUMENT.TEXT$TITLE" + "),"
-					+ " ADD FULLTEXT KEY TEXT$FULLTEXT_IDX (" + "DOCUMENT.TEXT$FULLTEXT" + ");");
+			database.executeUpdateQuery("ALTER IGNORE TABLE " + "DOCUMENT"
+					+ " ADD KEY TEXT$TITLE_IDX (" + "TEXT$TITLE" + "),"
+					+ " ADD FULLTEXT KEY TEXT$FULLTEXT_IDX (" + "TEXT$FULLTEXT" + ");");
 		}
 /** OHNE_JOOQ-ENDE */ 
 

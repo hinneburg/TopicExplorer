@@ -110,7 +110,7 @@ public class TokenTopicAssociator extends DependencyCommand {
 					new FileInputStream(inFile), "UTF-8"));
 			inListcurrentLine = inListinBufferedReader.readLine();;
 			// checking seperator and names insult a skip of the first column
-			if (InFilePreperation.checkHeader(inFile)) {
+			if (InFilePreparation.checkHeader(inFile)) {
 
 				while ((inListcurrentLine = inListinBufferedReader.readLine()) != null) {
 					// beide Dateien sind gleich lang,
@@ -161,13 +161,9 @@ public class TokenTopicAssociator extends DependencyCommand {
 		CommunicationContext communicationContext = (CommunicationContext) context;
 		properties = (Properties) communicationContext.get("properties");
 
-		String stateFile = properties.getProperty("projectRoot")
-				+ "temp/out.topic-state.gz";
-		String inFile = properties.getProperty("projectRoot")
-				+ properties.getProperty("InCSVFile");
-		TOKENTOPICASSIGNMENTSQLFILE = properties.getProperty("projectRoot")
-				+ "temp/tokenTopicAssignment.sql.csv";
-
+		String stateFile = "temp/out.topic-state.gz";
+		String inFile = properties.getProperty("InCSVFile");
+		
 		deleteOldTFile();
 
 		readAndWriteBlockwise(inFile, stateFile);

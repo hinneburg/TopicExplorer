@@ -38,7 +38,7 @@ MIT-JOOQ-ENDE */
  * @author Matthias Pfuhl
  * 
  */
-public class InFilePreperation extends DependencyCommand {
+public class InFilePreparation extends DependencyCommand {
 	private String malletPreparedFile;
 	private Properties properties;
 	private static cc.topicexplorer.database.Database database;
@@ -74,12 +74,7 @@ public class InFilePreperation extends DependencyCommand {
 					for (int i = 1; i <= md.getColumnCount(); i++) {
 						tableColumnList.add(md.getColumnName(i));
 					}
-//					if (headerEntries.length != md.getColumnCount()) {
-//						System.err
-//								.println("The Column Count in the "
-//										+ "DOCUMENT_TERM_TOPIC table doesnt match the Column Count in the CSV-File");
-//						return false;
-//					}
+
 					for (int j = 0; j < headerEntries.length; j++) {
 						if (!tableColumnList.contains(headerEntries[j])) {
 							logger.warn("The CSV-Column "
@@ -152,10 +147,8 @@ public class InFilePreperation extends DependencyCommand {
 		CommunicationContext communicationContext = (CommunicationContext) context;
 		properties = (Properties) communicationContext.get("properties");
 		database = (Database) communicationContext.get("database");
-		malletPreparedFile = properties.getProperty("projectRoot")
-				+ properties.getProperty("InFile");
-		String inFile = properties.getProperty("projectRoot")
-				+ properties.getProperty("InCSVFile");
+		malletPreparedFile = "temp/malletinput.txt";
+		String inFile = properties.getProperty("InCSVFile");
 
 		if (checkHeader(inFile)) {
 			if (writeMalletInFile()) {

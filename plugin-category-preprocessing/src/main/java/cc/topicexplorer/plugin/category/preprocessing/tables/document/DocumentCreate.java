@@ -19,8 +19,7 @@ public class DocumentCreate extends TableCreateCommand {
 			database.executeUpdateQuery("ALTER IGNORE TABLE " + this.tableName 
 						+ " DROP COLUMN CATEGORY$CATEGORY_ID");
 		} catch (Exception e) {
-			System.err
-					.println("Document.dropColumns: Cannot drop column, perhaps it doesn't exists. Doesn't matter ;)");
+			logger.warn("Document.dropColumns: Cannot drop column, perhaps it doesn't exists. Doesn't matter ;)");
 
 		}
 	}

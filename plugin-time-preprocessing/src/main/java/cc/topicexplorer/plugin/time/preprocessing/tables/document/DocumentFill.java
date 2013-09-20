@@ -29,9 +29,9 @@ public class DocumentFill extends TableFillCommand {
 			/** OHNE_JOOQ-START */ 	
 			database.executeUpdateQuery("UPDATE " + this.tableName + " d, "
 					+ properties.getProperty("OrgTableName") + " org SET d."
-					+ "DOCUMENT.TIME$TIME_STAMP" + " = org."
+					+ "TIME$TIME_STAMP" + " = org."
 					+ properties.getProperty("Time_OrgTableTstamp")
-					+ " WHERE d." + "DOCUMENT.DOCUMENT_ID" + " = org."
+					+ " WHERE d." + "DOCUMENT_ID" + " = org."
 					+ properties.getProperty("OrgTableId"));
 			/** OHNE_JOOQ-ENDE */ 
 		}

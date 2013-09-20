@@ -29,8 +29,7 @@ public class TopicFill extends TableFillCommand {
 	}
 
 	private void prepareMetaDataAndFillTable() throws IOException, SQLException {
-		FileReader fr = new FileReader(properties.getProperty("projectRoot")
-				+ "temp/topic_order.csv");
+		FileReader fr = new FileReader("temp/topic_order.csv");
 		BufferedReader br = new BufferedReader(fr);
 
 		String[] newLine = { "", "", "" };

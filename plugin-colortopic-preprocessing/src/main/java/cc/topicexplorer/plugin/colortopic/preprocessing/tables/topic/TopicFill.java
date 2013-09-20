@@ -29,8 +29,7 @@ public class TopicFill extends TableFillCommand {
 	
 
 	private void prepareMetaDataAndFillTable() throws IOException, SQLException {
-		FileReader fr = new FileReader(properties.getProperty("projectRoot")
-				+ "temp/topic_order.csv");
+		FileReader fr = new FileReader("temp/topic_order.csv");
 		BufferedReader br = new BufferedReader(fr);
 
 		String id;
@@ -68,8 +67,7 @@ public class TopicFill extends TableFillCommand {
 			/** OHNE_JOOQ-ENDE */ 
 		}
 
-		System.out
-				.println("Starting batch execution TopicMetaData update themen.");
+		logger.info("Starting batch execution TopicMetaData update themen.");
 		stmt.executeBatch();
 		br.close();
 		

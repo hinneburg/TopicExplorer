@@ -31,14 +31,14 @@ public class TopicFill extends TableFillCommand {
 				+ " ADD KEY IDX0 (`" + TOPIC.TOPIC_ID.getName() + "`)");
  MIT-JOOQ-ENDE */ 
 /** OHNE_JOOQ-START */ 
-		database.executeUpdateQuery("insert into `" + "TOPIC"
-				+ "` (`" + "TOPIC.TOPIC_ID"
-				+ "`, `" + "TOPIC.NUMBER_OF_TOKENS"
-				+ "`) select `" +  "DOCUMENT_TERM_TOPIC.TOPIC_ID"
-				+ "`, count(*) from `" + "DOCUMENT_TERM_TOPIC"
-				+ "` group by `" + "DOCUMENT_TERM_TOPIC.TOPIC_ID" + "`");
+		database.executeUpdateQuery("insert into " + "TOPIC"
+				+ " (" + "TOPIC.TOPIC_ID"
+				+ ", " + "TOPIC.NUMBER_OF_TOKENS"
+				+ ") select " +  "DOCUMENT_TERM_TOPIC.TOPIC_ID"
+				+ ", count(*) from " + "DOCUMENT_TERM_TOPIC"
+				+ " group by " + "DOCUMENT_TERM_TOPIC.TOPIC_ID" + "");
 		database.executeUpdateQuery("ALTER TABLE " + "TOPIC"
-				+ " ADD KEY IDX0 (`" + "TOPIC.TOPIC_ID" + "`)");
+				+ " ADD KEY IDX0 (`" + "TOPIC_ID" + "`)");
 /** OHNE_JOOQ-ENDE */ 
 
 	}

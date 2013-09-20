@@ -32,13 +32,13 @@ public class DocumentFill extends TableFillCommand {
 		if (Boolean.parseBoolean(properties.getProperty("plugin_fulltext"))) {
 			database.executeUpdateQuery("UPDATE " + "DOCUMENT" + " d, "
 					+ properties.getProperty("OrgTableName") + " org SET d."
-					+ "DOCUMENT.FULLTEXT$FULLTEXT" + " = org."
+					+ "FULLTEXT$FULLTEXT" + " = org."
 					+ properties.getProperty("Fulltext_OrgTableFulltext")
-					+ " WHERE d." + "DOCUMENT.DOCUMENT_ID" + " = org."
+					+ " WHERE d." + "DOCUMENT_ID" + " = org."
 					+ properties.getProperty("OrgTableId"));
 			database.executeUpdateQuery("ALTER IGNORE TABLE `" + "DOCUMENT"
 					+ "` ADD FULLTEXT KEY FULLTEXT$FULLTEXT_IDX (" 
-					+ "DOCUMENT.FULLTEXT$FULLTEXT" + ")");
+					+ "FULLTEXT$FULLTEXT" + ")");
 		}
 		/** OHNE_JOOQ-ENDE */ 
 	}

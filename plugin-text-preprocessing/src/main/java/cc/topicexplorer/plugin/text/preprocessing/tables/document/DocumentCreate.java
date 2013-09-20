@@ -25,8 +25,7 @@ public class DocumentCreate extends TableCreateCommand {
 							+ " DROP COLUMN TEXT$FULLTEXT,"
 							+ " DROP COLUMN TEXT$TITLE");
 		} catch (Exception e) {
-			System.err
-					.println("Document.dropColumns: Cannot drop column, perhaps it doesn't exists. Doesn't matter ;)");
+			logger.warn("Document.dropColumns: Cannot drop column, perhaps it doesn't exists. Doesn't matter ;)");
 
 		}
 	}

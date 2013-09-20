@@ -33,8 +33,7 @@ public class TopicCreate extends TableCreateCommand {
 							+ ", DROP COLUMN HIERARCHICAL_TOPIC$DEPTH"
 							+ ", DROP COLUMN HIERARCHICAL_TOPIC$CLUSTER_MEMBERSHIP");
 		} catch (Exception e) {
-			System.err
-					.println("TopicMetaData.dropColumns: Cannot drop column, perhaps it doesn't exists. Doesn't matter ;)");
+			logger.warn("TopicMetaData.dropColumns: Cannot drop column, perhaps it doesn't exists. Doesn't matter ;)");
 
 		}
 	}

@@ -27,8 +27,7 @@ public class DocumentCreate extends TableCreateCommand {
 							+ " DROP COLUMN LINK$URL"
 							+ ", DROP COLUMN LINK$IN_DEGREE");
 		} catch (Exception e) {
-			System.err
-					.println("Document.dropColumns: Cannot drop column, perhaps it doesn't exists. Doesn't matter ;)");
+			logger.warn("Document.dropColumns: Cannot drop column, perhaps it doesn't exists. Doesn't matter ;)");
 
 		}
 	}

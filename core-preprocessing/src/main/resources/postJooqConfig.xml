@@ -12,7 +12,7 @@
 	
 	<command name="TermTopicFill" className="cc.topicexplorer.database.tables.termtopic.TermTopicFill"/>
 	
-	<command name="InFilePreperation" className="cc.topicexplorer.tools.InFilePreperation" />
+	<command name="InFilePreparation" className="cc.topicexplorer.tools.InFilePreparation" />
 	<command name="Mallet" className="cc.topicexplorer.TopicModelling.mallet.Mallet" />	
 	<command name="TokenTopicAssociator" className="cc.topicexplorer.tools.TokenTopicAssociator" />
 	

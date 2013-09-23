@@ -22,7 +22,7 @@ public class Prune_pb extends DependencyCommand {
 
 	private void processPrune() {
 		// TODO Auto-generated method stub
-		ProcessBuilder p = new ProcessBuilder("bash", "-c", "skripts/prune.sh "
+		ProcessBuilder p = new ProcessBuilder("bash", "-c", "scripts/prune.sh "
 				+ properties.getProperty("InCSVFile") + " " + this.lowerBound
 				+ " " + this.upperBound);
 

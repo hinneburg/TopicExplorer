@@ -119,7 +119,7 @@ public class TopicMetaData extends TableCommand {
 	private void processRscript() {
 
 		ProcessBuilder p = new ProcessBuilder("bash", "-c", "Rscript "
-				+ "skripts/topic_order.R "
+				+ "scripts/topic_order.R "
 				+ "temp/similarities.out "
 				+ properties.getProperty("malletNumTopics") + " "
 				+ "temp/topic_order.csv");

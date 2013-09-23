@@ -42,8 +42,8 @@
 						<outputDirectory>/resources</outputDirectory>
 					</fileSet>
 					<fileSet>
-						<directory>src/main/resources/skripts</directory>
-						<outputDirectory>/skripts</outputDirectory>
+						<directory>src/main/resources/scripts</directory>
+						<outputDirectory>/scripts</outputDirectory>
 					</fileSet>
 					<fileSet>
 						<directory>src/main/resources</directory>

@@ -5,8 +5,6 @@ import org.apache.commons.chain.Context;
 
 import org.apache.log4j.*;
 
-import cc.topicexplorer.chain.LoggerContext;
-
 public class LoggerCommand implements Command {
 	private Logger logger;
 

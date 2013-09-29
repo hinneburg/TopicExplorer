@@ -7,7 +7,7 @@
 		<format>dir</format>
 	</formats>
 	<includeBaseDirectory>false</includeBaseDirectory>
-	<baseDirectory>${project.build.directory}/${project.artifactId}</baseDirectory>
+	<baseDirectory>${project.build.directory}/${project.artifactId}/</baseDirectory>
 	<moduleSets>
 		<moduleSet>
 			<useAllReactorProjects>true</useAllReactorProjects>
@@ -43,6 +43,14 @@
 						<excludes>
 							<exclude>**/*</exclude>
 						</excludes>
+					</fileSet>
+					<fileSet>
+						<directory>${project.build.directory}/bin</directory>
+						<outputDirectory>/bin</outputDirectory>
+						<includes>
+                			<include>*.sh</include>
+            			</includes>
+						<fileMode>0744</fileMode>
 					</fileSet>
 				</fileSets>
 			</sources>

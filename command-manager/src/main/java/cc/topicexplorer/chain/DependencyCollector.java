@@ -33,6 +33,7 @@ public class DependencyCollector {
 	private Map<String, List<String>> optionalDependencies = null;
 	private Map<String, List<String>> newDependencies = new HashMap<String, List<String>>();
 	private Logger logger = Logger.getRootLogger();
+	String startCommand = "";
 
 	/**
 	 * Class constructor taking the catalog argument and sets it in this class.
@@ -41,6 +42,11 @@ public class DependencyCollector {
 	 */
 	public DependencyCollector(Catalog catalog) {
 		this.catalog = catalog;
+	}
+	
+	public DependencyCollector(Catalog catalog, String command) {
+		this(catalog);
+		this.startCommand = command;		
 	}
 
 	/**
@@ -244,6 +250,10 @@ public class DependencyCollector {
 			composeDependencies();
 		}
 
+		if(this.startCommand.length() > 0) {
+			this.getStrongComponents();
+		}
+		
 		makeDotFile();
 
 		if (orderedCommands == null) {
@@ -253,15 +263,21 @@ public class DependencyCollector {
 		return orderedCommands;
 
 	}
-	
 	public void getStrongComponents() {
+		getStrongComponents(this.startCommand);
+	}
+	
+	public void getStrongComponents(String startCommand) {
+		getStrongComponents(startCommand, "");
+	}
+	
+	public void getStrongComponents(String startCommand, String endCommand) {
 		
 		List<String> startCommands = new ArrayList<String>();
-		startCommands.add("TopicFill");
-		startCommands.add("TermFill");
+		startCommands.add(startCommand);
 		
 		List<String> endCommands = new ArrayList<String>();
-		endCommands.add("InFilePreperation");
+		endCommands.add(endCommand);
 		
 		for (String command : startCommands) {
 			newDependencies.put(command, composedDependencies.get(command));			

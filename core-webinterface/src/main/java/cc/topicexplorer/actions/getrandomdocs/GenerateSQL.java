@@ -2,47 +2,45 @@ package cc.topicexplorer.actions.getrandomdocs;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
 
 import org.apache.commons.chain.Context;
 
 import cc.topicexplorer.chain.CommunicationContext;
 import cc.topicexplorer.chain.commands.TableSelectCommand;
+import cc.topicexplorer.database.SelectMap;
 
 public class GenerateSQL extends TableSelectCommand {
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public void tableExecute(Context context) {
 		CommunicationContext communicationContext = (CommunicationContext) context;
-		HashMap<String, ArrayList<String>> preQueryMap, innerQueryMap, mainQueryMap;
-		preQueryMap = (HashMap<String, ArrayList<String>>) communicationContext.get("PRE_QUERY");
-		innerQueryMap = (HashMap<String, ArrayList<String>>) communicationContext.get("INNER_QUERY");
-		mainQueryMap = (HashMap<String, ArrayList<String>>) communicationContext.get("MAIN_QUERY");
+		SelectMap preQueryMap, innerQueryMap, mainQueryMap;
+		preQueryMap = (SelectMap) communicationContext.get("PRE_QUERY");
+		innerQueryMap = (SelectMap) communicationContext.get("INNER_QUERY");
+		mainQueryMap = (SelectMap) communicationContext.get("MAIN_QUERY");
 		
 		int random;
 
 		try {
-			ResultSet preQueryRS = database.executeQuery(this.getSQLString(preQueryMap));
+			ResultSet preQueryRS = database.executeQuery(preQueryMap.getSQLString());
 			if(preQueryRS.next()) {
-				random = Math.round((float) Math.random() * (preQueryRS.getInt("COUNT") - Integer.parseInt(innerQueryMap.get("LIMIT").get(0))));
-		        innerQueryMap.get("START").add(String.valueOf(random));
-		        mainQueryMap.get("FROM").add("(" + this.getSQLString(innerQueryMap) + ") x");
-		        System.out.println(this.getSQLString(mainQueryMap));
+				random = Math.round((float) Math.random() * (preQueryRS.getInt("COUNT") - innerQueryMap.limit));
+		        innerQueryMap.offset = random;
+		        mainQueryMap.from.add("(" + innerQueryMap.getSQLString() + ") x");
+		        System.out.println(mainQueryMap.getSQLString());
 		        try {
-		        	ResultSet mainQueryRS = database.executeQuery(this.getSQLString(mainQueryMap));
+		        	ResultSet mainQueryRS = database.executeQuery(mainQueryMap.getSQLString());
 		        	while(mainQueryRS.next()) {
 		        		// mache eier!!
 		        	}
 		        	
 		        } catch (SQLException e) {
-		        	logger.fatal("Error in Query: " + this.getSQLString(mainQueryMap));
+		        	logger.fatal("Error in Query: " + mainQueryMap.getSQLString());
 					e.printStackTrace();
 		        }
 			}
 		} catch (SQLException e) {
-			logger.fatal("Error in Query: " + this.getSQLString(preQueryMap));
+			logger.fatal("Error in Query: " + preQueryMap.getSQLString());
 			e.printStackTrace();
 		}	
 	}

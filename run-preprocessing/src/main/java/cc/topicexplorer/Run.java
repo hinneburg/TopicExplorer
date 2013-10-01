@@ -188,8 +188,6 @@ public class Run {
 
 		private String[] args;
 
-		private Logger logger = Logger.getRootLogger();
-
 		/**
 		 * Adds the possible arguments. Sets global args and executes the
 		 * parsing of the given arguments.
@@ -231,7 +229,7 @@ public class Run {
 				commandLine = commandLineParser.parse(options, args);
 			} catch (Exception e) {
 				printHelp();
-				logger.fatal("Usage of arguments wrong.");
+				System.out.println("Usage of arguments wrong.");
 				System.exit(1);
 			}
 
@@ -246,7 +244,7 @@ public class Run {
 			if (commandLine.hasOption("c")) {
 				catalogLocation = commandLine.getOptionValue("c");
 			} else {
-				logger.fatal("No catalog location given, taking standard value.");
+				System.out.println("No catalog location given, taking standard value.");
 			}
 
 			if (commandLine.hasOption("s")) {

@@ -3,6 +3,7 @@ package cc.topicexplorer.chain;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.chain.Catalog;
 import org.apache.commons.chain.Command;
@@ -37,14 +38,10 @@ public class ChainManagement {
 
 	public ChainManagement() {
 		communicationContext = new CommunicationContext();
-		Command loggerCommand = new LoggerCommand();
-
-		try {
-			loggerCommand.execute(communicationContext);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			logger.error(e);
-		}
+	}
+	
+	public ChainManagement(CommunicationContext context) {
+		communicationContext = context;
 	}
 
 	/**
@@ -80,28 +77,56 @@ public class ChainManagement {
 	 */
 	public void init() {
 		try {
+			Command loggerCommand = new LoggerCommand();
 			Command propertiesCommand = new PropertiesCommand();
 			Command dbConnectionCommand = new DbConnectionCommand();
 
+			loggerCommand.execute(communicationContext);
 			propertiesCommand.execute(communicationContext);
 			dbConnectionCommand.execute(communicationContext);
 		} catch (Exception e) {
 			logger.error(e);
 		}
 	}
-
+	
 	/**
 	 * Returns a list with all commands of the catalog in an ordered sequence.
 	 * 
 	 * @return A ordered list containing the commands of the catalog.
-	 */
-	public List<String> getOrderedCommands(List<String> startcommands,
-			List<String> endCommands) {
-		DependencyCollector dependencyCollector = new DependencyCollector(
-				catalog);
+	 */	
+	public List<String> getOrderedCommands() {
 
-		return dependencyCollector.getOrderedCommands(startcommands,
-				endCommands);
+		return getOrderedCommands(new ArrayList<String>(),
+				new ArrayList<String>());
+	}
+	
+	public List<String> getOrderedCommands(Map<String, List<String>> dependencies) {
+
+		return getOrderedCommands(dependencies, new ArrayList<String>(),
+				new ArrayList<String>());
+	}
+	
+	public List<String> getOrderedCommands(List<String> startCommands,
+			List<String> endCommands) {
+
+		DependencyCollector dependencyCollector = new DependencyCollector(catalog);
+		Map<String, List<String>> dependencies;
+		
+		
+		dependencies = dependencyCollector.getDependencies();
+		dependencies = dependencyCollector.getStrongComponents(dependencies, startCommands, endCommands);
+		
+		return dependencyCollector.orderCommands(dependencies);
+	}
+	
+	public List<String> getOrderedCommands(Map<String, List<String>> dependencies, List<String> startCommands,
+			List<String> endCommands) {
+
+		DependencyCollector dependencyCollector = new DependencyCollector();
+		
+		dependencies = dependencyCollector.getStrongComponents(dependencies, startCommands, endCommands);
+		
+		return dependencyCollector.orderCommands(dependencies);
 	}
 
 	/**
@@ -173,8 +198,6 @@ public class ChainManagement {
 
 		private String[] args;
 
-		private Logger logger = Logger.getRootLogger();
-
 		/**
 		 * Adds the possible arguments. Sets global args and executes the
 		 * parsing of the given arguments.
@@ -215,7 +238,7 @@ public class ChainManagement {
 				commandLine = commandLineParser.parse(options, args);
 			} catch (Exception e) {
 				printHelp();
-				logger.fatal("Usage of arguments wrong.");
+				System.out.println("Usage of arguments wrong.");
 				System.exit(1);
 			}
 
@@ -226,7 +249,7 @@ public class ChainManagement {
 			if (commandLine.hasOption("c")) {
 				catalogLocation = commandLine.getOptionValue("c");
 			} else {
-				logger.fatal("No catalog location given.");
+				System.out.println("No catalog location given.");
 				System.exit(1);
 			}
 

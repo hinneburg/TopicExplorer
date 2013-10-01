@@ -26,11 +26,6 @@ import org.apache.log4j.*;
 public class DependencyCollector {
 
 	private Catalog catalog;
-	private List<String> orderedCommands = null;
-	private Map<String, List<String>> composedDependencies = null;
-	private Map<String, List<String>> dependencies = null;
-	private Map<String, List<String>> optionalDependencies = null;
-	private Map<String, List<String>> newDependencies = null;
 	private Logger logger = Logger.getRootLogger();
 
 	/**
@@ -41,6 +36,10 @@ public class DependencyCollector {
 	public DependencyCollector(Catalog catalog) {
 		this.catalog = catalog;
 	}
+	
+	public DependencyCollector() {
+		
+	}
 
 	/**
 	 * Creates a file in dot format. A -> B means that A depends of B. A dashed
@@ -48,7 +47,7 @@ public class DependencyCollector {
 	 * maps, so it must be executed before the maps are changed, e.g. before
 	 * executing the orderCommands method because it changes the maps.
 	 */
-	private void makeDotFile() {
+	private void makeDotFile(Map<String, List<String>> composedDependencies, Map<String, List<String>> optionalDependencies) {
 		String dotContent = "digraph G { \n";
 		dotContent += "rankdir = BT; \n";
 		dotContent += "node [shape=record]; \n";
@@ -123,7 +122,7 @@ public class DependencyCollector {
 			}
 		}
 	}
-
+	
 	/**
 	 * Every command of the catalog will be executed with the dependencyContext.
 	 * Then a command should set its dependencies in the dependencyContext.
@@ -131,10 +130,11 @@ public class DependencyCollector {
 	 * Then those per command set dependencies and optional dependencies will be
 	 * read out and processed by the updateDependencies method.
 	 */
-	private void collectDependencies() {
-		dependencies = new HashMap<String, List<String>>();
-		optionalDependencies = new HashMap<String, List<String>>();
-
+	public Map<String, List<String>> getDependencies() {
+		Map<String, List<String>> dependencies = new HashMap<String, List<String>>();
+		Map<String, List<String>> optionalDependencies = new HashMap<String, List<String>>();
+		Map<String, List<String>> composedDependencies = null;
+		
 		try {
 			DependencyContext dependencyContext = new DependencyContext();
 			String name;
@@ -151,45 +151,46 @@ public class DependencyCollector {
 						dependencyContext.getOptionalAfterDependencies(),
 						dependencyContext.getOptionalBeforeDependencies());
 			}
+			
+			composedDependencies = new HashMap<String, List<String>>(dependencies);
+			
+			for (String key : optionalDependencies.keySet()) {
+				for (String value : optionalDependencies.get(key)) {
+					if (composedDependencies.containsKey(value)) {
+						composedDependencies.get(key).add(value);
+					}
+				}
+			}
+			
+			makeDotFile(composedDependencies, optionalDependencies);
+			
 		} catch (Exception e) {
 			logger.error(e);
 		}
+		
+		return composedDependencies;
 	}
 
-	/**
-	 * Composes dependencies and optionalDependencies.
-	 */
-	private void composeDependencies() {
-		composedDependencies = new HashMap<String, List<String>>(dependencies);
-
-		for (String key : optionalDependencies.keySet()) {
-			for (String value : optionalDependencies.get(key)) {
-				if (composedDependencies.containsKey(value)) {
-					composedDependencies.get(key).add(value);
-				}
-			}
-		}
-	}
 
 	/**
 	 * Topologically sorts the composedDependencies and sets the orderedCommands
 	 * variable.
 	 */
-	private void orderCommands() {
-		dependencies = new ConcurrentHashMap<String, List<String>>(
-				composedDependencies);
-		orderedCommands = new LinkedList<String>();
+	public List<String> orderCommands(Map<String, List<String>> dependencies) {
+		Map<String, List<String>> concurrentDependencies = new ConcurrentHashMap<String, List<String>>(
+				dependencies);
+		List<String> orderedCommands = new LinkedList<String>();
 		LinkedList<String> helpList = new LinkedList<String>();
 		String node = "";
 
 		// find all nodes with no dependencies, put into helpList, remove from
 		// HashMap
-		for (String key : dependencies.keySet()) {
-			List<String> list = dependencies.get(key);
+		for (String key : concurrentDependencies.keySet()) {
+			List<String> list = concurrentDependencies.get(key);
 
 			if (list.isEmpty()) {
 				helpList.add(key);
-				dependencies.remove(key);
+				concurrentDependencies.remove(key);
 			}
 		}
 
@@ -201,71 +202,45 @@ public class DependencyCollector {
 			orderedCommands.add(node);
 
 			// check if there is any edge between the node and another one
-			for (String key : dependencies.keySet()) {
-				List<String> list = dependencies.get(key);
+			for (String key : concurrentDependencies.keySet()) {
+				List<String> list = concurrentDependencies.get(key);
 
 				// if the node is in a value list, remove it
 				if (list.contains(node)) {
 					list.remove(node);
-					dependencies.put(key, list);
+					concurrentDependencies.put(key, list);
 				}
 
 				// if the node has no other incoming edges, put it into
 				// commandList
-				if (dependencies.get(key).isEmpty()) {
+				if (concurrentDependencies.get(key).isEmpty()) {
 					helpList.add(key);
-					dependencies.remove(key);
+					concurrentDependencies.remove(key);
 				}
 			}
 		}
 
 		// only if the dependencyMap is empty the graph was correct, otherwise
 		// there was something wrong with it
-		if (!dependencies.isEmpty()) {
+		if (!concurrentDependencies.isEmpty()) {
 			logger.fatal("The dependencyMap wasn't empty yet but it should have been: "
-					+ dependencies);
+					+ concurrentDependencies);
 			System.exit(1);
 		}
-	}
-
-	/**
-	 * Returns a list of topologically sorted commands, containing the commands
-	 * given in the catalog. Executes the makeDotFile method.
-	 * 
-	 * @return A list of topologically sorted commands.
-	 */
-	public List<String> getOrderedCommands(List<String> startCommands,
-			List<String> endCommands) {
-		if (dependencies == null) {
-			collectDependencies();
-		}
-
-		if (composedDependencies == null) {
-			composeDependencies();
-		}
-
-		getStrongComponents(startCommands, endCommands);
-
-		makeDotFile();
-
-		if (orderedCommands == null) {
-			orderCommands();
-		}
-
+		
 		return orderedCommands;
-
 	}
 
-	public void getStrongComponents(List<String> startCommands,
+	public Map<String, List<String>> getStrongComponents(Map<String, List<String>> dependencies, List<String> startCommands,
 			List<String> endCommands) {
 
-		newDependencies = new ConcurrentHashMap<String, List<String>>();
+		Map<String, List<String>> newDependencies = new ConcurrentHashMap<String, List<String>>();
 		
 		if (startCommands.isEmpty()) {
-			newDependencies.putAll(composedDependencies);
+			newDependencies.putAll(dependencies);
 		} else {
 			for (String command : startCommands) {
-				iterateDependenciesDown(command);
+				iterateDependenciesDown(dependencies, newDependencies, command);
 			}
 		}
 
@@ -273,18 +248,18 @@ public class DependencyCollector {
 			iterateDependenciesUp(command);
 		}
 
-		composedDependencies = newDependencies;
+		return newDependencies;
 	}
 
-	public void iterateDependenciesUp(String command) {
+	private void iterateDependenciesUp(String command) {
 		//  to be done
 	}
 
-	public void iterateDependenciesDown(String command) {
+	private void iterateDependenciesDown(Map<String, List<String>> dependencies, Map<String, List<String>> newDependencies, String command) {
 		// pruefe welche keys das aktuelle command in value-Liste haben, d.h.
 		// welche commands von dem aktuellen abhaengen
-		for (String key : composedDependencies.keySet()) {
-			if (composedDependencies.get(key).contains(command)) {
+		for (String key : dependencies.keySet()) {
+			if (dependencies.get(key).contains(command)) {
 				// falls enthalten, muss es in neue Map und rekursiv
 				// abhanegigkeiten fuer dieses command pruefen
 				List<String> tmp = new ArrayList<String>();
@@ -293,7 +268,7 @@ public class DependencyCollector {
 					tmp.addAll(newDependencies.get(key));
 				}
 				newDependencies.put(key, tmp);
-				iterateDependenciesDown(key);
+				iterateDependenciesDown(dependencies, newDependencies, key);
 			}
 		}
 	}

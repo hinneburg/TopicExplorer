@@ -1,5 +1,7 @@
 package cc.topicexplorer;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.io.BufferedWriter;
@@ -19,6 +21,11 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.apache.commons.cli.BasicParser;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Options;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
@@ -117,22 +124,23 @@ public class Run {
 		// TODO Auto-generated method stub
 		Run run = new Run();
 		ChainManagement chainManager = new ChainManagement();
+		RunCommandLineParser commandLineParser = new RunCommandLineParser(args);
 		Properties properties = new Properties();
 
-		//create directories
+		// create directories
 		File temp = new File("temp");
 		temp.mkdir();
-		
+
 		chainManager.init();
 
 		try {
 			properties.load(run.getClass().getResourceAsStream(
-				"/config.global.properties"));
+					"/config.global.properties"));
 		} catch (Exception e) {
 			logger.fatal("config.global.properties not found");
 			System.exit(0);
 		}
-		
+
 		try {
 			properties.load(run.getClass().getResourceAsStream(
 					"/config.local.properties"));
@@ -143,18 +151,134 @@ public class Run {
 
 		run.makeCatalog(properties.getProperty("plugins"));
 
-		chainManager.getCatalog("/catalog.xml");
+		chainManager.setCatalog("/catalog.xml");
 
-		List<String> orderedCommands = chainManager.getOrderedCommands();
+		List<String> orderedCommands = chainManager.getOrderedCommands(
+				commandLineParser.getStartCommands(),
+				commandLineParser.getEndCommands());
 
 		logger.info("ordered commands: " + orderedCommands);
 
-		chainManager.executeOrderedCommands(orderedCommands);
-		
+		if (!commandLineParser.getDrawGraph()) {
+			chainManager.executeOrderedCommands(orderedCommands);
+			System.out.println("Preprocessing successfully executed!");
+		}	
+
 		FileUtils.deleteDirectory(temp);
+	}
 
-		System.out.println("Preprocessing successfully executed!");
+	/**
+	 * Retrieves arguments from the commandline and makes them accessable via a
+	 * getter method
+	 * 
+	 * @author Sebastian Baer
+	 * 
+	 */
+	private static class RunCommandLineParser {
+		private Options options;
 
+		private CommandLineParser commandLineParser;
+		private CommandLine commandLine;
+		private HelpFormatter helpFormatter;
+
+		private boolean onlyDrawGraph = false;
+		private String catalogLocation;
+		private List<String> startCommand = new ArrayList<String>();
+		private List<String> endCommand = new ArrayList<String>();
+
+		private String[] args;
+
+		private Logger logger = Logger.getRootLogger();
+
+		/**
+		 * Adds the possible arguments. Sets global args and executes the
+		 * parsing of the given arguments.
+		 * 
+		 * @param args
+		 */
+		public RunCommandLineParser(String[] args) {
+			options = new Options();
+			options.addOption("h", "help", false,
+					"prints information about passing arguments.");
+			options.addOption("c", "catalog", true,
+					"determines location of catalog file");
+			options.getOption("c").setArgName("string");
+			options.addOption("g", "graph", false, "only the graph is drawed");
+			options.addOption("s", "start", true,
+					"set commands to start with, separated by only comma");
+			options.getOption("s").setArgName("string");
+			options.addOption("e", "end", true,
+					"set commands to end with, separated only by comma");
+			options.getOption("e").setArgName("string");
+
+			commandLineParser = new BasicParser();
+			commandLine = null;
+			helpFormatter = new HelpFormatter();
+
+			this.args = args;
+
+			parseArguments();
+		}
+
+		/**
+		 * Checks if any of the mentioned options is contained in the arguments
+		 * and then sets it in the class. If the usage of arguments is wrong
+		 * help is printed.
+		 */
+		public void parseArguments() {
+			// if there is something wrong with the input, print help
+			try {
+				commandLine = commandLineParser.parse(options, args);
+			} catch (Exception e) {
+				printHelp();
+				logger.fatal("Usage of arguments wrong.");
+				System.exit(1);
+			}
+
+			if (commandLine.hasOption("h")) {
+				printHelp();
+			}
+
+			if (commandLine.hasOption("g")) {
+				onlyDrawGraph = true;
+			}
+
+			if (commandLine.hasOption("c")) {
+				catalogLocation = commandLine.getOptionValue("c");
+			} else {
+				logger.fatal("No catalog location given, taking standard value.");
+			}
+
+			if (commandLine.hasOption("s")) {
+				startCommand = Arrays.asList(commandLine.getOptionValue("s")
+						.split(","));
+			}
+
+			if (commandLine.hasOption("e")) {
+				endCommand = Arrays.asList(commandLine.getOptionValue("s")
+						.split(","));
+			}
+		}
+
+		public String getCatalogLocation() {
+			return catalogLocation;
+		}
+
+		public boolean getDrawGraph() {
+			return onlyDrawGraph;
+		}
+
+		public List<String> getStartCommands() {
+			return startCommand;
+		}
+
+		public List<String> getEndCommands() {
+			return endCommand;
+		}
+
+		public void printHelp() {
+			helpFormatter.printHelp("Run <command> [<arg>]", options);
+		}
 	}
 
 }

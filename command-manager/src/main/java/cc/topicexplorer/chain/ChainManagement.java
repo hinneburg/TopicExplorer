@@ -1,5 +1,7 @@
 package cc.topicexplorer.chain;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.chain.Catalog;
@@ -53,9 +55,9 @@ public class ChainManagement {
 	 * @param catalogLocation
 	 * @throws Exception
 	 */
-	public void getCatalog(String catalogLocation) throws Exception {
+	public void setCatalog(String catalogLocation) throws Exception {
 		ConfigParser configParser = new ConfigParser();
-		
+
 		try {
 			logger.info("this.getClass().getResource(catalogLocation)"
 					+ this.getClass().getResource(catalogLocation));
@@ -93,11 +95,13 @@ public class ChainManagement {
 	 * 
 	 * @return A ordered list containing the commands of the catalog.
 	 */
-	public List<String> getOrderedCommands() {
+	public List<String> getOrderedCommands(List<String> startcommands,
+			List<String> endCommands) {
 		DependencyCollector dependencyCollector = new DependencyCollector(
 				catalog);
 
-		return dependencyCollector.getOrderedCommands();
+		return dependencyCollector.getOrderedCommands(startcommands,
+				endCommands);
 	}
 
 	/**
@@ -105,12 +109,23 @@ public class ChainManagement {
 	 */
 	public void executeOrderedCommands(List<String> commandList) {
 		try {
-			
-			
 			Command command;
 			for (String commandName : commandList) {
 				command = catalog.getCommand(commandName);
 				command.execute(communicationContext);
+			}
+		} catch (Exception e) {
+			logger.error(e);
+		}
+	}
+
+	public void executeOrderedCommands(List<String> commandList,
+			CommunicationContext localCommunicationContext) {
+		try {
+			Command command;
+			for (String commandName : commandList) {
+				command = catalog.getCommand(commandName);
+				command.execute(localCommunicationContext);
 			}
 		} catch (Exception e) {
 			logger.error(e);
@@ -124,13 +139,14 @@ public class ChainManagement {
 		List<String> orderedCommands;
 		String catalogLocation;
 		chainManager.init();
-	//	logger = Logger.getRootLogger();
 
 		catalogLocation = commandLineParser.getCatalogLocation();
 
-		chainManager.getCatalog(catalogLocation);
+		chainManager.setCatalog(catalogLocation);
 
-		orderedCommands = chainManager.getOrderedCommands();
+		orderedCommands = chainManager.getOrderedCommands(
+				commandLineParser.getStartCommand(),
+				commandLineParser.getEndCommand());
 
 		logger.info("ordered commands: " + orderedCommands);
 
@@ -152,8 +168,8 @@ public class ChainManagement {
 		private HelpFormatter helpFormatter;
 
 		private String catalogLocation;
-		private String startCommand;
-		private String endCommand;
+		private List<String> startCommand = new ArrayList<String>();
+		private List<String> endCommand = new ArrayList<String>();
 
 		private String[] args;
 
@@ -172,9 +188,11 @@ public class ChainManagement {
 			options.addOption("c", "catalog", true,
 					"determines location of catalog file");
 			options.getOption("c").setArgName("string");
-			options.addOption("s", "start", true, "set command to start with");
+			options.addOption("s", "start", true,
+					"set commands to start with, separated by only comma");
 			options.getOption("s").setArgName("string");
-			options.addOption("e", "end", true, "set command to end with");
+			options.addOption("e", "end", true,
+					"set commands to end with, separated only by comma");
 			options.getOption("e").setArgName("string");
 
 			commandLineParser = new BasicParser();
@@ -213,11 +231,13 @@ public class ChainManagement {
 			}
 
 			if (commandLine.hasOption("s")) {
-				startCommand = commandLine.getOptionValue("s");
+				startCommand = Arrays.asList(commandLine.getOptionValue("s")
+						.split(","));
 			}
 
 			if (commandLine.hasOption("e")) {
-				endCommand = commandLine.getOptionValue("e");
+				endCommand = Arrays.asList(commandLine.getOptionValue("s")
+						.split(","));
 			}
 		}
 
@@ -225,11 +245,11 @@ public class ChainManagement {
 			return catalogLocation;
 		}
 
-		public String getStartCommand() {
+		public List<String> getStartCommand() {
 			return startCommand;
 		}
 
-		public String getEndCommand() {
+		public List<String> getEndCommand() {
 			return endCommand;
 		}
 

@@ -15,7 +15,6 @@ import org.apache.commons.chain.Catalog;
 import org.apache.commons.chain.Command;
 import org.apache.log4j.*;
 
-
 /**
  * Collects dependencies of commands mentioned in the catalog and gets them
  * ordered.
@@ -31,9 +30,8 @@ public class DependencyCollector {
 	private Map<String, List<String>> composedDependencies = null;
 	private Map<String, List<String>> dependencies = null;
 	private Map<String, List<String>> optionalDependencies = null;
-	private Map<String, List<String>> newDependencies = new HashMap<String, List<String>>();
+	private Map<String, List<String>> newDependencies = null;
 	private Logger logger = Logger.getRootLogger();
-	String startCommand = "";
 
 	/**
 	 * Class constructor taking the catalog argument and sets it in this class.
@@ -42,11 +40,6 @@ public class DependencyCollector {
 	 */
 	public DependencyCollector(Catalog catalog) {
 		this.catalog = catalog;
-	}
-	
-	public DependencyCollector(Catalog catalog, String command) {
-		this(catalog);
-		this.startCommand = command;		
 	}
 
 	/**
@@ -151,9 +144,9 @@ public class DependencyCollector {
 				Command command = catalog.getCommand(name);
 				command.execute(dependencyContext);
 
-				updateDependencies(name, dependencies, dependencyContext
-						.getAfterDependencies(), dependencyContext
-						.getBeforeDependencies());
+				updateDependencies(name, dependencies,
+						dependencyContext.getAfterDependencies(),
+						dependencyContext.getBeforeDependencies());
 				updateDependencies(name, optionalDependencies,
 						dependencyContext.getOptionalAfterDependencies(),
 						dependencyContext.getOptionalBeforeDependencies());
@@ -241,7 +234,8 @@ public class DependencyCollector {
 	 * 
 	 * @return A list of topologically sorted commands.
 	 */
-	public List<String> getOrderedCommands() {
+	public List<String> getOrderedCommands(List<String> startCommands,
+			List<String> endCommands) {
 		if (dependencies == null) {
 			collectDependencies();
 		}
@@ -250,10 +244,8 @@ public class DependencyCollector {
 			composeDependencies();
 		}
 
-		if(this.startCommand.length() > 0) {
-			this.getStrongComponents();
-		}
-		
+		getStrongComponents(startCommands, endCommands);
+
 		makeDotFile();
 
 		if (orderedCommands == null) {
@@ -263,52 +255,46 @@ public class DependencyCollector {
 		return orderedCommands;
 
 	}
-	public void getStrongComponents() {
-		getStrongComponents(this.startCommand);
-	}
-	
-	public void getStrongComponents(String startCommand) {
-		getStrongComponents(startCommand, "");
-	}
-	
-	public void getStrongComponents(String startCommand, String endCommand) {
+
+	public void getStrongComponents(List<String> startCommands,
+			List<String> endCommands) {
+
+		newDependencies = new ConcurrentHashMap<String, List<String>>();
 		
-		List<String> startCommands = new ArrayList<String>();
-		startCommands.add(startCommand);
-		
-		List<String> endCommands = new ArrayList<String>();
-		endCommands.add(endCommand);
-		
-		for (String command : startCommands) {
-			newDependencies.put(command, composedDependencies.get(command));			
-			iterateDependenciesUp(command);
+		if (startCommands.isEmpty()) {
+			newDependencies.putAll(composedDependencies);
+		} else {
+			for (String command : startCommands) {
+				iterateDependenciesDown(command);
+			}
 		}
-		
+
 		for (String command : endCommands) {
-			iterateDependenciesDown(command);
-			newDependencies.put(command, new ArrayList<String>());
+			iterateDependenciesUp(command);
 		}
 
 		composedDependencies = newDependencies;
 	}
-	
+
 	public void iterateDependenciesUp(String command) {
-		for (String elem : composedDependencies.get(command)) {
-			newDependencies.put(elem, composedDependencies.get(elem));
-			iterateDependenciesUp(elem);
-		}
+		//  to be done
 	}
-	
+
 	public void iterateDependenciesDown(String command) {
-		List<String> list = new ArrayList<String>(newDependencies.get(command));
-		
-//		pruefe ob command auch von anderen gebraucht wird, dazu muss es mehr als einmal in den values vorkommen
-		if (!newDependencies.containsValue(command)) {
-			newDependencies.remove(command);
-		}
-		
-		for (String elem : list) {
-			iterateDependenciesDown(elem);
+		// pruefe welche keys das aktuelle command in value-Liste haben, d.h.
+		// welche commands von dem aktuellen abhaengen
+		for (String key : composedDependencies.keySet()) {
+			if (composedDependencies.get(key).contains(command)) {
+				// falls enthalten, muss es in neue Map und rekursiv
+				// abhanegigkeiten fuer dieses command pruefen
+				List<String> tmp = new ArrayList<String>();
+				tmp.add(command);
+				if (newDependencies.get(key) != null) {
+					tmp.addAll(newDependencies.get(key));
+				}
+				newDependencies.put(key, tmp);
+				iterateDependenciesDown(key);
+			}
 		}
 	}
 

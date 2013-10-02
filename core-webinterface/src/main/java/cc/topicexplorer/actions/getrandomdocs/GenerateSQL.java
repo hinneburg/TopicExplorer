@@ -1,13 +1,18 @@
 package cc.topicexplorer.actions.getrandomdocs;
 
+import java.io.PrintWriter;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import org.apache.commons.chain.Context;
 
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import cc.topicexplorer.chain.CommunicationContext;
 import cc.topicexplorer.chain.commands.TableSelectCommand;
 import cc.topicexplorer.database.SelectMap;
+
 
 public class GenerateSQL extends TableSelectCommand {
 
@@ -15,11 +20,26 @@ public class GenerateSQL extends TableSelectCommand {
 	public void tableExecute(Context context) {
 		CommunicationContext communicationContext = (CommunicationContext) context;
 		SelectMap preQueryMap, innerQueryMap, mainQueryMap;
+		PrintWriter servletWriter = (PrintWriter) communicationContext.get("SERVLET_WRITER");
+		
 		preQueryMap = (SelectMap) communicationContext.get("PRE_QUERY");
 		innerQueryMap = (SelectMap) communicationContext.get("INNER_QUERY");
 		mainQueryMap = (SelectMap) communicationContext.get("MAIN_QUERY");
 		
-		int random;
+		ArrayList<String> docColumnList = this.getCleanColumnNames(innerQueryMap);
+		
+		JSONObject doc, docTopic, docTopicColl, all;
+		JSONArray docArray, docTopicArray, docTopicCollArray;
+		 
+		all = new JSONObject();
+		doc = new JSONObject();
+		docTopic = new JSONObject();
+		docTopicColl = new JSONObject();
+		docArray = new JSONArray();
+		docTopicArray = new JSONArray();
+		docTopicCollArray = new JSONArray();
+		
+		int random, docId = -1;
 
 		try {
 			ResultSet preQueryRS = database.executeQuery(preQueryMap.getSQLString());
@@ -27,13 +47,30 @@ public class GenerateSQL extends TableSelectCommand {
 				random = Math.round((float) Math.random() * (preQueryRS.getInt("COUNT") - innerQueryMap.limit));
 		        innerQueryMap.offset = random;
 		        mainQueryMap.from.add("(" + innerQueryMap.getSQLString() + ") x");
-		        System.out.println(mainQueryMap.getSQLString());
-		        try {
+		         
+		        try {  	
 		        	ResultSet mainQueryRS = database.executeQuery(mainQueryMap.getSQLString());
 		        	while(mainQueryRS.next()) {
-		        		// mache eier!!
+		        		if(docId != mainQueryRS.getInt("DOCUMENT_ID")) {
+		        			if(docTopicArray.size() > 0) {
+		        				docTopicColl.put("DOCUMENT_ID", docId);
+		        				docTopicColl.put("TOPIC", docTopicArray);
+		        				docTopicCollArray.add(docTopicColl);
+		        			}
+		        			docId = mainQueryRS.getInt("DOCUMENT_ID");
+		        			for(int i = 0; i < docColumnList.size(); i++ ) {
+		        				doc.put(docColumnList.get(i), mainQueryRS.getString(docColumnList.get(i)));
+		        			}
+		        			docArray.add(doc);
+		        		}
+		        		docTopic.put("TOPIC_ID", mainQueryRS.getString("TOPIC_ID"));
+		        		docTopic.put("PR_TOPIC_GIVEN_DOCUMENT", mainQueryRS.getString("PR_TOPIC_GIVEN_DOCUMENT"));
+		        		docTopic.put("PR_DOCUMENT_GIVEN_TOPIC", mainQueryRS.getString("PR_DOCUMENT_GIVEN_TOPIC"));
+		        		docTopicArray.add(docTopic);
 		        	}
-		        	
+		        	all.put("DOCUMENT", docArray);
+		        	all.put("DOCUMENT_TOPIC", docTopicCollArray);
+		        	servletWriter.println(all.toString());	
 		        } catch (SQLException e) {
 		        	logger.fatal("Error in Query: " + mainQueryMap.getSQLString());
 					e.printStackTrace();
@@ -43,6 +80,20 @@ public class GenerateSQL extends TableSelectCommand {
 			logger.fatal("Error in Query: " + preQueryMap.getSQLString());
 			e.printStackTrace();
 		}	
+	}
+	
+	private ArrayList<String> getCleanColumnNames(SelectMap map) {
+		ArrayList<String> list = new ArrayList<String>();
+		for(int i = 0; i < map.select.size(); i++  ) {
+			if(map.select.get(i).contains(".")) {
+				list.add(map.select.get(i).substring(map.select.get(i).indexOf(".") + 1));
+			} else {
+				list.add(map.select.get(i));
+			}
+		}
+		
+		return list;
+		
 	}
 
 }

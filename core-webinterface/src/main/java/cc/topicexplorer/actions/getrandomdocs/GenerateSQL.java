@@ -56,6 +56,8 @@ public class GenerateSQL extends TableSelectCommand {
 		        				docTopicColl.put("DOCUMENT_ID", docId);
 		        				docTopicColl.put("TOPIC", docTopicArray);
 		        				docTopicCollArray.add(docTopicColl);
+		        				docTopicColl.clear();
+		        				docTopicArray.clear();
 		        			}
 		        			docId = mainQueryRS.getInt("DOCUMENT_ID");
 		        			for(int i = 0; i < docColumnList.size(); i++ ) {
@@ -63,6 +65,7 @@ public class GenerateSQL extends TableSelectCommand {
 		        			}
 		        			docArray.add(doc);
 		        		}
+		        		docTopic.clear();
 		        		docTopic.put("TOPIC_ID", mainQueryRS.getString("TOPIC_ID"));
 		        		docTopic.put("PR_TOPIC_GIVEN_DOCUMENT", mainQueryRS.getString("PR_TOPIC_GIVEN_DOCUMENT"));
 		        		docTopic.put("PR_DOCUMENT_GIVEN_TOPIC", mainQueryRS.getString("PR_DOCUMENT_GIVEN_TOPIC"));

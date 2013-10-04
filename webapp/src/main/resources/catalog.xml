@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog>
+	<command name="RandomDocsCollect" className="cc.topicexplorer.actions.getrandomdocs.Collect"/>
+	<command name="text_getrandom" className="cc.topicexplorer.plugin.text.actions.getrandomdocs.Collect"/>
+	<command name="link_getrandom" className="cc.topicexplorer.plugin.link.actions.getrandomdocs.Collect"/>
+	<command name="time_getrandom" className="cc.topicexplorer.plugin.time.actions.getrandomdocs.Collect"/>
+	<command name="CreateSQL" className="cc.topicexplorer.actions.getrandomdocs.GenerateSQL"/>
+	
+</catalog>

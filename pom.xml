@@ -30,7 +30,8 @@
     <module>plugin-text-webinterface</module>
     <module>plugin-link-webinterface</module>
     <module>plugin-time-webinterface</module>
-	</modules>
+    <module>webapp</module>
+  </modules>
 
 	<build>
 		<plugins>

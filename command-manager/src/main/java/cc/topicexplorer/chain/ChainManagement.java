@@ -1,7 +1,6 @@
 package cc.topicexplorer.chain;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -9,11 +8,6 @@ import org.apache.commons.chain.Catalog;
 import org.apache.commons.chain.Command;
 import org.apache.commons.chain.config.ConfigParser;
 import org.apache.commons.chain.impl.CatalogFactoryBase;
-import org.apache.commons.cli.BasicParser;
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Options;
 import org.apache.log4j.Logger;
 
 import cc.topicexplorer.chain.commands.DbConnectionCommand;
@@ -100,6 +94,11 @@ public class ChainManagement {
 				new ArrayList<String>());
 	}
 	
+	/**
+	 * Returns a list with all commands of a given map of dependencies in an ordered sequence.
+	 * 
+	 * @return A ordered list containing the commands of the catalog.
+	 */	
 	public List<String> getOrderedCommands(Map<String, List<String>> dependencies) {
 
 		return getOrderedCommands(dependencies, new ArrayList<String>(),
@@ -116,6 +115,8 @@ public class ChainManagement {
 		dependencies = dependencyCollector.getDependencies();
 		dependencies = dependencyCollector.getStrongComponents(dependencies, startCommands, endCommands);
 		
+		communicationContext.put("dependencies", dependencies);
+		
 		return dependencyCollector.orderCommands(dependencies);
 	}
 	
@@ -125,6 +126,8 @@ public class ChainManagement {
 		DependencyCollector dependencyCollector = new DependencyCollector();
 		
 		dependencies = dependencyCollector.getStrongComponents(dependencies, startCommands, endCommands);
+		
+		communicationContext.put("dependencies", dependencies);
 		
 		return dependencyCollector.orderCommands(dependencies);
 	}
@@ -156,6 +159,18 @@ public class ChainManagement {
 			logger.error(e);
 		}
 	}
+	
+	public CommunicationContext getInitialCommunicationContext() {		
+		try {
+			init();
+			setCatalog("/catalog.xml");
+			getOrderedCommands();
+		} catch (Exception e) {
+			logger.error(e);
+		}
+		
+		return communicationContext;
+	}
 
 	public static void main(String[] args) throws Exception {
 		ChainManagement chainManager = new ChainManagement();
@@ -170,114 +185,13 @@ public class ChainManagement {
 		chainManager.setCatalog(catalogLocation);
 
 		orderedCommands = chainManager.getOrderedCommands(
-				commandLineParser.getStartCommand(),
-				commandLineParser.getEndCommand());
+				commandLineParser.getStartCommands(),
+				commandLineParser.getEndCommands());
 
 		logger.info("ordered commands: " + orderedCommands);
 
-		chainManager.executeOrderedCommands(orderedCommands);
-	}
-
-	/**
-	 * Retrieves arguments from the commandline and makes them accessable via a
-	 * getter method
-	 * 
-	 * @author Sebastian Baer
-	 * 
-	 */
-	private static class ChainCommandLineParser {
-		private Options options;
-
-		private CommandLineParser commandLineParser;
-		private CommandLine commandLine;
-		private HelpFormatter helpFormatter;
-
-		private String catalogLocation;
-		private List<String> startCommand = new ArrayList<String>();
-		private List<String> endCommand = new ArrayList<String>();
-
-		private String[] args;
-
-		/**
-		 * Adds the possible arguments. Sets global args and executes the
-		 * parsing of the given arguments.
-		 * 
-		 * @param args
-		 */
-		public ChainCommandLineParser(String[] args) {
-			options = new Options();
-			options.addOption("h", "help", false,
-					"prints information about passing arguments.");
-			options.addOption("c", "catalog", true,
-					"determines location of catalog file");
-			options.getOption("c").setArgName("string");
-			options.addOption("s", "start", true,
-					"set commands to start with, separated by only comma");
-			options.getOption("s").setArgName("string");
-			options.addOption("e", "end", true,
-					"set commands to end with, separated only by comma");
-			options.getOption("e").setArgName("string");
-
-			commandLineParser = new BasicParser();
-			commandLine = null;
-			helpFormatter = new HelpFormatter();
-
-			this.args = args;
-
-			parseArguments();
-		}
-
-		/**
-		 * Checks if any of the mentioned options is contained in the arguments
-		 * and then sets it in the class. If the usage of arguments is wrong
-		 * help is printed.
-		 */
-		public void parseArguments() {
-			// if there is something wrong with the input, print help
-			try {
-				commandLine = commandLineParser.parse(options, args);
-			} catch (Exception e) {
-				printHelp();
-				System.out.println("Usage of arguments wrong.");
-				System.exit(1);
-			}
-
-			if (commandLine.hasOption("h")) {
-				printHelp();
-			}
-
-			if (commandLine.hasOption("c")) {
-				catalogLocation = commandLine.getOptionValue("c");
-			} else {
-				System.out.println("No catalog location given.");
-				System.exit(1);
-			}
-
-			if (commandLine.hasOption("s")) {
-				startCommand = Arrays.asList(commandLine.getOptionValue("s")
-						.split(","));
-			}
-
-			if (commandLine.hasOption("e")) {
-				endCommand = Arrays.asList(commandLine.getOptionValue("s")
-						.split(","));
-			}
-		}
-
-		public String getCatalogLocation() {
-			return catalogLocation;
-		}
-
-		public List<String> getStartCommand() {
-			return startCommand;
-		}
-
-		public List<String> getEndCommand() {
-			return endCommand;
-		}
-
-		public void printHelp() {
-			helpFormatter.printHelp("TopicExplorer <command> [<arg>]", options);
+		if (!commandLineParser.getOnlyDrawGraph()) {
+			chainManager.executeOrderedCommands(orderedCommands);
 		}
 	}
 }

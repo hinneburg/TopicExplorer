@@ -42,7 +42,16 @@
 			<artifactId>plugin-time-webinterface</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
-		
+		<dependency>
+			<groupId>cc.topicexplorer</groupId>
+			<artifactId>plugin-hierarchicaltopic-webinterface</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>cc.topicexplorer</groupId>
+			<artifactId>plugin-colortopic-webinterface</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 
 	<build>

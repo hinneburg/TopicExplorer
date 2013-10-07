@@ -25,8 +25,8 @@
 				<include>cc.topicexplorer:plugin-link-webinterface</include>
 				<include>cc.topicexplorer:plugin-text-webinterface</include>
 				<include>cc.topicexplorer:plugin-time-webinterface</include>
-		<!--  	<include>cc.topicexplorer:plugin-colortopic-webinterface</include>
-				<include>cc.topicexplorer:plugin-hierarchicaltopic-webinterface</include>
+		 		<include>cc.topicexplorer:plugin-colortopic-webinterface</include>
+		<!-- 		<include>cc.topicexplorer:plugin-hierarchicaltopic-webinterface</include>
 				<include>cc.topicexplorer:plugin-category-webinterface</include>
 				<include>cc.topicexplorer:plugin-fulltext-webinterface</include>
 				<include>cc.topicexplorer:plugin-wiki-webinterface</include>-->

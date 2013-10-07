@@ -43,4 +43,15 @@ public class SelectMap {
 		return select + from + where + orderBy + limit;
 	}
 
+	@SuppressWarnings("unchecked")
+	public SelectMap clone() {
+		SelectMap newMap = new SelectMap();
+		newMap.select = (ArrayList<String>) this.select.clone();
+		newMap.from = (ArrayList<String>) this.from.clone();
+		newMap.where = (ArrayList<String>) this.where.clone();
+		newMap.orderBy = (ArrayList<String>) this.orderBy.clone();
+		newMap.limit = this.limit;
+		newMap.offset = this.offset;
+		return newMap;	
+	}
 }

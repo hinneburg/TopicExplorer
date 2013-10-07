@@ -1,4 +1,5 @@
-package cc.topicexplorer.plugin.time.actions.getrandomdocs;
+package cc.topicexplorer.plugin.colortopic.actions.gettopics;
+
 
 import org.apache.commons.chain.Context;
 
@@ -10,18 +11,18 @@ public class Collect extends TableSelectCommand {
 	@Override
 	public void tableExecute(Context context) {		
 		CommunicationContext communicationContext = (CommunicationContext) context;
-		SelectMap innerQueryMap;
+		SelectMap mainQueryMap;
 		
-		innerQueryMap = (SelectMap) communicationContext.get("INNER_QUERY");
+		mainQueryMap = (SelectMap) communicationContext.get("MAIN_QUERY");
 		
-		innerQueryMap.select.add("DOCUMENT.TIME$TIME_STAMP");
+		mainQueryMap.select.add("TOPIC.COLOR_TOPIC$COLOR");
 		
-		communicationContext.put("INNER_QUERY", innerQueryMap);
+		communicationContext.put("MAIN_QUERY", mainQueryMap);
 	}
 
 	@Override
 	public void addDependencies() {
-		beforeDependencies.add("GetRandomDocsCoreCollect");
-		afterDependencies.add("GetRandomDocsCoreCreateSQL");
+		beforeDependencies.add("GetTopicsCoreCollect");
+		afterDependencies.add("GetTopicsCoreCreateSQL");
 	}
 }

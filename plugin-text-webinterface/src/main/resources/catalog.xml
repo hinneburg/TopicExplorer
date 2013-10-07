@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog>
+	<command name="GetRandomDocsTextCollect" className="cc.topicexplorer.plugin.text.actions.getrandomdocs.Collect"/>
+	<command name="GetTopicsTextCollect" className="cc.topicexplorer.plugin.text.actions.gettopics.Collect"/>
+</catalog>

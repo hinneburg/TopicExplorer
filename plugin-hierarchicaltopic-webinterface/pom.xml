@@ -5,7 +5,7 @@
     <artifactId>topicexplorer-parent</artifactId>
     <version>1.0-SNAPSHOT</version>
   </parent>
-  <artifactId>plugin-time-webinterface</artifactId>
+  <artifactId>plugin-hierarchicaltopic-webinterface</artifactId>
   <dependencies>
   	<dependency>
   		<groupId>cc.topicexplorer</groupId>
@@ -14,7 +14,7 @@
   	</dependency>
   	<dependency>
   		<groupId>cc.topicexplorer</groupId>
-  		<artifactId>core-webinterface</artifactId>
+  		<artifactId>core-preprocessing</artifactId>
   		<version>1.0-SNAPSHOT</version>
   	</dependency>
   </dependencies>

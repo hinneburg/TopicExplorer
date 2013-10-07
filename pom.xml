@@ -30,6 +30,8 @@
     <module>plugin-text-webinterface</module>
     <module>plugin-link-webinterface</module>
     <module>plugin-time-webinterface</module>
+    <module>plugin-colortopic-webinterface</module>
+    <module>plugin-hierarchicaltopic-webinterface</module>
     <module>webapp</module>
   </modules>
 

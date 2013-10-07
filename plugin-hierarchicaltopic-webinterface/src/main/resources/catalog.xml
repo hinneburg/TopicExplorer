@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog>
+	<command name="GetTopicsHierarchicalTopicCollect" className="cc.topicexplorer.plugin.hierarchicaltopic.actions.gettopics.Collect"/>	
+</catalog>

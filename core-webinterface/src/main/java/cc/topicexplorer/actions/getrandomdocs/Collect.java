@@ -42,7 +42,7 @@ public class Collect extends TableSelectCommand {
 	
 	@Override
 	public void addDependencies() {
-		afterDependencies.add("CreateSQL");
+		afterDependencies.add("GetRandomDocsCoreCreateSQL");
 	}	
 
 }

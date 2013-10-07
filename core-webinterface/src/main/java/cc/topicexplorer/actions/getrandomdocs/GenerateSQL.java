@@ -28,10 +28,9 @@ public class GenerateSQL extends TableSelectCommand {
 		
 		ArrayList<String> docColumnList = this.getCleanColumnNames(innerQueryMap);
 		
-		JSONObject doc, docTopic, docTopicColl, all;
+		JSONObject doc, docTopic, docTopicColl;
 		JSONArray docArray, docTopicArray, docTopicCollArray;
 		 
-		all = new JSONObject();
 		doc = new JSONObject();
 		docTopic = new JSONObject();
 		docTopicColl = new JSONObject();
@@ -71,9 +70,8 @@ public class GenerateSQL extends TableSelectCommand {
 		        		docTopic.put("PR_DOCUMENT_GIVEN_TOPIC", mainQueryRS.getString("PR_DOCUMENT_GIVEN_TOPIC"));
 		        		docTopicArray.add(docTopic);
 		        	}
-		        	all.put("DOCUMENT", docArray);
-		        	all.put("DOCUMENT_TOPIC", docTopicCollArray);
-		        	servletWriter.println(all.toString());	
+		        	servletWriter.println(docArray.toString());	
+		        	servletWriter.println(docTopicCollArray.toString());	
 		        } catch (SQLException e) {
 		        	logger.fatal("Error in Query: " + mainQueryMap.getSQLString());
 					e.printStackTrace();
@@ -85,18 +83,9 @@ public class GenerateSQL extends TableSelectCommand {
 		}	
 	}
 	
-	private ArrayList<String> getCleanColumnNames(SelectMap map) {
-		ArrayList<String> list = new ArrayList<String>();
-		for(int i = 0; i < map.select.size(); i++  ) {
-			if(map.select.get(i).contains(".")) {
-				list.add(map.select.get(i).substring(map.select.get(i).indexOf(".") + 1));
-			} else {
-				list.add(map.select.get(i));
-			}
-		}
-		
-		return list;
-		
+	
+	@Override
+	public void addDependencies() {
+		beforeDependencies.add("GetRandomDocsCoreCollect");
 	}
-
 }

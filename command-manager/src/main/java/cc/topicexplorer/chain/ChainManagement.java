@@ -1,6 +1,7 @@
 package cc.topicexplorer.chain;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -88,7 +89,7 @@ public class ChainManagement {
 	 * 
 	 * @return A ordered Set containing the commands of the catalog.
 	 */	
-	public Set<String> getOrderedCommands() {
+	public List<String> getOrderedCommands() {
 
 		return getOrderedCommands(new HashSet<String>(),
 				new HashSet<String>());
@@ -99,13 +100,13 @@ public class ChainManagement {
 	 * 
 	 * @return A ordered Set containing the commands of the catalog.
 	 */	
-	public Set<String> getOrderedCommands(Map<String, Set<String>> dependencies) {
+	public List<String> getOrderedCommands(Map<String, Set<String>> dependencies) {
 
 		return getOrderedCommands(dependencies, new HashSet<String>(),
 				new HashSet<String>());
 	}
 	
-	public Set<String> getOrderedCommands(Set<String> startCommands, 
+	public List<String> getOrderedCommands(Set<String> startCommands, 
 			Set<String> endCommands) {
 
 		DependencyCollector dependencyCollector = new DependencyCollector(catalog);
@@ -120,7 +121,7 @@ public class ChainManagement {
 		return dependencyCollector.orderCommands(dependencies);
 	}
 	
-	public Set<String> getOrderedCommands(Map<String, Set<String>> dependencies, Set<String> startCommands,
+	public List<String> getOrderedCommands(Map<String, Set<String>> dependencies, Set<String> startCommands,
 			 Set<String> endCommands) {
 
 		DependencyCollector dependencyCollector = new DependencyCollector();
@@ -135,7 +136,7 @@ public class ChainManagement {
 	/**
 	 * Takes a Set of commands and executes them in the sequence of the Set
 	 */
-	public void executeOrderedCommands(Set<String> commandList) {
+	public void executeOrderedCommands(List<String> commandList) {
 		try {
 			Command command;
 			for (String commandName : commandList) {
@@ -147,7 +148,7 @@ public class ChainManagement {
 		}
 	}
 
-	public void executeOrderedCommands(Set<String> commandList,
+	public void executeOrderedCommands(List<String> commandList,
 			CommunicationContext localCommunicationContext) {
 		try {
 			Command command;
@@ -169,7 +170,7 @@ public class ChainManagement {
 		ChainManagement chainManager = new ChainManagement();
 		ChainCommandLineParser commandLineParser = new ChainCommandLineParser(
 				args);
-		Set<String> orderedCommands;
+		List<String> orderedCommands;
 		String catalogLocation;
 		chainManager.init();
 

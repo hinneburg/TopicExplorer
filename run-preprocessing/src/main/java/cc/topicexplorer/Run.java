@@ -6,8 +6,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.List;
 import java.util.Properties;
-import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -147,7 +147,7 @@ public class Run {
 
 		chainManager.setCatalog("/catalog.xml");
 
-		Set<String> orderedCommands = chainManager.getOrderedCommands(
+		List<String> orderedCommands = chainManager.getOrderedCommands(
 				commandLineParser.getStartCommands(),
 				commandLineParser.getEndCommands());
 

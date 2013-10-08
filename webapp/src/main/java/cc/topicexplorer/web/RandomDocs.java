@@ -2,7 +2,7 @@ package cc.topicexplorer.web;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Set;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -51,10 +51,7 @@ public class RandomDocs extends HttpServlet {
 			e.printStackTrace();
 		}
 
-		
-		logger.info("1");
-		Set<String> orderedCommands = chainManager.getOrderedCommands();
-				
+		List<String> orderedCommands = chainManager.getOrderedCommands();	
 
 		logger.info("ordered commands: " + orderedCommands);
 

@@ -3,9 +3,11 @@ package cc.topicexplorer.chain;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -175,11 +177,11 @@ public class DependencyCollector {
 	 * Topologically sorts the composedDependencies and sets the orderedCommands
 	 * variable.
 	 */
-	public Set<String> orderCommands(Map<String, Set<String>> dependencies) {
+	public List<String> orderCommands(Map<String, Set<String>> dependencies) {
 		Map<String, Set<String>> concurrentDependencies = new ConcurrentHashMap<String, Set<String>>(
 				dependencies);
-		Set<String> orderedCommands = new HashSet<String>();
-		Set<String> helpList = new HashSet<String>();
+		List<String> orderedCommands = new ArrayList<String>();
+		List<String> helpList = new ArrayList<String>();
 		String node = "";
 
 		// find all nodes with no dependencies, put into helpList, remove from

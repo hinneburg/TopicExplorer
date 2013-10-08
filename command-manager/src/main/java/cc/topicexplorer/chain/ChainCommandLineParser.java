@@ -1,8 +1,8 @@
 package cc.topicexplorer.chain;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
@@ -26,8 +26,8 @@ public class ChainCommandLineParser {
 
 	private boolean onlyDrawGraph = false;
 	private String catalogLocation;
-	private List<String> startCommands = new ArrayList<String>();
-	private List<String> endCommands = new ArrayList<String>();
+	private Set<String> startCommands = new HashSet<String>();
+	private Set<String> endCommands = new HashSet<String>();
 
 	private String[] args;
 
@@ -91,13 +91,13 @@ public class ChainCommandLineParser {
 		}
 
 		if (commandLine.hasOption("s")) {
-			startCommands = Arrays.asList(commandLine.getOptionValue("s")
-					.split(","));
+			startCommands.addAll(Arrays.asList((commandLine.getOptionValue("s")
+					.split(","))));
 		}
 
 		if (commandLine.hasOption("e")) {
-			endCommands = Arrays.asList(commandLine.getOptionValue("s")
-					.split(","));
+			endCommands.addAll(Arrays.asList((commandLine.getOptionValue("s")
+					.split(","))));
 		}
 	}
 
@@ -109,11 +109,11 @@ public class ChainCommandLineParser {
 		return onlyDrawGraph;
 	}
 
-	public List<String> getStartCommands() {
+	public Set<String> getStartCommands() {
 		return startCommands;
 	}
 
-	public List<String> getEndCommands() {
+	public Set<String> getEndCommands() {
 		return endCommands;
 	}
 

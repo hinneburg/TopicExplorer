@@ -1,8 +1,8 @@
 package cc.topicexplorer.chain;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.chain.Catalog;
 import org.apache.commons.chain.Command;
@@ -84,32 +84,32 @@ public class ChainManagement {
 	}
 	
 	/**
-	 * Returns a list with all commands of the catalog in an ordered sequence.
+	 * Returns a Set with all commands of the catalog in an ordered sequence.
 	 * 
-	 * @return A ordered list containing the commands of the catalog.
+	 * @return A ordered Set containing the commands of the catalog.
 	 */	
-	public List<String> getOrderedCommands() {
+	public Set<String> getOrderedCommands() {
 
-		return getOrderedCommands(new ArrayList<String>(),
-				new ArrayList<String>());
+		return getOrderedCommands(new HashSet<String>(),
+				new HashSet<String>());
 	}
 	
 	/**
-	 * Returns a list with all commands of a given map of dependencies in an ordered sequence.
+	 * Returns a Set with all commands of a given map of dependencies in an ordered sequence.
 	 * 
-	 * @return A ordered list containing the commands of the catalog.
+	 * @return A ordered Set containing the commands of the catalog.
 	 */	
-	public List<String> getOrderedCommands(Map<String, List<String>> dependencies) {
+	public Set<String> getOrderedCommands(Map<String, Set<String>> dependencies) {
 
-		return getOrderedCommands(dependencies, new ArrayList<String>(),
-				new ArrayList<String>());
+		return getOrderedCommands(dependencies, new HashSet<String>(),
+				new HashSet<String>());
 	}
 	
-	public List<String> getOrderedCommands(List<String> startCommands,
-			List<String> endCommands) {
+	public Set<String> getOrderedCommands(Set<String> startCommands, 
+			Set<String> endCommands) {
 
 		DependencyCollector dependencyCollector = new DependencyCollector(catalog);
-		Map<String, List<String>> dependencies;
+		Map<String, Set<String>> dependencies;
 		
 		
 		dependencies = dependencyCollector.getDependencies();
@@ -120,8 +120,8 @@ public class ChainManagement {
 		return dependencyCollector.orderCommands(dependencies);
 	}
 	
-	public List<String> getOrderedCommands(Map<String, List<String>> dependencies, List<String> startCommands,
-			List<String> endCommands) {
+	public Set<String> getOrderedCommands(Map<String, Set<String>> dependencies, Set<String> startCommands,
+			 Set<String> endCommands) {
 
 		DependencyCollector dependencyCollector = new DependencyCollector();
 		
@@ -133,9 +133,9 @@ public class ChainManagement {
 	}
 
 	/**
-	 * Takes a list of commands and executes them in the sequence of the list
+	 * Takes a Set of commands and executes them in the sequence of the Set
 	 */
-	public void executeOrderedCommands(List<String> commandList) {
+	public void executeOrderedCommands(Set<String> commandList) {
 		try {
 			Command command;
 			for (String commandName : commandList) {
@@ -147,7 +147,7 @@ public class ChainManagement {
 		}
 	}
 
-	public void executeOrderedCommands(List<String> commandList,
+	public void executeOrderedCommands(Set<String> commandList,
 			CommunicationContext localCommunicationContext) {
 		try {
 			Command command;
@@ -169,7 +169,7 @@ public class ChainManagement {
 		ChainManagement chainManager = new ChainManagement();
 		ChainCommandLineParser commandLineParser = new ChainCommandLineParser(
 				args);
-		List<String> orderedCommands;
+		Set<String> orderedCommands;
 		String catalogLocation;
 		chainManager.init();
 

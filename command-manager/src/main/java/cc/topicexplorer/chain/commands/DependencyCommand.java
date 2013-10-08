@@ -1,12 +1,11 @@
 package cc.topicexplorer.chain.commands;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.commons.chain.Command;
 import org.apache.commons.chain.Context;
-import org.apache.log4j.*;
+import org.apache.log4j.Logger;
 
 import cc.topicexplorer.chain.DependencyContext;
 
@@ -36,10 +35,10 @@ import cc.topicexplorer.chain.DependencyContext;
 
 public abstract class DependencyCommand implements Command {
 
-	protected List<String> afterDependencies = new ArrayList<String>();
-	protected List<String> beforeDependencies = new ArrayList<String>();
-	protected List<String> optionalAfterDependencies = new ArrayList<String>();
-	protected List<String> optionalBeforeDependencies = new ArrayList<String>();
+	protected Set<String> afterDependencies = new HashSet<String>();
+	protected Set<String> beforeDependencies = new HashSet<String>();
+	protected Set<String> optionalAfterDependencies = new HashSet<String>();
+	protected Set<String> optionalBeforeDependencies = new HashSet<String>();
 	protected Logger logger = Logger.getRootLogger();
 
 	/*

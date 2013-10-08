@@ -3,17 +3,16 @@ package cc.topicexplorer.chain;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.chain.Catalog;
 import org.apache.commons.chain.Command;
-import org.apache.log4j.*;
+import org.apache.log4j.Logger;
 
 /**
  * Collects dependencies of commands mentioned in the catalog and gets them
@@ -47,7 +46,7 @@ public class DependencyCollector {
 	 * maps, so it must be executed before the maps are changed, e.g. before
 	 * executing the orderCommands method because it changes the maps.
 	 */
-	private void makeDotFile(Map<String, List<String>> composedDependencies, Map<String, List<String>> optionalDependencies) {
+	private void makeDotFile(Map<String, Set<String>> composedDependencies, Map<String, Set<String>> optionalDependencies) {
 		String dotContent = "digraph G { \n";
 		dotContent += "rankdir = BT; \n";
 		dotContent += "node [shape=record]; \n";
@@ -101,9 +100,9 @@ public class DependencyCollector {
 	 * @param beforeDependencies
 	 */
 	private void updateDependencies(String name,
-			Map<String, List<String>> dependencies,
-			List<String> afterDependencies, List<String> beforeDependencies) {
-		List<String> compoundBeforeList = new ArrayList<String>();
+			Map<String, Set<String>> dependencies,
+			Set<String> afterDependencies, Set<String> beforeDependencies) {
+		Set<String> compoundBeforeList = new HashSet<String>();
 
 		if (dependencies.containsKey(name)) {
 			compoundBeforeList.addAll(dependencies.get(name));
@@ -112,7 +111,7 @@ public class DependencyCollector {
 		dependencies.put(name, compoundBeforeList);
 
 		if (!afterDependencies.isEmpty()) {
-			ArrayList<String> compoundAfterList = new ArrayList<String>();
+			Set<String> compoundAfterList = new HashSet<String>();
 			for (String key : afterDependencies) {
 				compoundAfterList.add(name);
 				if (dependencies.containsKey(key)) {
@@ -130,10 +129,10 @@ public class DependencyCollector {
 	 * Then those per command set dependencies and optional dependencies will be
 	 * read out and processed by the updateDependencies method.
 	 */
-	public Map<String, List<String>> getDependencies() {
-		Map<String, List<String>> dependencies = new HashMap<String, List<String>>();
-		Map<String, List<String>> optionalDependencies = new HashMap<String, List<String>>();
-		Map<String, List<String>> composedDependencies = null;
+	public Map<String, Set<String>> getDependencies() {
+		Map<String, Set<String>> dependencies = new HashMap<String, Set<String>>();
+		Map<String, Set<String>> optionalDependencies = new HashMap<String, Set<String>>();
+		Map<String, Set<String>> composedDependencies = null;
 		
 		try {
 			DependencyContext dependencyContext = new DependencyContext();
@@ -152,7 +151,7 @@ public class DependencyCollector {
 						dependencyContext.getOptionalBeforeDependencies());
 			}
 			
-			composedDependencies = new HashMap<String, List<String>>(dependencies);
+			composedDependencies = new HashMap<String, Set<String>>(dependencies);
 			
 			for (String key : optionalDependencies.keySet()) {
 				for (String value : optionalDependencies.get(key)) {
@@ -176,17 +175,17 @@ public class DependencyCollector {
 	 * Topologically sorts the composedDependencies and sets the orderedCommands
 	 * variable.
 	 */
-	public List<String> orderCommands(Map<String, List<String>> dependencies) {
-		Map<String, List<String>> concurrentDependencies = new ConcurrentHashMap<String, List<String>>(
+	public Set<String> orderCommands(Map<String, Set<String>> dependencies) {
+		Map<String, Set<String>> concurrentDependencies = new ConcurrentHashMap<String, Set<String>>(
 				dependencies);
-		List<String> orderedCommands = new LinkedList<String>();
-		LinkedList<String> helpList = new LinkedList<String>();
+		Set<String> orderedCommands = new HashSet<String>();
+		Set<String> helpList = new HashSet<String>();
 		String node = "";
 
 		// find all nodes with no dependencies, put into helpList, remove from
 		// HashMap
 		for (String key : concurrentDependencies.keySet()) {
-			List<String> list = concurrentDependencies.get(key);
+			Set<String> list = concurrentDependencies.get(key);
 
 			if (list.isEmpty()) {
 				helpList.add(key);
@@ -197,13 +196,13 @@ public class DependencyCollector {
 		// as long as helpList contains a node without dependencies, take one,
 		// remove it from helpList, put into commandList
 		while (!helpList.isEmpty()) {
-			node = helpList.getFirst();
+			node = helpList.iterator().next();
 			helpList.remove(node);
 			orderedCommands.add(node);
 
 			// check if there is any edge between the node and another one
 			for (String key : concurrentDependencies.keySet()) {
-				List<String> list = concurrentDependencies.get(key);
+				Set<String> list = concurrentDependencies.get(key);
 
 				// if the node is in a value list, remove it
 				if (list.contains(node)) {
@@ -231,10 +230,10 @@ public class DependencyCollector {
 		return orderedCommands;
 	}
 
-	public Map<String, List<String>> getStrongComponents(Map<String, List<String>> dependencies, List<String> startCommands,
-			List<String> endCommands) {
+	public Map<String, Set<String>> getStrongComponents(Map<String, Set<String>> dependencies, Set<String> startCommands,
+			Set<String> endCommands) {
 
-		Map<String, List<String>> newDependencies = new ConcurrentHashMap<String, List<String>>();
+		Map<String, Set<String>> newDependencies = new ConcurrentHashMap<String, Set<String>>();
 		
 		if (startCommands.isEmpty()) {
 			newDependencies.putAll(dependencies);
@@ -255,14 +254,14 @@ public class DependencyCollector {
 		//  to be done
 	}
 
-	private void iterateDependenciesDown(Map<String, List<String>> dependencies, Map<String, List<String>> newDependencies, String command) {
+	private void iterateDependenciesDown(Map<String, Set<String>> dependencies, Map<String, Set<String>> newDependencies, String command) {
 		// pruefe welche keys das aktuelle command in value-Liste haben, d.h.
 		// welche commands von dem aktuellen abhaengen
 		for (String key : dependencies.keySet()) {
 			if (dependencies.get(key).contains(command)) {
 				// falls enthalten, muss es in neue Map und rekursiv
 				// abhanegigkeiten fuer dieses command pruefen
-				List<String> tmp = new ArrayList<String>();
+				Set<String> tmp = new HashSet<String>();
 				tmp.add(command);
 				if (newDependencies.get(key) != null) {
 					tmp.addAll(newDependencies.get(key));

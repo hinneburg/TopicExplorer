@@ -37,9 +37,9 @@ public class DependencyCollector {
 	public DependencyCollector(Catalog catalog) {
 		this.catalog = catalog;
 	}
-	
+
 	public DependencyCollector() {
-		
+
 	}
 
 	/**
@@ -48,7 +48,8 @@ public class DependencyCollector {
 	 * maps, so it must be executed before the maps are changed, e.g. before
 	 * executing the orderCommands method because it changes the maps.
 	 */
-	private void makeDotFile(Map<String, Set<String>> composedDependencies, Map<String, Set<String>> optionalDependencies) {
+	private void makeDotFile(Map<String, Set<String>> composedDependencies,
+			Map<String, Set<String>> optionalDependencies, String name) {
 		String dotContent = "digraph G { \n";
 		dotContent += "rankdir = BT; \n";
 		dotContent += "node [shape=record]; \n";
@@ -76,7 +77,7 @@ public class DependencyCollector {
 
 		try {
 			BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(
-					"etc/graph.dot"));
+					"etc/graph" + name + ".dot"));
 			bufferedWriter.write(dotContent);
 			bufferedWriter.close();
 		} catch (IOException e) {
@@ -123,7 +124,7 @@ public class DependencyCollector {
 			}
 		}
 	}
-	
+
 	/**
 	 * Every command of the catalog will be executed with the dependencyContext.
 	 * Then a command should set its dependencies in the dependencyContext.
@@ -135,7 +136,7 @@ public class DependencyCollector {
 		Map<String, Set<String>> dependencies = new HashMap<String, Set<String>>();
 		Map<String, Set<String>> optionalDependencies = new HashMap<String, Set<String>>();
 		Map<String, Set<String>> composedDependencies = null;
-		
+
 		try {
 			DependencyContext dependencyContext = new DependencyContext();
 			String name;
@@ -152,9 +153,10 @@ public class DependencyCollector {
 						dependencyContext.getOptionalAfterDependencies(),
 						dependencyContext.getOptionalBeforeDependencies());
 			}
-			
-			composedDependencies = new HashMap<String, Set<String>>(dependencies);
-			
+
+			composedDependencies = new HashMap<String, Set<String>>(
+					dependencies);
+
 			for (String key : optionalDependencies.keySet()) {
 				for (String value : optionalDependencies.get(key)) {
 					if (composedDependencies.containsKey(value)) {
@@ -162,16 +164,15 @@ public class DependencyCollector {
 					}
 				}
 			}
-			
-			makeDotFile(composedDependencies, optionalDependencies);
-			
+
+			makeDotFile(composedDependencies, optionalDependencies, "");
+
 		} catch (Exception e) {
 			logger.error(e);
 		}
-		
+
 		return composedDependencies;
 	}
-
 
 	/**
 	 * Topologically sorts the composedDependencies and sets the orderedCommands
@@ -228,20 +229,33 @@ public class DependencyCollector {
 					+ concurrentDependencies);
 			System.exit(1);
 		}
-		
+
 		return orderedCommands;
 	}
 
-	public Map<String, Set<String>> getStrongComponents(Map<String, Set<String>> dependencies, Set<String> startCommands,
+	public Map<String, Set<String>> getStrongComponents(
+			Map<String, Set<String>> dependencies, Set<String> startCommands,
 			Set<String> endCommands) {
 
-		Map<String, Set<String>> newDependencies = new ConcurrentHashMap<String, Set<String>>();
+		Map<String, Set<String>> newDependencies = new HashMap<String, Set<String>>();
+
+		logger.info("startCommands " + startCommands + "+++");
 		
 		if (startCommands.isEmpty()) {
 			newDependencies.putAll(dependencies);
 		} else {
 			for (String command : startCommands) {
-				iterateDependenciesDown(dependencies, newDependencies, command);
+				// pruefen, ob es sich wirklich um Wurzel handelt
+				// dazu muss command als key mit leerer value-Menge vorhanden
+				// sein
+				if (!dependencies.get(command).isEmpty()) {
+					logger.fatal("Given command seems not to be a root.");
+					System.exit(1);
+				} else {					
+					// fuege aktuelles Element mit leeren values hinzu
+					newDependencies.put(command, new HashSet<String>());
+					iterateDependenciesDown(dependencies, newDependencies, command);					
+				}				
 			}
 		}
 
@@ -249,14 +263,18 @@ public class DependencyCollector {
 			iterateDependenciesUp(command);
 		}
 
+		makeDotFile(newDependencies, new HashMap<String, Set<String>>(), "_strongComponents");
+
 		return newDependencies;
 	}
 
 	private void iterateDependenciesUp(String command) {
-		//  to be done
+		// to be done
 	}
 
-	private void iterateDependenciesDown(Map<String, Set<String>> dependencies, Map<String, Set<String>> newDependencies, String command) {
+	private void iterateDependenciesDown(Map<String, Set<String>> dependencies,
+			Map<String, Set<String>> newDependencies, String command) {
+		
 		// pruefe welche keys das aktuelle command in value-Liste haben, d.h.
 		// welche commands von dem aktuellen abhaengen
 		for (String key : dependencies.keySet()) {
@@ -265,7 +283,7 @@ public class DependencyCollector {
 				// abhanegigkeiten fuer dieses command pruefen
 				Set<String> tmp = new HashSet<String>();
 				tmp.add(command);
-				if (newDependencies.get(key) != null) {
+				if (newDependencies.containsKey(key)) {
 					tmp.addAll(newDependencies.get(key));
 				}
 				newDependencies.put(key, tmp);
@@ -273,5 +291,4 @@ public class DependencyCollector {
 			}
 		}
 	}
-
 }

@@ -161,13 +161,6 @@ public class ChainManagement {
 	}
 	
 	public CommunicationContext getInitialCommunicationContext() {		
-		try {
-			init();
-			setCatalog("/catalog.xml");
-			getOrderedCommands();
-		} catch (Exception e) {
-			logger.error(e);
-		}
 		
 		return communicationContext;
 	}

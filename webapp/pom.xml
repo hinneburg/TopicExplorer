@@ -7,9 +7,7 @@
     <artifactId>topicexplorer-parent</artifactId>
     <version>1.0-SNAPSHOT</version>
   </parent>
-  <groupId>cc.topicexplorer</groupId>
   <artifactId>webapp</artifactId>
-  <version>1.0-SNAPSHOT</version>
   <packaging>war</packaging>
   <name>webapp Maven Webapp</name>
   <url>http://maven.apache.org</url>
@@ -26,9 +24,39 @@
             <version>2.4</version>
             <scope>provided</scope>
         </dependency>
-        		<dependency>
+        <dependency>
 			<groupId>cc.topicexplorer</groupId>
 			<artifactId>command-manager</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>cc.topicexplorer</groupId>
+			<artifactId>core-webinterface</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>cc.topicexplorer</groupId>
+			<artifactId>plugin-link-webinterface</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>cc.topicexplorer</groupId>
+			<artifactId>plugin-text-webinterface</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>cc.topicexplorer</groupId>
+			<artifactId>plugin-time-webinterface</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>cc.topicexplorer</groupId>
+			<artifactId>plugin-colortopic-webinterface</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>cc.topicexplorer</groupId>
+			<artifactId>plugin-hierarchicaltopic-webinterface</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
   </dependencies>

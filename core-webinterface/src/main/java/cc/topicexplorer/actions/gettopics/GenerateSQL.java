@@ -23,7 +23,7 @@ public class GenerateSQL extends TableSelectCommand {
 		SelectMap preQueryMap, innerQueryMap, mainQueryMap, tempMainQueryMap, tempInnerQueryMap;
 		PrintWriter servletWriter = (PrintWriter) communicationContext.get("SERVLET_WRITER");
 		
-		JSONObject topic, topicTerm, topicTermColl;
+		JSONObject topic, topicTerm, topicTermColl, all;
 		JSONArray topicArray, topicTermArray;
 		
 		preQueryMap = (SelectMap) communicationContext.get("PRE_QUERY");
@@ -37,6 +37,7 @@ public class GenerateSQL extends TableSelectCommand {
 		
 		boolean firstRes;
 		
+		all = new JSONObject();
 		topic = new JSONObject();
 		topicTerm = new JSONObject();
 		topicTermColl = new JSONObject();
@@ -74,8 +75,10 @@ public class GenerateSQL extends TableSelectCommand {
 					e.printStackTrace();
 				}		
 			}
-			servletWriter.println(topicArray.toString());	
-			servletWriter.println(topicTermColl.toString());		
+			all.put("TOPIC", topicArray);
+			all.put("TERM_TOPIC", topicTermColl);
+	
+			servletWriter.println(all.toString());		
 		} catch (SQLException e) {
 			logger.fatal("Error in Query: " + preQueryMap.getSQLString());
 			e.printStackTrace();
@@ -84,6 +87,6 @@ public class GenerateSQL extends TableSelectCommand {
 	
 	@Override
 	public void addDependencies() {
-//		beforeDependencies.add("GetTopicsCoreCollect"); // FIXME: kann wieder rein, wenn ChainManager gefixt ist
+		beforeDependencies.add("GetTopicsCoreCollect"); 
 	}	
 }

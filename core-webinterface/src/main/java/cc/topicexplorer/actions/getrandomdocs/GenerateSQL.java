@@ -28,9 +28,10 @@ public class GenerateSQL extends TableSelectCommand {
 		
 		ArrayList<String> docColumnList = this.getCleanColumnNames(innerQueryMap);
 		
-		JSONObject doc, docTopic, docTopicColl;
+		JSONObject doc, docTopic, docTopicColl, all;
 		JSONArray docArray, docTopicArray, docTopicCollArray;
-		 
+		
+		all = new JSONObject();
 		doc = new JSONObject();
 		docTopic = new JSONObject();
 		docTopicColl = new JSONObject();
@@ -40,6 +41,7 @@ public class GenerateSQL extends TableSelectCommand {
 		
 		int random, docId = -1;
 
+		boolean go=true;
 		try {
 			ResultSet preQueryRS = database.executeQuery(preQueryMap.getSQLString());
 			if(preQueryRS.next()) {
@@ -49,7 +51,7 @@ public class GenerateSQL extends TableSelectCommand {
 		         
 		        try {  	
 		        	ResultSet mainQueryRS = database.executeQuery(mainQueryMap.getSQLString());
-		        	while(mainQueryRS.next()) {
+		        	while(mainQueryRS.next() && go) {
 		        		if(docId != mainQueryRS.getInt("DOCUMENT_ID")) {
 		        			if(docTopicArray.size() > 0) {
 		        				docTopicColl.put("DOCUMENT_ID", docId);
@@ -57,6 +59,7 @@ public class GenerateSQL extends TableSelectCommand {
 		        				docTopicCollArray.add(docTopicColl);
 		        				docTopicColl.clear();
 		        				docTopicArray.clear();
+		        				go = false;
 		        			}
 		        			docId = mainQueryRS.getInt("DOCUMENT_ID");
 		        			for(int i = 0; i < docColumnList.size(); i++ ) {
@@ -70,8 +73,9 @@ public class GenerateSQL extends TableSelectCommand {
 		        		docTopic.put("PR_DOCUMENT_GIVEN_TOPIC", mainQueryRS.getString("PR_DOCUMENT_GIVEN_TOPIC"));
 		        		docTopicArray.add(docTopic);
 		        	}
-		        	servletWriter.println(docArray.toString());	
-		        	servletWriter.println(docTopicCollArray.toString());	
+		        	all.put("DOCUMENT", docArray);
+		        	all.put("DOCUMENT_TOPIC", docTopicCollArray);
+		        	servletWriter.println(all.toString());	
 		        } catch (SQLException e) {
 		        	logger.fatal("Error in Query: " + mainQueryMap.getSQLString());
 					e.printStackTrace();

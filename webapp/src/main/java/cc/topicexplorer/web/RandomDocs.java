@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
+
 import cc.topicexplorer.chain.ChainManagement;
 import cc.topicexplorer.chain.CommunicationContext;
 /**
@@ -17,7 +19,7 @@ import cc.topicexplorer.chain.CommunicationContext;
 public class RandomDocs extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	
-//	private static Logger logger = Logger.getRootLogger();
+	private static Logger logger = Logger.getRootLogger();
     /**
      * @throws Exception 
      * @see HttpServlet#HttpServlet()
@@ -49,10 +51,12 @@ public class RandomDocs extends HttpServlet {
 			e.printStackTrace();
 		}
 
+		
+		logger.info("1");
 		Set<String> orderedCommands = chainManager.getOrderedCommands();
 				
 
-	//	logger.info("ordered commands: " + orderedCommands);
+		logger.info("ordered commands: " + orderedCommands);
 
 		chainManager.executeOrderedCommands(orderedCommands);
         // TODO Auto-generated constructor stub

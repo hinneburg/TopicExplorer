@@ -29,6 +29,7 @@ import cc.topicexplorer.chain.commands.PropertiesCommand;
 public class ChainManagement {
 	private Catalog catalog;
 	private CommunicationContext communicationContext;
+	private DependencyCollector dependencyCollector;
 	private static Logger logger = Logger.getRootLogger();
 
 	public ChainManagement() {
@@ -84,6 +85,15 @@ public class ChainManagement {
 		}
 	}
 	
+	public Map<String, Set<String>> getDependencies() {
+		dependencyCollector = new DependencyCollector(catalog);
+		Map<String, Set<String>> dependencies;		
+		
+		dependencies = dependencyCollector.getDependencies();
+		
+		return dependencies;
+	}
+	
 	/**
 	 * Returns a Set with all commands of the catalog in an ordered sequence.
 	 * 
@@ -108,15 +118,10 @@ public class ChainManagement {
 	
 	public List<String> getOrderedCommands(Set<String> startCommands, 
 			Set<String> endCommands) {
-
-		DependencyCollector dependencyCollector = new DependencyCollector(catalog);
 		Map<String, Set<String>> dependencies;
 		
-		
-		dependencies = dependencyCollector.getDependencies();
+		dependencies = getDependencies();
 		dependencies = dependencyCollector.getStrongComponents(dependencies, startCommands, endCommands);
-		
-		communicationContext.put("dependencies", dependencies);
 		
 		return dependencyCollector.orderCommands(dependencies);
 	}
@@ -127,8 +132,6 @@ public class ChainManagement {
 		DependencyCollector dependencyCollector = new DependencyCollector();
 		
 		dependencies = dependencyCollector.getStrongComponents(dependencies, startCommands, endCommands);
-		
-		communicationContext.put("dependencies", dependencies);
 		
 		return dependencyCollector.orderCommands(dependencies);
 	}

@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.chain.impl.ContextBase;
-import org.apache.log4j.Logger;
 
 public class CommunicationContext extends ContextBase {
 

@@ -4,8 +4,8 @@
 	<command name="GetRandomDocsCoreCreateSQL" className="cc.topicexplorer.actions.getrandomdocs.GenerateSQL"/>
 	<command name="GetRandomDocsTextCollect" className="cc.topicexplorer.plugin.text.actions.getrandomdocs.Collect"/>
 		
-<!-- 	<command name="GetTopicsCoreCollect" className="cc.topicexplorer.actions.gettopics.Collect"/>
+ 	<command name="GetTopicsCoreCollect" className="cc.topicexplorer.actions.gettopics.Collect"/>
 	<command name="GetTopicsCoreCreateSQL" className="cc.topicexplorer.actions.gettopics.GenerateSQL"/>	
 	<command name="GetTopicsTextCollect" className="cc.topicexplorer.plugin.text.actions.gettopics.Collect"/>
-	<command name="GetTopicsHierarchicalTopicCollect" className="cc.topicexplorer.plugin.hierarchicaltopic.actions.gettopics.Collect"/> -->	
+	<command name="GetTopicsHierarchicalTopicCollect" className="cc.topicexplorer.plugin.hierarchicaltopic.actions.gettopics.Collect"/> 
 </catalog>

@@ -2,7 +2,10 @@ package cc.topicexplorer.web;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -51,7 +54,13 @@ public class RandomDocs extends HttpServlet {
 			e.printStackTrace();
 		}
 
-		List<String> orderedCommands = chainManager.getOrderedCommands();	
+		Set <String> startCommands = new HashSet<String>() ;
+		Set <String> endCommands = new HashSet <String>();
+		
+		startCommands.add("GetRandomDocsCoreCollect");
+		
+		
+		List<String> orderedCommands = chainManager.getOrderedCommands(startCommands, endCommands);	
 
 		logger.info("ordered commands: " + orderedCommands);
 

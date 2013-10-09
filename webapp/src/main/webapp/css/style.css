@@ -1,0 +1,330 @@
+html, body {
+	margin: 0px;
+	padding: 0px;
+	background-color: gainsboro;		
+}
+#ajaxLoader {
+	position: absolute;
+	right: 200px;
+	top: 12px;
+}
+#ajaxLoader p {
+	position: relative;
+	float: right;
+	margin: 6px 0px 0px 6px;	
+}
+.content {
+	position: relative;
+	width: 100%;	
+	font-family: Sans-serif;
+}
+.leftBody {		
+	position: relative;
+}
+.leftBody .searchBar {
+	height: 64px;
+	overflow: auto;
+}
+.leftBody .searchBar form {
+	padding: 10px 10px 20px 200px;	
+}
+.leftBody .searchBar form fieldset {
+	background-color: whitesmoke;
+    border: 1px solid silver;
+    float:left;    
+    margin: 0px;
+    padding: 1px;
+}
+.leftBody .searchBar form fieldset #searchField {
+	border: 1px solid gainsboro;
+    color: #3C3C3C;   
+    font-size: 1.385em;
+    height: 30px;
+    line-height: 27px;
+    margin: 2px;
+    text-indent: 5px;
+    width: 400px;
+}
+.leftBody #desktop {
+	position: relative;
+	background-color: whitesmoke;
+    border: 1px solid silver;
+    margin: 4px;
+    overflow: auto;
+    clear: left;
+}
+.rightBody {
+	position: relative;
+	z-index: 1;
+	width: 	200px;		
+	float: right;	
+}
+.content .button {
+	position: relative;
+	left: 5%;
+	height: 38px;
+	width: 182px;
+	color: #555555;
+	border: 1px solid silver;
+	border-radius: 6px;
+	text-shadow: 1px 1px 0 #FFFFFF;		
+	font-size: 15px;
+	font-weight: bold;
+	font-family: arial;
+}
+.leftBody .button {
+	float: right;
+	left: 0%;
+}
+.leftBody .leftBodyContent {
+	position: relative;		
+}
+.leftBody .documentList ul {
+	list-style: none outside none;
+    margin: 0px;
+    padding: 0px;	
+}
+.leftBody .documentList ul li {
+	position: relative;
+	background-color: #FFFFFF;
+    border: 1px solid gainsboro;
+    float: left;
+    height: 80px;
+    margin: 5px;
+    overflow: hidden;
+    padding: 5px;
+    width: 257px;
+    box-shadow: 3px 3px 4px;
+}
+.leftBody .documentList .docTitle {
+	color: #1122CC;
+    cursor: pointer;
+    font-size: medium;
+    margin: 0px 0px 0px 20px;
+    text-overflow: ellipsis;	
+    text-decoration: none;    
+}
+.leftBody .documentList .docContent {
+	float: right;
+    height: 100%;
+    position: static;
+    margin-top: 0px;
+    margin-left: 20px;
+    padding: 0px;
+    line-height: 1;    
+}
+.myHover .docContent {
+    height: 80% ! important;
+    overflow: auto;
+}
+.leftBody .documentList .docContent span {	
+	color: #222222;
+    font-size: small;
+    overflow: auto;
+}
+.leftBody .documentList .circles {
+	float: left;
+    height: 80px;
+    position: absolute;
+    width: 20px;
+}
+.leftBody .documentList .circles circle:hover{
+	cursor: pointer;
+}
+.leftBody .documentList .docButtons {
+	display: none;
+    height: 25px;
+    position: absolute;
+    right: 5px;	
+}
+.leftBody .documentList button {
+	height: 20px;
+	width: 20px;
+	float: right;
+}
+.leftBody .documentList .addButton {
+	background-image: url("../images/add2_24.png");
+    background-position: center center;
+    background-size: contain;
+}
+.leftBody .documentList .chartButton {
+	background-image: url("../images/relButton.png");
+    background-position: center center;
+    background-size: contain;
+}
+.leftBody .topicList {
+	background-color: whitesmoke;
+    border: 1px solid silver;
+    margin: 4px;
+    overflow: hidden;
+    position: relative;
+    margin-bottom: 0px;
+}
+.leftBody .topicList ul {
+    height: 100%;
+    position: relative;
+    list-style: none outside none;
+    margin: 0px;
+    padding: 0px;
+}
+.leftBody .topicList > ul > li {
+	border-style: solid;
+    border-width: 2px 2px 2px 1px;
+    float: left;
+    overflow: hidden;
+    padding: 5px;
+    position: relative;
+    width: 200px;	   
+}
+.leftBody .topicList .topicElementDiv {
+	background-color: white;
+    border: 1px solid grey;
+    height: 100%;
+    margin-left: 10%;
+    overflow: hidden;
+    position: relative;
+    width: 80%;	
+}
+.leftBody .topicList .topicElementMenu {
+	float: right;
+	height: 25px;
+}
+.leftBody .topicList button {
+	height: 20px;
+	width: 20px;
+	float: left;
+}
+.leftBody .topicList .showBig {
+	background-image: url("../images/glass.png");
+	background-position: center center;
+    background-size: contain;
+}
+.leftBody .topicList .addToCart {
+	background-image: url("../images/add2_24.png");
+	background-position: center center;
+    background-size: contain;
+}
+.leftBody .topicList .topicTitle {
+	background-color: whitesmoke;
+    border-bottom: 1px solid silver;
+    color: #222222;
+    font-size: medium;
+    font-weight: bold;
+    height: 18px;
+    margin-top: 1px;
+    overflow: hidden;
+    padding-left: 3px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.leftBody .topicList .topicElementContent {
+	margin-left: 5%;
+    overflow: auto;
+    width: 90%;
+    text-align: center;
+    height: 87%;
+}
+.leftBody .pointer {
+	margin: 0px 4px;
+    position: relative;
+    height: 16px;
+    overflow: hidden;
+    text-align: center;    
+}
+.leftBody .reiter {
+	height:20px;
+	border:1px solid silver;
+	float:left;
+	margin:0px;
+	margin-left:4px;
+	padding: 0px 5px;
+	border-bottom:0px;
+	border-radius: 12px 12px 0px 0px;
+	text-align: center;
+}
+.leftBody .reiter span {
+	vertical-align: middle;	
+}
+.leftBody .reiter.active {	
+	border-color: #3366EA;
+}
+.leftBody .reiter.active span {	
+	color: #3366EA;
+}
+
+.content .button:hover {
+	background: #dfdfdf; /* Old browsers */
+	background: -moz-linear-gradient(top,  #dfdfdf 0%, #ededed 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#dfdfdf), color-stop(100%,#ededed)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  #dfdfdf 0%,#ededed 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  #dfdfdf 0%,#ededed 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  #dfdfdf 0%,#ededed 100%); /* IE10+ */
+	background: linear-gradient(to bottom,  #dfdfdf 0%,#ededed 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#dfdfdf', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */	
+	cursor: pointer;	
+}
+.rightBody .shoppingCart {
+	position: relative;
+	width: 180px;
+	background-color: whitesmoke;
+	border: 1px solid silver;
+	left: 5%;
+	margin-top: 10px;
+}
+.bottom {
+	position: relative;
+    overflow: hidden;
+	height: 50px;
+}
+.bottom .topicBottomSliderDiv {
+	height: 42px;
+    margin: 4px;
+    position: relative;
+}
+.bottom .topicBottomSliderDiv .topicPrevElCont {
+	height: 100%;
+    position: relative;
+    width: 100%;
+}
+.bottom .topicBottomSliderDiv .topicPrevSlider {
+	position: absolute;
+    z-index: 5;	
+    top: 1px;
+}
+#groupG rect:hover {
+	cursor: pointer;	
+}
+.bottom svg {	
+    width: 100%;
+}
+
+.gradientGray {
+	background: #ededed; /* Old browsers */
+	background: -moz-linear-gradient(top,  #ededed 0%, #dfdfdf 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ededed), color-stop(100%,#dfdfdf)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top,  #ededed 0%,#dfdfdf 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top,  #ededed 0%,#dfdfdf 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top,  #ededed 0%,#dfdfdf 100%); /* IE10+ */
+	background: linear-gradient(to bottom,  #ededed 0%,#dfdfdf 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ededed', endColorstr='#dfdfdf',GradientType=0 ); /* IE6-9 */		
+}
+
+.small {
+	border: 1px solid black;
+	font-size: 10px;
+}
+
+#tabView .reiter .closeIcon {
+	position: absolute;
+	right: 5px;
+	top: 0px;
+	float: right;
+	margin-top: 4px;
+	border: 1px solid;
+	border-radius: 10px;
+	padding: 1px;
+	background-color: #FFFFFF;
+}
+#tabView .reiter .closeIcon:hover {
+	background-color: orange;
+}

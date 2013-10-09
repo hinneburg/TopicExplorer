@@ -41,7 +41,6 @@ public class GenerateSQL extends TableSelectCommand {
 		
 		int random, docId = -1;
 
-		boolean go=true;
 		try {
 			ResultSet preQueryRS = database.executeQuery(preQueryMap.getSQLString());
 			if(preQueryRS.next()) {
@@ -51,7 +50,7 @@ public class GenerateSQL extends TableSelectCommand {
 		         
 		        try {  	
 		        	ResultSet mainQueryRS = database.executeQuery(mainQueryMap.getSQLString());
-		        	while(mainQueryRS.next() && go) {
+		        	while(mainQueryRS.next()) {
 		        		if(docId != mainQueryRS.getInt("DOCUMENT_ID")) {
 		        			if(docTopicArray.size() > 0) {
 		        				docTopicColl.put("DOCUMENT_ID", docId);
@@ -59,7 +58,6 @@ public class GenerateSQL extends TableSelectCommand {
 		        				docTopicCollArray.add(docTopicColl);
 		        				docTopicColl.clear();
 		        				docTopicArray.clear();
-		        				go = false;
 		        			}
 		        			docId = mainQueryRS.getInt("DOCUMENT_ID");
 		        			for(int i = 0; i < docColumnList.size(); i++ ) {

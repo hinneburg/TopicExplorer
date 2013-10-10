@@ -43,6 +43,21 @@ public class SelectMap {
 		return select + from + where + orderBy + limit;
 	}
 
+	public ArrayList<String> getCleanColumnNames() {
+		ArrayList<String> list = new ArrayList<String>();
+		for(int i = 0; i < select.size(); i++  ) {
+			if(select.get(i).contains(".")) {
+				list.add(select.get(i).substring(select.get(i).indexOf(".") + 1));
+			} else if(select.get(i).toLowerCase().contains(" as ")) {
+				list.add(select.get(i).substring(select.get(i).toLowerCase().indexOf(" as ") + 3).trim());
+			} else {
+				list.add(select.get(i));
+			}	
+		}		
+		return list;		
+	}
+
+	
 	@SuppressWarnings("unchecked")
 	public SelectMap clone() {
 		SelectMap newMap = new SelectMap();

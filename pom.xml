@@ -25,7 +25,6 @@
 		<module>run-preprocessing</module>
 		<module>distribution-preprocessing</module>
 		<module>core-webinterface</module>
-    	<module>distribution-webinterface</module>
     	<module>plugin-text-webinterface</module>
     	<module>plugin-link-webinterface</module>
     	<module>plugin-time-webinterface</module>

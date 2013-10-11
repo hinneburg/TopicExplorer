@@ -46,8 +46,8 @@ function DocumentViewModel()
 {
 	var self = this;
 	self.documentData = ko.observableArray();
-	$.each( json.get('Document'), function( key, document ) {
-		self.documentData()[key] = new DocumentModel(document.DOCUMENT_ID, document.TEXT$TITLE, document.TOP_TOPIC, document.TEXT$FULLTEXT);
+	$.each( json.get('DOCUMENT'), function( key, document ) {
+		self.documentData()[key] = new DocumentModel(document.DOCUMENT_ID, document.TEXT$TITLE, [], document.TEXT$FULLTEXT);
 	});
 }
 function DocumentModel(id, name, relevanzen, textSnippet) {
@@ -61,7 +61,9 @@ function DocumentModel(id, name, relevanzen, textSnippet) {
 
 function showDocument(e) {
 	var doc = $(e.currentTarget).parents('li').attr('id').split('doc_')[1];
-	doc = jsonModel.Document[doc];
+	console.log(doc)
+	doc = jsonModel.DOCUMENT[doc];
+	console.log(doc)
 	gui.drawTab(doc.TEXT$TITLE(),true,true, doc.TEXT$FULLTEXT());
 	e.preventDefault();
 	return false;
@@ -76,7 +78,7 @@ function template()
 			'<button class="addButton" type="button" title="add to shortlist" name="addToCart"></button>'+
 			'<button class="chartButton" type="button" title="show topic mixture" name="showBig" onclick=""></button>'+
 		'</div>'+
-		'<a href="" class="docTitle"><nobr data-bind="text: name"></nobr></a>'+
+		'<a href="#" class="docTitle"><nobr data-bind="text: name"></nobr></a>'+
 		'<p class="docContent"><span data-bind="text: textSnippet"></span></p>'+
 		'<div class="circles" data-bind="drawCircles: topTopics">'+
 			'<svg width="100%" height="100%"></svg>'+

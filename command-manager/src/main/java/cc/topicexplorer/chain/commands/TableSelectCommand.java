@@ -18,10 +18,10 @@ public abstract class TableSelectCommand extends TableCommand {
 	protected ArrayList<String> getCleanColumnNames(SelectMap map) {
 		ArrayList<String> list = new ArrayList<String>();
 		for(int i = 0; i < map.select.size(); i++  ) {
-			if(map.select.get(i).contains(".")) {
-				list.add(map.select.get(i).substring(map.select.get(i).indexOf(".") + 1));
-			} else if(map.select.get(i).toLowerCase().contains(" as ")) {
+			if(map.select.get(i).toLowerCase().contains(" as ")) {
 				list.add(map.select.get(i).substring(map.select.get(i).toLowerCase().indexOf(" as ") + 3).trim());
+			} else if(map.select.get(i).contains(".")) {
+				list.add(map.select.get(i).substring(map.select.get(i).indexOf(".") + 1));
 			} else {
 				list.add(map.select.get(i));
 			}	

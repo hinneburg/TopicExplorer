@@ -1,11 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <catalog>
-	<command name="GetRandomDocsCoreCollect" className="cc.topicexplorer.actions.getrandomdocs.Collect"/>	
-	<command name="GetRandomDocsCoreCreateSQL" className="cc.topicexplorer.actions.getrandomdocs.GenerateSQL"/>
-	<command name="GetRandomDocsTextCollect" className="cc.topicexplorer.plugin.text.actions.getrandomdocs.Collect"/>
-		
- 	<command name="GetTopicsCoreCollect" className="cc.topicexplorer.actions.gettopics.Collect"/>
-	<command name="GetTopicsCoreCreateSQL" className="cc.topicexplorer.actions.gettopics.GenerateSQL"/>	
-	<command name="GetTopicsTextCollect" className="cc.topicexplorer.plugin.text.actions.gettopics.Collect"/>
-	<command name="GetTopicsHierarchicalTopicCollect" className="cc.topicexplorer.plugin.hierarchicaltopic.actions.gettopics.Collect"/> 
+	<command className="cc.topicexplorer.actions.getrandomdocs.Create" name="GetRandomDocsCoreCreate"/>
+	<command className="cc.topicexplorer.actions.getrandomdocs.Collect" name="GetRandomDocsCoreCollect"/>
+	<command className="cc.topicexplorer.actions.getrandomdocs.GenerateSQL" name="GetRandomDocsCoreGenerateSQL"/>
+	<command className="cc.topicexplorer.actions.gettopics.Create" name="GetTopicsCoreCreate"/>
+	<command className="cc.topicexplorer.actions.gettopics.Collect" name="GetTopicsCoreCollect"/>
+	<command className="cc.topicexplorer.actions.gettopics.GenerateSQL" name="GetTopicsCoreGenerateSQL"/>
+	<command className="cc.topicexplorer.plugin.time.actions.getrandomdocs.Collect" name="GetRandomDocsTimeCollect"/>
+	<command className="cc.topicexplorer.plugin.link.actions.getrandomdocs.Collect" name="GetRandomDocsLinkCollect"/>
+	<command className="cc.topicexplorer.plugin.text.actions.getrandomdocs.Collect" name="GetRandomDocsTextCollect"/>
+	<command className="cc.topicexplorer.plugin.text.actions.gettopics.Collect" name="GetTopicsTextCollect"/>
+	<command className="cc.topicexplorer.plugin.hierarchicaltopic.actions.gettopics.Collect" name="GetTopicsHierarchicalTopicCollect"/>
+	<command className="cc.topicexplorer.plugin.colortopic.actions.gettopics.Collect" name="GetTopicsColorTopicCollect"/> 	
+	<command name="InitCoreCreate" className="cc.topicexplorer.actions.init.Create"/>
+	<command name="InitCoreCollect" className="cc.topicexplorer.actions.init.Collect"/>
+	<command name="InitCoreGenerateSQL" className="cc.topicexplorer.actions.init.GenerateSQL"/>	
+	<command name="InitTextCollect" className="cc.topicexplorer.plugin.text.actions.init.Collect"/>
+	<command name="InitHierarchicalTopicCollect" className="cc.topicexplorer.plugin.hierarchicaltopic.actions.init.Collect"/>	
+	<command name="InitColorTopicCollect" className="cc.topicexplorer.plugin.colortopic.actions.init.Collect"/>
 </catalog>

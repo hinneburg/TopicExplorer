@@ -45,72 +45,7 @@ function PluginModel(defaultPlugins) {
 		self.registerPlugin(value);
 	});
 }
-/*
-function DocumentViewModel() {
-	var self = this;
-	var jsonTestObject;
-	self.topicData = ko.observableArray();
-	self.documentData = ko.observableArray();
-	
-	//Behaviors
-	self.getRandom = function(limit) {
-		$.getJSON('json.jsp', {art:'random', id:null, limit:limit})
-		.done(function(json) {
-			jsonObject = json;
-			if(self.topicData().length != json.Topic.length) {
-				console.log('belege Themen');
-				self.topicData(ko.utils.arrayMap(json.Topic, function(topic) {				
-			        return new TopicViewModel(topic.color, topic.groups, topic.id, topic.name, topic.rang, topic.wortliste); 
-			    }));
-			}			
-			self.documentData(ko.utils.arrayMap(json.Document, function(document){
-				return new DocumentModel(document.DOCUMENT_ID, document.TEXT$TITLE, document.TOP_TOPIC, document.TEXT$FULLTEXT);
-			}));
-			enableDocumentHover();
-			topicsLoaded();
-		});
-	};
-	self.searchTopic = function(id){		
-		var topic = ko.utils.arrayFirst(self.topicData(), function(item) {			
-		    if(id == item.id) {		    	
-		    	return item;
-		    }
-		});	
-		return topic;
-	};
-}
 
-function WordViewModel(word, relevanz) {
-	var self = this;
-	self.relevanz  = relevanz;
-	self.word = word;
-}
-function TopicViewModel(color, groups, id, name, rang, words) {	
-	var self = this;
-	self.words = ko.observableArray(ko.utils.arrayMap(words, function(word) {		
-        return new WordViewModel(word.wort, word.relevanz);
-    }));
-	self.color = ko.observable(color);
-	self.groups = groups;
-	self.id = id;
-	self.name = name;
-	self.rang = rang;
-}
-function DocumentModel(id, name, relevanzen, textSnippet) {
-	var self = this;	
-	self.id = id;
-	self.name = ko.observable(name);
-	self.relevanzen = ko.observableArray(relevanzen);
-	self.textSnippet = textSnippet;	
-	self.topTopics = self.relevanzen.slice(0,4);		
-}
-function DocumentRelevanzModel(id, relevanz) {
-	var self = this;
-	self.relevanz = relevanz;
-	self.id = id;
-}
-var modelView = new DocumentViewModel();
-*/
 var pluginModel;
 $(document).ajaxStart(function() {
 	$( "#ajaxLoader" ).show();
@@ -120,12 +55,13 @@ $(document).ajaxStart(function() {
 	$( "#ajaxLoader" ).hide();
 });
 $(document).ready(function() {
-	$.getJSON('json.jsp', {art:'random', id:null, limit:20})
+	$.getJSON('getRandomDocs', {art:'random', id:null, limit:20})
 	.done(function(json) {
 		jsonModel = ko.mapping.fromJS(json);
 		jsonObject = json;
-		pluginModel = new PluginModel(['slider', 'topic', 'text', 'search']);
-	});
+		console.log("sd");
+		pluginModel = new PluginModel(['text', 'search']);//'slider', 'topic', 
+	}).fail(console.log("error"));
 		
 	ko.bindingHandlers.topicTest = {
 		update: function(elem,valueAccessor) {

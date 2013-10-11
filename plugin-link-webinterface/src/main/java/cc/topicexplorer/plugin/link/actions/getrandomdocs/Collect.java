@@ -22,7 +22,7 @@ public class Collect extends TableSelectCommand {
 
 	@Override
 	public void addDependencies() {
-		beforeDependencies.add("GetRandomDocsCoreCollect");
-		afterDependencies.add("GetRandomDocsCoreCreateSQL");
+		beforeDependencies.add("GetRandomDocsCoreCreate");
+		afterDependencies.add("GetRandomDocsCoreGenerateSQL");
 	}
 }

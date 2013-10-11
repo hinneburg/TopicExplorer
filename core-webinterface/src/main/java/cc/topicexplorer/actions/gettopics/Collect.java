@@ -14,14 +14,14 @@ public class Collect extends TableSelectCommand {
 		
 		CommunicationContext communicationContext = (CommunicationContext) context;
 		
-		preQueryMap = new SelectMap();
+		preQueryMap = (SelectMap) communicationContext.get("PRE_QUERY");
 		
 		preQueryMap.select.add("TOPIC_ID");
 		preQueryMap.from.add("TOPIC");
 		
 		communicationContext.put("PRE_QUERY", preQueryMap);
 	
-		innerQueryMap = new SelectMap();
+		innerQueryMap = (SelectMap) communicationContext.get("INNER_QUERY");
 		
 		innerQueryMap.select.add("COUNT(*) AS words");
 		innerQueryMap.select.add("SUM(PR_TERM_GIVEN_TOPIC) AS maxRelevanz");
@@ -30,7 +30,7 @@ public class Collect extends TableSelectCommand {
 		
 		communicationContext.put("INNER_QUERY", innerQueryMap);
 		
-		mainQueryMap = new SelectMap();
+		mainQueryMap = (SelectMap) communicationContext.get("MAIN_QUERY");
 		
 		mainQueryMap.select.add("(PR_TERM_GIVEN_TOPIC/maxRelevanz) AS relevanz");
 		mainQueryMap.select.add("TERM.TERM_NAME");
@@ -50,6 +50,7 @@ public class Collect extends TableSelectCommand {
 	
 	@Override
 	public void addDependencies() {
-		afterDependencies.add("GetTopicsCoreCreateSQL");
+		beforeDependencies.add("GetTopicsCoreCreate");
+		afterDependencies.add("GetTopicsCoreGenerateSQL");
 	}
 }

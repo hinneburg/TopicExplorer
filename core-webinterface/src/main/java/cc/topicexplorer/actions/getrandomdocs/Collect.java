@@ -14,14 +14,14 @@ public class Collect extends TableSelectCommand {
 		
 		CommunicationContext communicationContext = (CommunicationContext) context;
 		
-		preQueryMap = new SelectMap();
+		preQueryMap = (SelectMap) communicationContext.get("PRE_QUERY");
 		
 		preQueryMap.select.add("COUNT(*) AS COUNT"); 
 		preQueryMap.from.add("DOCUMENT"); 
 		
 		communicationContext.put("PRE_QUERY", preQueryMap);
 		
-		innerQueryMap = new SelectMap();
+		innerQueryMap = (SelectMap) communicationContext.get("INNER_QUERY");
 		
 		innerQueryMap.select.add("DOCUMENT.DOCUMENT_ID"); 
 		innerQueryMap.from.add("DOCUMENT"); 
@@ -29,7 +29,7 @@ public class Collect extends TableSelectCommand {
 		
 		communicationContext.put("INNER_QUERY", innerQueryMap);
 		
-		mainQueryMap = new SelectMap();
+		mainQueryMap = (SelectMap) communicationContext.get("MAIN_QUERY");
 		
 		mainQueryMap.select.add("*"); 
 		mainQueryMap.from.add("DOCUMENT_TOPIC y"); 
@@ -42,7 +42,8 @@ public class Collect extends TableSelectCommand {
 	
 	@Override
 	public void addDependencies() {
-		afterDependencies.add("GetRandomDocsCoreCreateSQL");
+		beforeDependencies.add("GetRandomDocsCoreCreate");
+		afterDependencies.add("GetRandomDocsCoreGenerateSQL");
 	}	
 
 }

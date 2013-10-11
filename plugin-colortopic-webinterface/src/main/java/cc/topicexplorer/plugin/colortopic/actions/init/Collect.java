@@ -1,4 +1,4 @@
-package cc.topicexplorer.plugin.colortopic.actions.gettopics;
+package cc.topicexplorer.plugin.colortopic.actions.init;
 
 
 import org.apache.commons.chain.Context;
@@ -11,18 +11,18 @@ public class Collect extends TableSelectCommand {
 	@Override
 	public void tableExecute(Context context) {		
 		CommunicationContext communicationContext = (CommunicationContext) context;
-		SelectMap mainQueryMap;
+		SelectMap topicMap;
 		
-		mainQueryMap = (SelectMap) communicationContext.get("MAIN_QUERY");
+		topicMap = (SelectMap) communicationContext.get("TOPIC_QUERY");
 		
-		mainQueryMap.select.add("TOPIC.COLOR_TOPIC$COLOR");
+		topicMap.select.add("TOPIC.COLOR_TOPIC$COLOR");
 		
-		communicationContext.put("MAIN_QUERY", mainQueryMap);
+		communicationContext.put("TOPIC_QUERY", topicMap);
 	}
 
 	@Override
 	public void addDependencies() {
-		beforeDependencies.add("GetTopicsCoreCreate");
-		afterDependencies.add("GetTopicsCoreGenerateSQL");
+		beforeDependencies.add("InitCoreCreate");
+		afterDependencies.add("InitCoreGenerateSQL");
 	}
 }

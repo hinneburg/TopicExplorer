@@ -29,7 +29,7 @@ public class Collect extends TableSelectCommand {
 
 	@Override
 	public void addDependencies() {
-		beforeDependencies.add("GetTopicsCoreCollect");
-		afterDependencies.add("GetTopicsCoreCreateSQL");
+		beforeDependencies.add("GetTopicsCoreCreate");
+		afterDependencies.add("GetTopicsCoreGenerateSQL");
 	}
 }

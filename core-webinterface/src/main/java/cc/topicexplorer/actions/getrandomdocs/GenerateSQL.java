@@ -26,7 +26,7 @@ public class GenerateSQL extends TableSelectCommand {
 		innerQueryMap = (SelectMap) communicationContext.get("INNER_QUERY");
 		mainQueryMap = (SelectMap) communicationContext.get("MAIN_QUERY");
 		
-		ArrayList<String> docColumnList = this.getCleanColumnNames(innerQueryMap);
+		ArrayList<String> docColumnList = innerQueryMap.getCleanColumnNames();
 		
 		JSONObject doc, docTopic, docTopicColl, all;
 		JSONArray docArray, docTopicArray, docTopicCollArray;

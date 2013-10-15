@@ -19,7 +19,7 @@ public class Collect extends TableSelectCommand {
 		topicMap.where.add("TOPIC.HIERARCHICAL_TOPIC$START=TOPIC.HIERARCHICAL_TOPIC$END");
 		topicMap.orderBy.add("TOPIC.HIERARCHICAL_TOPIC$START");
 		
-		communicationContext.put("MAIN_QUERY", topicMap);
+		communicationContext.put("TOPIC_QUERY", topicMap);
 	}
 
 	@Override

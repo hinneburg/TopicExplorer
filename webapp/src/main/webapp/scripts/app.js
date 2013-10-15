@@ -21,6 +21,7 @@ function PluginModel(defaultPlugins) {
 				async: false
 				});
 			$.getScript('scripts/plugins/'+pluginName+'.js').success(function(data) {
+				start = new Date().getTime();
 				plugin.init();
 				//delete init function after init
 				delete plugin.init;
@@ -30,6 +31,7 @@ function PluginModel(defaultPlugins) {
 					gui.drawTab(plugin.tabName, plugin.tabCanClose, plugin.setActive, plugin.content);
 				}
 				delete plugin;
+				console.log("Zeit KO Plugin"+pluginName+": " + (new Date().getTime() - start));
 			}).complete(function(){
 				$( "#ajaxLoader" ).hide();				
 			});
@@ -55,12 +57,19 @@ $(document).ajaxStart(function() {
 	$( "#ajaxLoader" ).hide();
 });
 $(document).ready(function() {
+	var start = new Date().getTime();
 	$.getJSON('getRandomDocs', {art:'random', id:null, limit:20})
 	.done(function(json) {
+		console.log("Zeit JSON holen: " + (new Date().getTime() - start));
+		start = new Date().getTime();
 		jsonModel = ko.mapping.fromJS(json);
+		console.log("Zeit JSON mit KO mappen: " + (new Date().getTime() - start));
+		start = new Date().getTime();
 		jsonObject = json;
-		console.log("sd");
-		pluginModel = new PluginModel(['text', 'search']);//'slider', 'topic', 
+		
+		pluginModel = new PluginModel(['slider', 'topic','text', 'search']);// 
+		console.log("Zeit KO Plugins initialisieren: " + (new Date().getTime() - start));
+		
 	}).fail(console.log("error"));
 		
 	ko.bindingHandlers.topicTest = {

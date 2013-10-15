@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Properties;
 
 import org.apache.commons.chain.Context;
+import org.apache.commons.lang.StringUtils;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -32,8 +33,9 @@ public class GenerateSQL extends TableSelectCommand {
 		SelectMap topicMap = (SelectMap) communicationContext
 				.get("TOPIC_QUERY");
 
-		ArrayList<String> docColumnList = this.getCleanColumnNames(documentMap);
-		ArrayList<String> topicColumnList = this.getCleanColumnNames(topicMap);
+		ArrayList<String> docColumnList = documentMap.getCleanColumnNames();
+		ArrayList<String> topicColumnList = topicMap.getCleanColumnNames();
+		ArrayList<Integer> termList = new ArrayList<Integer>();
 
 		JSONArray topTopic = new JSONArray();
 		JSONArray reverseTopTopic = new JSONArray();
@@ -123,7 +125,7 @@ public class GenerateSQL extends TableSelectCommand {
 				ResultSet topicRS = database.executeQuery(topicMap
 						.getSQLString());
 				while (topicRS.next()) {
-					for (int i = 0; i < docColumnList.size(); i++) {
+					for (int i = 0; i < topicColumnList.size(); i++) {
 						topic.put(topicColumnList.get(i),
 								topicRS.getString(topicColumnList.get(i)));
 					}
@@ -135,18 +137,20 @@ public class GenerateSQL extends TableSelectCommand {
 						topTerm.put("TermId", topicTermRS.getString("TERM_ID"));
 						topTerm.put("relevance", topicTermRS.getString("PR_TERM_GIVEN_TOPIC"));
 						topTerms.add(topTerm);
+						termList.add(topicTermRS.getInt("TERM_ID"));
 					}
 					topic.put("Top_Terms", topTerms);
 					topTerms.clear();
-					topics.put(topicRS.getInt("TOPIC_ID"), topic);
+					topics.put(topicRS.getInt("TOPIC.HIERARCHICAL_TOPIC$START"), topic); // FIXME: hack!
 				}
 				all.put("Topic", topics);
 				time = System.currentTimeMillis() - start2;
 				logger.info(" TopicQueryTime: " + time + " ms");
 				start2 = System.currentTimeMillis();
 				// TERM
+				logger.info(termList.size());
 				ResultSet termRS = database
-						.executeQuery("SELECT TERM_ID, TERM_NAME FROM TERM");
+						.executeQuery("SELECT TERM_ID, TERM_NAME FROM TERM where TERM_ID IN (" + StringUtils.join(termList.toArray(new Integer[termList.size()]), ",") + ")");
 				while (termRS.next()) {
 					term.put("TERM_ID", termRS.getString("TERM_ID"));
 					term.put("TERM_NAME", termRS.getString("TERM_NAME"));

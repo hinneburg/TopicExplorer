@@ -30,7 +30,7 @@ public class GenerateSQL extends TableSelectCommand {
 		innerQueryMap = (SelectMap) communicationContext.get("INNER_QUERY");
 		mainQueryMap = (SelectMap) communicationContext.get("MAIN_QUERY");
 		
-		ArrayList<String> topicColumnList = this.getCleanColumnNames(mainQueryMap);
+		ArrayList<String> topicColumnList = mainQueryMap.getCleanColumnNames();
 		
 		topicColumnList.remove("TERM_NAME");
 		topicColumnList.remove("relevanz");

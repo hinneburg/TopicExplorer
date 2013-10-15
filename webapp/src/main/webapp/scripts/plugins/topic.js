@@ -8,9 +8,10 @@ plugin.init = function() {
 	$('.topicList').html(template());
 	$('.topicList')
 		.delegate('.showBig', 'click', topicClick);
+	
+	termModel = jsonModel.Term;
+	newTopicModel = jsonModel.Topic;
 	topicModel = new TopicViewModel();	
-	termModel = ko.mapping.fromJS(json.get('Term'));
-	newTopicModel = ko.mapping.fromJS(json.get('Topic'));
 	ko.applyBindings(topicModel, document.getElementById('topicModel'));
 	topicsLoaded();
 };
@@ -23,8 +24,10 @@ function TopicViewModel() {
 		var myTopic = new TopicModel(topic.COLOR_TOPIC$COLOR, topic.TOPIC_ID, topic.TEXT$TOPIC_LABEL, topic.Top_Terms);
 		//An key-Position einfügen, um später direkt per ID zugreifen zu können		
 		self.topicData().push(myTopic);
-		self.topicList()[key] = myTopic;
-	});	
+		self.topicList()[topic.TOPIC_ID] = myTopic;
+	});
+//	console.log(self.topicData());
+	
 }
 function TopicModel(color, id, name, words) {
 	var self = this;

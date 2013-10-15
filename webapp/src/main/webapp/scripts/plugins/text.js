@@ -47,7 +47,7 @@ function DocumentViewModel()
 	var self = this;
 	self.documentData = ko.observableArray();
 	$.each( json.get('DOCUMENT'), function( key, document ) {
-		self.documentData()[key] = new DocumentModel(document.DOCUMENT_ID, document.TEXT$TITLE, [], document.TEXT$FULLTEXT);
+		self.documentData()[key] = new DocumentModel(document.DOCUMENT_ID, document.TEXT$TITLE, document.TOP_TOPIC, document.TEXT$FULLTEXT);
 	});
 }
 function DocumentModel(id, name, relevanzen, textSnippet) {
@@ -61,9 +61,9 @@ function DocumentModel(id, name, relevanzen, textSnippet) {
 
 function showDocument(e) {
 	var doc = $(e.currentTarget).parents('li').attr('id').split('doc_')[1];
-	console.log(doc)
+	console.log(doc);
 	doc = jsonModel.DOCUMENT[doc];
-	console.log(doc)
+//	console.log(doc);
 	gui.drawTab(doc.TEXT$TITLE(),true,true, doc.TEXT$FULLTEXT());
 	e.preventDefault();
 	return false;

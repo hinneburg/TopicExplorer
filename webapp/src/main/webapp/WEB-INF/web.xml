@@ -4,13 +4,27 @@
 
 <web-app>
 	<display-name>Archetype Created Web Application</display-name>
+	<listener>
+		<listener-class>cc.topicexplorer.web.OnStartup</listener-class>
+	</listener>
 	<servlet>
 		<servlet-name>getRandomDocs</servlet-name>
 		<servlet-class>cc.topicexplorer.web.RandomDocs</servlet-class>
 	</servlet>
+	<!-- ONLY FOR TESTING PURPOSES BEGIN-->
+	<servlet>
+		<servlet-name>UserTest</servlet-name>
+		<servlet-class>cc.topicexplorer.web.UserTest</servlet-class>
+	</servlet>
+	<!-- END -->
 	<servlet-mapping>
 		<servlet-name>getRandomDocs</servlet-name>
 		<url-pattern>/getRandomDocs</url-pattern>
 	</servlet-mapping>
-
+	<!-- ONLY FOR TESTING PURPOSES BEGIN-->
+	<servlet-mapping>
+		<servlet-name>UserTest</servlet-name>
+		<url-pattern>/UserTest</url-pattern>
+	</servlet-mapping>
+	<!-- END -->
 </web-app>

@@ -1,18 +1,16 @@
 package cc.topicexplorer.web;
 
-import java.io.BufferedWriter;
-
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.io.Writer;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -167,10 +165,15 @@ public class RandomDocs extends HttpServlet {
 		StreamResult result = new StreamResult(new StringWriter());
 		transformer.transform(source, result);
 
-		Writer output = new BufferedWriter(new FileWriter(System.getProperty("java.io.tmpdir") + "/catalog.xml"));
+		ServletContext context = getServletContext();
+		String path = context.getRealPath("/");
+		PrintWriter pw = new PrintWriter(new FileWriter(path + "WEB-INF" + File.separator + "classes" + File.separator + "catalog.xml"));
+		
 		String xmlOutput = result.getWriter().toString();
-		output.write(xmlOutput);
-		output.close();
+		
+		pw.println(xmlOutput);
+		pw.flush();
+		pw.close();
 	}
 
 }

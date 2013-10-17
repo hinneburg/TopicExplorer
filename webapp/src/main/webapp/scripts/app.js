@@ -62,12 +62,13 @@ $(document).ready(function() {
 	.done(function(json) {
 		console.log("Zeit JSON holen: " + (new Date().getTime() - start));
 		start = new Date().getTime();
-		jsonModel = ko.mapping.fromJS(json);
+		
+		jsonModel = ko.mapping.fromJS(json.JSON);
 		console.log("Zeit JSON mit KO mappen: " + (new Date().getTime() - start));
 		start = new Date().getTime();
-		jsonObject = json;
-		
-		pluginModel = new PluginModel(['slider', 'topic','text', 'search']);// 
+		jsonObject = json.JSON;
+		console.log(json.FRONTEND_VIEWS);
+		pluginModel = new PluginModel(json.FRONTEND_VIEWS);// ["search", "slider", "topic", "text"]
 		console.log("Zeit KO Plugins initialisieren: " + (new Date().getTime() - start));
 		
 	}).fail(console.log("error"));
@@ -75,7 +76,7 @@ $(document).ready(function() {
 	ko.bindingHandlers.topicTest = {
 		update: function(elem,valueAccessor) {
 			if(valueAccessor().length > 0) {
-				console.log(valueAccessor())
+				console.log(valueAccessor());
 				$(elem).append($('<div class="small">').append(valueAccessor()[0].name));
 			}
 		}

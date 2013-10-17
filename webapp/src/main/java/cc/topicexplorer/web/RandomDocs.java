@@ -5,10 +5,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
+
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -59,19 +61,20 @@ public class RandomDocs extends HttpServlet {
 		// TODO Auto-generated method stub
 		response.setCharacterEncoding("UTF8");
 		PrintWriter writer = response.getWriter();
+		
 		CommunicationContext communicationContext = new CommunicationContext();
-
-		communicationContext.put("SERVLET_WRITER", writer);
-
 		ChainManagement chainManager = new ChainManagement(communicationContext);
 		chainManager.init();
 		
-		if (this.getClass().getResource("/catalog.xml") == null) {
-			Properties properties = (Properties) communicationContext
-					.get("properties");
+		Properties properties = (Properties) communicationContext.get("properties");
+		
+		String plugins = properties.getProperty("plugins");
+		
+		communicationContext.put("SERVLET_WRITER", writer);
 
-			String plugins = properties.getProperty("plugins");
-			
+		writer.print("{\"FRONTEND_VIEWS\":" + this.getFrontendViews(properties) + ",\"JSON\":");
+		
+		if (this.getClass().getResource("/catalog.xml") == null) {
 			logger.info("Activated plugins: " + plugins);
 			try {
 				makeCatalog(plugins);
@@ -98,6 +101,8 @@ public class RandomDocs extends HttpServlet {
 		logger.info("ordered commands: " + orderedCommands);
 
 		chainManager.executeOrderedCommands(orderedCommands);
+		writer.print("}");
+		
 
 	}
 
@@ -176,4 +181,32 @@ public class RandomDocs extends HttpServlet {
 		pw.close();
 	}
 
+	private String getFrontendViews(Properties properties) {
+		String plugins = properties.getProperty("plugins");
+		String pluginArray[] = plugins.split(",");
+		List<String> frontendViews = new ArrayList<String>();
+		
+		// init
+		String frontendViewArray[] = properties.get("FrontendViews").toString().split(",");
+		for (int j = 0; j < frontendViewArray.length; j++) {
+			if(!frontendViews.contains("\"" + frontendViewArray[j] + "\"")) {
+				frontendViews.add("\"" + frontendViewArray[j] + "\"");
+			}
+		}
+		for (int i = 0; i < pluginArray.length; i++) {
+			try {
+				frontendViewArray = properties.get(pluginArray[i].substring(0, 1).toUpperCase() + pluginArray[i].substring(1) + "_FrontendViews").toString().split(",");
+				for (int k = 0; k < frontendViewArray.length; k++) {
+					if(!frontendViews.contains("\"" + frontendViewArray[k] + "\"")) {
+						frontendViews.add("\"" + frontendViewArray[k] + "\"");
+					}
+				}
+			}catch(Exception e) {
+				logger.info("Property " + pluginArray[i].substring(0, 1).toUpperCase() + pluginArray[i].substring(1) + "_FrontendViews not found");
+			}
+		}
+		logger.info(frontendViews.toString());
+		return frontendViews.toString();
+		
+	}
 }

@@ -1,6 +1,8 @@
+var topicExplorer = new Object();
+topicExplorer.pluginModel;
 var jsonObject;
 //This would be the default script
-function PluginModel(defaultPlugins) {
+topicExplorer.PluginModel = function (defaultPlugins) {
 	var self = this;
 	self.plugins = ko.observableArray();
 	
@@ -47,8 +49,6 @@ function PluginModel(defaultPlugins) {
 		self.registerPlugin(value);
 	});
 }
-
-var pluginModel;
 $(document).ajaxStart(function() {
 	$( "#ajaxLoader" ).show();
 }).ajaxSuccess(function(event, request, settings) {
@@ -119,7 +119,7 @@ function SVG(tag) {
 
 //functions for plugin programmer
 var gui = new Object();
-var tabCache = new Object();
+gui.tabCache = new Object();
 gui.drawTab = function (tabName, canClose, active, content) {
 	var cache = new Object();
 	var newTab = $("<p>").attr('class', 'reiter active button gradientGray');
@@ -127,7 +127,7 @@ gui.drawTab = function (tabName, canClose, active, content) {
 	if(active) {
 		if($('#tabView > .active > span').html()) {
 			cache.content = $('#desktop').html();
-			tabCache[$('#tabView > .active > span').html()] = cache;
+			gui.tabCache[$('#tabView > .active > span').html()] = cache;
 		}
 		$('#tabView > .active').removeClass('active');
 		if(!content)
@@ -136,7 +136,7 @@ gui.drawTab = function (tabName, canClose, active, content) {
 	}
 	else {
 		cache.content = content;
-		tabCache[tabName] = cache;
+		gui.tabCache[tabName] = cache;
 		newTab.removeClass('active');
 	}	
 	newTab.append($("<span>").append(tabName));
@@ -159,13 +159,13 @@ gui.switchTab = function (tabObject, content) {
 	var cache = new Object();
 	if(!tabObject.hasClass('active')) {
 		cache.content = $('#desktop').html();
-		tabCache[activeReiter] = cache;
+		gui.tabCache[activeReiter] = cache;
 		$('#tabView > .active').removeClass('active');
 		if(content) {
 			$('#desktop').html(content);
 		}
 		else {
-			content = tabCache[reiter];
+			content = gui.tabCache[reiter];
 			if(!content || !content.content)
 				content.content = '';
 			$('#desktop').html(content.content);

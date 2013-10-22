@@ -123,6 +123,8 @@ public class DependencyCollector {
 		
 		if (dependencies.containsKey(name)) {
 			dependencies.get(name).addAll(beforeDependencies);
+		} else {
+			dependencies.put(name, beforeDependencies);
 		}
 		
 		

@@ -14,6 +14,9 @@ import org.apache.log4j.Logger;
 import cc.topicexplorer.chain.commands.DbConnectionCommand;
 import cc.topicexplorer.chain.commands.LoggerCommand;
 import cc.topicexplorer.chain.commands.PropertiesCommand;
+import cc.topicexplorer.exceptions.CatalogNotInstantiableException;
+
+import com.google.common.annotations.VisibleForTesting;
 
 /**
  * This class is used for the controlled execution of commands. Commands to be
@@ -27,15 +30,16 @@ import cc.topicexplorer.chain.commands.PropertiesCommand;
  * 
  */
 public class ChainManagement {
-	private Catalog catalog;
+	@VisibleForTesting
+	Catalog catalog;
 	private CommunicationContext communicationContext;
 	private DependencyCollector dependencyCollector;
 	private static Logger logger = Logger.getRootLogger();
 
 	public ChainManagement() {
-		communicationContext = new CommunicationContext();
+		this(new CommunicationContext());
 	}
-	
+
 	public ChainManagement(CommunicationContext context) {
 		communicationContext = context;
 	}
@@ -52,17 +56,14 @@ public class ChainManagement {
 		ConfigParser configParser = new ConfigParser();
 
 		try {
-			logger.info("this.getClass().getResource(catalogLocation)"
-					+ this.getClass().getResource(catalogLocation));
+			logger.info("this.getClass().getResource(catalogLocation)" + this.getClass().getResource(catalogLocation));
 
 			configParser.parse(this.getClass().getResource(catalogLocation));
-
 			catalog = CatalogFactoryBase.getInstance().getCatalog();
 
 		} catch (Exception e) {
-			logger.fatal("There is no valid catalog at the given path:"
-					+ catalogLocation + "." + e);
-			System.exit(1);
+			logger.fatal("There is no valid catalog at the given path:" + catalogLocation + "." + e);
+			throw new CatalogNotInstantiableException();
 		}
 	}
 
@@ -84,55 +85,49 @@ public class ChainManagement {
 			logger.error(e);
 		}
 	}
-	
-	public Map<String, Set<String>> getDependencies() {
-		dependencyCollector = new DependencyCollector(catalog);
-		Map<String, Set<String>> dependencies;		
-		
-		dependencies = dependencyCollector.getDependencies();
-		
-		return dependencies;
+
+	@VisibleForTesting
+	Map<String, Set<String>> getDependencies() {
+		return new DependencyCollector(catalog).getDependencies();
 	}
-	
+
 	/**
 	 * Returns a Set with all commands of the catalog in an ordered sequence.
 	 * 
 	 * @return A ordered Set containing the commands of the catalog.
-	 */	
+	 */
 	public List<String> getOrderedCommands() {
 
-		return getOrderedCommands(new HashSet<String>(),
-				new HashSet<String>());
+		return getOrderedCommands(new HashSet<String>(), new HashSet<String>());
 	}
-	
+
 	/**
-	 * Returns a Set with all commands of a given map of dependencies in an ordered sequence.
+	 * Returns a Set with all commands of a given map of dependencies in an
+	 * ordered sequence.
 	 * 
 	 * @return A ordered Set containing the commands of the catalog.
-	 */	
+	 */
 	public List<String> getOrderedCommands(Map<String, Set<String>> dependencies) {
 
-		return getOrderedCommands(dependencies, new HashSet<String>(),
-				new HashSet<String>());
+		return getOrderedCommands(dependencies, new HashSet<String>(), new HashSet<String>());
 	}
-	
-	public List<String> getOrderedCommands(Set<String> startCommands, 
-			Set<String> endCommands) {
-		Map<String, Set<String>> dependencies;
-		
-		dependencies = getDependencies();
-		dependencies = dependencyCollector.getStrongComponents(dependencies, startCommands, endCommands);
-		
-		return dependencyCollector.orderCommands(dependencies);
+
+	public List<String> getOrderedCommands(Set<String> startCommands, Set<String> endCommands) {
+		Map<String, Set<String>> dependencies = this.getDependencies();
+
+		Map<String, Set<String>> strongComponents = dependencyCollector.getStrongComponents(dependencies,
+				startCommands, endCommands);
+
+		return dependencyCollector.orderCommands(strongComponents);
 	}
-	
+
 	public List<String> getOrderedCommands(Map<String, Set<String>> dependencies, Set<String> startCommands,
-			 Set<String> endCommands) {
+			Set<String> endCommands) {
 
 		DependencyCollector dependencyCollector = new DependencyCollector();
-		
+
 		dependencies = dependencyCollector.getStrongComponents(dependencies, startCommands, endCommands);
-		
+
 		return dependencyCollector.orderCommands(dependencies);
 	}
 
@@ -151,8 +146,7 @@ public class ChainManagement {
 		}
 	}
 
-	public void executeOrderedCommands(List<String> commandList,
-			CommunicationContext localCommunicationContext) {
+	public void executeOrderedCommands(List<String> commandList, CommunicationContext localCommunicationContext) {
 		try {
 			Command command;
 			for (String commandName : commandList) {
@@ -163,26 +157,30 @@ public class ChainManagement {
 			logger.error(e);
 		}
 	}
-	
-	public CommunicationContext getInitialCommunicationContext() {		
-		
+
+	public CommunicationContext getInitialCommunicationContext() {
+
 		return communicationContext;
 	}
 
 	public static void main(String[] args) throws Exception {
 		ChainManagement chainManager = new ChainManagement();
-		ChainCommandLineParser commandLineParser = new ChainCommandLineParser(
-				args);
+		ChainCommandLineParser commandLineParser = new ChainCommandLineParser(args);
 		List<String> orderedCommands;
 		String catalogLocation;
 		chainManager.init();
 
 		catalogLocation = commandLineParser.getCatalogLocation();
 
-		chainManager.setCatalog(catalogLocation);
+		try {
+			chainManager.setCatalog(catalogLocation);
 
-		orderedCommands = chainManager.getOrderedCommands(
-				commandLineParser.getStartCommands(),
+		} catch (CatalogNotInstantiableException e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
+
+		orderedCommands = chainManager.getOrderedCommands(commandLineParser.getStartCommands(),
 				commandLineParser.getEndCommands());
 
 		logger.info("ordered commands: " + orderedCommands);

@@ -28,70 +28,51 @@ import org.xml.sax.SAXException;
 
 import cc.topicexplorer.chain.ChainCommandLineParser;
 import cc.topicexplorer.chain.ChainManagement;
+import cc.topicexplorer.exceptions.CatalogNotInstantiableException;
 
 public class Run {
 	private static Logger logger = Logger.getRootLogger();
 
 	private Document getMergedXML(Document xmlFile1, Document xmlFile2) {
-		NodeList nodes = xmlFile2.getElementsByTagName("catalog").item(0)
-				.getChildNodes();
+		NodeList nodes = xmlFile2.getElementsByTagName("catalog").item(0).getChildNodes();
 		for (int i = 0; i < nodes.getLength(); i++) {
 			Node importNode = xmlFile1.importNode(nodes.item(i), true);
-			xmlFile1.getElementsByTagName("catalog").item(0)
-					.appendChild(importNode);
+			xmlFile1.getElementsByTagName("catalog").item(0).appendChild(importNode);
 		}
 		return xmlFile1;
 	}
 
-	private void makeCatalog(String plugins)
-			throws ParserConfigurationException, TransformerException,
-			IOException, SAXException {
-		DocumentBuilderFactory domFactory = DocumentBuilderFactory
-				.newInstance();
+	private void makeCatalog(String plugins) throws ParserConfigurationException, TransformerException, IOException,
+			SAXException {
+		DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
 		domFactory.setIgnoringComments(true);
 		DocumentBuilder builder = null;
 
 		builder = domFactory.newDocumentBuilder();
 
 		// init
-		Document doc = this
-				.getMergedXML(
-						builder.parse(this
-								.getClass()
-								.getResourceAsStream(
-										"/cc/topicexplorer/core-preprocessing/catalog/preJooqConfig.xml")),
-						builder.parse(this
-								.getClass()
-								.getResourceAsStream(
-										"/cc/topicexplorer/core-preprocessing/catalog/postJooqConfig.xml")));
+		Document doc = this.getMergedXML(
+				builder.parse(this.getClass().getResourceAsStream(
+						"/cc/topicexplorer/core-preprocessing/catalog/preJooqConfig.xml")),
+				builder.parse(this.getClass().getResourceAsStream(
+						"/cc/topicexplorer/core-preprocessing/catalog/postJooqConfig.xml")));
 
 		// process plugin catalogs
 		for (String plugin : plugins.split(",")) {
 			plugin = plugin.trim().toLowerCase();
 			try {
-				doc = this
-						.getMergedXML(
-								doc,
-								builder.parse(this
-										.getClass()
-										.getResourceAsStream(
-												"/cc/topicexplorer/plugin-"
-														+ plugin
-														+ "-preprocessing/catalog/preJooqConfig.xml")));
+				doc = this.getMergedXML(
+						doc,
+						builder.parse(this.getClass().getResourceAsStream(
+								"/cc/topicexplorer/plugin-" + plugin + "-preprocessing/catalog/preJooqConfig.xml")));
 			} catch (Exception e) {
-				logger.warn("/cc/topicexplorer/plugin-" + plugin
-						+ "-preprocessing/catalog/preJooqConfig.xml not found");
+				logger.warn("/cc/topicexplorer/plugin-" + plugin + "-preprocessing/catalog/preJooqConfig.xml not found");
 			}
 			try {
-				doc = this
-						.getMergedXML(
-								doc,
-								builder.parse(this
-										.getClass()
-										.getResourceAsStream(
-												"/cc/topicexplorer/plugin-"
-														+ plugin
-														+ "-preprocessing/catalog/postJooqConfig.xml")));
+				doc = this.getMergedXML(
+						doc,
+						builder.parse(this.getClass().getResourceAsStream(
+								"/cc/topicexplorer/plugin-" + plugin + "-preprocessing/catalog/postJooqConfig.xml")));
 			} catch (Exception e) {
 				logger.warn("/cc/topicexplorer/plugin-" + plugin
 						+ "-preprocessing/catalog/postJooqConfig.xml not found");
@@ -128,16 +109,14 @@ public class Run {
 		chainManager.init();
 
 		try {
-			properties.load(run.getClass().getResourceAsStream(
-					"/config.global.properties"));
+			properties.load(run.getClass().getResourceAsStream("/config.global.properties"));
 		} catch (Exception e) {
 			logger.fatal("config.global.properties not found");
 			System.exit(0);
 		}
 
 		try {
-			properties.load(run.getClass().getResourceAsStream(
-					"/config.local.properties"));
+			properties.load(run.getClass().getResourceAsStream("/config.local.properties"));
 		} catch (Exception e) {
 			logger.warn("config.local.properties not found");
 		}
@@ -145,10 +124,14 @@ public class Run {
 
 		run.makeCatalog(properties.getProperty("plugins"));
 
-		chainManager.setCatalog("/catalog.xml");
+		try {
+			chainManager.setCatalog("/catalog.xml");
+		} catch (CatalogNotInstantiableException e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
 
-		List<String> orderedCommands = chainManager.getOrderedCommands(
-				commandLineParser.getStartCommands(),
+		List<String> orderedCommands = chainManager.getOrderedCommands(commandLineParser.getStartCommands(),
 				commandLineParser.getEndCommands());
 
 		logger.info("ordered commands: " + orderedCommands);
@@ -156,7 +139,7 @@ public class Run {
 		if (!commandLineParser.getOnlyDrawGraph()) {
 			chainManager.executeOrderedCommands(orderedCommands);
 			System.out.println("Preprocessing successfully executed!");
-		}	
+		}
 
 		FileUtils.deleteDirectory(temp);
 	}

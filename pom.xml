@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>cc.topicexplorer</groupId>
@@ -25,14 +26,27 @@
 		<module>run-preprocessing</module>
 		<module>distribution-preprocessing</module>
 		<module>core-webinterface</module>
-    	<module>plugin-text-webinterface</module>
-    	<module>plugin-link-webinterface</module>
-    	<module>plugin-time-webinterface</module>
-    	<module>plugin-colortopic-webinterface</module>
-    	<module>plugin-hierarchicaltopic-webinterface</module>
-    	<module>webapp</module>
-  </modules>
+		<module>plugin-text-webinterface</module>
+		<module>plugin-link-webinterface</module>
+		<module>plugin-time-webinterface</module>
+		<module>plugin-colortopic-webinterface</module>
+		<module>plugin-hierarchicaltopic-webinterface</module>
+		<module>webapp</module>
+	</modules>
+	<dependencies>
+		<dependency>
+			<groupId>org.easytesting</groupId>
+			<artifactId>fest-assert</artifactId>
+			<version>1.4</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>15.0</version>
+		</dependency>
 
+	</dependencies>
 	<build>
 		<plugins>
 			<plugin>
@@ -62,6 +76,7 @@
 				</fileMapper> </fileMappers> </transformationSet> </transformationSets> </configuration> 
 				</plugin> -->
 		</plugins>
+
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
@@ -73,7 +88,7 @@
 			<resource>
 				<directory>src/main/resources</directory>
 				<includes>
-				<include>**/*.xml</include>
+					<include>**/*.xml</include>
 				</includes>
 				<targetPath>cc/topicexplorer/${project.artifactId}/catalog</targetPath>
 			</resource>

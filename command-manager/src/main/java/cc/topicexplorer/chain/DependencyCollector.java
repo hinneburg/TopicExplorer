@@ -1,9 +1,11 @@
 package cc.topicexplorer.chain;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -76,6 +78,11 @@ public class DependencyCollector {
 		dotContent += "}";
 
 		try {
+			File dir = new File("etc");
+			if (!dir.exists()) {
+				dir.mkdir();			
+			}
+			
 			BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(
 					"etc/graph" + name + ".dot"));
 			bufferedWriter.write(dotContent);
@@ -105,24 +112,43 @@ public class DependencyCollector {
 	private void updateDependencies(String name,
 			Map<String, Set<String>> dependencies,
 			Set<String> afterDependencies, Set<String> beforeDependencies) {
-		Set<String> compoundBeforeList = new HashSet<String>();
-
+//		Set<String> compoundBeforeList = new HashSet<String>();
+//
+//		if (dependencies.containsKey(name)) {
+//			compoundBeforeList.addAll(dependencies.get(name));
+//		}
+//		compoundBeforeList.addAll(beforeDependencies);
+//		
+//		dependencies.put(name, compoundBeforeList);
+		
 		if (dependencies.containsKey(name)) {
-			compoundBeforeList.addAll(dependencies.get(name));
+			dependencies.get(name).addAll(beforeDependencies);
 		}
-		compoundBeforeList.addAll(beforeDependencies);
-		dependencies.put(name, compoundBeforeList);
+		
+		
 
-		if (!afterDependencies.isEmpty()) {
-			Set<String> compoundAfterList = new HashSet<String>();
-			for (String key : afterDependencies) {
-				compoundAfterList.add(name);
-				if (dependencies.containsKey(key)) {
-					compoundAfterList.addAll(dependencies.get(key));
-				}
-				dependencies.put(key, compoundAfterList);
+//		if (!afterDependencies.isEmpty()) {
+//			Set<String> compoundAfterList = new HashSet<String>();
+//			for (String key : afterDependencies) {
+//				compoundAfterList.add(name);
+//				if (dependencies.containsKey(key)) {
+//					compoundAfterList.addAll(dependencies.get(key));
+//				}
+//				dependencies.put(key, compoundAfterList);
+//			}
+//		}
+		
+	if (!afterDependencies.isEmpty()) {
+		for (String key : afterDependencies) {
+			if (dependencies.containsKey(key)) {
+				dependencies.get(key).add(name);
+			} else {				
+				dependencies.put(key, new HashSet<String>(Arrays.asList(name)));
 			}
 		}
+	}
+		
+		
 	}
 
 	/**

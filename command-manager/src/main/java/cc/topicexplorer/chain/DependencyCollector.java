@@ -18,6 +18,8 @@ import org.apache.commons.chain.Catalog;
 import org.apache.commons.chain.Command;
 import org.apache.log4j.Logger;
 
+import com.google.common.annotations.VisibleForTesting;
+
 /**
  * Collects dependencies of commands mentioned in the catalog and gets them
  * ordered.
@@ -80,11 +82,10 @@ public class DependencyCollector {
 		try {
 			File dir = new File("etc");
 			if (!dir.exists()) {
-				dir.mkdir();			
+				dir.mkdir();
 			}
-			
-			BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(
-					"etc/graph" + name + ".dot"));
+
+			BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("etc/graph" + name + ".dot"));
 			bufferedWriter.write(dotContent);
 			bufferedWriter.close();
 		} catch (IOException e) {
@@ -109,48 +110,45 @@ public class DependencyCollector {
 	 * @param afterDependencies
 	 * @param beforeDependencies
 	 */
-	private void updateDependencies(String name,
-			Map<String, Set<String>> dependencies,
-			Set<String> afterDependencies, Set<String> beforeDependencies) {
-//		Set<String> compoundBeforeList = new HashSet<String>();
-//
-//		if (dependencies.containsKey(name)) {
-//			compoundBeforeList.addAll(dependencies.get(name));
-//		}
-//		compoundBeforeList.addAll(beforeDependencies);
-//		
-//		dependencies.put(name, compoundBeforeList);
-		
+	@VisibleForTesting
+	void updateDependencies(String name, Map<String, Set<String>> dependencies, Set<String> afterDependencies,
+			Set<String> beforeDependencies) {
+		// Set<String> compoundBeforeList = new HashSet<String>();
+		//
+		// if (dependencies.containsKey(name)) {
+		// compoundBeforeList.addAll(dependencies.get(name));
+		// }
+		// compoundBeforeList.addAll(beforeDependencies);
+		//
+		// dependencies.put(name, compoundBeforeList);
+
 		if (dependencies.containsKey(name)) {
 			dependencies.get(name).addAll(beforeDependencies);
 		} else {
 			dependencies.put(name, beforeDependencies);
 		}
-		
-		
 
-//		if (!afterDependencies.isEmpty()) {
-//			Set<String> compoundAfterList = new HashSet<String>();
-//			for (String key : afterDependencies) {
-//				compoundAfterList.add(name);
-//				if (dependencies.containsKey(key)) {
-//					compoundAfterList.addAll(dependencies.get(key));
-//				}
-//				dependencies.put(key, compoundAfterList);
-//			}
-//		}
-		
-	if (!afterDependencies.isEmpty()) {
-		for (String key : afterDependencies) {
-			if (dependencies.containsKey(key)) {
-				dependencies.get(key).add(name);
-			} else {				
-				dependencies.put(key, new HashSet<String>(Arrays.asList(name)));
+		// if (!afterDependencies.isEmpty()) {
+		// Set<String> compoundAfterList = new HashSet<String>();
+		// for (String key : afterDependencies) {
+		// compoundAfterList.add(name);
+		// if (dependencies.containsKey(key)) {
+		// compoundAfterList.addAll(dependencies.get(key));
+		// }
+		// dependencies.put(key, compoundAfterList);
+		// }
+		// }
+
+		if (!afterDependencies.isEmpty()) {
+			for (String key : afterDependencies) {
+				if (dependencies.containsKey(key)) {
+					dependencies.get(key).add(name);
+				} else {
+					dependencies.put(key, new HashSet<String>(Arrays.asList(name)));
+				}
 			}
 		}
-	}
-		
-		
+
 	}
 
 	/**
@@ -174,16 +172,13 @@ public class DependencyCollector {
 				Command command = catalog.getCommand(name);
 				command.execute(dependencyContext);
 
-				updateDependencies(name, dependencies,
-						dependencyContext.getAfterDependencies(),
+				updateDependencies(name, dependencies, dependencyContext.getAfterDependencies(),
 						dependencyContext.getBeforeDependencies());
-				updateDependencies(name, optionalDependencies,
-						dependencyContext.getOptionalAfterDependencies(),
+				updateDependencies(name, optionalDependencies, dependencyContext.getOptionalAfterDependencies(),
 						dependencyContext.getOptionalBeforeDependencies());
 			}
 
-			composedDependencies = new HashMap<String, Set<String>>(
-					dependencies);
+			composedDependencies = new HashMap<String, Set<String>>(dependencies);
 
 			for (String key : optionalDependencies.keySet()) {
 				for (String value : optionalDependencies.get(key)) {
@@ -207,8 +202,7 @@ public class DependencyCollector {
 	 * variable.
 	 */
 	public List<String> orderCommands(Map<String, Set<String>> dependencies) {
-		Map<String, Set<String>> concurrentDependencies = new ConcurrentHashMap<String, Set<String>>(
-				dependencies);
+		Map<String, Set<String>> concurrentDependencies = new ConcurrentHashMap<String, Set<String>>(dependencies);
 		List<String> orderedCommands = new ArrayList<String>();
 		List<String> helpList = new ArrayList<String>();
 		String node = "";
@@ -253,22 +247,20 @@ public class DependencyCollector {
 		// only if the dependencyMap is empty the graph was correct, otherwise
 		// there was something wrong with it
 		if (!concurrentDependencies.isEmpty()) {
-			logger.fatal("The dependencyMap wasn't empty yet but it should have been: "
-					+ concurrentDependencies);
+			logger.fatal("The dependencyMap wasn't empty yet but it should have been: " + concurrentDependencies);
 			System.exit(1);
 		}
 
 		return orderedCommands;
 	}
 
-	public Map<String, Set<String>> getStrongComponents(
-			Map<String, Set<String>> dependencies, Set<String> startCommands,
-			Set<String> endCommands) {
+	public Map<String, Set<String>> getStrongComponents(Map<String, Set<String>> dependencies,
+			Set<String> startCommands, Set<String> endCommands) {
 
 		Map<String, Set<String>> newDependencies = new HashMap<String, Set<String>>();
 
 		logger.info("startCommands " + startCommands + "+++");
-		
+
 		if (startCommands.isEmpty()) {
 			newDependencies.putAll(dependencies);
 		} else {
@@ -279,11 +271,11 @@ public class DependencyCollector {
 				if (!dependencies.get(command).isEmpty()) {
 					logger.fatal("Given command seems not to be a root.");
 					System.exit(1);
-				} else {					
+				} else {
 					// fuege aktuelles Element mit leeren values hinzu
 					newDependencies.put(command, new HashSet<String>());
-					iterateDependenciesDown(dependencies, newDependencies, command);					
-				}				
+					iterateDependenciesDown(dependencies, newDependencies, command);
+				}
 			}
 		}
 
@@ -302,7 +294,7 @@ public class DependencyCollector {
 
 	private void iterateDependenciesDown(Map<String, Set<String>> dependencies,
 			Map<String, Set<String>> newDependencies, String command) {
-		
+
 		// pruefe welche keys das aktuelle command in value-Liste haben, d.h.
 		// welche commands von dem aktuellen abhaengen
 		for (String key : dependencies.keySet()) {

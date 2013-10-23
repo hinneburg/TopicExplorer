@@ -162,4 +162,9 @@ public class InFilePreparation extends DependencyCommand {
 			System.exit(0);
 		}
 	}
+	
+	@Override
+	public void addDependencies() {
+		beforeDependencies.add("DocumentTermTopicCreate");
+	}
 }

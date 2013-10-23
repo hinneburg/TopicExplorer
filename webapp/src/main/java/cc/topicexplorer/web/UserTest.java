@@ -1,9 +1,7 @@
 package cc.topicexplorer.web;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Map;
-import java.util.Set;
+import java.util.HashSet;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -19,21 +17,26 @@ public class UserTest extends HttpServlet {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		CommunicationContext communicationContext = Context.getInstance();
-		
-		PrintWriter writer = response.getWriter();
-		
-		writer.write(Long.toString(Context.time));
-		writer.write(((Map<String, Set<String>>) communicationContext.get("dependencies")).toString());
-		
+	protected void doGet(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+
+		CommunicationContext communicationContext = WebChainManagement
+				.getCommunicationContext();
+
+		communicationContext.put("SERVLET_WRITER", response.getWriter());
+
+		WebChainManagement.executeCommands(WebChainManagement
+				.getOrderedCommands(new HashSet<String>(),
+						new HashSet<String>()), communicationContext);
 	}
 
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
+	 *      response)
 	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
 
 	}
-	
+
 }

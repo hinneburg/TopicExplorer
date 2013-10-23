@@ -13,7 +13,11 @@ public class OnStartup implements ServletContextListener {
 	@Override
 	public void contextInitialized(ServletContextEvent arg0) {
 		System.out.println("Do on startup.");
-		Context.init();
+		makeCatalog();
+		WebChainManagement.init();
 	}
 
+	private void makeCatalog() {
+		// to be filled with makeCatalog() of RandomDocs.java
+	}
 }

@@ -56,13 +56,15 @@ public class ChainManagement {
 		ConfigParser configParser = new ConfigParser();
 
 		try {
-			logger.info("this.getClass().getResource(catalogLocation)" + this.getClass().getResource(catalogLocation));
+			logger.info("this.getClass().getResource(catalogLocation)"
+					+ this.getClass().getResource(catalogLocation));
 
 			configParser.parse(this.getClass().getResource(catalogLocation));
 			catalog = CatalogFactoryBase.getInstance().getCatalog();
 
 		} catch (Exception e) {
-			logger.fatal("There is no valid catalog at the given path:" + catalogLocation + "." + e);
+			logger.fatal("There is no valid catalog at the given path:"
+					+ catalogLocation + "." + e);
 			throw new CatalogNotInstantiableException();
 		}
 	}
@@ -86,8 +88,7 @@ public class ChainManagement {
 		}
 	}
 
-	@VisibleForTesting
-	Map<String, Set<String>> getDependencies() {
+	public Map<String, Set<String>> getDependencies() {
 		return new DependencyCollector(catalog).getDependencies();
 	}
 
@@ -109,24 +110,28 @@ public class ChainManagement {
 	 */
 	public List<String> getOrderedCommands(Map<String, Set<String>> dependencies) {
 
-		return getOrderedCommands(dependencies, new HashSet<String>(), new HashSet<String>());
+		return getOrderedCommands(dependencies, new HashSet<String>(),
+				new HashSet<String>());
 	}
 
-	public List<String> getOrderedCommands(Set<String> startCommands, Set<String> endCommands) {
+	public List<String> getOrderedCommands(Set<String> startCommands,
+			Set<String> endCommands) {
 		Map<String, Set<String>> dependencies = this.getDependencies();
 
-		Map<String, Set<String>> strongComponents = dependencyCollector.getStrongComponents(dependencies,
-				startCommands, endCommands);
+		Map<String, Set<String>> strongComponents = dependencyCollector
+				.getStrongComponents(dependencies, startCommands, endCommands);
 
 		return dependencyCollector.orderCommands(strongComponents);
 	}
 
-	public List<String> getOrderedCommands(Map<String, Set<String>> dependencies, Set<String> startCommands,
+	public List<String> getOrderedCommands(
+			Map<String, Set<String>> dependencies, Set<String> startCommands,
 			Set<String> endCommands) {
 
 		DependencyCollector dependencyCollector = new DependencyCollector();
 
-		dependencies = dependencyCollector.getStrongComponents(dependencies, startCommands, endCommands);
+		dependencies = dependencyCollector.getStrongComponents(dependencies,
+				startCommands, endCommands);
 
 		return dependencyCollector.orderCommands(dependencies);
 	}
@@ -134,10 +139,10 @@ public class ChainManagement {
 	/**
 	 * Takes a Set of commands and executes them in the sequence of the Set
 	 */
-	public void executeOrderedCommands(List<String> commandList) {
+	public void executeCommands(List<String> commands) {
 		try {
 			Command command;
-			for (String commandName : commandList) {
+			for (String commandName : commands) {
 				command = catalog.getCommand(commandName);
 				command.execute(communicationContext);
 			}
@@ -146,10 +151,11 @@ public class ChainManagement {
 		}
 	}
 
-	public void executeOrderedCommands(List<String> commandList, CommunicationContext localCommunicationContext) {
+	public void executeCommands(List<String> commands,
+			CommunicationContext localCommunicationContext) {
 		try {
 			Command command;
-			for (String commandName : commandList) {
+			for (String commandName : commands) {
 				command = catalog.getCommand(commandName);
 				command.execute(localCommunicationContext);
 			}
@@ -158,14 +164,14 @@ public class ChainManagement {
 		}
 	}
 
-	public CommunicationContext getInitialCommunicationContext() {
-
+	public CommunicationContext getCommunicationContext() {
 		return communicationContext;
 	}
 
 	public static void main(String[] args) throws Exception {
 		ChainManagement chainManager = new ChainManagement();
-		ChainCommandLineParser commandLineParser = new ChainCommandLineParser(args);
+		ChainCommandLineParser commandLineParser = new ChainCommandLineParser(
+				args);
 		List<String> orderedCommands;
 		String catalogLocation;
 		chainManager.init();
@@ -180,13 +186,14 @@ public class ChainManagement {
 			System.exit(1);
 		}
 
-		orderedCommands = chainManager.getOrderedCommands(commandLineParser.getStartCommands(),
+		orderedCommands = chainManager.getOrderedCommands(
+				commandLineParser.getStartCommands(),
 				commandLineParser.getEndCommands());
 
 		logger.info("ordered commands: " + orderedCommands);
 
 		if (!commandLineParser.getOnlyDrawGraph()) {
-			chainManager.executeOrderedCommands(orderedCommands);
+			chainManager.executeCommands(orderedCommands);
 		}
 	}
 }

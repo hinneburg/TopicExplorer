@@ -68,7 +68,7 @@ $(document).ready(function() {
 		start = new Date().getTime();
 		jsonObject = json.JSON;
 		console.log(json.FRONTEND_VIEWS);
-		pluginModel = new PluginModel(json.FRONTEND_VIEWS);// ["search", "slider", "topic", "text"]
+		pluginModel = new topicExplorer.PluginModel(json.FRONTEND_VIEWS);// ["search", "slider", "topic", "text"]
 		console.log("Zeit KO Plugins initialisieren: " + (new Date().getTime() - start));
 		
 	}).fail(console.log("error"));

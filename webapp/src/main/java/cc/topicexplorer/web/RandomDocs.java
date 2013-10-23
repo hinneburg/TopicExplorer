@@ -100,7 +100,7 @@ public class RandomDocs extends HttpServlet {
 
 		logger.info("ordered commands: " + orderedCommands);
 
-		chainManager.executeOrderedCommands(orderedCommands);
+		chainManager.executeCommands(orderedCommands);
 		writer.print("}");
 		
 

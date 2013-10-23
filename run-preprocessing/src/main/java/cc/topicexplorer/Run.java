@@ -137,7 +137,7 @@ public class Run {
 		logger.info("ordered commands: " + orderedCommands);
 
 		if (!commandLineParser.getOnlyDrawGraph()) {
-			chainManager.executeOrderedCommands(orderedCommands);
+			chainManager.executeCommands(orderedCommands);
 			System.out.println("Preprocessing successfully executed!");
 		}
 

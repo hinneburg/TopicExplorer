@@ -89,7 +89,7 @@ public class ChainManagement {
 	}
 
 	public Map<String, Set<String>> getDependencies() {
-		return new DependencyCollector(catalog).getDependencies();
+		return dependencyCollector.getDependencies();
 	}
 
 	/**
@@ -116,7 +116,9 @@ public class ChainManagement {
 
 	public List<String> getOrderedCommands(Set<String> startCommands,
 			Set<String> endCommands) {
-		Map<String, Set<String>> dependencies = this.getDependencies();
+		dependencyCollector = new DependencyCollector(catalog);
+
+		Map<String, Set<String>> dependencies = getDependencies();
 
 		Map<String, Set<String>> strongComponents = dependencyCollector
 				.getStrongComponents(dependencies, startCommands, endCommands);
@@ -128,7 +130,7 @@ public class ChainManagement {
 			Map<String, Set<String>> dependencies, Set<String> startCommands,
 			Set<String> endCommands) {
 
-		DependencyCollector dependencyCollector = new DependencyCollector();
+		dependencyCollector = new DependencyCollector();
 
 		dependencies = dependencyCollector.getStrongComponents(dependencies,
 				startCommands, endCommands);

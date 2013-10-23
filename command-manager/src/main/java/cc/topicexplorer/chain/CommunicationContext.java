@@ -21,4 +21,18 @@ public class CommunicationContext extends ContextBase {
 	public void remove(String name) {
 		objects.remove(name);
 	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public void putAll(@SuppressWarnings("rawtypes") Map map) {
+		objects.putAll(map);
+	}
+
+	public CommunicationContext clone() {
+		CommunicationContext communicationContext = new CommunicationContext();
+
+		communicationContext.putAll(objects);
+
+		return communicationContext;
+	}
 }

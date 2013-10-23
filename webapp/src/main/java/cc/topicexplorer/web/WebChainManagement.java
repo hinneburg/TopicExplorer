@@ -1,7 +1,6 @@
 package cc.topicexplorer.web;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import cc.topicexplorer.chain.ChainManagement;
@@ -10,7 +9,6 @@ import cc.topicexplorer.chain.CommunicationContext;
 public class WebChainManagement {
 
 	private static ChainManagement chainManagement = null;
-	private static Map<String, Set<String>> dependencies;
 
 	private WebChainManagement() {
 
@@ -22,28 +20,20 @@ public class WebChainManagement {
 				chainManagement = new ChainManagement();
 				chainManagement.init();
 				chainManagement.setCatalog("/catalog.xml");
-				dependencies = chainManagement.getDependencies();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	public static CommunicationContext getCommunicationContext() {
-
-		CommunicationContext newCommunicationContext = new CommunicationContext();
-
-		newCommunicationContext
-				.clone(chainManagement.getCommunicationContext());
-
-		return newCommunicationContext;
+		return chainManagement.getCommunicationContext().clone();
 	}
 
 	public static List<String> getOrderedCommands(Set<String> startCommands,
 			Set<String> endCommands) {
-		return chainManagement.getOrderedCommands(dependencies, startCommands,
-				endCommands);
+		return chainManagement.getOrderedCommands(
+				chainManagement.getDependencies(), startCommands, endCommands);
 	}
 
 	public static void executeCommands(List<String> commands,

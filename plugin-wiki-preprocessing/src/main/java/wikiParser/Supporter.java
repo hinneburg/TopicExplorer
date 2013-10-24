@@ -29,7 +29,7 @@ public class Supporter
 	private Database db;
 
 	private boolean debug = false;
-
+	
 	public Supporter(Properties prop)
 	{
 		this.prop = prop;
@@ -46,11 +46,12 @@ public class Supporter
 //		this.prop = db.getProperties();
 //	}
 
-	public Supporter(Boolean otherDBOrAlsoTagetDB)
+	public Supporter(Properties properties, Boolean otherDBOrAlsoTargetDB)
 	{
+		this.prop = properties;
 		try
 		{
-			this.init(otherDBOrAlsoTagetDB);
+			this.init(otherDBOrAlsoTargetDB);
 		}
 		catch (Exception e)
 		{

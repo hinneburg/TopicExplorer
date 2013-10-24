@@ -2,4 +2,5 @@
 <catalog>
 	<command name="Wiki_PreMallet" className="cc.topicexplorer.plugin.wiki.preprocessing.PreMallet" />
 	<command name="Wiki_OrgTable" className="cc.topicexplorer.plugin.wiki.preprocessing.tables.orgtable.OrgTableCreateAndFill" />
+	<command name="Wiki_MediawikiColoration" className="cc.topicexplorer.plugin.wiki.preprocessing.MediawikiColoration" />
 </catalog>

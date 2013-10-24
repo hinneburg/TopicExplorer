@@ -1,39 +1,42 @@
 package cc.topicexplorer.plugin.wiki.preprocessing;
 
-import wikiParser.Prehelper;
-
 import java.util.Properties;
 
 import org.apache.commons.chain.Context;
 
 import cc.topicexplorer.chain.CommunicationContext;
 import cc.topicexplorer.chain.commands.DependencyCommand;
+import wikiParser.PreJsonoutgettoken;
 
-public class PreMallet extends DependencyCommand {
+public class MediawikiColoration extends DependencyCommand {
 
-	private Properties properties;
+	
+	private Properties properties; 
 	
 	@Override
 	public void specialExecute(Context context) throws Exception {
-		
-		logger.info("[ " + getClass() + " ] - " + "preparing wiki-articles for mallet");
+
+		logger.info("[ " + getClass() + " ] - " + ": coloring the mediawiki");
 		
 		CommunicationContext communicationContext = (CommunicationContext) context;
 		properties = (Properties) communicationContext.get("properties");
-//		database = (Database) communicationContext.get("database");
 		
-		Prehelper ph = new Prehelper(properties);
-		ph.start();
+		
+		try {
+			PreJsonoutgettoken pj = new PreJsonoutgettoken();
+			pj.start(properties);
+		} catch (Exception e) {
+
+			logger.warn("Coloration of mediawiki failed");
+			e.printStackTrace();
+		}
+		
 		
 	}
-
 	
 	@Override
 	public void addDependencies() {
-		afterDependencies.add("InFilePreparation");
-		optionalAfterDependencies.add("Prune");
-		
-	}	
-
+		beforeDependencies.add("DocumentTermTopicFill");
+	}
 
 }

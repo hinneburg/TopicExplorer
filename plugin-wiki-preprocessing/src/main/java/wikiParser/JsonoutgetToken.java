@@ -1,15 +1,9 @@
 package wikiParser;
 
-import java.io.BufferedWriter;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 //import au.com.bytecode.opencsv.CSVWriter;
 
@@ -23,24 +17,25 @@ public class JsonoutgetToken extends Thread
 	
 	private final String databasePreprocessing;
 	
-	public JsonoutgetToken(List <WikiIDTitlePair> list )
-	{
-		this(list, null, "Thread-" + System.currentTimeMillis());
-	}
+//	public JsonoutgetToken(List <WikiIDTitlePair> list )
+//	{
+//		this(list, null, "Thread-" + System.currentTimeMillis());
+//	}
 	
-	public JsonoutgetToken(List <WikiIDTitlePair> list , ThreadGroup tg , String threadName)
+	public JsonoutgetToken(List <WikiIDTitlePair> list , ThreadGroup tg , String threadName, Properties prop)
 	{
 		super(tg, null, threadName);
 		
-		this.s = new Supporter(true); // target-database, different from other db, otherwise the corrected articles where overwritten
+		this.s = new Supporter(prop,true); // target-database, different from other db, otherwise the corrected articles were overwritten
 		this.db = s.getDatabase();  
 		this.list = list;
 		
-		this.databasePreprocessing = db.getProperties().getProperty("databasePreprocessing");
+		this.databasePreprocessing = prop.getProperty("Wiki_databasePreprocessing");
 	}
-	
-	
-	//  aus UI kopiert und erweitert mit TOPIC_LABEL, padding, databaspreprocessing, SQL-Strings angepasst 
+
+
+
+	//  aus UI kopiert und erweitert mit TOPIC_LABEL, padding, databasepreprocessing, SQL-Strings angepasst 
 	public String getTokenTopicAssignment(int documentID, String completeText ) throws Exception {
 		ResultSet rsToken;
 

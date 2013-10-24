@@ -3,6 +3,7 @@ package wikiParser;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -21,6 +22,8 @@ import java.util.concurrent.TimeUnit;
 public class PreJsonoutgettoken
 {
 
+	private Properties prop; 
+	
 	private List<WikiIDTitlePair> getAllArticlesInDocumentTermTopicFromPreprocessingDatabase(Supporter s)
 	{
 
@@ -53,14 +56,15 @@ public class PreJsonoutgettoken
 	/**
 	 * 
 	 */
-	private void start() throws InterruptedException
+	private void startThreadpool() throws InterruptedException
 	{
-		Supporter s = new Supporter(true); // target-database, different from other db, otherwise the corrected articles where overwritten 
+		Supporter s = new Supporter(prop, true); // target-database, different from other db, otherwise the corrected articles where overwritten 
 
 		Integer multiplicator; 		Integer numberOfAvailableProcesssors;		ArrayList<WikiIDTitlePair> newList ;
 		
-		multiplicator = Integer.valueOf(s.getDatabase().getProperties().getProperty("multiplicatorForNumberOfThreads"));
-		numberOfAvailableProcesssors = Integer.valueOf((String) s.getDatabase().getProperties().get("numberOfParallelThreads"));
+		
+		multiplicator = Integer.valueOf((String) prop.getProperty("Wiki_multiplicatorForNumberOfThreads"));
+		numberOfAvailableProcesssors = Integer.valueOf((String) prop.getProperty("Wiki_numberOfParallelThreads"));
 
 		// split the whole number of articles into parts
 		ArrayList [] splittedWikiIDTitleArray = s.splitIntoArray(numberOfAvailableProcesssors * multiplicator, getAllArticlesInDocumentTermTopicFromPreprocessingDatabase(s));
@@ -80,7 +84,7 @@ public class PreJsonoutgettoken
 		for (Integer i = 0; i < splittedWikiIDTitleArray.length; i++)
 		{
 			newList = (ArrayList<WikiIDTitlePair>) splittedWikiIDTitleArray[i].clone();
-			poolExecutor.execute(new JsonoutgetToken(newList, group, "threadpart-" + new Integer(i+1) + "of" + listLenght));
+			poolExecutor.execute(new JsonoutgetToken(newList, group, "threadpart-" + new Integer(i+1) + "of" + listLenght,prop));
 			newList = null;
 		}
 	
@@ -95,24 +99,10 @@ public class PreJsonoutgettoken
 		poolExecutor = null;
 	}
 	
-	public static void main(String [] args)
+	public void start(Properties prop) throws InterruptedException
 	{
-		
-		Stopwatch stopWatch = new Stopwatch();
-		String sFunction = "Einfaerbung";
-		stopWatch.startStopping(sFunction);
-		
-		try
-		{
 			PreJsonoutgettoken h = new PreJsonoutgettoken();
-			h.start();
-		}
-		catch (Exception e)
-		{
-			System.err.println("PreJsonoutgettoken.java \n");
-			e.printStackTrace();
-		}
-		
-		stopWatch.stopStoppingAndDoOutputToConsole(sFunction);		
+			h.prop = prop;
+			h.startThreadpool();
 	}
 }

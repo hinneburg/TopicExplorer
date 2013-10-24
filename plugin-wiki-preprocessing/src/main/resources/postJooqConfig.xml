@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<catalog>	
-
+<catalog>
+	<command name="Wiki_PreMallet" className="cc.topicexplorer.plugin.wiki.preprocessing.PreMallet" />
+	<command name="Wiki_OrgTable" className="cc.topicexplorer.plugin.wiki.preprocessing.tables.orgtable.OrgTableCreateAndFill" />
 </catalog>

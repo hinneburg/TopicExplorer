@@ -3,7 +3,6 @@ package cc.topicexplorer.plugin.wiki.preprocessing.tables.documenttermtopic;
 import java.sql.SQLException;
 
 import cc.topicexplorer.chain.commands.TableCreateCommand;
-
 /**
  * @author user
  * 

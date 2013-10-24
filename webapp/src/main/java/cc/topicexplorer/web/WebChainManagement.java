@@ -5,6 +5,7 @@ import java.util.Set;
 
 import cc.topicexplorer.chain.ChainManagement;
 import cc.topicexplorer.chain.CommunicationContext;
+import cc.topicexplorer.chain.DependencyCollector;
 
 public class WebChainManagement {
 
@@ -18,9 +19,16 @@ public class WebChainManagement {
 		try {
 			if (chainManagement == null) {
 				chainManagement = new ChainManagement();
-				chainManagement.init();
-				chainManagement.setCatalog("/catalog.xml");
+				chainManagement.init();				
 			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void setCatalog(String catalog) {
+		try {
+			chainManagement.setCatalog(catalog);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -33,7 +41,7 @@ public class WebChainManagement {
 	public static List<String> getOrderedCommands(Set<String> startCommands,
 			Set<String> endCommands) {
 		return chainManagement.getOrderedCommands(
-				chainManagement.getDependencies(), startCommands, endCommands);
+				new DependencyCollector(chainManagement.catalog).getDependencies(), startCommands, endCommands);
 	}
 
 	public static void executeCommands(List<String> commands,

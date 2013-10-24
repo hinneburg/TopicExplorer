@@ -8,8 +8,8 @@
 		<listener-class>cc.topicexplorer.web.OnStartup</listener-class>
 	</listener>
 	<servlet>
-		<servlet-name>getRandomDocs</servlet-name>
-		<servlet-class>cc.topicexplorer.web.RandomDocs</servlet-class>
+		<servlet-name>JsonServlet</servlet-name>
+		<servlet-class>cc.topicexplorer.web.JsonServlet</servlet-class>
 	</servlet>
 	<!-- ONLY FOR TESTING PURPOSES BEGIN-->
 	<servlet>
@@ -18,8 +18,8 @@
 	</servlet>
 	<!-- END -->
 	<servlet-mapping>
-		<servlet-name>getRandomDocs</servlet-name>
-		<url-pattern>/getRandomDocs</url-pattern>
+		<servlet-name>JsonServlet</servlet-name>
+		<url-pattern>/JsonServlet</url-pattern>
 	</servlet-mapping>
 	<!-- ONLY FOR TESTING PURPOSES BEGIN-->
 	<servlet-mapping>

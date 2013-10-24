@@ -58,7 +58,7 @@ $(document).ajaxStart(function() {
 });
 $(document).ready(function() {
 	var start = new Date().getTime();
-	$.getJSON('getRandomDocs', {art:'random', id:null, limit:20})
+	$.getJSON('JsonServlet', {art:'random', id:null, limit:20})
 	.done(function(json) {
 		console.log("Zeit JSON holen: " + (new Date().getTime() - start));
 		start = new Date().getTime();

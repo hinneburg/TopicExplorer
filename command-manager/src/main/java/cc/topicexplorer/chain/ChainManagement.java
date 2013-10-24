@@ -31,7 +31,7 @@ import com.google.common.annotations.VisibleForTesting;
  */
 public class ChainManagement {
 	@VisibleForTesting
-	Catalog catalog;
+	public Catalog catalog;
 	private CommunicationContext communicationContext;
 	private DependencyCollector dependencyCollector;
 	private static Logger logger = Logger.getRootLogger();

@@ -62,9 +62,13 @@ function DocumentModel(id, name, relevanzen, textSnippet) {
 function showDocument(e) {
 	var doc = $(e.currentTarget).parents('li').attr('id').split('doc_')[1];
 	console.log(doc);
-	doc = jsonModel.DOCUMENT[doc];
+	$.getJSON('JsonServlet', {Command:'getDoc', DocId:doc})
+	.done(function(json) {
+		doc = json.DOCUMENT;	
+	});
+//	doc = jsonModel.DOCUMENT[doc];
 //	console.log(doc);
-	gui.drawTab(doc.TEXT$TITLE(),true,true, doc.TEXT$FULLTEXT());
+	gui.drawTab(doc.TEXT$TITLE,true,true, "<h2>" + doc.TEXT$TITLE + "</h2>" + doc.TEXT$FULLTEXT);
 	e.preventDefault();
 	return false;
 }

@@ -168,7 +168,7 @@ public class GenerateSQL extends TableSelectCommand {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		servletWriter.println(all.toString());
+		servletWriter.print(all.toString());
 	}
 
 	@Override

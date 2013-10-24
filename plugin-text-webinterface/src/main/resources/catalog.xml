@@ -3,4 +3,5 @@
 	<command name="GetRandomDocsTextCollect" className="cc.topicexplorer.plugin.text.actions.getrandomdocs.Collect"/>
 	<command name="GetTopicsTextCollect" className="cc.topicexplorer.plugin.text.actions.gettopics.Collect"/>
 	<command name="InitTextCollect" className="cc.topicexplorer.plugin.text.actions.init.Collect"/>
+	<command name="ShowDocTextCollect" className="cc.topicexplorer.plugin.text.actions.showdoc.Collect"/>
 </catalog>

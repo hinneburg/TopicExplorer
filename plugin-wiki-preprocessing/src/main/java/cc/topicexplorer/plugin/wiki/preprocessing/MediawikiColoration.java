@@ -23,6 +23,7 @@ public class MediawikiColoration extends DependencyCommand {
 		
 		
 		try {
+			
 			PreJsonoutgettoken pj = new PreJsonoutgettoken();
 			pj.start(properties);
 		} catch (Exception e) {
@@ -37,6 +38,8 @@ public class MediawikiColoration extends DependencyCommand {
 	@Override
 	public void addDependencies() {
 		beforeDependencies.add("DocumentTermTopicFill");
+		beforeDependencies.add("ColorTopic_TopicFill");
+		
 	}
 
 }

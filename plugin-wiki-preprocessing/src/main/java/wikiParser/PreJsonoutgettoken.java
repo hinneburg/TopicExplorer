@@ -31,7 +31,7 @@ public class PreJsonoutgettoken
 		try
 		{
 
-			String databasePreprocessing = s.getDatabase().getProperties().getProperty("databasePreprocessing");
+			String databasePreprocessing = prop.getProperty("database.DB");
 			
 			String sql = "SELECT DOCUMENT_ID FROM " + databasePreprocessing+".DOCUMENT_TERM_TOPIC GROUP BY DOCUMENT_ID";
 

@@ -30,7 +30,7 @@ public class JsonoutgetToken extends Thread
 		this.db = s.getDatabase();  
 		this.list = list;
 		
-		this.databasePreprocessing = prop.getProperty("Wiki_databasePreprocessing");
+		this.databasePreprocessing = prop.getProperty("database.DB");
 	}
 
 

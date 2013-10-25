@@ -36,5 +36,7 @@ public class DocumentTermTopicCreate extends TableCreateCommand {
 	@Override
 	public void addDependencies() {
 		beforeDependencies.add("DocumentTermTopicCreate");
+		
+		afterDependencies.add("Prune");
 	}	
 }

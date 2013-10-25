@@ -36,16 +36,16 @@ public class Database {
 			throws Exception {
 		properties = prop;
 
-		String dbLocation = properties.getProperty("Wiki_database.DbLocation");
+		String dbLocation = properties.getProperty("database.DbLocation");
 
 		if (otherDatabase) {
 			dbLocation = dbLocation + "/" + properties.getProperty("Wiki_database.other");
 		} else {
-			dbLocation = dbLocation + "/" + properties.getProperty("Wiki_database.DB");
+			dbLocation = dbLocation + "/" + properties.getProperty("Wiki_database.wikidb");
 		}
 
-		String dbUser = properties.getProperty("Wiki_database.DbUser");
-		String dbPassword = properties.getProperty("Wiki_database.DbPassword");
+		String dbUser = properties.getProperty("database.DbUser");
+		String dbPassword = properties.getProperty("database.DbPassword");
 
 		Class.forName("com.mysql.jdbc.Driver").newInstance();
 

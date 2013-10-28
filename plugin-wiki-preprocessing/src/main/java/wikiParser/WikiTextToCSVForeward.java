@@ -8,14 +8,9 @@ import java.util.List;
 import java.util.Scanner;
 //import org.junit.Assert;
 
-//import org.junit.internal.matchers.SubstringMatcher;
-
-
-
 
 /*
- - es muss noch gedreht werden: tokenize
- - pointersache kann auch mit hashmaps gemacht werden !soll auch! damit richtungsunabhängig , checkIfPositionOfWordIsWithinBoxBrackets
+ - pointersache kann auch mit hashmaps oder treemap gemacht werden , wäre glaube besser, damit nicht eventtuell pointerfehler entstehen kann bei checkIfPositionOfWordIsWithinBoxBrackets
  - vllt nochmal assert test
  - !! testen und vergleichen ob es auch wirklich geht, testen mit indem verglichen wird mit der alten implementierung
   */
@@ -34,17 +29,13 @@ public class WikiTextToCSVForeward
 
 	private final String wikiOrigText;
 	private final String wikiParsedText;
-//	private int failureId;
 	private final Integer old_id ;
 	private final String wikiTitle;
 	private final String wikiParsedTextReadable;
 	
-	private List<String> tokens = new ArrayList<String>();
-	private List<Integer> startPositionsWikitext = new ArrayList<Integer>();
-	private List<Integer> startPositionsReadable = new ArrayList<Integer>();
-	
-//	private List<PointInteger> posBracketsCurly ;
-//	private Integer intPointerBracketsCurly;
+	private List<String> tokensParsedText = new ArrayList<String>();
+	private List<Integer> startPositionsWikiText = new ArrayList<Integer>();
+	private List<Integer> startPositionsReadableText = new ArrayList<Integer>();
 	
 	private List<PointInteger> posBracketsBox ;
 	private Integer intPointerBracketsBox;
@@ -58,7 +49,6 @@ public class WikiTextToCSVForeward
 		
 		this.wikiOrigText = new String (w.getWikiOrigText());
 		this.wikiParsedText	= w.getParsedWikiText();
-//		this.failureId = w.getFailureId();
 		this.old_id = w.getOldID();
 		this.wikiTitle = w.getWikiTitle();
 		this.wikiParsedTextReadable = w.getParsedWikiTextReadable();
@@ -71,14 +61,14 @@ public class WikiTextToCSVForeward
 	}
 	
 		
-	private void tokenizeReadabletextWithFixedTokenSequence (String text, List<String> tokenSearching)
+	private void tokenizeReadableTextWithFixedTokenSequence (String text, List<String> tokenSequence)
 	{
-		// assumption: every word can be found in the text (the two parsing texts, 
-		// readable text and parsed original text are not equal and could differ in some parts like interpunction and prefix postfix)
+		// assumption: every parsed word of the wikitext can be found in the normalised text 
+		// readable text and parsed original text are not equal and could differ in some parts like interpunction and prefix postfix of wiki-links)
 		
 		try
 		{
-			Iterator<String> itToken = tokenSearching.iterator();
+			Iterator<String> itToken = tokenSequence.iterator();
 			Integer position = 0;
 			Integer savedPosition = 0;
 			String token;
@@ -87,7 +77,7 @@ public class WikiTextToCSVForeward
 			{
 				token = itToken.next();
 				position = text.substring(savedPosition, text.length()).indexOf(token);  // every time the search-string becomes shorter
-				startPositionsReadable.add(position+savedPosition);
+				startPositionsReadableText.add(position+savedPosition);
 				
 				if (position == -1 && itToken.hasNext())
 				{
@@ -109,7 +99,7 @@ public class WikiTextToCSVForeward
 		}
 		catch (Exception e)
 		{
-			System.err.println("failure in tokenize find, does only belongs to the tokenisation of the readable text. " + e.getMessage());
+			System.err.println("failure in tokenizeReadableTextWithFixedTokenSequence, does only belongs to the tokenisation of the readable text. " + e.getMessage());
 //			e.printStackTrace();
 		}
 	}
@@ -117,49 +107,29 @@ public class WikiTextToCSVForeward
 	
 	private void tokenize() throws Exception{
 
-//		posBracketsCurly = getBracketedPositionsCurlyBrackets();
-		
-		
 		posBracketsBox = getBracketedPositionsBoxBrackets();
 		
 		Scanner scParsed = new Scanner(wikiParsedText); // liegt zeilenweise vor
 		Integer savedPosition = 0;
 		Integer pos = -1;
-		List <String> list = new ArrayList<String>();
-		
-// TODO copying in list was for reversing, can be shrinked, left standing for first test 
+
 		while (scParsed.hasNextLine())
 		{
-			list.add(scParsed.nextLine());
-		}
-		scParsed = null;
-				
-		
-		for (int i = 0; i <= list.size()-1; i++)
-		{
 			// read line
-			String tmpLine = list.get(i);
+			String tmpLine = scParsed.nextLine();
 			if (tmpLine.trim().length() > 0)
 			{
-				// find line in original text
+				// find the line in the original wiki-text
 				pos = wikiOrigText.substring(savedPosition, wikiOrigText.length()-1).indexOf(tmpLine); 
 				
 				if (pos > -1)
 				{
 
 //					System.out.println(pos + " " + tmpLine + " old " );
-
-					
-//					macht mit Anwendung zuviele Fehler, z.B. wegen Formeln die enthaltende Brüche haben und damit 2 Klammern gleichzeitig öffnen {{, aber nur eine schließen 
-//					pos = checkIfPositionOfWordIsWithinDoubleCurlyBrackets(pos,tmpLine); // recursiv
-					
-
 					pos = checkIfPositionOfWordIsWithinBoxBrackets(pos+savedPosition, tmpLine);
-					
 //					System.out.println(pos + " " + tmpLine  + " new ");
-//					
 					
-					// takes the last position of the line, iterates all elements and returns the new position  
+					// takes the last position of the line, iterates all elements, saves the position of every token from the text and returns the new startposition (the last  )  
 					savedPosition = splitForOutputAndReturnNewPosition(tmpLine, pos);
 				}
 				else
@@ -173,140 +143,8 @@ public class WikiTextToCSVForeward
 				savedPosition = savedPosition + 1;	// new line also counts as one character in utf-8 	
 			}
 		}
-		list.clear();
+		scParsed = null;
 	}
-	
-
-	// geht rückwärts, müsste wenn dannnoch umgedreht werden, aba kann wohl weg
-//	/**
-//	 * recursiv call, which returns the earliest position of the word which is not enclosed in curly brackets
-//	 * that means for example templates 
-//	 * @throws Exception 
-//	 */
-////	private Integer checkIfPositionOfWordIsWithinDoubleCurlyBrackets(Integer posOfFoundedWord, String strLine) //throws Exception
-//	private Integer checkIfPositionOfWordIsWithinDoubleCurlyBrackets(Integer pos, String tmpLine) //throws Exception
-//	{
-//		if (intPointerBracketsCurly==0)
-//			return pos;
-//		
-//		Integer posOfFoundedWord = -1;
-//		
-//		if (posBracketsCurly.get(intPointerBracketsCurly).getEndPoint()< pos )
-//		{
-//			return pos ;			
-//		}
-//		// wenn er genau drin liegt, neu suchen
-//		else if (posBracketsCurly.get(intPointerBracketsCurly).getStartPoint() <= pos && posBracketsCurly.get(intPointerBracketsCurly).getEndPoint() >= pos)
-//		{
-////		rekursiv
-//			intPointerBracketsCurly--;
-//			
-//			posOfFoundedWord = 	checkIfPositionOfWordIsWithinDoubleCurlyBrackets(wikiOrigText.substring(0, pos).lastIndexOf(tmpLine), tmpLine);
-//			
-//		}
-//		else if (posBracketsCurly.get(intPointerBracketsCurly).getStartPoint() > pos )
-//		{
-//			if (intPointerBracketsCurly > 0)
-//			{
-//				Integer tmp = intPointerBracketsCurly - 1;
-//				if (posBracketsCurly.get(tmp).getEndPoint() < pos)
-//				{
-//					intPointerBracketsCurly --;
-//					posOfFoundedWord = pos;
-//				}
-//				else if (posBracketsCurly.get(tmp).getEndPoint() > pos)
-//				{
-//					// rekursiv
-//					intPointerBracketsCurly--;
-//					posOfFoundedWord = checkIfPositionOfWordIsWithinDoubleCurlyBrackets(pos, tmpLine);
-//				}
-//			}
-//		}
-//		
-//		if (posOfFoundedWord != -1 )
-//		{
-//			return posOfFoundedWord;	
-//		}
-//		else
-//		{
-//			return pos; 
-//		}
-//		
-//		
-//		
-//		
-//		
-////		// backwards
-////		
-////		Integer intReturn = posOfFoundedWord;
-////		Integer tmp ;
-////		
-////		if (posBracketsCurly.size() == 0)
-////			return intReturn;
-////				
-////		// if the position is within the brackets then the position must be recalculated 
-////		if (posBracketsCurly.get(intPointerBracketsCurly).getStartPoint() < posOfFoundedWord && posBracketsCurly.get(intPointerBracketsCurly).getEndPoint() > posOfFoundedWord)
-////		{
-////			intReturn =  checkIfPositionOfWordIsWithinDoubleCurlyBrackets(wikiOrigText.substring(0, Integer.valueOf(posBracketsCurly.get(intPointerBracketsCurly).getStartPoint())).lastIndexOf(strLine),strLine);			
-////		}
-////		// if the founded position is behind the actual endpoint of the last bracket, the position is ok
-////		else if (posBracketsCurly.get(intPointerBracketsCurly).getEndPoint() < posOfFoundedWord)
-////		{
-////			return posOfFoundedWord;
-////		}
-////		// if position is in front of the actual startpoint of a double curly bracket, continue looking 
-////		else if (posBracketsCurly.get(intPointerBracketsCurly).getStartPoint()> posOfFoundedWord ) // tempWert verringern und gucken ob da schon drüber ,dann Verringerung speichern
-////		{
-//////			if there are also brackets in lower textposition
-////			if (intPointerBracketsCurly  > 0 )
-////			{
-////				
-////				// go temporary one bracketposition deeper (to the beginning)
-////				tmp = intPointerBracketsCurly - 1;
-////				
-////				// if the founded position is behind the actual endpoint of the last bracket, the position is ok				
-////				if (posBracketsCurly.get(tmp).getEndPoint() < posOfFoundedWord)
-////				{
-////					return posOfFoundedWord;  // vorzeitiger abbruch
-////				}
-////				// renew the current pointer and recalculate the position with recursiv call 
-////				else
-////				{
-////					intPointerBracketsCurly--;
-////					intReturn =  checkIfPositionOfWordIsWithinDoubleCurlyBrackets(wikiOrigText.substring(0, posBracketsCurly.get(intPointerBracketsCurly).getStartPoint()).lastIndexOf(strLine),strLine); // rekursion
-////				}
-////			}
-////			// return last founded position
-////			else
-////			{
-////				intReturn = posOfFoundedWord;
-////			}
-////		}
-////		
-////		if (intReturn == -1){
-////			if (posOfFoundedWord!=-1){
-////				return posOfFoundedWord;
-////			}
-////			
-////			// after splitting up the recursion the last founded position which is not -1 will be returned 
-////			// 
-////			//			else 
-//////			{
-////////				throw new Exception (wikiTitle + " " + old_id + " " + strLine + ", pos:"  + posOfFoundedWord + " ,  funktion: checkIfPositionOfWordIsWithinAOpeningBracket " );
-//////			}
-////		}
-////		
-////		return intReturn;
-////		
-////		/*
-////		  pointer muss immer in richtiger und aktueller Position sein
-////		  d.h. wenn die gefundene Position innerhalb eines Klammernbereiches liegt, 
-////		  dann wird temporär der vorherige Bereich angeguckt und überprüft,
-////		  ob die Position nicht innerhalb eines Klammernbereiches liegt, 
-////		  wenn dies so ist dann Treffer und return
-////		 */
-//	}
-//	
 	
 
 	private Integer checkIfPositionOfWordIsWithinBoxBrackets(Integer pos, String tmpLine)
@@ -368,64 +206,26 @@ public class WikiTextToCSVForeward
 		{
 			return pos; 
 		}
+		
+		
+////	/*
+////	  pointer muss immer in richtiger und aktueller Position sein
+////	  d.h. wenn die gefundene Position innerhalb eines Klammernbereiches liegt, 
+////	  dann wird temporär der vorherige Bereich angeguckt und überprüft,
+////	  ob die Position nicht innerhalb eines Klammernbereiches liegt, 
+////	  wenn dies so ist, dann Treffer und return,
+////	  rekursiv
+////	 */
+
 	}
 	
 	
-	
-//	// save positions of two consecutive curly brackets {{ ... }}, linear
-//	private List <PointInteger> getBracketedPositionsCurlyBrackets()
-//	{
-//		Integer bracketsCounter = 0;
-//		Boolean bracketsfound = false;
-//		Integer tmpx = 0;
-//		
-//		List <PointInteger> list = new ArrayList<PointInteger>();
-//		
-//		// rather a test
-//		if (-1 == wikiOrigText.indexOf("{{", 0))
-//		{
-//			intPointerBracketsCurly = 0;
-//			return list;
-//		}
-//		
-//		// Länge -1, wegen char at i + 1
-//		for (Integer i = 0 ; i < wikiOrigText.length()-1; i++) 
-//		{
-//
-//			if (wikiOrigText.charAt(i) == '{' && wikiOrigText.charAt(i + 1) == '{')
-//			{
-//				if (bracketsCounter == 0 )
-//				{
-//					tmpx = i;
-//					bracketsfound = true;
-//				}
-//				
-//				bracketsCounter++;
-//			}
-//			else if (wikiOrigText.charAt(i) == '}' && wikiOrigText.charAt(i + 1) == '}')
-//			{
-//				bracketsCounter--;
-//			}
-//			
-//			
-//			if (bracketsfound && bracketsCounter == 0)
-//			{
-//				list.add(new PointInteger(tmpx, i));
-//				bracketsfound = false;
-//			}
-//		}
-//		intPointerBracketsCurly = list.size()-1;
-//		return list;
-//	}
-	
-	
-	
-	// save positions of linktargets , between box bracket and | , not the linktext
+	// save positions of linktargets , between boxbracket and | , not the linktext
 	// pictures could have "|" too
 	private List <PointInteger> getBracketedPositionsBoxBrackets()
 	{
 		Integer tmpx = 0;
-		Boolean boolBracket = false;
+		Boolean boolBracketOpen = false;
 				
 		List <PointInteger> list = new ArrayList<PointInteger>();
 		
@@ -436,21 +236,21 @@ public class WikiTextToCSVForeward
 		}
 			
 		
-		// Länge -1, wegen char at i + 1
+		// length -1, because char at i + 1
 		for (Integer i = 0 ; i < wikiOrigText.length()-1; i++) 
 		{
 
 			if (wikiOrigText.charAt(i) == '[' && wikiOrigText.charAt(i + 1) == '[')
 			{
 				tmpx = i;
-				boolBracket = true;
+				boolBracketOpen = true;
 			}
 			else if (wikiOrigText.charAt(i) == '|')
 			{
-				if (boolBracket)
+				if (boolBracketOpen)
 				{
 					list.add(new PointInteger(tmpx, i));
-					boolBracket = false;
+					boolBracketOpen = false;
 				}
 			}
 		}
@@ -459,8 +259,7 @@ public class WikiTextToCSVForeward
 		return list;
 	}
 	
-	// schon wieder vorwärts
-	private Integer splitForOutputAndReturnNewPosition(String tmpLine, Integer posOfLine)
+	private Integer splitForOutputAndReturnNewPosition(String tmpLine, Integer posOfLineInOriginalText)
 	{
 		Integer endToken = -1;
 		Integer startToken = 0;
@@ -479,18 +278,16 @@ public class WikiTextToCSVForeward
 			}
 			if (startToken < tmpLine.length())
 			{
-////				 System.out.println(startToken +" "+ endToken);
-////				 System.out.println(tmpLine.substring(startToken, endToken));
 
 				// only words with length greater than 1 are parsed
 				if (tmpLine.substring(startToken, endToken).length() > 1)
 				{
-					tokens.add(tmpLine.substring(startToken, endToken));
-					startPositionsWikitext.add(startToken + posOfLine);
+					tokensParsedText.add(tmpLine.substring(startToken, endToken));
+					startPositionsWikiText.add(startToken + posOfLineInOriginalText);
 				}
 			}
 		}
-		return posOfLine + tmpLine.length();   
+		return posOfLineInOriginalText + tmpLine.length();   
 	}
 
 	public String getCSV() throws Exception
@@ -498,13 +295,13 @@ public class WikiTextToCSVForeward
 
 		tokenize();
 		
-		tokenizeReadabletextWithFixedTokenSequence(wikiParsedTextReadable, tokens);
+		tokenizeReadableTextWithFixedTokenSequence(wikiParsedTextReadable, tokensParsedText);
 						
 		StringBuilder sb = new StringBuilder();
 
-		Iterator<String> itToken = tokens.iterator();
-		Iterator<Integer> itSeqWikitext = startPositionsWikitext.iterator();
-		Iterator<Integer> itSeqReadable = startPositionsReadable.iterator();
+		Iterator<String> itToken = tokensParsedText.iterator();
+		Iterator<Integer> itSeqWikitext = startPositionsWikiText.iterator();
+		Iterator<Integer> itSeqReadable = startPositionsReadableText.iterator();
 		
 		while (itToken.hasNext() && itSeqWikitext.hasNext())
 		{

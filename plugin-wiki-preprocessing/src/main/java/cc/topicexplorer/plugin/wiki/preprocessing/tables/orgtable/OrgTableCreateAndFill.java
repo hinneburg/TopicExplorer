@@ -21,10 +21,10 @@ public class OrgTableCreateAndFill extends TableCommand {
 
 	@Override
 	public void tableExecute(Context context) {
-		String tableName = this.properties.getProperty("OrgTableName");
-
-		// drop table
-
+//		String tableName = this.properties.getProperty("OrgTableName");
+//
+//		// drop table
+//
 //		try {
 //			this.database.executeUpdateQuery("drop table " + tableName + ";");
 //		} catch (SQLException e) {
@@ -58,7 +58,10 @@ public class OrgTableCreateAndFill extends TableCommand {
 //
 //		sql = " START TRANSACTION ; "
 //				+ " LOAD DATA LOCAL INFILE "
-//				+ "'temp/inputsql.csv' "
+//				+ "'"
+//				+ properties.getProperty("Wiki_outputFolder")
+//				+ System.getProperty("file.separator") + "inputsql.csv"
+//				+ "' "
 //				+ "INTO TABLE "
 //				+ tableName
 //				+ " "
@@ -75,6 +78,7 @@ public class OrgTableCreateAndFill extends TableCommand {
 //			this.database.executeUpdateQuery(sql);
 //		} catch (SQLException e) {
 //			logger.fatal("wiki-plug-in."+tableName+": failure in filling the table.\n programm will exit.");
+//			//fatal
 //			e.printStackTrace();
 //			System.exit(1);
 //		}

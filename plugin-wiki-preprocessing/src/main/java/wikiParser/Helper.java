@@ -45,8 +45,7 @@ public class Helper extends Thread
 	
 	private final String fileseparator = System.getProperty("file.separator");
 	
-	private boolean debug = true;
-	private boolean debugSQL = false;
+	private boolean debug;
 
 	private boolean onlyOneOutput;
 	
@@ -100,6 +99,10 @@ public class Helper extends Thread
 			
 			stmt = db.getConnection().prepareStatement("UPDATE text set old_text = ? WHERE old_id = ?");
 			
+			if (prop.getProperty("Wiki_debug").equalsIgnoreCase("true")){
+				debug = true;
+			}
+			
 			}
 		catch (Exception e)
 		{
@@ -120,67 +123,11 @@ public class Helper extends Thread
 	private String getWikiTextWithRevID(WikiIDTitlePair id_title) throws SQLException, Exception
 	{
 
-		String wikitxt = "";
+		Supporter t = new Supporter(db);
 		
-		
-		// query for the wikitext					
-		String sql = " SELECT CONVERT(CAST(old_text as binary) USING utf8) " +
-			  		 " FROM text " +
-			  		 " WHERE old_id = "  + id_title.getOld_id() +";" ; 
-		
-		
-		
-		if (debugSQL) {
-			System.out.println(sql);
-		}
-		
-		
-		ResultSet rs = db.executeQuery(sql);
-
-		if (rs.next())
-		{
-			wikitxt = rs.getString(1);
-		}
-		else
-		{
-			throw new NullPointerException("The wikitext of text.old_id cannot be found. Wikititle:" + id_title.getWikiTitle());
-		}
-		
-//		rs.close();
-
-		
-		// 	wenn der Text nicht mit SQL konvertiert werden kann kommt es zu einem null Wert, welcher nachfolgend umgewandelt wird 
-		if (wikitxt == null)
-		{
-			
-			rs = db.executeQuery("SELECT old_text  FROM text  WHERE old_id = "
-					+ id_title.getOld_id());
-			
-//			bwLogger.append("converted with java : " + id_title.getWikiTitle());
-
-			if (rs.next()) {
-				byte[] bytes = (byte[]) rs.getObject(1);
-
-				try {
-
-					wikitxt = new String(bytes, "UTF-8");
-
-				} catch (UnsupportedEncodingException e) {
-					wikitxt = wikitxt + " " + e.getMessage(); // as errorcode
-				}
-				bytes = null;
-			}
-			rs.close();
-		}
-
-		// immernoch null
-		if (wikitxt == null) 
-			throw new Exception(id_title.getWikiTitle() + " , wikitext == null , " + sql + " " + this.getClass() + "\n");
-		
-		
+		String wikitxt =  t.getWikiTextOnlyWithID(id_title.getOld_id());
 		wikitxt = doArticleCorrection(wikitxt, id_title);
 		
-
 		return wikitxt;
 	}
 	
@@ -206,7 +153,7 @@ public class Helper extends Thread
 				needsSaving = true;
 		}
 
-		// only do updates on the first run after the import of the fresh dump
+		// only do updates on the first run, e.g. after the import of a fresh dump
 		if (needsSaving){
 
 			try
@@ -220,9 +167,6 @@ public class Helper extends Thread
 			}
 			
 			updateReplacedTextInDatabase(wikitxt, id_title.getOld_id());
-			/*
-			 * vielleicht an die Revisionsverwaltung der Wikipedia anlehnen
-			 */
 		}
 		
 		return wikitxt; 
@@ -306,8 +250,7 @@ public class Helper extends Thread
 			
 			stmt.clearParameters();
 			textAsByte = null;
-			
-//			db.excecutePreparedStatementForUpdatingBlob("UPDATE text set old_text = ? WHERE old_id = ?", wikitxt, old_id);
+
 		}
 		catch (SQLException e)
 		{
@@ -383,7 +326,7 @@ public class Helper extends Thread
 		try
 		{
 			bwCSVOrigText.append(csv);
-			bwCSVOrigText.flush(); // TODO könnte man vielleicht auch weglassen 
+//			bwCSVOrigText.flush(); // TODO flush machen? 
 		}
 		catch (IOException e)
 		{
@@ -401,7 +344,7 @@ public class Helper extends Thread
 		{
 			bwLogger.append( loggingLine);
 			bwLogger.append("\n");
-			bwLogger.flush();
+//			bwLogger.flush(); //TODO flush machen? 
 		}
 		catch (IOException e)
 		{
@@ -466,7 +409,7 @@ public class Helper extends Thread
 
 		try
 		{
-			WikiArticle w;		CSVPreparer csv ;			Integer tmp = 0;
+			WikiArticle w;	Integer tmp = 0;
 			
 			WikiTextToCSVForeward textTocsv ; 			
 //			WikiTextToCsvbackward textTocsv ;

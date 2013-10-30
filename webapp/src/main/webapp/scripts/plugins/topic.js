@@ -60,6 +60,10 @@ function template()
 
 function topicClick(e) {
 	var topic = $(e.currentTarget).parents('li').attr('id').split('topic')[1];
-	topic = jsonModel.Topic[topic];	
-	gui.drawTab(topic.TEXT$TOPIC_LABEL(), true, true, topic.TEXT$TOPIC_LABEL());
+//	topic = jsonModel.Topic[topic];	
+	$.getJSON('JsonServlet', {Command:'bestDocs', TopicId:topic})
+	.done(function(json) {
+		jsonModel.DOCUMENT = ko.mapping.fromJS(json.DOCUMENT);
+	});
+//	gui.drawTab(topic.TEXT$TOPIC_LABEL(), true, true, topic.TEXT$TOPIC_LABEL());
 }

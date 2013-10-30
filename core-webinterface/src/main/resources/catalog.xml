@@ -12,4 +12,7 @@
 	<command name="ShowDocCoreCreate" className="cc.topicexplorer.actions.showdoc.Create"/>
 	<command name="ShowDocCoreCollect" className="cc.topicexplorer.actions.showdoc.Collect"/>
 	<command name="ShowDocCoreGenerateSQL" className="cc.topicexplorer.actions.showdoc.GenerateSQL"/>	
+	<command name="BestDocsCoreCreate" className="cc.topicexplorer.actions.bestdocs.Create"/>
+	<command name="BestDocsCoreCollect" className="cc.topicexplorer.actions.bestdocs.Collect"/>
+	<command name="BestDocsCoreGenerateSQL" className="cc.topicexplorer.actions.bestdocs.GenerateSQL"/>	
 </catalog>

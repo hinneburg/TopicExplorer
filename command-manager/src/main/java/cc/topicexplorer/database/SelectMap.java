@@ -5,36 +5,36 @@ import java.util.ArrayList;
 import org.jooq.tools.StringUtils;
 
 public class SelectMap {
-	public ArrayList<String> select =  new ArrayList<String>();
-	public ArrayList<String> from =  new ArrayList<String>();
-	public ArrayList<String> where =  new ArrayList<String>();
-	public ArrayList<String> orderBy =  new ArrayList<String>();
+	public ArrayList<String> select = new ArrayList<String>();
+	public ArrayList<String> from = new ArrayList<String>();
+	public ArrayList<String> where = new ArrayList<String>();
+	public ArrayList<String> orderBy = new ArrayList<String>();
 	public int limit, offset;
-	
+
 	private String getSQLPart(ArrayList<String> part, String glue) {
 		return StringUtils.join(part.toArray(new String[part.size()]), glue);
 	}
-	
+
 	public String getSQLString() {
 		String select, from, where, orderBy, limit;
-		
+
 		select = "SELECT " + this.getSQLPart(this.select, ", ");
 		from = " FROM " + this.getSQLPart(this.from, ", ");
-		if(this.where.size() > 0) {
+		if (this.where.size() > 0) {
 			where = " WHERE " + this.getSQLPart(this.where, " AND ");
 		} else {
 			where = "";
 		}
-		if(this.orderBy.size() > 0) {
+		if (this.orderBy.size() > 0) {
 			orderBy = " ORDER BY " + this.getSQLPart(this.orderBy, ", ");
 		} else {
 			orderBy = "";
 		}
-		if(this.limit > 0) {
+		if (this.limit > 0) {
 			limit = " LIMIT ";
-			if(this.offset > 0) {
+			if (this.offset > 0) {
 				limit += this.offset + ", ";
-			} 
+			}
 			limit += this.limit;
 		} else {
 			limit = "";
@@ -45,19 +45,21 @@ public class SelectMap {
 
 	public ArrayList<String> getCleanColumnNames() {
 		ArrayList<String> list = new ArrayList<String>();
-		for(int i = 0; i < select.size(); i++  ) {
-			if(select.get(i).contains(".")) {
-				list.add(select.get(i).substring(select.get(i).indexOf(".") + 1));
-			} else if(select.get(i).toLowerCase().contains(" as ")) {
-				list.add(select.get(i).substring(select.get(i).toLowerCase().indexOf(" as ") + 3).trim());
-			} else {
-				list.add(select.get(i));
-			}	
-		}		
-		return list;		
+		int cutIndex = 0;
+		for (int i = 0; i < select.size(); i++) {
+			cutIndex = 0;
+			if (cutIndex < select.get(i).lastIndexOf(".")) {
+				cutIndex = select.get(i).lastIndexOf(".") + 1;
+			}
+			if (cutIndex < select.get(i).toLowerCase().lastIndexOf(" as ")) {
+				cutIndex = select.get(i).toLowerCase().lastIndexOf(" as ") + 4;
+			}
+			list.add(select.get(i).substring(cutIndex).trim());
+		}
+		return list;
 	}
 
-	
+	@Override
 	@SuppressWarnings("unchecked")
 	public SelectMap clone() {
 		SelectMap newMap = new SelectMap();
@@ -67,6 +69,6 @@ public class SelectMap {
 		newMap.orderBy = (ArrayList<String>) this.orderBy.clone();
 		newMap.limit = this.limit;
 		newMap.offset = this.offset;
-		return newMap;	
+		return newMap;
 	}
 }

@@ -13,9 +13,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
 import org.apache.log4j.Logger;
-
 
 import cc.topicexplorer.chain.CommunicationContext;
 
@@ -26,37 +24,42 @@ public class JsonServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static Logger logger = Logger.getRootLogger();
 
-	protected void doGet(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
+	@Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String command = request.getParameter("Command");
-		
+
 		response.setCharacterEncoding("UTF8");
-		
+
 		PrintWriter writer = response.getWriter();
-		
-		CommunicationContext communicationContext = WebChainManagement
-				.getCommunicationContext();
+
+		CommunicationContext communicationContext = WebChainManagement.getCommunicationContext();
 		communicationContext.put("SERVLET_WRITER", writer);
 
 		Set<String> startCommands = new HashSet<String>();
 		Set<String> endCommands = new HashSet<String>();
 
-		if(command != null) {
-			communicationContext.put("SHOW_DOC_ID", request.getParameter("DocId"));
-			
-			startCommands.add("ShowDocCoreCreate");
-			WebChainManagement.executeCommands(WebChainManagement
-					.getOrderedCommands(startCommands,
-							endCommands), communicationContext);	
+		if (command != null) {
+			if (command.contains("getDoc")) {
+				communicationContext.put("SHOW_DOC_ID", request.getParameter("DocId"));
+
+				startCommands.add("ShowDocCoreCreate");
+
+			} else if (command.contains("bestDocs")) {
+				communicationContext.put("TOPIC_ID", request.getParameter("TopicId"));
+
+				startCommands.add("BestDocsCoreCreate");
+			}
+			WebChainManagement.executeCommands(WebChainManagement.getOrderedCommands(startCommands, endCommands),
+					communicationContext);
 		} else {
 			startCommands.add("InitCoreCreate");
-	
-			writer.print("{\"FRONTEND_VIEWS\":" + this.getFrontendViews((Properties)communicationContext.get("properties")) + ",\"JSON\":");
 
-			WebChainManagement.executeCommands(WebChainManagement
-					.getOrderedCommands(startCommands,
-							endCommands), communicationContext);
-			
+			writer.print("{\"FRONTEND_VIEWS\":"
+					+ this.getFrontendViews((Properties) communicationContext.get("properties")) + ",\"JSON\":");
+
+			WebChainManagement.executeCommands(WebChainManagement.getOrderedCommands(startCommands, endCommands),
+					communicationContext);
+
 			writer.print("}");
 		}
 	}
@@ -65,38 +68,42 @@ public class JsonServlet extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
-	protected void doPost(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
+	@Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
+			IOException {
 		// TODO Auto-generated method stub
 
 	}
-	
+
 	private String getFrontendViews(Properties properties) {
 		String plugins = properties.getProperty("plugins");
 		String pluginArray[] = plugins.split(",");
 		List<String> frontendViews = new ArrayList<String>();
-		
+
 		// init
 		String frontendViewArray[] = properties.get("FrontendViews").toString().split(",");
 		for (int j = 0; j < frontendViewArray.length; j++) {
-			if(!frontendViews.contains("\"" + frontendViewArray[j] + "\"")) {
+			if (!frontendViews.contains("\"" + frontendViewArray[j] + "\"")) {
 				frontendViews.add("\"" + frontendViewArray[j] + "\"");
 			}
 		}
 		for (int i = 0; i < pluginArray.length; i++) {
 			try {
-				frontendViewArray = properties.get(pluginArray[i].substring(0, 1).toUpperCase() + pluginArray[i].substring(1) + "_FrontendViews").toString().split(",");
+				frontendViewArray = properties
+						.get(pluginArray[i].substring(0, 1).toUpperCase() + pluginArray[i].substring(1)
+								+ "_FrontendViews").toString().split(",");
 				for (int k = 0; k < frontendViewArray.length; k++) {
-					if(!frontendViews.contains("\"" + frontendViewArray[k] + "\"")) {
+					if (!frontendViews.contains("\"" + frontendViewArray[k] + "\"")) {
 						frontendViews.add("\"" + frontendViewArray[k] + "\"");
 					}
 				}
-			}catch(Exception e) {
-				logger.info("Property " + pluginArray[i].substring(0, 1).toUpperCase() + pluginArray[i].substring(1) + "_FrontendViews not found");
+			} catch (Exception e) {
+				logger.info("Property " + pluginArray[i].substring(0, 1).toUpperCase() + pluginArray[i].substring(1)
+						+ "_FrontendViews not found");
 			}
 		}
 		logger.info(frontendViews.toString());
 		return frontendViews.toString();
-		
+
 	}
 }

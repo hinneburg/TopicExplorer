@@ -4,4 +4,5 @@
 	<command name="GetTopicsTextCollect" className="cc.topicexplorer.plugin.text.actions.gettopics.Collect"/>
 	<command name="InitTextCollect" className="cc.topicexplorer.plugin.text.actions.init.Collect"/>
 	<command name="ShowDocTextCollect" className="cc.topicexplorer.plugin.text.actions.showdoc.Collect"/>
+	<command name="BestDocsTextCollect" className="cc.topicexplorer.plugin.text.actions.bestdocs.Collect"/>
 </catalog>

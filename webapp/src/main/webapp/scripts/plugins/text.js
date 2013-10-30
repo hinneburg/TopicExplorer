@@ -61,14 +61,21 @@ function DocumentModel(id, name, relevanzen, textSnippet) {
 
 function showDocument(e) {
 	var doc = $(e.currentTarget).parents('li').attr('id').split('doc_')[1];
+	var wordList = null;
+	
 	console.log(doc);
 	$.getJSON('JsonServlet', {Command:'getDoc', DocId:doc})
 	.done(function(json) {
 		doc = json.DOCUMENT;	
+		wordList = json.WORD_LIST;
 	});
 //	doc = jsonModel.DOCUMENT[doc];
-//	console.log(doc);
-	gui.drawTab(doc.TEXT$TITLE,true,true, "<h2>" + doc.TEXT$TITLE + "</h2>" + doc.TEXT$FULLTEXT);
+//	console.log(json.WORD_LIST);
+	var text = doc.TEXT$FULLTEXT;
+	for(var i = 0; wordList[i]; i++) {
+		text = text.substring(0, wordList[i].POSITION_OF_TOKEN_IN_DOCUMENT) + '<span style="background-color: '+jsonModel.Topic[wordList[i].TOPIC_ID].COLOR_TOPIC$COLOR()+'">' + wordList[i].TOKEN + "</span>" + text.substring(Number(wordList[i].POSITION_OF_TOKEN_IN_DOCUMENT) + wordList[i].TOKEN.length);
+	}
+	gui.drawTab(doc.TEXT$TITLE,true,true, "<h2>" + doc.TEXT$TITLE + "</h2>" + text);
 	e.preventDefault();
 	return false;
 }

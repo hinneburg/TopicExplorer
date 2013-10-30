@@ -1,4 +1,4 @@
-package cc.topicexplorer.plugin.text.actions.init;
+package cc.topicexplorer.plugin.text.actions.bestdocs;
 
 import org.apache.commons.chain.Context;
 
@@ -11,7 +11,7 @@ public class Collect extends TableSelectCommand {
 	@Override
 	public void tableExecute(Context context) {
 		CommunicationContext communicationContext = (CommunicationContext) context;
-		SelectMap documentMap, topicMap;
+		SelectMap documentMap;
 
 		documentMap = (SelectMap) communicationContext.get("DOCUMENT_QUERY");
 
@@ -19,17 +19,11 @@ public class Collect extends TableSelectCommand {
 		documentMap.select.add("CONCAT(SUBSTRING(DOCUMENT.TEXT$FULLTEXT FROM 1 FOR 150), '...') AS TEXT$FULLTEXT");
 
 		communicationContext.put("DOCUMENT_QUERY", documentMap);
-
-		topicMap = (SelectMap) communicationContext.get("TOPIC_QUERY");
-
-		topicMap.select.add("TOPIC.TEXT$TOPIC_LABEL");
-
-		communicationContext.put("TOPIC_QUERY", topicMap);
 	}
 
 	@Override
 	public void addDependencies() {
-		beforeDependencies.add("InitCoreCreate");
-		afterDependencies.add("InitCoreGenerateSQL");
+		beforeDependencies.add("BestDocsCoreCreate");
+		afterDependencies.add("BestDocsCoreGenerateSQL");
 	}
 }

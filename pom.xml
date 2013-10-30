@@ -82,7 +82,7 @@
 				<directory>src/main/resources</directory>
 				<excludes>
 					<exclude>**/*.xml</exclude>
-					<exclude>skripts/*</exclude>
+					<exclude>scripts/*</exclude>
 				</excludes>
 			</resource>
 			<resource>
@@ -92,9 +92,11 @@
 				</includes>
 				<targetPath>cc/topicexplorer/${project.artifactId}/catalog</targetPath>
 			</resource>
+<!-- 
 			<resource>
 				<directory>local/main/resources</directory>
 			</resource>
+ -->
 		</resources>
 	</build>
 

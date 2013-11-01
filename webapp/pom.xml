@@ -61,6 +61,49 @@
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<servlet.port>8080</servlet.port>
+		<hostname>topicexplorer.informatik.uni-halle.de</hostname>
+		<username>hinnebur</username>
+		<password></password>
+	</properties>
+
+	<profiles>
+		<profile>
+			<id>deploy-TE1</id>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.cargo</groupId>
+						<artifactId>cargo-maven2-plugin</artifactId>
+						<configuration>
+							<container>
+								<containerId>tomcat6x</containerId>
+							</container>
+							<configuration>
+								<type>existing</type>
+								<home>/home/hinnebur/tomcat</home>
+							</configuration>
+							<deployables>
+								<deployable>
+									<groupId>cc.topicexplorer</groupId>
+									<artifactId>webapp</artifactId>
+									<type>war</type>
+								</deployable>
+							</deployables>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
 	<build>
 		<finalName>webapp</finalName>
 		<resources>

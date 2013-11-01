@@ -14,7 +14,7 @@ public class ChainManagementTest {
 	@Test
 	public void testSetCatalog() {
 		try {
-			_chainManager.setCatalog("/DummyCatalog.xml");
+			_chainManager.setCatalog("/DummyCatalog1.xml");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

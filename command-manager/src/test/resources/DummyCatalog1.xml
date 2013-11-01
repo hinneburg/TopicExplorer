@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog>
+<command className="cc.topicexplorer.chain.commands.DummyCommand1" name="DummyCommand1"/>
+<command className="cc.topicexplorer.chain.commands.DummyCommand2" name="DummyCommand2"/>
+<command className="cc.topicexplorer.chain.commands.DummyCommand3" name="DummyCommand3"/>
+</catalog>

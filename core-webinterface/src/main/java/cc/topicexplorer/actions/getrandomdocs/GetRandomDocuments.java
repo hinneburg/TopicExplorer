@@ -26,7 +26,7 @@ public class GetRandomDocuments {
 
 	private SelectMap innerQuery;
 	private ST mainQuery = new ST("SELECT " + "<DocumentAttributeList>," + "y.TOPIC_ID,"
-			+ "addy.PR_TOPIC_GIVEN_DOCUMENT," + "y.PR_DOCUMENT_GIVEN_TOPIC "
+			+ "y.PR_TOPIC_GIVEN_DOCUMENT," + "y.PR_DOCUMENT_GIVEN_TOPIC "
 			+ "FROM (<InnerQuery>) x, DOCUMENT_TOPIC y " + "WHERE x.DOCUMENT_ID=y.DOCUMENT_ID "
 			+ "ORDER BY x.DOCUMENT_ID, y.TOPIC_ID");
 

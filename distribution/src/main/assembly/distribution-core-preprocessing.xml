@@ -15,7 +15,16 @@
 			<outputDirectory>/lib</outputDirectory>
 		</dependencySet>
 	</dependencySets>
-
+	<fileSets>
+		<fileSet>
+			<directory>${project.build.directory}/appassembler</directory>
+			<includes>
+				<include>/bin/*</include>
+			</includes>
+			<outputDirectory>/</outputDirectory>
+			<fileMode>755</fileMode>
+		</fileSet>
+	</fileSets>
 	<moduleSets>
 		<moduleSet>
 			<useAllReactorProjects>true</useAllReactorProjects>

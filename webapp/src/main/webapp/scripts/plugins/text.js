@@ -31,7 +31,6 @@ plugin.init = function() {
 	    update: function(elem, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {		
 			var child = $(elem).children('svg');
 			$.each(valueAccessor(), function(index, value){
-				console.log("Topic: "  + topicModel)
 				var topic = topicModel.topicList()[value];
 				var circle = $(SVG('circle')).attr('r', 5).attr('cx', 10).attr('cy', 10+index*15).attr('fill', topic.COLOR_TOPIC$COLOR()).attr('title', topic.TEXT$TOPIC_LABEL).attr('stroke','black').attr('stroke-width', '0.5').attr('class','t_'+topic.TOPIC_ID);
 				child.append(circle);
@@ -76,7 +75,6 @@ plugin.showDocument = function (e) {
 	var doc = $(e.currentTarget).parents('li').attr('id').split('doc_')[1];
 	var wordList = null;
 	
-	console.log(doc);
 	$.getJSON('JsonServlet', {Command:'getDoc', DocId:doc})
 	.done(function(json) {
 		doc = json.DOCUMENT;	

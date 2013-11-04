@@ -58,13 +58,13 @@ plugin.Template = function ()
 
 plugin.topicClick = function (e) {
 	var topic = $(e.currentTarget).parents('li').attr('id').split('topic')[1];
-	topic = topicExplorer.jsonModel.Topic[topic];	
-	$.getJSON('JsonServlet', {Command:'bestDocs', TopicId:topic.TOPIC_ID()})
+	topic = topicModel.topicList()[topic];
+	$.getJSON('JsonServlet', {Command:'bestDocs', TopicId:topic.TOPIC_ID})
 	.done(function(json) {
 		topicExplorer.jsonModel.DOCUMENT = ko.mapping.fromJS(json.DOCUMENT);
 	});
 	var textModel = topicExplorer.pluginModel.getPlugin('text').getDocumentViewModel();
 	var template = topicExplorer.pluginModel.getPlugin('text').getTemplate(topicExplorer.jsonModel);
 	ko.applyBindings(textModel, template[0]);
-	gui.drawTab(topic.TEXT$TOPIC_LABEL(), true, true, template);
-}
+	gui.drawTab(topic.TEXT$TOPIC_LABEL, true, true, template);
+};

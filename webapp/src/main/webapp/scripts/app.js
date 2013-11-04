@@ -1,20 +1,25 @@
-var topicExplorer = new Object();
+topicExplorer = new Object();
 topicExplorer.pluginModel;
-var jsonObject;
 //This would be the default script
 topicExplorer.PluginModel = function (defaultPlugins) {
 	var self = this;
 	self.plugins = ko.observableArray();
 	
-	//method to register your plugins
-	self.registerPlugin = function(pluginName) {
-		//check if the plugin is already registered
+	//method to search registered plugin
+	self.getPlugin = function(searchPlugin) 
+	{
 		var isLoaded = ko.utils.arrayFirst(self.plugins(), function(item) {			
-			if(item.name === pluginName) {
+			if(item.name === searchPlugin) {
 				return item;
 			}
 		});
-		if(!isLoaded) {
+		return isLoaded;
+	};
+	
+	//method to register your plugins
+	self.registerPlugin = function(pluginName) {
+		//check if the plugin is already registered
+		if(!self.getPlugin(pluginName)) {
 			$( "#ajaxLoader" ).show();
 			//Initialize a plugin object
 			plugin = new Object();
@@ -48,7 +53,7 @@ topicExplorer.PluginModel = function (defaultPlugins) {
 	$.each(defaultPlugins,function(key, value){		
 		self.registerPlugin(value);
 	});
-}
+};
 $(document).ajaxStart(function() {
 	$( "#ajaxLoader" ).show();
 }).ajaxSuccess(function(event, request, settings) {
@@ -63,12 +68,11 @@ $(document).ready(function() {
 		console.log("Zeit JSON holen: " + (new Date().getTime() - start));
 		start = new Date().getTime();
 		
-		jsonModel = ko.mapping.fromJS(json.JSON);
+		topicExplorer.jsonModel = ko.mapping.fromJS(json.JSON);
 		console.log("Zeit JSON mit KO mappen: " + (new Date().getTime() - start));
 		start = new Date().getTime();
-		jsonObject = json.JSON;
 		console.log(json.FRONTEND_VIEWS);
-		pluginModel = new topicExplorer.PluginModel(json.FRONTEND_VIEWS);// ["search", "slider", "topic", "text"]
+		topicExplorer.pluginModel = new topicExplorer.PluginModel(json.FRONTEND_VIEWS);// ["search", "slider", "topic", "text"]
 		console.log("Zeit KO Plugins initialisieren: " + (new Date().getTime() - start));
 		
 	}).fail(console.log("error"));
@@ -172,8 +176,4 @@ gui.switchTab = function (tabObject, content) {
 		}
 		tabObject.addClass('active');
 	}
-};
-var json = new Object();
-json.get = function(field) {
-	return jsonObject[field];
 };

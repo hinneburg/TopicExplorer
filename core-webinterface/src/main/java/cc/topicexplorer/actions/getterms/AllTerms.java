@@ -1,4 +1,4 @@
-package terms;
+package cc.topicexplorer.actions.getterms;
 
 import java.io.PrintStream;
 import java.sql.ResultSet;

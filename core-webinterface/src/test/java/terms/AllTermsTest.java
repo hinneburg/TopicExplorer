@@ -15,6 +15,7 @@ import net.sf.json.JSONObject;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import cc.topicexplorer.actions.getterms.AllTerms;
 import cc.topicexplorer.database.Database;
 
 public final class AllTermsTest {

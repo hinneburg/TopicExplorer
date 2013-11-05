@@ -4,6 +4,7 @@ import java.io.PrintStream;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import net.sf.json.JSONObject;
@@ -20,6 +21,16 @@ public final class AllTerms {
 
 	public AllTerms() {
 		this.databaseQuery = new SelectMap();
+		this.initDatabaseQuery();
+	}
+
+	private void initDatabaseQuery() {
+		List<String> columnNames_neededForCore = new ArrayList<String>(Arrays.asList("TERM_ID", "DOCUMENT_FREQUENCY",
+				"CORPUS_FREQUENCY", "INVERSE_DOCUMENT_FREQUENCY", "CF_IDF"));
+		for (String columnName : columnNames_neededForCore) {
+			this.addTableColumn(columnName, columnName);
+		}
+		this.databaseQuery.from.add("TERM");
 	}
 
 	public void setOutputStream(PrintStream printStream) {
@@ -28,6 +39,10 @@ public final class AllTerms {
 
 	public void setDatabase(Database database) {
 		this.database = database;
+	}
+
+	public void addTableColumn(String tableColumn, String tableColumnName) {
+		this.databaseQuery.select.add(tableColumn + " as " + tableColumnName);
 	}
 
 	public void executeQueriesAndWriteAllTerms() throws SQLException {
@@ -42,8 +57,6 @@ public final class AllTerms {
 		JSONObject rowsWithIndex = new JSONObject();
 		JSONObject row = new JSONObject();
 
-		this.databaseQuery.select.add("*");
-		this.databaseQuery.from.add("TERM");
 		ResultSet resultSet = database.executeQuery(this.databaseQuery.getSQLString());
 
 		for (int i = 0; i < resultSet.getMetaData().getColumnCount(); i++) {

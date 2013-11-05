@@ -24,7 +24,7 @@
 		<module>plugin-wiki-preprocessing</module>
 		<module>plugin-wordtype-preprocessing</module>
 		<module>run-preprocessing</module>
-		<module>distribution-preprocessing</module>
+		<!-- <module>distribution-preprocessing</module>  -->
 		<module>core-webinterface</module>
 		<module>plugin-text-webinterface</module>
 		<module>plugin-link-webinterface</module>

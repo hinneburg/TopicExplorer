@@ -2,7 +2,7 @@
 	xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
-	<id>core-plugins-text-preprocessing</id>
+	<id>preprocessing</id>
 	<formats>
 		<format>dir</format>
 	</formats>
@@ -15,16 +15,6 @@
 			<outputDirectory>/lib</outputDirectory>
 		</dependencySet>
 	</dependencySets>
-	<fileSets>
-		<fileSet>
-			<directory>${project.build.directory}/appassembler</directory>
-			<includes>
-				<include>/bin/*</include>
-			</includes>
-			<outputDirectory>/</outputDirectory>
-			<fileMode>755</fileMode>
-		</fileSet>
-	</fileSets>
 	<moduleSets>
 		<moduleSet>
 			<useAllReactorProjects>true</useAllReactorProjects>
@@ -55,6 +45,10 @@
 						<outputDirectory>/scripts</outputDirectory>
 					</fileSet>
 					<fileSet>
+						<directory>src/main/resources/bin</directory>
+						<outputDirectory>/bin</outputDirectory>
+					</fileSet>
+					<fileSet>
 						<directory>src/main/resources</directory>
 						<outputDirectory>/etc</outputDirectory>
 						<excludes>
@@ -63,15 +57,6 @@
 					</fileSet>
 				</fileSets>
 			</sources>
-			<!-- <binaries> <includeDependencies>true</includeDependencies> <outputDirectory>/lib</outputDirectory> 
-				<unpack>false</unpack> <dependencySets> <dependencySet> <useProjectArtifact>false</useProjectArtifact> 
-				<unpack>false</unpack> <scope>runtime</scope> <outputDirectory>/lib</outputDirectory> 
-				</dependencySet> </dependencySets> </binaries> -->
 		</moduleSet>
-
-		<!-- <moduleSet> <useAllReactorProjects>true</useAllReactorProjects> <includes> 
-			<include>cc.topicexplorer:distribution-aggregated</include> </includes> <binaries> 
-			<includeDependencies>false</includeDependencies> <outputDirectory>/catalogs/</outputDirectory> 
-			<unpack>true</unpack> </binaries> </moduleSet> -->
 	</moduleSets>
 </assembly>

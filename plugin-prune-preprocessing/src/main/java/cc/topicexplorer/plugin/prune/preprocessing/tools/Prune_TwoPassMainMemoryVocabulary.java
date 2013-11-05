@@ -7,7 +7,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Properties;
+import java.util.Set;
 
 import org.apache.commons.chain.Context;
 
@@ -91,8 +93,9 @@ public class Prune_TwoPassMainMemoryVocabulary extends DependencyCommand {
 			}
 			float upperBound = numberOfDocuments * upperBoundPercent;
 			float lowerBound = numberOfDocuments * lowerBoundPercent;
-
-			for (String term : vocabulary.keySet()) {
+            
+			Set<String> terms = vocabulary.keySet();
+			for (String term : terms) {
 				if (vocabulary.get(term) < lowerBound
 						|| vocabulary.get(term) > upperBound) {
 					vocabulary.remove(term);

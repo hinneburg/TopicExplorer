@@ -1,6 +1,6 @@
 package cc.topicexplorer.actions.bestdocs;
 
-import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -14,28 +14,30 @@ public class BestDocumentsForGivenTopic {
 
 	private SelectMap documentMap;
 	private String topicId;
-	private Integer limit;
-	private PrintStream outWriter;
+	private int limit, numberOfTopics;
+	private PrintWriter outWriter;
 	private Database database;
-	private Integer numberOfTopics;
 
-	public BestDocumentsForGivenTopic(String topicId, Integer limit) {
-		// TODO Auto-generated constructor stub
-		setTopicId(topicId);
-		setLimit(limit);
+	public BestDocumentsForGivenTopic(String topicId, Integer limit, Database db, PrintWriter out, int numberOfTopics) {
 		documentMap = new SelectMap();
-
 		documentMap.select.add("DOCUMENT.DOCUMENT_ID");
 		documentMap.from.add("DOCUMENT");
 		documentMap.from.add("DOCUMENT_TOPIC");
 		documentMap.where.add("DOCUMENT.DOCUMENT_ID=DOCUMENT_TOPIC.DOCUMENT_ID");
 		documentMap.where.add("DOCUMENT_TOPIC.TOPIC_ID=" + topicId);
 		documentMap.orderBy.add("PR_DOCUMENT_GIVEN_TOPIC");
-		documentMap.limit = 20;
+		documentMap.limit = limit;
 
+		setTopicId(topicId);
+		setLimit(limit);
+		setDatabase(db);
+		setLimit(limit);
+		setServletWriter(out);
+		setNumberOfTopics(numberOfTopics);
 	}
 
 	public void setDatabase(Database database) {
+		System.out.println("dghoid");
 		this.database = database;
 	}
 
@@ -55,7 +57,7 @@ public class BestDocumentsForGivenTopic {
 		return this.numberOfTopics;
 	}
 
-	public void setServletWriter(PrintStream servletWriter) {
+	public void setServletWriter(PrintWriter servletWriter) {
 		this.outWriter = servletWriter;
 	}
 
@@ -70,16 +72,14 @@ public class BestDocumentsForGivenTopic {
 		JSONObject all = new JSONObject();
 
 		ArrayList<String> docColumnList = documentMap.getCleanColumnNames();
-
+		System.out.println(documentMap.getSQLString());
 		String docId;
-		if (database == null) {
-			// logger
-			// fehler behandlung
-		}
+
 		try {
 			ResultSet mainQueryRS = database.executeQuery(documentMap.getSQLString());
 			while (mainQueryRS.next()) {
 				docId = mainQueryRS.getString("DOCUMENT_ID");
+				System.out.println(docId);
 				for (int i = 0; i < docColumnList.size(); i++) {
 					doc.put(docColumnList.get(i), mainQueryRS.getString(docColumnList.get(i)));
 				}
@@ -97,6 +97,7 @@ public class BestDocumentsForGivenTopic {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		System.out.println(all.toString());
 		outWriter.print(all.toString());
 
 	}

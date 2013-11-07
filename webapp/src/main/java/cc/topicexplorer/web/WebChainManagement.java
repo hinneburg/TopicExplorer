@@ -19,13 +19,13 @@ public class WebChainManagement {
 		try {
 			if (chainManagement == null) {
 				chainManagement = new ChainManagement();
-				chainManagement.init();				
+				chainManagement.init();
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static void setCatalog(String catalog) {
 		try {
 			chainManagement.setCatalog(catalog);
@@ -38,14 +38,12 @@ public class WebChainManagement {
 		return chainManagement.getCommunicationContext().clone();
 	}
 
-	public static List<String> getOrderedCommands(Set<String> startCommands,
-			Set<String> endCommands) {
-		return chainManagement.getOrderedCommands(
-				new DependencyCollector(chainManagement.catalog).getDependencies(), startCommands, endCommands);
+	public static List<String> getOrderedCommands(Set<String> startCommands, Set<String> endCommands) {
+		return chainManagement.getOrderedCommands(new DependencyCollector(chainManagement.catalog).getDependencies(),
+				startCommands, endCommands);
 	}
 
-	public static void executeCommands(List<String> commands,
-			CommunicationContext communicationContext) {
+	public static void executeCommands(List<String> commands, CommunicationContext communicationContext) {
 		chainManagement.executeCommands(commands, communicationContext);
 	}
 

@@ -43,11 +43,12 @@ public class JsonServlet extends HttpServlet {
 				communicationContext.put("SHOW_DOC_ID", request.getParameter("DocId"));
 
 				startCommands.add("ShowDocCoreCreate");
-
 			} else if (command.contains("bestDocs")) {
 				communicationContext.put("TOPIC_ID", request.getParameter("TopicId"));
 
 				startCommands.add("BestDocsCoreCreate");
+			} else if (command.contains("allTerms")) {
+				startCommands.add("AllTermsCoreCreate");
 			}
 			WebChainManagement.executeCommands(WebChainManagement.getOrderedCommands(startCommands, endCommands),
 					communicationContext);

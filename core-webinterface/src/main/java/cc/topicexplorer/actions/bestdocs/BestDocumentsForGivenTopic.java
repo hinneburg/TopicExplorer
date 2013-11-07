@@ -37,7 +37,6 @@ public class BestDocumentsForGivenTopic {
 	}
 
 	public void setDatabase(Database database) {
-		System.out.println("dghoid");
 		this.database = database;
 	}
 
@@ -72,14 +71,12 @@ public class BestDocumentsForGivenTopic {
 		JSONObject all = new JSONObject();
 
 		ArrayList<String> docColumnList = documentMap.getCleanColumnNames();
-		System.out.println(documentMap.getSQLString());
 		String docId;
 
 		try {
 			ResultSet mainQueryRS = database.executeQuery(documentMap.getSQLString());
 			while (mainQueryRS.next()) {
 				docId = mainQueryRS.getString("DOCUMENT_ID");
-				System.out.println(docId);
 				for (int i = 0; i < docColumnList.size(); i++) {
 					doc.put(docColumnList.get(i), mainQueryRS.getString(docColumnList.get(i)));
 				}
@@ -97,7 +94,6 @@ public class BestDocumentsForGivenTopic {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		System.out.println(all.toString());
 		outWriter.print(all.toString());
 
 	}

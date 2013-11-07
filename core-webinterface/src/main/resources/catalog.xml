@@ -14,4 +14,6 @@
 	<command name="ShowDocCoreGenerateSQL" className="cc.topicexplorer.actions.showdoc.GenerateSQL"/>	
 	<command name="BestDocsCoreCreate" className="cc.topicexplorer.actions.bestdocs.Create"/>
 	<command name="BestDocsCoreGenerateSQL" className="cc.topicexplorer.actions.bestdocs.GenerateSQL"/>	
+	<command name="AllTermsCoreCreate" className="cc.topicexplorer.actions.getterms.Create"/>
+	<command name="AllTermsCoreGenerateSQL" className="cc.topicexplorer.actions.getterms.GenerateSQL"/>
 </catalog>

@@ -1,6 +1,6 @@
 package cc.topicexplorer.actions.getterms;
 
-import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -14,17 +14,14 @@ import cc.topicexplorer.database.SelectMap;
 import com.google.common.util.concurrent.UncheckedExecutionException;
 
 public final class AllTerms {
-
-	private PrintStream printStream;
+	private PrintWriter outWriter;
 	private Database database;
 	private SelectMap databaseQuery;
 
-	public AllTerms() {
+	public AllTerms(Database db, PrintWriter out) {
+		setDatabase(db);
+		setServletWriter(out);
 		this.databaseQuery = new SelectMap();
-		this.initDatabaseQuery();
-	}
-
-	private void initDatabaseQuery() {
 		List<String> columnNames_neededForCore = new ArrayList<String>(Arrays.asList("TERM_ID", "DOCUMENT_FREQUENCY",
 				"CORPUS_FREQUENCY", "INVERSE_DOCUMENT_FREQUENCY", "CF_IDF"));
 		for (String columnName : columnNames_neededForCore) {
@@ -33,8 +30,8 @@ public final class AllTerms {
 		this.databaseQuery.from.add("TERM");
 	}
 
-	public void setOutputStream(PrintStream printStream) {
-		this.printStream = printStream;
+	public void setServletWriter(PrintWriter out) {
+		this.outWriter = out;
 	}
 
 	public void setDatabase(Database database) {
@@ -49,7 +46,7 @@ public final class AllTerms {
 		if (this.database == null) {
 			throw new UncheckedExecutionException(new IllegalStateException("Database has not been set, yet."));
 		}
-		if (this.printStream == null) {
+		if (this.outWriter == null) {
 			throw new UncheckedExecutionException(new IllegalStateException("PrintStream has not been set, yet."));
 		}
 
@@ -69,6 +66,6 @@ public final class AllTerms {
 			rowsWithIndex.put(resultSet.getObject("TERM_ID"), row);
 			row.clear();
 		}
-		this.printStream.print(rowsWithIndex);
+		this.outWriter.print(rowsWithIndex);
 	}
 }

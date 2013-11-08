@@ -128,7 +128,8 @@ public class PruneAction_TwoPassMainMemoryVocabulary {
 
 		HashSet<String> termsToKeep = new HashSet<String>();
 		for (String term : vocabulary.keySet()) {
-			if (vocabulary.get(term) > lowerBound && vocabulary.get(term) < upperBound) {
+			float documentFrequency = vocabulary.get(term).floatValue();
+			if (documentFrequency > lowerBound && documentFrequency < upperBound) {
 				termsToKeep.add(term);
 			}
 

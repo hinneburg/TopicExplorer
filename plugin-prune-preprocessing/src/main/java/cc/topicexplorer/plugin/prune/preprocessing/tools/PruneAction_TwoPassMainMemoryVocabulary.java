@@ -98,29 +98,34 @@ public class PruneAction_TwoPassMainMemoryVocabulary {
 		openInCsvReader();
 		readInCsvHeader();
 
-		HashMap<String, Integer> vocabulary = new HashMap<String, Integer>();
+		HashMap<String, HashSet<String>> vocabulary = new HashMap<String, HashSet<String>>();
+		HashSet<String> documents = new HashSet<String>();
 		Integer numberOfDocuments = 0;
 
 		String documentId = new String();
-		HashSet<String> documentTerms = new HashSet<String>();
 
 		while (inCsvReadRecord()) {
+			documentId = inCsv.get("DOCUMENT_ID");
 			String term = inCsv.get("TERM");
-			documentTerms.add(term);
-			if (!documentId.equals(inCsv.get("DOCUMENT_ID"))) {
-				documentId = inCsv.get("DOCUMENT_ID");
-				numberOfDocuments++;
-				for (String t : documentTerms) {
-					if (vocabulary.containsKey(t)) {
-						Integer frequency = vocabulary.get(t);
-						frequency++;
-						vocabulary.put(t, frequency);
-					} else {
-						vocabulary.put(t, 1);
-					}
-				}
-				documentTerms.clear();
+			documents.add(documentId);
+
+			if (vocabulary.containsKey(term)) {
+				HashSet<String> docs = vocabulary.get(term);
+				docs.add(documentId);
+				vocabulary.put(term, docs);
+			} else {
+				HashSet<String> docs = new HashSet<String>();
+				docs.add(documentId);
+				vocabulary.put(term, docs);
 			}
+
+		}
+		if (documents.size() > 0) {
+			numberOfDocuments = documents.size();
+		} else {
+			// logger.fatal("Document List from InCSV is empty.");
+			// TODO: In Testklasse Logger initialisieren!
+			System.exit(1);
 		}
 
 		float upperBound = numberOfDocuments * upperBoundPercent / (float) 100.0;
@@ -128,8 +133,7 @@ public class PruneAction_TwoPassMainMemoryVocabulary {
 
 		HashSet<String> termsToKeep = new HashSet<String>();
 		for (String term : vocabulary.keySet()) {
-			float documentFrequency = vocabulary.get(term).floatValue();
-			if (documentFrequency > lowerBound && documentFrequency < upperBound) {
+			if (vocabulary.get(term).size() > lowerBound && vocabulary.get(term).size() < upperBound) {
 				termsToKeep.add(term);
 			}
 

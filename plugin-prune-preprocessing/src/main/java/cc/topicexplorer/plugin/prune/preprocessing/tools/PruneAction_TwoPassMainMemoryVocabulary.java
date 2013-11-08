@@ -102,19 +102,24 @@ public class PruneAction_TwoPassMainMemoryVocabulary {
 		Integer numberOfDocuments = 0;
 
 		String documentId = new String();
+		HashSet<String> documentTerms = new HashSet<String>();
 
 		while (inCsvReadRecord()) {
 			String term = inCsv.get("TERM");
-			if (vocabulary.containsKey(term)) {
-				Integer frequency = vocabulary.get(term);
-				frequency++;
-				vocabulary.put(term, frequency);
-			} else {
-				vocabulary.put(term, 1);
-			}
+			documentTerms.add(term);
 			if (!documentId.equals(inCsv.get("DOCUMENT_ID"))) {
 				documentId = inCsv.get("DOCUMENT_ID");
 				numberOfDocuments++;
+				for (String t : documentTerms) {
+					if (vocabulary.containsKey(t)) {
+						Integer frequency = vocabulary.get(t);
+						frequency++;
+						vocabulary.put(t, frequency);
+					} else {
+						vocabulary.put(t, 1);
+					}
+				}
+				documentTerms.clear();
 			}
 		}
 

@@ -8,8 +8,6 @@ import cc.topicexplorer.chain.CommunicationContext;
 import cc.topicexplorer.chain.commands.DependencyCommand;
 import cc.topicexplorer.database.Database;
 
-import cc.topicexplorer.plugin.prune.preprocessing.tools.PruneAction_TwoPassMainMemoryVocabulary;
-
 public class Prune_TwoPassMainMemoryVocabulary extends DependencyCommand {
 	private Properties properties;
 	protected cc.topicexplorer.database.Database database;
@@ -24,16 +22,20 @@ public class Prune_TwoPassMainMemoryVocabulary extends DependencyCommand {
 		properties = (Properties) communicationContext.get("properties");
 		database = (Database) communicationContext.get("database");
 
-		float upperBoundPercent = Float.parseFloat(properties
-				.getProperty("Prune_upperBound"));
-		float lowerBoundPercent = Float.parseFloat(properties
-				.getProperty("Prune_lowerBound"));
+		float upperBoundPercent = Float.parseFloat(properties.getProperty("Prune_upperBound"));
+		float lowerBoundPercent = Float.parseFloat(properties.getProperty("Prune_lowerBound"));
 		prune.setLowerAndUpperBoundPercent(lowerBoundPercent, upperBoundPercent);
 
 		prune.setLogger(logger);
 		String inFilePath = properties.getProperty("InCSVFile");
 		prune.setInFilePath(inFilePath);
 		prune.prune();
+	}
+
+	@Override
+	public void addDependencies() {
+		beforeDependencies.add("DocumentTermTopicCreate");
+		afterDependencies.add("InFilePreparation");
 	}
 
 }

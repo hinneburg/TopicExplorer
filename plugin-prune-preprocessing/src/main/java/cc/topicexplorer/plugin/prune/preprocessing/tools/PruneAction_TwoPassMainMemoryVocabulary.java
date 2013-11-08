@@ -6,10 +6,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Set;
 
 import org.apache.log4j.Logger;
 
@@ -34,19 +32,16 @@ public class PruneAction_TwoPassMainMemoryVocabulary {
 		File destinationFile = new File(destination);
 
 		if (!sourceFile.renameTo(destinationFile)) {
-			logger.fatal("[ " + getClass() + " ] - "
-					+ "Fehler beim Umbenennen der Datei: " + source);
+			logger.fatal("[ " + getClass() + " ] - " + "Fehler beim Umbenennen der Datei: " + source);
 			System.exit(0);
 		}
 	}
 
-	void setLowerAndUpperBoundPercent(float lowerBoundPercent,
-			float upperBoundPercent) {
+	void setLowerAndUpperBoundPercent(float lowerBoundPercent, float upperBoundPercent) {
 		this.lowerBoundPercent = lowerBoundPercent;
 		this.upperBoundPercent = upperBoundPercent;
 		// are the bounds valid?
-		if (upperBoundPercent < 0 || lowerBoundPercent < 0
-				|| upperBoundPercent > 100 || lowerBoundPercent > 100
+		if (upperBoundPercent < 0 || lowerBoundPercent < 0 || upperBoundPercent > 100 || lowerBoundPercent > 100
 				|| upperBoundPercent < lowerBoundPercent) {
 			logger.fatal("Stop: Invalid Pruning Bounds!");
 			System.exit(0);
@@ -59,8 +54,7 @@ public class PruneAction_TwoPassMainMemoryVocabulary {
 
 	private void openInCsvReader() {
 		try {
-			inCsv = new CsvReader(new FileInputStream(inFilePath), ';',
-					Charset.forName("UTF-8"));
+			inCsv = new CsvReader(new FileInputStream(inFilePath), ';', Charset.forName("UTF-8"));
 		} catch (FileNotFoundException e) {
 			logger.fatal("Input CSV-File couldn't be read - maybe the path is incorrect");
 			e.printStackTrace();
@@ -124,31 +118,24 @@ public class PruneAction_TwoPassMainMemoryVocabulary {
 			}
 		}
 
-		
-		float upperBound = numberOfDocuments * upperBoundPercent
-				/ (float) 100.0;
-		float lowerBound = numberOfDocuments * lowerBoundPercent
-				/ (float) 100.0;
+		float upperBound = numberOfDocuments * upperBoundPercent / (float) 100.0;
+		float lowerBound = numberOfDocuments * lowerBoundPercent / (float) 100.0;
 
 		HashSet<String> termsToKeep = new HashSet<String>();
 		for (String term : vocabulary.keySet()) {
-			if (vocabulary.get(term) >= lowerBound
-					&& vocabulary.get(term) <= upperBound) {
+			if (vocabulary.get(term) > lowerBound && vocabulary.get(term) < upperBound) {
 				termsToKeep.add(term);
-				System.out.println("Term " + term + " Freq "
-						+ vocabulary.get(term));
 			}
 
 		}
+		System.out.println("Number of Documents " + numberOfDocuments);
 
 		closeInCsvReader();
 		// Zweiter Durchlauf
-		FileOutputStream outCsvStream = new FileOutputStream(inFilePath
-				+ ".pruned.Lower." + lowerBound + ".Upper." + upperBound
-				+ ".csv");
+		FileOutputStream outCsvStream = new FileOutputStream(inFilePath + ".pruned.Lower." + lowerBound + ".Upper."
+				+ upperBound + ".csv");
 
-		CsvWriter outCsv = new CsvWriter(outCsvStream, ';',
-				Charset.forName("UTF-8"));
+		CsvWriter outCsv = new CsvWriter(outCsvStream, ';', Charset.forName("UTF-8"));
 		outCsv.setForceQualifier(true);
 
 		openInCsvReader();
@@ -164,11 +151,8 @@ public class PruneAction_TwoPassMainMemoryVocabulary {
 		closeInCsvReader();
 		outCsv.close();
 
-		 this.renameFile(inFilePath,
-		 inFilePath + ".org." + System.currentTimeMillis());
-		
-		 this.renameFile(inFilePath + ".pruned.Lower." + lowerBound +
-		 ".Upper."
-		 + upperBound + ".csv", inFilePath);
+		this.renameFile(inFilePath, inFilePath + ".org." + System.currentTimeMillis());
+
+		this.renameFile(inFilePath + ".pruned.Lower." + lowerBound + ".Upper." + upperBound + ".csv", inFilePath);
 	}
 }

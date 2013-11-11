@@ -1,4 +1,4 @@
-package wikiParser;
+package tools;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -7,6 +7,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
 //import org.junit.Assert;
+
+
+import tools.PointInteger;
+import tools.WikiArticle;
 
 /**
  * 

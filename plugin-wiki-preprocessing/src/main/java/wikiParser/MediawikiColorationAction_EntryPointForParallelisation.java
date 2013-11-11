@@ -8,6 +8,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import tools.WikiIDTitlePair;
+
 
 /**
  * 
@@ -19,12 +21,12 @@ import java.util.concurrent.TimeUnit;
  * 
  *
  */
-public class PreJsonoutgettoken
+public class MediawikiColorationAction_EntryPointForParallelisation
 {
 
 	private Properties prop; 
 	
-	private List<WikiIDTitlePair> getAllArticlesInDocumentTermTopicFromPreprocessingDatabase(Supporter s)
+	private List<WikiIDTitlePair> getAllArticlesInDocumentTermTopicFromPreprocessingDatabase(SupporterForBothTypes s)
 	{
 
 		List<WikiIDTitlePair> list = new ArrayList<WikiIDTitlePair>();
@@ -58,7 +60,7 @@ public class PreJsonoutgettoken
 	 */
 	private void startThreadpool() throws InterruptedException
 	{
-		Supporter s = new Supporter(prop, true); // target-database, different from other db, otherwise the corrected articles where overwritten 
+		SupporterForBothTypes s = new SupporterForBothTypes(prop, true); // target-database, different from other db, otherwise the corrected articles where overwritten 
 
 		Integer multiplicator; 		Integer numberOfAvailableProcesssors;		ArrayList<WikiIDTitlePair> newList ;
 		
@@ -84,7 +86,7 @@ public class PreJsonoutgettoken
 		for (Integer i = 0; i < splittedWikiIDTitleArray.length; i++)
 		{
 			newList = (ArrayList<WikiIDTitlePair>) splittedWikiIDTitleArray[i].clone();
-			poolExecutor.execute(new JsonoutgetToken(newList, group, "threadpart-" + new Integer(i+1) + "of" + listLenght,prop));
+			poolExecutor.execute(new MediawikiColorationParallelisation(newList, group, "threadpart-" + new Integer(i+1) + "of" + listLenght,prop));
 			newList = null;
 		}
 	
@@ -101,7 +103,7 @@ public class PreJsonoutgettoken
 	
 	public void start(Properties prop) throws InterruptedException
 	{
-			PreJsonoutgettoken h = new PreJsonoutgettoken();
+			MediawikiColorationAction_EntryPointForParallelisation h = new MediawikiColorationAction_EntryPointForParallelisation();
 			h.prop = prop;
 			h.startThreadpool();
 	}

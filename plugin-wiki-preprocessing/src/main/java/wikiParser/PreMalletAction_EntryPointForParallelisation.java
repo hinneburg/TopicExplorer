@@ -14,14 +14,16 @@ import java.util.Vector;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-
+import tools.WikiIDTitlePair;
 //import org.apache.log4j.Appender;
 //import org.apache.log4j.ConsoleAppender;
 //import org.apache.log4j.Logger;
 
-import wikiParser.Supporter;
 
-public class Prehelper {
+import tools.Stopwatch;
+import wikiParser.SupporterForBothTypes;
+
+public class PreMalletAction_EntryPointForParallelisation {
 
 	private Database db;
 	private Properties prop;
@@ -35,7 +37,7 @@ public class Prehelper {
 
 	// final static Logger logger = Logger.getRootLogger();
 
-	public Prehelper(Properties prop) {
+	public PreMalletAction_EntryPointForParallelisation(Properties prop) {
 		this.prop = prop;
 
 		try {
@@ -149,7 +151,7 @@ public class Prehelper {
 			throws InterruptedException, Exception {
 		System.out.println("Start parsing one article.");
 
-		Supporter t = new Supporter(prop);
+		SupporterForBothTypes t = new SupporterForBothTypes(prop);
 
 		Vector<WikiIDTitlePair> vec = new Vector<WikiIDTitlePair>(1);
 
@@ -157,7 +159,7 @@ public class Prehelper {
 
 		t.closeDBConnection();
 
-		Helper h = new Helper(vec, prop, null, "Thread-0");
+		PreMalletParallelisation h = new PreMalletParallelisation(vec, prop, null, "Thread-0");
 		h.setOnlyOneOutputParameter(true);
 
 		h.start();
@@ -170,7 +172,7 @@ public class Prehelper {
 		ArrayList<WikiIDTitlePair> newList;
 
 		// get all articles from database
-		Supporter s = new Supporter(prop);
+		SupporterForBothTypes s = new SupporterForBothTypes(prop);
 		List<WikiIDTitlePair> inputList = s.getArticlesLimitOffset(limitOrAll,
 				offset);
 		s.closeDBConnection();
@@ -196,7 +198,7 @@ public class Prehelper {
 		for (Integer i = 0; i < splittedWikiIDTitleArray.length; i++) {
 			newList = (ArrayList<WikiIDTitlePair>) splittedWikiIDTitleArray[i]
 					.clone();
-			poolExecutor.execute(new Helper(newList, prop, group, "threadpart-"
+			poolExecutor.execute(new PreMalletParallelisation(newList, prop, group, "threadpart-"
 					+ new Integer(i + 1) + "of" + listLenght));
 			newList = null;
 		}
@@ -216,7 +218,7 @@ public class Prehelper {
 		try {
 			Integer limit, offset, old_id, numberOfAvailableProcesssors, multiplicator;
 
-			Prehelper p = new Prehelper(prop);
+			PreMalletAction_EntryPointForParallelisation p = new PreMalletAction_EntryPointForParallelisation(prop);
 
 			String functionName = "parsing of wiki-articles incl joining the outputs";
 			p.stopWatch.startStopping(functionName);
@@ -232,6 +234,7 @@ public class Prehelper {
 
 			try {
 				limit = Integer.valueOf(prop.getProperty("Wiki_limit"));
+				System.out.println("Limit is " + limit);
 			} catch (Exception e1) {
 
 				limit = 0; // bedeutet alles

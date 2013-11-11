@@ -1,6 +1,6 @@
 package cc.topicexplorer.plugin.wiki.preprocessing;
 
-import wikiParser.Prehelper;
+import wikiParser.PreMalletAction_EntryPointForParallelisation;
 
 import java.util.Properties;
 
@@ -22,7 +22,7 @@ public class PreMallet extends DependencyCommand {
 		properties = (Properties) communicationContext.get("properties");
 //		database = (Database) communicationContext.get("database");
 		
-		Prehelper ph = new Prehelper(properties);
+		PreMalletAction_EntryPointForParallelisation ph = new PreMalletAction_EntryPointForParallelisation(properties);
 		ph.start();
 		
 	}

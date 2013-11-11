@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.sweble.wikitext.engine.utils;
+package tools;
 
 import java.util.ArrayList;
 import java.util.Arrays;

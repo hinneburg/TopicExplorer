@@ -6,7 +6,7 @@ import org.apache.commons.chain.Context;
 
 import cc.topicexplorer.chain.CommunicationContext;
 import cc.topicexplorer.chain.commands.DependencyCommand;
-import wikiParser.PreJsonoutgettoken;
+import wikiParser.MediawikiColorationAction_EntryPointForParallelisation;
 
 public class MediawikiColoration extends DependencyCommand {
 
@@ -24,7 +24,7 @@ public class MediawikiColoration extends DependencyCommand {
 		
 		try {
 			
-			PreJsonoutgettoken pj = new PreJsonoutgettoken();
+			MediawikiColorationAction_EntryPointForParallelisation pj = new MediawikiColorationAction_EntryPointForParallelisation();
 			pj.start(properties);
 		} catch (Exception e) {
 

@@ -1,4 +1,4 @@
-package wikiParser;
+package tools;
 
 public class PointInteger
 {

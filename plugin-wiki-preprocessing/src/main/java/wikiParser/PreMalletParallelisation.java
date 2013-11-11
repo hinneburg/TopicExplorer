@@ -5,28 +5,29 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+
+
 
 //import org.sweble.wikitext.engine.CompiledPage;
 import org.sweble.wikitext.engine.PageId;
 import org.sweble.wikitext.engine.PageTitle;
 import org.sweble.wikitext.engine.WtEngine;
 import org.sweble.wikitext.engine.utils.DefaultConfigEn;
-
 import org.sweble.wikitext.engine.config.WikiConfig;
 import org.sweble.wikitext.engine.nodes.EngCompiledPage;
 
+import tools.WikiArticle;
+import tools.WikiIDTitlePair;
+import tools.WikiTextToCSVForeward;
+import wikiParser.SupporterForBothTypes;
 
-import wikiParser.Supporter;
 
-
-public class Helper extends Thread
+public class PreMalletParallelisation extends Thread
 {
 
 	
@@ -51,16 +52,16 @@ public class Helper extends Thread
 	
 	private PreparedStatement stmt;
 	
-	public Helper()
+	public PreMalletParallelisation()
 	{
 	}
 
-	public Helper(List<WikiIDTitlePair> articleNames, Properties prop)
+	public PreMalletParallelisation(List<WikiIDTitlePair> articleNames, Properties prop)
 	{
 		this(articleNames,prop, null, "Thread-"+System.currentTimeMillis()); // ????
 	}
 	
-	public Helper(List<WikiIDTitlePair> articleNames, Properties prop, ThreadGroup tg , String threadName)
+	public PreMalletParallelisation(List<WikiIDTitlePair> articleNames, Properties prop, ThreadGroup tg , String threadName)
 	{
 		super(tg,null,threadName);
 		
@@ -123,7 +124,7 @@ public class Helper extends Thread
 	private String getWikiTextWithRevID(WikiIDTitlePair id_title) throws SQLException, Exception
 	{
 
-		Supporter t = new Supporter(db);
+		SupporterForBothTypes t = new SupporterForBothTypes(db);
 		
 		String wikitxt =  t.getWikiTextOnlyWithID(id_title.getOld_id());
 		wikitxt = doArticleCorrection(wikitxt, id_title);
@@ -409,8 +410,7 @@ public class Helper extends Thread
 
 		try
 		{
-			WikiArticle w;	Integer tmp = 0;
-			
+			WikiArticle w;
 			WikiTextToCSVForeward textTocsv ; 			
 //			WikiTextToCsvbackward textTocsv ;
 			
@@ -434,7 +434,7 @@ public class Helper extends Thread
 						// temporäre Ausgabe, zur Veranschaulichung nur wenn ein Artikel geladen wird
 						if (onlyOneOutput)
 						{
-							Supporter s = new Supporter(prop);
+							SupporterForBothTypes s = new SupporterForBothTypes(prop);
 							s.printIntoFile(w.getParsedWikiText(), "outputparsed.txt");
 							s.printIntoFile(w.getWikiOrigText(), "inputorig.txt");
 							s.closeDBConnection();
@@ -452,15 +452,12 @@ public class Helper extends Thread
 							// saving the readable text for import into the database for displaying the normalized text in the UI
 							bwInputSQLParsedText.append(w.getOldID() + " ;\"" + w.getWikiTitle() + " \";\"" + w.getParsedWikiTextReadable() + " \"" + endOfDocumentInSQLOutput);
 							
-							//decrease the counter of the remaining articles
-							tmp = articleNames.size()-i;
-							System.out.println(w.getWikiTitle() + "\t" + this.getName() + "\t" + System.currentTimeMillis() + "\t_" + tmp + "left in thread" );
-							
+//							bwLogger.append(w.getWikiTitle() + " parsed.");
 //								System.out.println(w.getWikiTitle() + "\t" + this.getName() + "\t" + System.currentTimeMillis() );
 						}
 						catch (Exception e)
 						{
-							bwLogger.append(w.getWikiTitle() + " " + w.getOldID() +" Helper.java :failure in preparing original wikitext with wikitextocsv for mallet, " + e.getMessage() + "\n");
+							bwLogger.append(w.getWikiTitle() + " " + w.getOldID() + " " + this.getClass()+  ".java :failure in preparing original wikitext with wikitextocsv for mallet, " + e.getMessage() + "\n");
 							if (debug){
 								e.printStackTrace();
 							}
@@ -486,7 +483,7 @@ public class Helper extends Thread
 		}
 		catch (Exception e)
 		{
-			System.err.println("helper.run - " + this.getName());
+			System.err.println(this.getClass()+".run - " + this.getName());
 
 			// for finishing the files
 			try

@@ -4,15 +4,15 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.List;
 import java.util.Properties;
+import tools.WikiIDTitlePair;
 
-//import au.com.bytecode.opencsv.CSVWriter;
 
-public class JsonoutgetToken extends Thread
+public class MediawikiColorationParallelisation extends Thread
 {
 	
 	
 	private List<WikiIDTitlePair> list;
-	private Supporter s;
+	private SupporterForBothTypes s;
 	private Database db;
 	
 	private final String databasePreprocessing;
@@ -22,11 +22,11 @@ public class JsonoutgetToken extends Thread
 //		this(list, null, "Thread-" + System.currentTimeMillis());
 //	}
 	
-	public JsonoutgetToken(List <WikiIDTitlePair> list , ThreadGroup tg , String threadName, Properties prop)
+	public MediawikiColorationParallelisation(List <WikiIDTitlePair> list , ThreadGroup tg , String threadName, Properties prop)
 	{
 		super(tg, null, threadName);
 		
-		this.s = new Supporter(prop,true); // target-database, different from other db, otherwise the corrected articles were overwritten
+		this.s = new SupporterForBothTypes(prop,true); // target-database, different from other db, otherwise the corrected articles were overwritten
 		this.db = s.getDatabase();  
 		this.list = list;
 		
@@ -190,17 +190,21 @@ public class JsonoutgetToken extends Thread
 					text = s.getWikiTextOnlyWithID(id);
 					textAsByte = getTokenTopicAssignment(id,text).getBytes();
 					
-					System.out.println(id + "\t" + this.getName() + "\t"+ System.currentTimeMillis());
+//					System.out.println(id + "\t" + this.getName() + "\t"+ System.currentTimeMillis());
 					
 					stmt.setBytes(1, textAsByte);
 					stmt.setInt(2, id);
-					stmt.executeUpdate();
-
-					stmt.clearParameters();
+					
+					stmt.addBatch();
+					
+					//--> is now a batch
+//					stmt.executeUpdate();
+//					stmt.clearParameters();
 				
 					text = null;
 					textAsByte = null;
 				}
+			stmt.executeBatch();
 			stmt.close();
 			
 			db.executeUpdateQuery("COMMIT;");

@@ -14,9 +14,9 @@ import java.util.Properties;
 
 
 import wikiParser.Database;
-import wikiParser.WikiIDTitlePair;
+import tools.WikiIDTitlePair;
 
-public class Supporter
+public class SupporterForBothTypes
 {
 
 	private Properties prop;
@@ -24,7 +24,7 @@ public class Supporter
 
 	private boolean debug = false;
 	
-	public Supporter(Properties prop)
+	public SupporterForBothTypes(Properties prop)
 	{
 		this.prop = prop;
 		try {
@@ -34,13 +34,13 @@ public class Supporter
 		}
 	}
 
-	public Supporter(Database db)
+	public SupporterForBothTypes(Database db)
 	{
 		this.db = db;
 		this.prop = db.getProperties();
 	}
 
-	public Supporter(Properties properties, Boolean otherDBOrAlsoTargetDB)
+	public SupporterForBothTypes(Properties properties, Boolean otherDBOrAlsoTargetDB)
 	{
 		this.prop = properties;
 		try

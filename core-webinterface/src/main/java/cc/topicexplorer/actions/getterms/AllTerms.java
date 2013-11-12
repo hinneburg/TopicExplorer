@@ -19,8 +19,8 @@ public final class AllTerms {
 	private SelectMap databaseQuery;
 
 	public AllTerms(Database db, PrintWriter out) {
-		setDatabase(db);
-		setServletWriter(out);
+		this.setDatabase(db);
+		this.setServletWriter(out);
 		this.databaseQuery = new SelectMap();
 		List<String> columnNames_neededForCore = new ArrayList<String>(Arrays.asList("TERM_ID", "DOCUMENT_FREQUENCY",
 				"CORPUS_FREQUENCY", "INVERSE_DOCUMENT_FREQUENCY", "CF_IDF"));
@@ -30,11 +30,17 @@ public final class AllTerms {
 		this.databaseQuery.from.add("TERM");
 	}
 
-	public void setServletWriter(PrintWriter out) {
+	private void setServletWriter(PrintWriter out) {
+		if (this.outWriter == null) {
+			throw new UncheckedExecutionException(new IllegalStateException("PrintWriter must not be null."));
+		}
 		this.outWriter = out;
 	}
 
-	public void setDatabase(Database database) {
+	private void setDatabase(Database database) {
+		if (this.database == null) {
+			throw new UncheckedExecutionException(new IllegalStateException("Database must not be null."));
+		}
 		this.database = database;
 	}
 
@@ -43,13 +49,6 @@ public final class AllTerms {
 	}
 
 	public void executeQueriesAndWriteAllTerms() throws SQLException {
-		if (this.database == null) {
-			throw new UncheckedExecutionException(new IllegalStateException("Database has not been set, yet."));
-		}
-		if (this.outWriter == null) {
-			throw new UncheckedExecutionException(new IllegalStateException("PrintStream has not been set, yet."));
-		}
-
 		List<String> columnNames = new ArrayList<String>();
 		JSONObject rowsWithIndex = new JSONObject();
 		JSONObject row = new JSONObject();

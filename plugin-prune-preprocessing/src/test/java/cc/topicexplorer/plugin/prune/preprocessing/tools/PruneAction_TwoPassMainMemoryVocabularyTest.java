@@ -8,7 +8,7 @@ public class PruneAction_TwoPassMainMemoryVocabularyTest {
 
 	@Test
 	public void testPrune() {
-		PruneAction_TwoPassMainMemoryVocabulary myPrune = new PruneAction_TwoPassMainMemoryVocabulary();
+		Prune_Ram_SortedCsv myPrune = new Prune_Ram_SortedCsv();
 
 		// String inFilePath =
 		// this.getClass().getResource("/test_input.csv").getFile();

@@ -8,10 +8,10 @@ import cc.topicexplorer.chain.CommunicationContext;
 import cc.topicexplorer.chain.commands.DependencyCommand;
 import cc.topicexplorer.database.Database;
 
-public class Prune_TwoPassMainMemoryVocabulary extends DependencyCommand {
+public class Prune_Command extends DependencyCommand {
 	private Properties properties;
 	protected cc.topicexplorer.database.Database database;
-	private PruneAction_TwoPassMainMemoryVocabulary prune = new PruneAction_TwoPassMainMemoryVocabulary();
+	private Prune_Ram_SortedCsv prune = new Prune_Ram_SortedCsv();
 
 	@Override
 	public void specialExecute(Context context) throws Exception {

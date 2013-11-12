@@ -14,7 +14,7 @@ import org.apache.log4j.Logger;
 import com.csvreader.CsvReader;
 import com.csvreader.CsvWriter;
 
-public class PruneAction_TwoPassMainMemoryVocabulary {
+public class Prune_Ram_NotSortedCsv {
 
 	float upperBoundPercent;
 	float lowerBoundPercent;

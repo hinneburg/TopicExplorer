@@ -27,7 +27,7 @@ import com.csvreader.CsvReader;
  * MIT-JOOQ-ENDE
  */
 
-public class Prune_db extends DependencyCommand {
+public class Prune_DB extends DependencyCommand {
 	private Properties properties;
 	private static CsvReader inCsv;
 	protected cc.topicexplorer.database.Database database;

@@ -98,42 +98,40 @@ public class Prune_Ram_SortedCsv {
 		openInCsvReader();
 		readInCsvHeader();
 
-		HashMap<String, HashSet<String>> vocabulary = new HashMap<String, HashSet<String>>();
-		HashSet<String> documents = new HashSet<String>();
+		HashMap<String, Integer> vocabulary = new HashMap<String, Integer>();
 		Integer numberOfDocuments = 0;
 
 		String documentId = new String();
+		HashSet<String> documentTerms = new HashSet<String>();
 
 		while (inCsvReadRecord()) {
-			documentId = inCsv.get("DOCUMENT_ID");
 			String term = inCsv.get("TERM");
-			documents.add(documentId);
-
-			if (vocabulary.containsKey(term)) {
-				HashSet<String> docs = vocabulary.get(term);
-				docs.add(documentId);
-				vocabulary.put(term, docs);
+			if (!documentId.equals(inCsv.get("DOCUMENT_ID"))) {
+				documentId = inCsv.get("DOCUMENT_ID");
+				numberOfDocuments++;
+				for (String t : documentTerms) {
+					if (vocabulary.containsKey(t)) {
+						Integer frequency = vocabulary.get(t);
+						frequency++;
+						vocabulary.put(t, frequency);
+					} else {
+						vocabulary.put(t, 1);
+					}
+				}
+				documentTerms.clear();
+				documentTerms.add(term);
 			} else {
-				HashSet<String> docs = new HashSet<String>();
-				docs.add(documentId);
-				vocabulary.put(term, docs);
+				documentTerms.add(term);	
 			}
-
-		}
-		if (documents.size() > 0) {
-			numberOfDocuments = documents.size();
-		} else {
-			// logger.fatal("Document List from InCSV is empty.");
-			// TODO: In Testklasse Logger initialisieren!
-			System.exit(1);
+			
 		}
 
 		float upperBound = numberOfDocuments * upperBoundPercent / (float) 100.0;
 		float lowerBound = numberOfDocuments * lowerBoundPercent / (float) 100.0;
-
+		
 		HashSet<String> termsToKeep = new HashSet<String>();
 		for (String term : vocabulary.keySet()) {
-			if (vocabulary.get(term).size() > lowerBound && vocabulary.get(term).size() < upperBound) {
+			if (vocabulary.get(term) > lowerBound && vocabulary.get(term) < upperBound) {
 				termsToKeep.add(term);
 			}
 

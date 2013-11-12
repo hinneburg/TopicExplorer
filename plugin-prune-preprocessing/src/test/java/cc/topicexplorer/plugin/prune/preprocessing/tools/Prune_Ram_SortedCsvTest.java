@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import org.junit.Test;
 
-public class PruneAction_TwoPassMainMemoryVocabularyTest {
+public class Prune_Ram_SortedCsvTest {
 
 	@Test
 	public void testPrune() {

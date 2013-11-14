@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -14,6 +15,7 @@ import java.util.Vector;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+
 import tools.WikiIDTitlePair;
 //import org.apache.log4j.Appender;
 //import org.apache.log4j.ConsoleAppender;
@@ -279,4 +281,46 @@ public class PreMalletAction_EntryPointForParallelisation {
 			e.printStackTrace();
 		}
 	}
+	
+	
+	private static Properties forLocalExcetution() throws Exception{
+		
+		
+		Properties prop ;
+		String fileName = "src/test/resources/localwikiconfig.ini";
+
+		File f = new File(fileName);
+		if (f.exists())
+		{
+			prop = new Properties();
+			// prop.load(this.getClass().getResourceAsStream("/config.ini"));
+
+			FileInputStream fis = new FileInputStream(fileName);
+
+			prop.load(fis);
+						
+			return prop;
+			
+		}
+		else
+		{
+			System.err.print(f.getAbsolutePath() + "\n");
+			throw new FileNotFoundException(f + "not found.");
+		}
+		
+	}
+	
+	
+	public static void main(String[] args){
+		
+		try {
+			PreMalletAction_EntryPointForParallelisation p = new PreMalletAction_EntryPointForParallelisation(forLocalExcetution());
+			p.start();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
 }

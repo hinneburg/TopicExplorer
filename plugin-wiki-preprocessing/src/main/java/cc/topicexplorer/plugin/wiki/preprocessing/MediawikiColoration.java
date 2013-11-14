@@ -24,8 +24,8 @@ public class MediawikiColoration extends DependencyCommand {
 		
 		try {
 			
-			MediawikiColorationAction_EntryPointForParallelisation pj = new MediawikiColorationAction_EntryPointForParallelisation();
-			pj.start(properties);
+			MediawikiColorationAction_EntryPointForParallelisation pj = new MediawikiColorationAction_EntryPointForParallelisation(properties);
+			pj.start();
 		} catch (Exception e) {
 
 			logger.warn("Coloration of mediawiki failed");

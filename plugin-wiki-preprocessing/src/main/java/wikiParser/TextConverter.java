@@ -266,8 +266,14 @@ public class TextConverter
 			if (txt.length() == 0)
 				return;
 			
-			if (txt.equals("{{")|| txt.equals("|")||txt.equals("[")||txt.equals(".")||txt.equals(":")||txt.equals(",")||txt.equals(";")||txt.equals("(")||txt.equals(")"))
+			if (txt.equals("{{")|| txt.equals("[[")||txt.equals("]]")||txt.equals("]")||txt.equals("|")||txt.equals("[")||txt.equals(".")||txt.equals(":")||txt.equals(",")||txt.equals(";")||txt.equals("(")||txt.equals(")"))
 				return;
+			
+//			if (txt.startsWith("Datei:")){
+//				System.err.println("Datei: wurde erstmal absichtlich unterschlagen..");
+//				return;
+//			}
+			
 		}
 		
 		write(txt);

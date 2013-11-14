@@ -1,5 +1,8 @@
 package wikiParser;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +28,10 @@ public class MediawikiColorationAction_EntryPointForParallelisation
 {
 
 	private Properties prop; 
+
+	public MediawikiColorationAction_EntryPointForParallelisation(Properties prop){
+		this.prop = prop;
+	}
 	
 	private List<WikiIDTitlePair> getAllArticlesInDocumentTermTopicFromPreprocessingDatabase(SupporterForBothTypes s)
 	{
@@ -101,10 +108,46 @@ public class MediawikiColorationAction_EntryPointForParallelisation
 		poolExecutor = null;
 	}
 	
-	public void start(Properties prop) throws InterruptedException
+	public void start() throws InterruptedException
 	{
-			MediawikiColorationAction_EntryPointForParallelisation h = new MediawikiColorationAction_EntryPointForParallelisation();
-			h.prop = prop;
+			MediawikiColorationAction_EntryPointForParallelisation h = new MediawikiColorationAction_EntryPointForParallelisation(prop);
 			h.startThreadpool();
+	}
+	
+	
+	private static Properties forLocalExcetution() throws Exception {
+
+		Properties prop;
+		String fileName = "src/test/resources/localwikiconfig.ini";
+
+		File f = new File(fileName);
+		if (f.exists()) {
+			prop = new Properties();
+			// prop.load(this.getClass().getResourceAsStream("/config.ini"));
+
+			FileInputStream fis = new FileInputStream(fileName);
+
+			prop.load(fis);
+
+			return prop;
+
+		} else {
+			System.err.print(f.getAbsolutePath() + "\n");
+			throw new FileNotFoundException(f + "not found.");
+		}
+
+	}
+
+	public static void main(String[] args) {
+
+		try {
+			MediawikiColorationAction_EntryPointForParallelisation p = new MediawikiColorationAction_EntryPointForParallelisation(
+					forLocalExcetution());
+			p.start();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
 	}
 }

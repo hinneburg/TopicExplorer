@@ -190,7 +190,7 @@ public class MediawikiColorationParallelisation extends Thread
 					text = s.getWikiTextOnlyWithID(id);
 					textAsByte = getTokenTopicAssignment(id,text).getBytes();
 					
-//					System.out.println(id + "\t" + this.getName() + "\t"+ System.currentTimeMillis());
+					System.out.println(id + "\t" + this.getName() + "\t"+ System.currentTimeMillis());
 					
 					stmt.setBytes(1, textAsByte);
 					stmt.setInt(2, id);

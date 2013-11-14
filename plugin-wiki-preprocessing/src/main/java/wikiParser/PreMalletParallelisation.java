@@ -198,32 +198,59 @@ public class PreMalletParallelisation extends Thread
 		List<Point> returnList = new ArrayList<Point>();
 		Boolean isLinkOpen = false;
 		Integer tmpPosition = 0;
+		Integer bracketsCounter = 0;
 
 		// Länge -1, wegen char at i + 1
 		for (Integer i = 0; i < wikiTxt.length() - 1; i++)
 		{
 
-			if (!isLinkOpen)
+			if (wikiTxt.charAt(i) == openBracket && wikiTxt.charAt(i + 1) == openBracket)
 			{
-				if (wikiTxt.charAt(i) == openBracket && wikiTxt.charAt(i + 1) == openBracket)
-				{
+				if (!isLinkOpen){
 					isLinkOpen = true;
 					tmpPosition = i + 2;
 				}
+				bracketsCounter++;
 			}
-			else if (isLinkOpen)
+			
+			if (isLinkOpen && bracketsCounter==1)
 			{
 				if (wikiTxt.charAt(i) == closeBracket && wikiTxt.charAt(i + 1) == closeBracket)
 				{
-					// fürgt nur Point hinzu wenn der Abschnitt keine "|" enthält
-					if (!wikiTxt.substring(tmpPosition, i).contains("|"))
+					// only adds a point, when there are no "|" or ":" 
+					if (!wikiTxt.substring(tmpPosition, i).contains("|") && !wikiTxt.substring(tmpPosition, i).contains(":"))
 						returnList.add(new Point(tmpPosition, i));
 					
 //					System.out.println(wikiTxt.substring(tmpPosition, i));
 					isLinkOpen = false;
 
 				}
+			}else if (isLinkOpen && bracketsCounter>1){
+				bracketsCounter--;
 			}
+			
+			
+//			if (!isLinkOpen)
+//			{
+//				if (wikiTxt.charAt(i) == openBracket && wikiTxt.charAt(i + 1) == openBracket)
+//				{
+//					isLinkOpen = true;
+//					tmpPosition = i + 2;
+//				}
+//			}
+//			else if (isLinkOpen)
+//			{
+//				if (wikiTxt.charAt(i) == closeBracket && wikiTxt.charAt(i + 1) == closeBracket)
+//				{
+//					// only adds a point, when there are no "|" or ":" 
+//					if (!wikiTxt.substring(tmpPosition, i).contains("|") && !wikiTxt.substring(tmpPosition, i).contains(":"))
+//						returnList.add(new Point(tmpPosition, i));
+//					
+////					System.out.println(wikiTxt.substring(tmpPosition, i));
+//					isLinkOpen = false;
+//
+//				}
+//			}
 		}
 		return returnList;
 	}
@@ -454,6 +481,9 @@ public class PreMalletParallelisation extends Thread
 							
 //							bwLogger.append(w.getWikiTitle() + " parsed.");
 //								System.out.println(w.getWikiTitle() + "\t" + this.getName() + "\t" + System.currentTimeMillis() );
+//							bwLogger.append(w.getWikiTitle() + "\t" + this.getName() + "\t" + System.currentTimeMillis() + "\n");
+//							System.out.println(w.getWikiTitle() + "\t" + this.getName() + "\t" + System.currentTimeMillis() );
+							
 						}
 						catch (Exception e)
 						{

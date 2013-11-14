@@ -31,14 +31,14 @@ public final class AllTerms {
 	}
 
 	private void setServletWriter(PrintWriter out) {
-		if (this.outWriter == null) {
+		if (out == null) {
 			throw new UncheckedExecutionException(new IllegalStateException("PrintWriter must not be null."));
 		}
 		this.outWriter = out;
 	}
 
 	private void setDatabase(Database database) {
-		if (this.database == null) {
+		if (database == null) {
 			throw new UncheckedExecutionException(new IllegalStateException("Database must not be null."));
 		}
 		this.database = database;
@@ -48,7 +48,7 @@ public final class AllTerms {
 		this.databaseQuery.select.add(tableColumn + " as " + tableColumnName);
 	}
 
-	public void executeQueriesAndWriteAllTerms() throws SQLException {
+	public void readAllTermsAndGenerateJson() throws SQLException {
 		List<String> columnNames = new ArrayList<String>();
 		JSONObject rowsWithIndex = new JSONObject();
 		JSONObject row = new JSONObject();

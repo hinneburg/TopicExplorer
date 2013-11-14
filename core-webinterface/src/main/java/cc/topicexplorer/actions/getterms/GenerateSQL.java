@@ -16,7 +16,7 @@ public class GenerateSQL extends TableSelectCommand {
 		AllTerms allTermsAction = (AllTerms) communicationContext.get("ALL_TERMS_ACTION");
 
 		try {
-			allTermsAction.executeQueriesAndWriteAllTerms();
+			allTermsAction.readAllTermsAndGenerateJson();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -20,6 +20,8 @@ import org.dbunit.dataset.ITable;
 import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
 import org.dbunit.operation.DatabaseOperation;
 import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 
 import cc.topicexplorer.util.DbUnitContainer;
 
@@ -42,8 +44,10 @@ public final class AllTermsTest {
 		}
 	}
 
-	// @Test Todo: Reactivate test when hsqldb is provided
-	public void testExecuteQueriesAndWriteAllTerms() throws SQLException, DataSetException, MalformedURLException {
+	@Test
+	@Ignore("Todo: Reactivate test when HSQLDB was provided")
+	public void testReadAllTermsAndGenerateJson_oneRow() throws SQLException, DataSetException,
+			MalformedURLException {
 		IDataSet expectedDataSet = new FlatXmlDataSetBuilder().build(new File(
 				"src/test/resources/dataset_maerchen_1st_row.xml"));
 		ITable expectedTable = expectedDataSet.getTable("TERM");

@@ -4,17 +4,13 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.NavigableSet;
-import java.util.Queue;
 import java.util.Scanner;
-import java.util.HashMap;
 import java.util.TreeSet;
-
-import tools.PointInteger;
-import tools.WikiArticle;
 
 /*
  - pointersache kann auch mit hashmaps oder treemap gemacht werden , wäre glaube besser, damit nicht eventtuell pointerfehler entstehen kann bei checkIfPositionOfWordIsWithinBoxBrackets
@@ -40,8 +36,8 @@ public class WikiTextToCSVForeward {
 	private List<Integer> startPositionsWikiText = new ArrayList<Integer>();
 	private List<Integer> startPositionsReadableText = new ArrayList<Integer>();
 
-	private List<PointInteger> posBracketsBox;
-	private Integer intPointerBracketsBox;
+	// private List<PointInteger> posBracketsBox;
+	// private Integer intPointerBracketsBox;
 
 	private BufferedWriter bwlogger;
 
@@ -97,7 +93,8 @@ public class WikiTextToCSVForeward {
 						e.printStackTrace();
 					}
 				} else {
-					savedPosition = position + savedPosition;
+					savedPosition = position + savedPosition + token.length();
+
 				}
 			}
 		} catch (Exception e) {
@@ -245,13 +242,13 @@ public class WikiTextToCSVForeward {
 	//
 	// }
 
-	private Integer checkIfFoundedPositionIsWithinABracketNaviagbleSet(Integer pos, String tmpLine) throws Exception { //für Testzwecke
+	private Integer checkIfFoundedPositionIsWithinABracketNaviagbleSet(Integer pos, String tmpLine) throws Exception { // für
+																														// Testzwecke
 
 		Integer x;
 		Integer fx;
 		Boolean bool_within_brackets = false;
 		Integer newPos = -1;
-		Integer counter = 0;
 
 		x = bracketsNavigableSet.floor(pos);
 		fx = bracketPositionsHashMap.get(x);
@@ -266,13 +263,13 @@ public class WikiTextToCSVForeward {
 
 		if (bool_within_brackets) {
 
-			
 			newPos = wikiOrigText.substring(fx, wikiOrigText.length()).indexOf(tmpLine);
-//			newPos = wikiOrigText.substring(pos + 1, wikiOrigText.length()).indexOf(tmpLine);
+			// newPos = wikiOrigText.substring(pos + 1,
+			// wikiOrigText.length()).indexOf(tmpLine);
 
 			// rekursion
-			if (newPos != 1) {
-				newPos = checkIfFoundedPositionIsWithinABracketNaviagbleSet(newPos, tmpLine);
+			if (newPos != -1) {
+				newPos = checkIfFoundedPositionIsWithinABracketNaviagbleSet(newPos + pos, tmpLine);
 			} else {
 				return pos;
 			}
@@ -302,8 +299,9 @@ public class WikiTextToCSVForeward {
 
 	/*
 	 * es machen verschachtelte Links probleme, Lösung, Bildlink erkennen, wenn
-	 * das vorkommt dann wird der äussere "Bildlinks" deaktiviert, während
-	 * mögliche Links innerhalb der Bildbeschreibung aktiviert werden können
+	 * das vorkommt, dann wird der äussere "Bildlinks" deaktiviert, während
+	 * mögliche Links innerhalb der Bildbeschreibung aktiviert werden könnten,
+	 * bisher nur Vorbereitung
 	 */
 	private void putBracketPositionsIntoHashMap() {
 		Integer posBracketStarts = 0;
@@ -322,15 +320,18 @@ public class WikiTextToCSVForeward {
 		// length -1, because char at i + 1
 		for (Integer i = 0; i < wikiOrigText.length() - 1; i++) {
 
+			;
+
 			if (wikiOrigText.charAt(i) == '[' && wikiOrigText.charAt(i + 1) == '[') {
 				if (!boolBracketOpen) {
 					posBracketStarts = i;
 				} else {
 					pipedLinks.add(i);
 				}
-				boolBracketOpen = true;
 
+				boolBracketOpen = true;
 				bracketsCounter++;
+
 			} else if (wikiOrigText.charAt(i) == ']' && wikiOrigText.charAt(i + 1) == ']') {
 
 				if (boolBracketOpen) {
@@ -339,16 +340,21 @@ public class WikiTextToCSVForeward {
 						pipedLinks.addLast(i);
 						bracketsCounter--;
 					} else if (boolHasPipe && pipeList.size() == 1 && bracketsCounter == 1 && pipedLinks.size() == 0) {
+						// 100 % correct link, with only one pipe
 						bracketPositionsHashMap.put(posBracketStarts, pipeList.getFirst()); // link-target
 						boolBracketOpen = false;
 					} else {
 
-						if (pipedLinks.size() > 0 && bracketsCounter == 1 && boolHasPipe) {
+						if (bracketsCounter == 1 && boolHasPipe) {
+							// do nothing, or there will be failures, because
+							// the "linkparts" must be found, they were parsed
+							// as normal text
 
 							boolBracketOpen = false;
 						}
 
 					}
+
 					// } else if (boolHasPipe && pipeList.size() > 1
 					// && bracketsCounter == 1)
 					// {
@@ -371,6 +377,7 @@ public class WikiTextToCSVForeward {
 						pipeList.clear();
 						boolHasPipe = false;
 						pipedLinks.clear();
+						bracketsCounter = 0;
 					}
 
 				}
@@ -466,7 +473,7 @@ public class WikiTextToCSVForeward {
 			Integer seqReadable = itSeqReadable.next();
 
 			sb.append("\"" + old_id + "\";" + "\"" + String.valueOf(seqReadable) + "\";" + "\"" + token.toLowerCase()
-					+ "\";" + "\"" + token + "\";" + "\"" + String.valueOf(seqWikitext) + "\";" + "\n");
+					+ "\";" + "\"" + token + "\";" + "\"" + String.valueOf(seqWikitext) + "\"" + "\n");
 
 			// temp assert which is working
 			// if (seq > -1 ){

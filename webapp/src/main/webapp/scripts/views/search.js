@@ -1,8 +1,8 @@
 var itemColor = 1;
-//Initialize your plugin
-plugin.content = '';
+//Initialize your view
+view.content = '';
 
-plugin.init = function() {
+view.init = function() {
 	autocomplete('searchField');	
 	//this.content = $('<div>').attr('class', 'documentList').html(template());
 	
@@ -116,9 +116,9 @@ function generateCircle(color) {
 		return "";
 	var circleString = "<circle class=\"topic_"+color+"\" onmouseover=\"$(this).attr('r','7');\" onmouseout=\"$(this).attr('r','5');\" "
 		+ " r=\"5\" cx=\""+cx+"\" cy=\"14\" fill=\""
-		+ topic.COLOR_TOPIC$COLOR()
+		+ topic.topicColor()
 		+ "\" title=\""
-		+ topic.TEXT$TOPIC_LABEL
+		+ topic.topicTitle[0]
 		+ "\" stroke=\"black\" stroke-width=\"0.5\" style=\"cursor:pointer\"/>";
 	itemColor++;
 	return circleString;

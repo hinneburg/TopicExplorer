@@ -1,57 +1,63 @@
 topicExplorer = new Object();
-topicExplorer.pluginModel;
+topicExplorer.viewModel;
+
+var topicTitleFields = new Array(); 
+var documentTitleFields = new Array();
+var documentBodyFields = new Array();
+var topicColor = "#ffffff";
+
+
 //This would be the default script
-topicExplorer.PluginModel = function (defaultPlugins) {
+topicExplorer.ViewModel = function (defaultViews) {
 	var self = this;
-	self.plugins = ko.observableArray();
+	self.views = ko.observableArray();
+//	self.views = new Array();
 	
-	//method to search registered plugin
-	self.getPlugin = function(searchPlugin) 
+	//method to search registered view
+	self.getView = function(searchView) 
 	{
-		var isLoaded = ko.utils.arrayFirst(self.plugins(), function(item) {			
-			if(item.name === searchPlugin) {
+		var isLoaded = ko.utils.arrayFirst(self.views(), function(item) {			
+			if(item.name === searchView) {
 				return item;
 			}
 		});
 		return isLoaded;
 	};
 	
-	//method to register your plugins
-	self.registerPlugin = function(pluginName) {
-		//check if the plugin is already registered
-		if(!self.getPlugin(pluginName)) {
+	//method to register your views
+	self.registerView = function(viewName) {
+		//check if the view is already registered
+		if(!self.getView(viewName)) {
 			$( "#ajaxLoader" ).show();
-			//Initialize a plugin object
-			plugin = new Object();
-			//loadScript from plugin folder
-			$.ajaxSetup({
-				async: false
-				});
-			$.getScript('scripts/plugins/'+pluginName+'.js').success(function(data) {
+			//Initialize a view object
+			view = new Object();
+			//loadScript from view folder
+			
+			$.getScript('scripts/views/'+viewName+'.js').success(function(data) {
 				start = new Date().getTime();
-				plugin.init();
+				view.init();
 				//delete init function after init
-				delete plugin.init;
-				plugin.name = pluginName;
-				self.plugins.push(plugin);
-				if(plugin.setTab) {
-					gui.drawTab(plugin.tabName, plugin.tabCanClose, plugin.setActive, plugin.content);
+				delete view.init;
+				view.name = viewName;
+				self.views.push(view);
+				if(view.setTab) {
+					gui.drawTab(view.tabName, view.tabCanClose, view.setActive, view.content);
 				}
-				delete plugin;
-				console.log("Zeit KO Plugin"+pluginName+": " + (new Date().getTime() - start));
+				delete view;
+				console.log("Zeit KO View"+viewName+": " + (new Date().getTime() - start));
 			}).complete(function(){
 				$( "#ajaxLoader" ).hide();				
 			});
 			//avoid overwrite
-			//push plugin into KO array
-			//self.plugins.push(plugin);
+			//push view into KO array
+			//self.views.push(view);
 			//delete reference to object
-			//delete plugin;
+			//delete view;
 		}
 	};
 	
-	$.each(defaultPlugins,function(key, value){		
-		self.registerPlugin(value);
+	$.each(defaultViews,function(key, value){		
+		self.registerView(value);
 	});
 };
 $(document).ajaxStart(function() {
@@ -63,17 +69,28 @@ $(document).ajaxStart(function() {
 });
 $(document).ready(function() {
 	var start = new Date().getTime();
+	$.ajaxSetup({
+		async: false
+	});
 	$.getJSON('JsonServlet', {art:'random', id:null, limit:20})
 	.done(function(json) {
 		console.log("Zeit JSON holen: " + (new Date().getTime() - start));
 		start = new Date().getTime();
-		
+		$.each(json.PLUGINS,function(key, value){		
+			$.getScript('scripts/plugin/'+value+'.js').success(function(data) {
+				
+				
+			}).complete(function(){
+				$( "#ajaxLoader" ).hide();				
+			});
+		});
+	
 		topicExplorer.jsonModel = ko.mapping.fromJS(json.JSON);
 		console.log("Zeit JSON mit KO mappen: " + (new Date().getTime() - start));
 		start = new Date().getTime();
 		console.log(json.FRONTEND_VIEWS);
-		topicExplorer.pluginModel = new topicExplorer.PluginModel(json.FRONTEND_VIEWS);// ["search", "slider", "topic", "text"]
-		console.log("Zeit KO Plugins initialisieren: " + (new Date().getTime() - start));
+		topicExplorer.viewModel = new topicExplorer.ViewModel(json.FRONTEND_VIEWS);// ["search", "slider", "topic", "text"]
+		console.log("Zeit KO Views initialisieren: " + (new Date().getTime() - start));
 		
 	}).fail(console.log("error"));
 		
@@ -121,7 +138,7 @@ function SVG(tag) {
 	return document.createElementNS('http://www.w3.org/2000/svg', tag);
 }
 
-//functions for plugin programmer
+//functions for view programmer
 var gui = new Object();
 gui.tabCache = new Object();
 gui.drawTab = function (tabName, canClose, active, content) {

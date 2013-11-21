@@ -61,6 +61,16 @@ public class JsonServlet extends HttpServlet {
 			WebChainManagement.executeCommands(WebChainManagement.getOrderedCommands(startCommands, endCommands),
 					communicationContext);
 
+			Properties properties = (Properties) communicationContext.get("properties");
+			String plugins = properties.getProperty("plugins");
+			String[] pluginArray = plugins.split(",");
+			List<String> pluginList = new ArrayList<String>();
+
+			for (int i = 0; i < pluginArray.length; i++) {
+				pluginList.add("\"" + pluginArray[i] + "\"");
+			}
+			writer.print(", \"PLUGINS\":" + pluginList.toString());
+
 			writer.print("}");
 		}
 	}
@@ -98,6 +108,7 @@ public class JsonServlet extends HttpServlet {
 						frontendViews.add("\"" + frontendViewArray[k] + "\"");
 					}
 				}
+
 			} catch (Exception e) {
 				logger.info("Property " + pluginArray[i].substring(0, 1).toUpperCase() + pluginArray[i].substring(1)
 						+ "_FrontendViews not found");

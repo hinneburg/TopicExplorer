@@ -1,16 +1,16 @@
-//Initialize your plugin
-plugin.setTab = false;
-plugin.view = '';
-plugin.content = '';
+//Initialize your view
+view.setTab = false;
+view.view = '';
+view.content = '';
 
-plugin.init = function() {
+view.init = function() {
 	$('#topicModel > .bottom').html(template());
 	
 	ko.bindingHandlers.drawSlider = {
 		update: function(elem,valueAccessor) {
 			var child = $(elem).children('svg').children('g');
 			$.each(valueAccessor(), function(index, value) {				
-				var rect = $(SVG('rect')).attr('height', 13).attr('width', 1).attr('x', index).attr('y', 2).attr('title', value.TEXT$TOPIC_LABEL).attr('index', index).attr('fill', value.COLOR_TOPIC$COLOR()).attr('id','topic_'+value.TOPIC_ID).attr('stroke-width', '0.02').attr('stroke', 'black').attr('class','topicRec');
+				var rect = $(SVG('rect')).attr('height', 13).attr('width', 1).attr('x', index).attr('y', 2).attr('title', value.topicTitle).attr('index', index).attr('fill', value.topicColor).attr('id','topic_'+value.topicId).attr('stroke-width', '0.02').attr('stroke', 'black').attr('class','topicRec');
 				rect.click(function(){
 					console.log(value.id);
 				});

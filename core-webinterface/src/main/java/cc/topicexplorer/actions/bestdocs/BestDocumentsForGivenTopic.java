@@ -21,11 +21,12 @@ public class BestDocumentsForGivenTopic {
 	public BestDocumentsForGivenTopic(String topicId, Integer limit, Database db, PrintWriter out, int numberOfTopics) {
 		documentMap = new SelectMap();
 		documentMap.select.add("DOCUMENT.DOCUMENT_ID");
+		documentMap.select.add("DOCUMENT_TOPIC.PR_DOCUMENT_GIVEN_TOPIC");
 		documentMap.from.add("DOCUMENT");
 		documentMap.from.add("DOCUMENT_TOPIC");
 		documentMap.where.add("DOCUMENT.DOCUMENT_ID=DOCUMENT_TOPIC.DOCUMENT_ID");
 		documentMap.where.add("DOCUMENT_TOPIC.TOPIC_ID=" + topicId);
-		documentMap.orderBy.add("PR_DOCUMENT_GIVEN_TOPIC");
+		documentMap.orderBy.add("PR_DOCUMENT_GIVEN_TOPIC DESC");
 		documentMap.limit = limit;
 
 		setTopicId(topicId);

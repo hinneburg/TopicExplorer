@@ -143,14 +143,15 @@ view.showDocument = function (e) {
 	});
 	
 	if(documentTitleFields.length > 0) {
-		title = doc[documentTitleFields[0]]();
+		title = doc[documentTitleFields[0]];
 	} else {
 		title = "Document " + doc.DOCUMENT_ID;
 	}
 	if(documentBodyFields.length > 0) {
-		text = doc[documentBodyFields[0]]();
-		for(var i = 0; wordList[i]; i++) {
-			text = text.substring(0, wordList[i].POSITION_OF_TOKEN_IN_DOCUMENT) + '<span style="background-color: '+topicExplorer.jsonModel.Topic[wordList[i].TOPIC_ID].topicColor+'">' + wordList[i].TOKEN + "</span>" + text.substring(Number(wordList[i].POSITION_OF_TOKEN_IN_DOCUMENT) + wordList[i].TOKEN.length);
+		text = doc[documentBodyFields[0]];
+		for(var i = 0; i < wordList.length; i++) {
+			var topic = topicModel.topicList()[wordList[i].TOPIC_ID];
+			text = text.substring(0, wordList[i].POSITION_OF_TOKEN_IN_DOCUMENT) + '<span style="background-color: '+topic.topicColor+'">' + wordList[i].TOKEN + "</span>" + text.substring(Number(wordList[i].POSITION_OF_TOKEN_IN_DOCUMENT) + wordList[i].TOKEN.length);
 		}
 	}else {
 		text = "";

@@ -77,7 +77,7 @@ $(document).ready(function() {
 		console.log("Zeit JSON holen: " + (new Date().getTime() - start));
 		start = new Date().getTime();
 		$.each(json.PLUGINS,function(key, value){		
-			$.getScript('scripts/plugin/'+value+'.js').success(function(data) {
+			$.getScript('scripts/plugins/'+value+'.js').success(function(data) {
 				
 				
 			}).complete(function(){

@@ -17,11 +17,8 @@ package wikiParser;
  * limitations under the License.
  */
 
-
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 
 import org.sweble.wikitext.engine.PageTitle;
@@ -55,17 +52,11 @@ import org.sweble.wikitext.parser.nodes.WtXmlElement;
 import org.sweble.wikitext.parser.nodes.WtXmlEntityRef;
 import org.sweble.wikitext.parser.parser.LinkTargetException;
 
-//neu dazu
-
-import org.sweble.wikitext.parser.nodes.WtTable;
-import org.sweble.wikitext.parser.nodes.WtTableCaption;
-import org.sweble.wikitext.parser.nodes.WtTableCell;
-import org.sweble.wikitext.parser.nodes.WtTableHeader;
-import org.sweble.wikitext.parser.nodes.WtTableRow;
-import org.sweble.wikitext.parser.nodes.WtTableImplicitTableBody;
-
+import tools.ExtraInformations;
 import de.fau.cs.osr.ptk.common.AstVisitor;
 import de.fau.cs.osr.utils.StringUtils;
+
+//neu dazu
 
 /**
  * A visitor to convert an article AST into a pure text representation. To
@@ -90,32 +81,29 @@ import de.fau.cs.osr.utils.StringUtils;
  * value of the call to <code>visit(c)</code>.</li>
  * </ul>
  */
-public class TextConverter
-		extends
-			AstVisitor<WtNode>
-{
+public class TextConverter extends AstVisitor<WtNode> {
 	private static final Pattern ws = Pattern.compile("\\s+");
-	
+
 	private final WikiConfig config;
-	
+
 	private final int wrapCol;
-	
+
 	private StringBuilder sb;
-	
+
 	private StringBuilder line;
-	
+
 	private int extLinkNum;
-	
+
 	private boolean pastBod;
-	
+
 	private int needNewlines;
-	
+
 	private boolean needSpace;
-	
+
 	private boolean noWrap;
-	
-//	private LinkedList<Integer> sections;
-	
+
+	// private LinkedList<Integer> sections;
+
 	// =========================================================================
 
 	private boolean csvOrReadable = false; // false = readable, true = csv , see
@@ -123,27 +111,28 @@ public class TextConverter
 	private boolean debug = false;
 	private boolean debugAstNode = false;
 
-	private List<String> listNodeIgnor ;
+	private boolean bool_has_extra_information = false;
+	private String extra_information;
+
+	private List<String> listNodeIgnor;
 
 	// =========================================================================
-	
-	public TextConverter(WikiConfig config, int wrapCol)
-	{
+
+	public TextConverter(WikiConfig config, int wrapCol) {
 		this.config = config;
 		this.wrapCol = wrapCol;
-		
-		
+
 		this.init();
 	}
-	
-	private void init()
-	{
+
+	private void init() {
 		listNodeIgnor = new ArrayList<String>();
 		listNodeIgnor.add("XmlAttribute");
 		listNodeIgnor.add("XmlElementOpen");
-		listNodeIgnor.add("XmlElementClose"); // tritt auf, wenn z.B. ein schließendes
-										// Tag kommt ohne das es geöffnet wurde
-										// , z.B. </ref>
+		listNodeIgnor.add("XmlElementClose"); // tritt auf, wenn z.B. ein
+												// schließendes
+		// Tag kommt ohne das es geöffnet wurde
+		// , z.B. </ref>
 		// list.add("SemiPre");
 		listNodeIgnor.add("XmlElementEmpty");
 		listNodeIgnor.add("XmlAttributeGarbage");
@@ -155,10 +144,9 @@ public class TextConverter
 		listNodeIgnor.add("Table");
 		// list.add("");
 	}
-	
+
 	@Override
-	protected boolean before(WtNode node)
-	{
+	protected boolean before(WtNode node) {
 		// This method is called by go() before visitation starts
 		sb = new StringBuilder();
 		line = new StringBuilder();
@@ -167,50 +155,38 @@ public class TextConverter
 		needNewlines = 0;
 		needSpace = false;
 		noWrap = false;
-//		sections = new LinkedList<Integer>();
+		// sections = new LinkedList<Integer>();
 		return super.before(node);
 	}
-	
+
 	@Override
-	protected Object after(WtNode node, Object result)
-	{
+	protected Object after(WtNode node, Object result) {
 		finishLine();
-		
+
 		// This method is called by go() after visitation has finished
 		// The return value will be passed to go() which passes it to the caller
 		return sb.toString();
 	}
-	
+
 	// =========================================================================
-	
-	public void visit(WtNode n)
-	{
-		
+
+	public void visit(WtNode n) {
+
 		if (debugAstNode)
-			System.err.println("visit AstNode n: " +  n.getNodeName());
-		
-		
-		//TODO wahrscheinlich kann das weg
-		if (n.getNodeName().equals("DefinitionDefinition"))
-		{
+			System.err.println("visit AstNode n: " + n.getNodeName());
+
+		// TODO wahrscheinlich kann das weg
+		if (n.getNodeName().equals("DefinitionDefinition")) {
 			dispatch(n.get(1));
-		}
-		else if (n.getNodeName().equals("SemiPre"))
-		{
+		} else if (n.getNodeName().equals("SemiPre")) {
 			dispatch(n.get(0));
 			// TODO überdenken , 1 wirft exception
-		}
-		else if (n.getNodeName().equals("SemiPreLine"))
-		{
+		} else if (n.getNodeName().equals("SemiPreLine")) {
 			dispatch(n.get(0)); // 1 wirft exception
-		}
-		else
-		{
-			if (debugAstNode)
-			{
+		} else {
+			if (debugAstNode) {
 				// //for debugging
-				if (!proofAstnodeIgnored(n.getNodeName()))
-				{
+				if (!proofAstnodeIgnored(n.getNodeName())) {
 					System.err.println("visit AstNode n: " + n.getNodeName());
 				}
 				// dispatch(n.get(0));
@@ -218,199 +194,194 @@ public class TextConverter
 
 			}
 		}
-		
+
 	}
-	
-	private boolean proofAstnodeIgnored(String nodeName)
-	{
+
+	private boolean proofAstnodeIgnored(String nodeName) {
 		return listNodeIgnor.contains(nodeName);
 	}
-	
-	public void visit(WtNodeList n)
-	{
+
+	public void visit(WtNodeList n) {
 		iterate(n);
 	}
-	
-	public void visit(WtUnorderedList e)
-	{
-//		iterate(e);  //damit werden ungeordnete Aufzählungslisten geparst
+
+	public void visit(WtUnorderedList e) {
+		// iterate(e); //damit werden ungeordnete Aufzählungslisten geparst
 	}
-	
-	public void visit(WtOrderedList e)
-	{
-//		iterate(e); //damit werden nummerierte Aufzählungslisten geparst
+
+	public void visit(WtOrderedList e) {
+		// iterate(e); //damit werden nummerierte Aufzählungslisten geparst
 	}
-	
-	public void visit(WtListItem item) // sind Elemente von den Listen, falls sie geparst werden
+
+	public void visit(WtListItem item) // sind Elemente von den Listen, falls
+										// sie geparst werden
 	{
 		if (!csvOrReadable)
 			newline(1);
-		
+
 		iterate(item);
 	}
-	
-	public void visit(EngPage p)
-	{
+
+	public void visit(EngPage p) {
 		iterate(p);
 	}
-	
-	public void visit(WtText text)
-	{
-		
+
+	public void visit(WtText text) {
+
 		String txt = text.getContent();
-		
-		if (csvOrReadable) 
-		{
+
+		if (csvOrReadable) {
 			txt = txt.trim();
-			
+
 			if (txt.length() == 0)
 				return;
-			
-			if (txt.equals("{{")|| txt.equals("[[")||txt.equals("]]")||txt.equals("]")||txt.equals("|")||txt.equals("[")||txt.equals(".")||txt.equals(":")||txt.equals(",")||txt.equals(";")||txt.equals("(")||txt.equals(")"))
+
+			if (txt.equals("{{") || txt.equals("[[") || txt.equals("]]") || txt.equals("]") || txt.equals("|")
+					|| txt.equals("[") || txt.equals(".") || txt.equals(":") || txt.equals(",") || txt.equals(";")
+					|| txt.equals("(") || txt.equals(")"))
 				return;
-			
-//			if (txt.startsWith("Datei:")){
-//				System.err.println("Datei: wurde erstmal absichtlich unterschlagen..");
-//				return;
-//			}
-			
+
+			if (txt.startsWith(ExtraInformations.extraFileNameGerman)
+					|| txt.startsWith(ExtraInformations.extraFileNameEnglish)
+					|| txt.startsWith(ExtraInformations.extraFileNameJapan)) {
+				// System.err.println("Datei: wurde erstmal absichtlich unterschlagen..");
+				bool_has_extra_information = true;
+				extra_information = ExtraInformations.extraPicure3Append;
+			}
+
 		}
-		
+		// else {
+		// // not in normalized text
+		// if (txt.startsWith(ExtraInformations.extraFileNameGerman)
+		// || txt.startsWith(ExtraInformations.extraFileNameEnglish)
+		// || txt.startsWith(ExtraInformations.extraFileNameJapan)) {
+		// //
+		// System.err.println("Datei: wurde erstmal absichtlich unterschlagen..");
+		// return;
+		// }
+		//
+		// }
+
 		write(txt);
 	}
-	
-	public void visit(WtWhitespace w) 
-	{
+
+	public void visit(WtWhitespace w) {
 		if (!csvOrReadable)
 			write(" ");
 	}
-	
-	public void visit(WtBold b)
-	{
+
+	public void visit(WtBold b) {
+
+		bool_has_extra_information = true;
+		extra_information = ExtraInformations.extraBoldAppend;
 		iterate(b);
 	}
-	
-	public void visit(WtItalics i)
-	{
+
+	public void visit(WtItalics i) {
+		bool_has_extra_information = true;
+		extra_information = ExtraInformations.extraCursiveAppend;
 		iterate(i);
 	}
-	
-	public void visit(WtXmlCharRef cr)
-	{
+
+	public void visit(WtXmlCharRef cr) {
 		if (debug)
 			System.out.println(" xmlCharRef ");
-		
-		if (!csvOrReadable)
-		{
+
+		if (!csvOrReadable) {
 			write(Character.toChars(cr.getCodePoint()));
 		}
 	}
-	
+
 	/*
 	 * übersetzt xml , z.B. &alpha in alphazeichen
 	 */
-	public void visit(WtXmlEntityRef er)
-	{
-		//TODO nochmal überdenken ob wirklich auslassen, wirft aber immer Fehler weil die zeichen nicht so bleiben wie sie im originaltext waren
+	public void visit(WtXmlEntityRef er) {
+		// TODO nochmal überdenken ob wirklich auslassen, wirft aber immer
+		// Fehler weil die zeichen nicht so bleiben wie sie im originaltext
+		// waren
 		// //System.out.println(er.getName()+ " " +
 		// er.getLocation().toString());
 
-		if (!csvOrReadable)
-		{
+		if (!csvOrReadable) {
 			String ch = er.getResolved();
-			if (ch == null)
-			{
+			if (ch == null) {
 				write('&');
 				write(er.getName());
 				write(';');
-			}
-			else
-			{
+			} else {
 				write(ch);
-			}			
+			}
 		}
-		if (debug)
-		{
+		if (debug) {
 			System.err.println("WtXmlEntityRef " + er.getName());
 		}
 	}
-	
-	public void visit(WtUrl wtUrl)
-	{
-		
-		if (debug)
-		{
+
+	public void visit(WtUrl wtUrl) {
+
+		if (debug) {
 			System.err.println("visit url überprüfen " + wtUrl.getPath());
 		}
-		
 
-//		if (!wtUrl.getProtocol().isEmpty())
-//		{
-//			write(wtUrl.getProtocol());
-//			write(':');
-//		}
-//		write(wtUrl.getPath());
+		// if (!wtUrl.getProtocol().isEmpty())
+		// {
+		// write(wtUrl.getProtocol());
+		// write(':');
+		// }
+		// write(wtUrl.getPath());
 	}
-	
-	public void visit(WtExternalLink link)
-	{
+
+	public void visit(WtExternalLink link) {
 		// links sind nur nummern
-		if (debug) 
-			System.out.println("externallink überprüfen " + extLinkNum );
-		
-//		
-//		write('[');
-//		write(extLinkNum++);
-//		write(']');
+		if (debug)
+			System.out.println("externallink überprüfen " + extLinkNum);
+
+		//
+		// write('[');
+		// write(extLinkNum++);
+		// write(']');
 	}
-	
-	public void visit(WtInternalLink link)
-	{
-		
-//		 TODO testen ob richtig
-		
-		if (link.getTarget().getContent().contains(":"))
-			{
-				return;
-			}
-		
-		try
-		{
+
+	public void visit(WtInternalLink link) {
+
+		// TODO testen ob richtig
+
+		if (link.getTarget().getContent().contains(":")) {
+			return;
+		}
+
+		try {
 			PageTitle page = PageTitle.make(config, link.getTarget().getContent());
 			if (page.getNamespace().equals(config.getNamespace("Category")))
 				return;
+		} catch (LinkTargetException e) {
 		}
-		catch (LinkTargetException e)
-		{
-		}
-		
-		if (link.getPrefix().length()>0 )
-		{
-			//T O D O noch in Logg rein, bzw sie sind nur NULL
+
+		if (link.getPrefix().length() > 0) {
+			// T O D O noch in Logg rein, bzw sie sind nur NULL
 			System.err.println("Es gibt prefix !!" + link.getPrefix());
 		}
-		
+
 		if (!csvOrReadable)
 			write(link.getPrefix());
-		
-		if (!link.hasTitle())
-		{
+
+		bool_has_extra_information = true;
+		extra_information = ExtraInformations.extraInternalLink;
+
+		if (!link.hasTitle()) {
 			write(link.getTarget().getContent());
-		}
-		else
-		{
+		} else {
 			iterate(link.getTitle());
 		}
-		
-		if (!csvOrReadable) 
+
+		if (!csvOrReadable)
 			write(link.getPostfix());
 	}
-	
+
 	/*
 	 * Abschnitt, eingeleitet mit == / oder mehr ===
 	 */
-	public void visit(WtSection s)
-	{		
+	public void visit(WtSection s) {
 		finishLine();
 
 		StringBuilder saveSb = sb; // stringbuiler gespeichert
@@ -420,93 +391,101 @@ public class TextConverter
 		noWrap = true;
 
 		iterate(s.getHeading()); // wahrscheinlich in sb gespeichert
-		
+
 		finishLine();
-		
+
 		String title = sb.toString().trim();
-				
+
 		sb = saveSb; // gespeicherteret sb zurück
 
-		if (!csvOrReadable)
-		{
+		if (!csvOrReadable) {
 			newline(2);
 			write(title);
 			newline(1);
-		}
-		else
-		{
+		} else {
 			write(title);
 		}
-		
+
 		noWrap = saveNoWrap;
 
 		iterate(s.getBody());
 	}
-	
-	public void visit(WtParagraph p)
-	{
+
+	public void visit(WtParagraph p) {
 		iterate(p);
-		if (!csvOrReadable)
-		{
+		if (!csvOrReadable) {
 			newline(2);
 		}
 	}
-	
-	public void visit(WtHorizontalRule hr)
-	{
-		if (!csvOrReadable)
-		{
+
+	public void visit(WtHorizontalRule hr) {
+		if (!csvOrReadable) {
 			newline(1);
 			write(StringUtils.strrep('-', wrapCol));
 			newline(2);
 		}
 	}
-	
+
 	/*
 	 * write(" ") eingefügt
 	 */
-	public void visit(WtXmlElement e)
-	{
-		if (e.getName().equalsIgnoreCase("br"))
-		{
+	public void visit(WtXmlElement e) {
+		if (e.getName().equalsIgnoreCase("br")) {
 			newline(1);
-		}
-		else
-		{
+		} else {
 			// System.out.println( " xmlElement " + e.getBody());
 			write(" ");
 			iterate(e.getBody());
 			write(" ");
 		}
 	}
-	
+
 	// =========================================================================
 	// Stuff we want to hide
-	
-	public void visit(WtImageLink n)
-	{
+
+	public void visit(WtImageLink n) {
 		if (debug)
 			System.out.println(" ImageLink " + n.getTarget());
 		// write(" ImageLink " + n.getTarget());
+
+		if (csvOrReadable) {
+			// Dateiname:
+
+			bool_has_extra_information = true;
+			extra_information = ExtraInformations.extraPicure1Append;
+
+			write(n.getTarget().getContent());
+
+			// Titel??, gibt es auch mehr Unterknoten? eventuell dynamisch
+			// machen?
+
+			bool_has_extra_information = true;
+			extra_information = ExtraInformations.extraPicure2Append;
+
+			dispatch(n.get(2));
+		} else {
+
+			write(n.getTarget().getContent());
+			dispatch(n.get(2));
+			writeWord(" ");
+		}
+
 	}
-	
-	public void visit(WtIllegalCodePoint n)
-	{
+
+	public void visit(WtIllegalCodePoint n) {
 		if (debug)
 			System.out.println(" illegalcodepoint");
 	}
-	
-	public void visit(WtXmlComment n)
-	{
+
+	public void visit(WtXmlComment n) {
 		if (debug)
 			System.out.println(" xmlComment " + n.getContent());
 	}
-	
+
 	/*
 	 * Templates werden ignoriert
 	 */
-	public void visit(WtTemplate n)
-	{
+	public void visit(WtTemplate n) {
 		// Infobox z.B.
 
 		// String s = n.getName().toString();
@@ -523,192 +502,174 @@ public class TextConverter
 		// write(" Template " + n.getName());
 		// visit(n.getArgs());
 	}
-	
-	public void visit(WtTemplateArgument n)
-	{
-//		 System.out.println( " Templateargument " + n.getName() + " " +
-//		 n.getValue());
 
-//		dispatch(n.getName());
-//		writeWord(" ");
-//		dispatch(n.getValue());
-//		writeWord(" ");
+	public void visit(WtTemplateArgument n) {
+		// System.out.println( " Templateargument " + n.getName() + " " +
+		// n.getValue());
+
+		// dispatch(n.getName());
+		// writeWord(" ");
+		// dispatch(n.getValue());
+		// writeWord(" ");
 
 		// iterate(n.get(1));
 		// dispatch(n.getValue());
 		// writeWord(" ");
 	}
-	
-	public void visit(WtTemplateParameter n)
-	{
+
+	public void visit(WtTemplateParameter n) {
 		if (debug)
 			System.out.println(" Templateparameter ");
 	}
-	
-	public void visit(WtTagExtension n)
-	{
-		if	(debug)
+
+	public void visit(WtTagExtension n) {
+		if (debug)
 			System.out.println(" TagExtension " + n.getBody());
 	}
-	
-	public void visit(WtPageSwitch n)
-	{
+
+	public void visit(WtPageSwitch n) {
 		if (debug)
 			System.out.println(" Tagwtpageswitch " + n.getName());
 	}
-	
-	
-//	public void visit( MagicWord n)
-//	{
-//		System.out.println(" MagicWord ");
-//	}
+
+	// public void visit( MagicWord n)
+	// {
+	// System.out.println(" MagicWord ");
+	// }
 
 	// extra dazu
-//	public void visit (WtTable table){
-//		
-//		if (!table.getBody().isEmpty())
-//			iterate(table.getBody());
-//	}
-//	
-//	public void visit(WtTableCaption tableCaption)
-//	{
-//		iterate(tableCaption);
-//	}
-//
-//	public void visit(WtTableCell tableCell)
-//	{
-//		iterate(tableCell);
-//	}
-//		
-//	public void visit(WtTableHeader tableHeader)
-//	{
-//		iterate(tableHeader);
-//	}
-//	
-//	public void visit(WtTableRow tableRow)
-//	{
-//		iterate(tableRow);
-//	}
-//	
-//	public void visit(WtTableImplicitTableBody tableImplicitTablebody)
-//	{
-//		iterate(tableImplicitTablebody);
-//	}
-	
-	
-	
-	
-	
-	
+	// public void visit (WtTable table){
+	//
+	// if (!table.getBody().isEmpty())
+	// iterate(table.getBody());
+	// }
+	//
+	// public void visit(WtTableCaption tableCaption)
+	// {
+	// iterate(tableCaption);
+	// }
+	//
+	// public void visit(WtTableCell tableCell)
+	// {
+	// iterate(tableCell);
+	// }
+	//
+	// public void visit(WtTableHeader tableHeader)
+	// {
+	// iterate(tableHeader);
+	// }
+	//
+	// public void visit(WtTableRow tableRow)
+	// {
+	// iterate(tableRow);
+	// }
+	//
+	// public void visit(WtTableImplicitTableBody tableImplicitTablebody)
+	// {
+	// iterate(tableImplicitTablebody);
+	// }
+
 	// =========================================================================
-	
-	private void newline(int num)
-	{
-		if (pastBod)
-		{
+
+	private void newline(int num) {
+		if (pastBod) {
 			if (num > needNewlines)
 				needNewlines = num;
 		}
 	}
-	
-	private void wantSpace()
-	{
+
+	private void wantSpace() {
 		if (pastBod)
 			needSpace = true;
 	}
-	
-	private void finishLine()
-	{
+
+	private void finishLine() {
 		sb.append(line.toString());
 		line.setLength(0);
 	}
-	
-	private void writeNewlines(int num)
-	{
+
+	private void writeNewlines(int num) {
 		finishLine();
 		sb.append(StringUtils.strrep('\n', num));
 		needNewlines = 0;
 		needSpace = false;
 	}
-	
-	private void writeWord(String s)
-	{
+
+	private void writeWord(String s) {
+
+		if (csvOrReadable) {
+			if (bool_has_extra_information) {
+				bool_has_extra_information = false;
+				s = s + extra_information;
+			}
+		}
+
 		int length = s.length();
 		if (length == 0)
 			return;
-		
-		if (!noWrap && needNewlines <= 0)
-		{
+
+		if (!noWrap && needNewlines <= 0) {
 			if (needSpace)
 				length += 1;
-			
+
 			if (line.length() + length >= wrapCol && line.length() > 0)
 				writeNewlines(1);
 		}
-		
+
 		if (needSpace && needNewlines <= 0)
 			line.append(' ');
-		
+
 		if (needNewlines > 0)
 			writeNewlines(needNewlines);
-		
+
 		needSpace = false;
 		pastBod = true;
 		line.append(s);
 	}
-	
+
 	/**
-	 * s.trim(); eingefügt damit keine leerzeichen geschrieben werden, 
-	 * nur aktiv wenn csvOrReadable = true
+	 * s.trim(); eingefügt damit keine leerzeichen geschrieben werden, nur aktiv
+	 * wenn csvOrReadable = true
 	 * 
 	 * @param s
 	 */
-	private void write(String s)
-	{
-		
+	private void write(String s) {
+
 		if (s.isEmpty())
 			return;
-				
-		if (csvOrReadable)
-		{
+
+		if (csvOrReadable) {
 			writeWord(s.trim());
 			newline(1);
-		}
-		else
-		{
+		} else {
 			if (Character.isSpaceChar(s.charAt(0)))
-			wantSpace();
-			
+				wantSpace();
+
 			String[] words = ws.split(s);
-			for (int i = 0; i < words.length;)
-			{
+			for (int i = 0; i < words.length;) {
 				writeWord(words[i]);
 				if (++i < words.length)
 					wantSpace();
 			}
-			
+
 			if (Character.isSpaceChar(s.charAt(s.length() - 1)))
 				wantSpace();
 		}
 	}
-	
-	private void write(char[] cs)
-	{
+
+	private void write(char[] cs) {
 		write(String.valueOf(cs));
 	}
-	
-	private void write(char ch)
-	{
+
+	private void write(char ch) {
 		writeWord(String.valueOf(ch));
 	}
-	
-	private void write(int num)
-	{
+
+	private void write(int num) {
 		writeWord(String.valueOf(num));
 	}
-	
-	public void setCsvOrReadable(boolean boolCsvOrReadable)
-	{
+
+	public void setCsvOrReadable(boolean boolCsvOrReadable) {
 		this.csvOrReadable = boolCsvOrReadable;
 	}
 }

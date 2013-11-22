@@ -363,6 +363,9 @@ public class SupporterForBothTypes {
 			System.err.println("Supporter.getArticlesLimitOffset failure.");
 			e.printStackTrace();
 		}
+
+		System.out.println("Wiki_getArticlesLimitOffset: number of all articles is: " + list.size());
+
 		return list;
 	}
 

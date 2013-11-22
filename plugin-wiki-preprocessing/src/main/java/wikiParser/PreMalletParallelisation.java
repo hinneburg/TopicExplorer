@@ -1,6 +1,5 @@
 package wikiParser;
 
-import java.awt.Point;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -8,10 +7,10 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import org.sweble.wikitext.engine.CompilerException;
 //import org.sweble.wikitext.engine.CompiledPage;
 import org.sweble.wikitext.engine.PageId;
 import org.sweble.wikitext.engine.PageTitle;
@@ -19,7 +18,10 @@ import org.sweble.wikitext.engine.WtEngine;
 import org.sweble.wikitext.engine.config.WikiConfig;
 import org.sweble.wikitext.engine.nodes.EngCompiledPage;
 import org.sweble.wikitext.engine.utils.DefaultConfigEn;
+import org.sweble.wikitext.parser.parser.LinkTargetException;
 
+import tools.BracketPositions;
+import tools.PointInteger;
 import tools.WikiArticle;
 import tools.WikiIDTitlePair;
 import tools.WikiTextToCSVForeward;
@@ -92,7 +94,7 @@ public class PreMalletParallelisation extends Thread {
 
 			stmt = db.getConnection().prepareStatement("UPDATE text set old_text = ? WHERE old_id = ?");
 
-			if (prop.getProperty("Wiki_debug").equalsIgnoreCase("true")) {
+			if (prop.getProperty("Wiki_debug").equalsIgnoreCase("1")) {
 				debug = true;
 			}
 
@@ -134,7 +136,7 @@ public class PreMalletParallelisation extends Thread {
 		// important, with this the correct coloring of links is guaranteed
 		if (wikitxt.contains("[[")) {
 			Integer tmp = wikitxt.length();
-			wikitxt = correctLinksWithoutExtraContent(wikitxt);
+			wikitxt = correctLinksWithoutPipes(wikitxt);
 
 			if (tmp != wikitxt.length())
 				needsSaving = true;
@@ -161,80 +163,116 @@ public class PreMalletParallelisation extends Thread {
 	 * 
 	 * preparation for coloring the links
 	 */
-	private String correctLinksWithoutExtraContent(String wikitxt) {
-		List<Point> list = getDoubleBracketsPositions(wikitxt, '[', ']');
+	// private String correctLinksWithoutExtraContent(String wikitxt) {
+	// // List<Point> list = getDoubleBracketsPositionsWithoutPipes(wikitxt,
+	// // '[', ']');
+	// List<Point> list = getDoubleBracketsPositionsWithoutPipes(wikitxt);
+	//
+	// for (Integer i = list.size() - 1; i >= 0; i--) {
+	//
+	// Integer x = list.get(i).x;
+	// Integer y = list.get(i).y;
+	//
+	// wikitxt = wikitxt.substring(0, x) + wikitxt.substring(x, y) + "|" +
+	// wikitxt.substring(x, y)
+	// + wikitxt.substring(y, wikitxt.length());
+	// }
+	// list = null;
+	// return wikitxt;
+	// }
+
+	private String correctLinksWithoutPipes(String wikitxt) {
+
+		// List<Point> list = getDoubleBracketsPositionsWithoutPipes(wikitxt);
+
+		BracketPositions bp = new BracketPositions(wikitxt);
+		List<PointInteger> list = bp.getSortedListOfAllBracketsWithoutPipes();
 
 		for (Integer i = list.size() - 1; i >= 0; i--) {
 
-			Integer x = list.get(i).x;
-			Integer y = list.get(i).y;
+			Integer x = list.get(i).getStartPoint();
+			Integer y = list.get(i).getEndPoint();
 
 			wikitxt = wikitxt.substring(0, x) + wikitxt.substring(x, y) + "|" + wikitxt.substring(x, y)
 					+ wikitxt.substring(y, wikitxt.length());
 		}
 		list = null;
+		bp = null;
+
 		return wikitxt;
 	}
 
-	private List<Point> getDoubleBracketsPositions(String wikiTxt, Character openBracket, Character closeBracket) {
-		List<Point> returnList = new ArrayList<Point>();
-		Boolean isLinkOpen = false;
-		Integer tmpPosition = 0;
-		Integer bracketsCounter = 0;
-
-		// Länge -1, wegen char at i + 1
-		for (Integer i = 0; i < wikiTxt.length() - 1; i++) {
-
-			if (wikiTxt.charAt(i) == openBracket && wikiTxt.charAt(i + 1) == openBracket) {
-				if (!isLinkOpen) {
-					isLinkOpen = true;
-					tmpPosition = i + 2;
-				}
-				bracketsCounter++;
-			}
-
-			if (isLinkOpen && bracketsCounter == 1) {
-				if (wikiTxt.charAt(i) == closeBracket && wikiTxt.charAt(i + 1) == closeBracket) {
-					// only adds a point, when there are no "|" or ":"
-					if (!wikiTxt.substring(tmpPosition, i).contains("|")
-							&& !wikiTxt.substring(tmpPosition, i).contains(":"))
-						returnList.add(new Point(tmpPosition, i));
-
-					// System.out.println(wikiTxt.substring(tmpPosition, i));
-					isLinkOpen = false;
-
-				}
-			} else if (isLinkOpen && bracketsCounter > 1) {
-				bracketsCounter--;
-			}
-
-			// if (!isLinkOpen)
-			// {
-			// if (wikiTxt.charAt(i) == openBracket && wikiTxt.charAt(i + 1) ==
-			// openBracket)
-			// {
-			// isLinkOpen = true;
-			// tmpPosition = i + 2;
-			// }
-			// }
-			// else if (isLinkOpen)
-			// {
-			// if (wikiTxt.charAt(i) == closeBracket && wikiTxt.charAt(i + 1) ==
-			// closeBracket)
-			// {
-			// // only adds a point, when there are no "|" or ":"
-			// if (!wikiTxt.substring(tmpPosition, i).contains("|") &&
-			// !wikiTxt.substring(tmpPosition, i).contains(":"))
-			// returnList.add(new Point(tmpPosition, i));
-			//
-			// // System.out.println(wikiTxt.substring(tmpPosition, i));
-			// isLinkOpen = false;
-			//
-			// }
-			// }
-		}
-		return returnList;
-	}
+	// // private List<Point> getDoubleBracketsPositionsWithoutPipes(String
+	// // wikiTxt, Character openBracket, Character closeBracket) {
+	// private List<Point> getDoubleBracketsPositionsWithoutPipes(String
+	// wikiTxt) {
+	//
+	// List<Point> returnList = new ArrayList<Point>();
+	//
+	// // Boolean has_pipe = false;
+	//
+	// char openBracket = '[';
+	// char closeBracket = ']';
+	//
+	// Boolean isLinkOpen = false;
+	// Integer tmpPosition = 0;
+	// Integer bracketsCounter = 0;
+	// //
+	// // Länge -1, wegen char at i + 1
+	// for (Integer i = 0; i < wikiTxt.length() - 1; i++) {
+	//
+	// if (wikiTxt.charAt(i) == openBracket && wikiTxt.charAt(i + 1) ==
+	// openBracket) {
+	// if (!isLinkOpen) {
+	// isLinkOpen = true;
+	// tmpPosition = i + 2;
+	// }
+	// bracketsCounter++;
+	// }
+	//
+	// if (isLinkOpen && bracketsCounter == 1) {
+	// if (wikiTxt.charAt(i) == closeBracket && wikiTxt.charAt(i + 1) ==
+	// closeBracket) {
+	// // only adds a point, when there are no "|" or ":"
+	// if (!wikiTxt.substring(tmpPosition, i).contains("|")
+	// && !wikiTxt.substring(tmpPosition, i).contains(":"))
+	// returnList.add(new Point(tmpPosition, i));
+	//
+	// // System.out.println(wikiTxt.substring(tmpPosition, i));
+	// isLinkOpen = false;
+	//
+	// }
+	// } else if (isLinkOpen && bracketsCounter > 1) {
+	// bracketsCounter--;
+	// }
+	//
+	// // if (!isLinkOpen)
+	// // {
+	// // if (wikiTxt.charAt(i) == openBracket && wikiTxt.charAt(i + 1) ==
+	// // openBracket)
+	// // {
+	// // isLinkOpen = true;
+	// // tmpPosition = i + 2;
+	// // }
+	// // }
+	// // else if (isLinkOpen)
+	// // {
+	// // if (wikiTxt.charAt(i) == closeBracket && wikiTxt.charAt(i + 1) ==
+	// // closeBracket)
+	// // {
+	// // // only adds a point, when there are no "|" or ":"
+	// // if (!wikiTxt.substring(tmpPosition, i).contains("|") &&
+	// // !wikiTxt.substring(tmpPosition, i).contains(":"))
+	// // returnList.add(new Point(tmpPosition, i));
+	// //
+	// // // System.out.println(wikiTxt.substring(tmpPosition, i));
+	// // isLinkOpen = false;
+	// //
+	// // }
+	// // }
+	// }
+	// return returnList;
+	// }
 
 	/**
 	 * 
@@ -356,8 +394,21 @@ public class PreMalletParallelisation extends Thread {
 			// double parsing, one for the Wikitext and one for text
 			return new WikiArticle(parse(wikiText, id_title, true), id_title.getOld_id(), wikiText,
 					id_title.getWikiTitle(), 1, parse(wikiText, id_title, false));
+		} catch (CompilerException e3) {
+
+			System.err.println("Failure getParsedWikiText compiler exception " + id_title.getWikiTitle() + " "
+					+ id_title.getOld_id());
+			return new WikiArticle("Failure in getParsedWikiArticle(): " + e3.getMessage(), id_title.getOld_id(), "",
+					id_title.getWikiTitle(), -4, "");
+		} catch (LinkTargetException e2) {
+
+			System.err.println("Failure getParsedWikiText linktarget exception" + id_title.getWikiTitle() + " "
+					+ id_title.getOld_id());
+			return new WikiArticle("Failure in getParsedWikiArticle(): " + e2.getMessage(), id_title.getOld_id(), "",
+					id_title.getWikiTitle(), -3, "");
 		} catch (Exception e) {
-			System.err.println("Failure getParsedWikiText " + id_title.getWikiTitle() + " " + id_title.getOld_id());
+			System.err.println("Failure getParsedWikiText exception " + id_title.getWikiTitle() + " "
+					+ id_title.getOld_id());
 
 			// if (debug){
 			// e.printStackTrace();
@@ -367,7 +418,8 @@ public class PreMalletParallelisation extends Thread {
 		}
 	}
 
-	private String parse(String wikiOrigText, WikiIDTitlePair id_title, boolean csvOrReadable) throws Exception {
+	private String parse(String wikiOrigText, WikiIDTitlePair id_title, boolean csvOrReadable)
+			throws CompilerException, LinkTargetException {
 		WikiConfig config = DefaultConfigEn.generate();
 
 		WtEngine engine = new WtEngine(config);
@@ -405,6 +457,11 @@ public class PreMalletParallelisation extends Thread {
 					// as failuretext
 					this.appendLogging(w.getWikiTitle() + " " + w.getOldID() + "\t\t\t failure_id <= 0 , "
 							+ w.getParsedWikiText());
+
+					System.err.println("wohl Postprocessing-Fehler aba weiter gehts. ");
+
+				} else if (w.getParsedWikiTextReadable().length() == 0) {
+					this.appendLogging(w.getWikiTitle() + " " + w.getOldID() + "\t\t\t readableText.length() is 0 ");
 				} else {
 					// temporäre Ausgabe, zur Veranschaulichung nur wenn ein
 					// Artikel geladen wird

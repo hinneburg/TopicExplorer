@@ -16,14 +16,11 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import tools.Stopwatch;
 import tools.WikiIDTitlePair;
 //import org.apache.log4j.Appender;
 //import org.apache.log4j.ConsoleAppender;
 //import org.apache.log4j.Logger;
-
-
-import tools.Stopwatch;
-import wikiParser.SupporterForBothTypes;
 
 public class PreMalletAction_EntryPointForParallelisation {
 
@@ -67,8 +64,7 @@ public class PreMalletAction_EntryPointForParallelisation {
 	 */
 	private void joinTheOutputsAndDeleteTempFilesInTempFolder() {
 
-		System.out
-				.println("joining the outputfiles and deleting the temp files");
+		System.out.println("joining the outputfiles and deleting the temp files");
 
 		try {
 			String outputFolder = prop.getProperty("Wiki_outputFolder");
@@ -76,37 +72,28 @@ public class PreMalletAction_EntryPointForParallelisation {
 			File tempFolder = new File(outputFolder + fileSeparator + "temp");
 			File[] fileList = tempFolder.listFiles();
 
-			File fileInputMallet = new File(outputFolder + fileSeparator
-					+ fileNameInputMallet);
-			File fileInputSQLParsed = new File(outputFolder + fileSeparator
-					+ fileNameInputSQLParsed);
-			File fileLogging = new File(outputFolder + fileSeparator
-					+ fileNameLogging);
+			File fileInputMallet = new File(outputFolder + fileSeparator + fileNameInputMallet);
+			File fileInputSQLParsed = new File(outputFolder + fileSeparator + fileNameInputSQLParsed);
+			File fileLogging = new File(outputFolder + fileSeparator + fileNameLogging);
 
-			this.mergeDataIntoOneFile(fileInputMallet, fileList,
-					"malletWikiText");
-			this.mergeDataIntoOneFile(fileInputSQLParsed, fileList,
-					"inputParsedText");
+			this.mergeDataIntoOneFile(fileInputMallet, fileList, "malletWikiText");
+			this.mergeDataIntoOneFile(fileInputSQLParsed, fileList, "inputParsedText");
 			this.mergeDataIntoOneFile(fileLogging, fileList, "logging");
 
-			if (prop.getProperty("Wiki_deleteTempFolder").equalsIgnoreCase(
-					"true")) {
+			if (prop.getProperty("Wiki_deleteTempFolder").equalsIgnoreCase("true")) {
 				deleteTempOutputFiles(tempFolder);
 			}
 
 		} catch (Exception e) {
-			System.err
-					.println("Failure in joinTheOutputsAndDeleteTempFilesInTempFolder.");
+			System.err.println("Failure in joinTheOutputsAndDeleteTempFilesInTempFolder.");
 			e.printStackTrace();
 			System.exit(0);
 		}
 
 	}
 
-	private void mergeDataIntoOneFile(File fileName, File[] fileArray,
-			String filterName) throws Exception {
-		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(
-				new FileOutputStream(fileName), "UTF-8"));
+	private void mergeDataIntoOneFile(File fileName, File[] fileArray, String filterName) throws Exception {
+		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileName), "UTF-8"));
 		BufferedReader br;
 
 		if (filterName.contains("mallet")) {
@@ -115,8 +102,7 @@ public class PreMalletAction_EntryPointForParallelisation {
 
 		for (int i = 0; i < fileArray.length; i++) {
 			if (fileArray[i].getName().contains(filterName)) {
-				br = new BufferedReader(new InputStreamReader(
-						new FileInputStream(fileArray[i]), "UTF-8"));
+				br = new BufferedReader(new InputStreamReader(new FileInputStream(fileArray[i]), "UTF-8"));
 
 				String line = br.readLine();
 				while (line != null) {
@@ -149,8 +135,7 @@ public class PreMalletAction_EntryPointForParallelisation {
 	/**
 	 * Testfunktion für Ausgabe
 	 */
-	private void startOnlyOneParsing(Integer old_id)
-			throws InterruptedException, Exception {
+	private void startOnlyOneParsing(Integer old_id) throws InterruptedException, Exception {
 		System.out.println("Start parsing one article.");
 
 		SupporterForBothTypes t = new SupporterForBothTypes(prop);
@@ -168,22 +153,19 @@ public class PreMalletAction_EntryPointForParallelisation {
 		h.join();
 	}
 
-	private void startWithOffsetNew(Integer limitOrAll,
-			Integer numberOfAvailableProcessors, Integer offset,
+	private void startWithOffsetNew(Integer limitOrAll, Integer numberOfAvailableProcessors, Integer offset,
 			Integer multiplicator) throws InterruptedException {
 		ArrayList<WikiIDTitlePair> newList;
 
 		// get all articles from database
 		SupporterForBothTypes s = new SupporterForBothTypes(prop);
-		List<WikiIDTitlePair> inputList = s.getArticlesLimitOffset(limitOrAll,
-				offset);
+		List<WikiIDTitlePair> inputList = s.getArticlesLimitOffset(limitOrAll, offset);
 		s.closeDBConnection();
 
 		ThreadGroup group = new ThreadGroup("wikiParsing");
 
 		// split the whole array into parts
-		ArrayList[] splittedWikiIDTitleArray = s.splitIntoArray(
-				numberOfAvailableProcessors * multiplicator, inputList);
+		ArrayList[] splittedWikiIDTitleArray = s.splitIntoArray(numberOfAvailableProcessors * multiplicator, inputList);
 		inputList = null;
 
 		// declare threadpool
@@ -192,16 +174,15 @@ public class PreMalletAction_EntryPointForParallelisation {
 		Integer processorMax = numberOfAvailableProcessors;
 		long keepAliveTime = 1;
 		final LinkedBlockingQueue workQueue = new LinkedBlockingQueue();
-		ThreadPoolExecutor poolExecutor = new ThreadPoolExecutor(processorMin,
-				processorMax, keepAliveTime, TimeUnit.SECONDS, workQueue);
+		ThreadPoolExecutor poolExecutor = new ThreadPoolExecutor(processorMin, processorMax, keepAliveTime,
+				TimeUnit.SECONDS, workQueue);
 		poolExecutor.setCorePoolSize(numberOfAvailableProcessors);
 
 		// start the threads
 		for (Integer i = 0; i < splittedWikiIDTitleArray.length; i++) {
-			newList = (ArrayList<WikiIDTitlePair>) splittedWikiIDTitleArray[i]
-					.clone();
-			poolExecutor.execute(new PreMalletParallelisation(newList, prop, group, "threadpart-"
-					+ new Integer(i + 1) + "of" + listLenght));
+			newList = (ArrayList<WikiIDTitlePair>) splittedWikiIDTitleArray[i].clone();
+			poolExecutor.execute(new PreMalletParallelisation(newList, prop, group, "threadpart-" + new Integer(i + 1)
+					+ "of" + listLenght));
 			newList = null;
 		}
 		splittedWikiIDTitleArray = null;
@@ -228,18 +209,17 @@ public class PreMalletAction_EntryPointForParallelisation {
 			// read properties
 
 			try {
-				numberOfAvailableProcesssors = Integer.valueOf((String) prop
-						.get("Wiki_numberOfParallelThreads"));
+				numberOfAvailableProcesssors = Integer.valueOf((String) prop.get("Wiki_numberOfParallelThreads"));
 			} catch (NumberFormatException e2) {
 				numberOfAvailableProcesssors = 1;
 			}
 
 			try {
 				limit = Integer.valueOf(prop.getProperty("Wiki_limit"));
-				System.out.println("Limit is " + limit);
+				// System.out.println("Limit is " + limit);
 			} catch (Exception e1) {
 
-				limit = 0; // bedeutet alles
+				limit = 0; // bedeutet alles, kein Fehler
 			}
 			try {
 				offset = Integer.valueOf(prop.getProperty("Wiki_offset"));
@@ -248,8 +228,7 @@ public class PreMalletAction_EntryPointForParallelisation {
 			}
 
 			try {
-				multiplicator = Integer.valueOf(prop
-						.getProperty("Wiki_multiplicatorForNumberOfThreads"));
+				multiplicator = Integer.valueOf(prop.getProperty("Wiki_multiplicatorForNumberOfThreads"));
 
 			} catch (NumberFormatException e) {
 				multiplicator = 2;
@@ -267,8 +246,7 @@ public class PreMalletAction_EntryPointForParallelisation {
 			if (old_id > 0) {
 				p.startOnlyOneParsing(old_id);
 			} else {
-				p.startWithOffsetNew(limit, numberOfAvailableProcesssors,
-						offset, multiplicator);
+				p.startWithOffsetNew(limit, numberOfAvailableProcesssors, offset, multiplicator);
 			}
 
 			p.joinTheOutputsAndDeleteTempFilesInTempFolder();
@@ -281,46 +259,41 @@ public class PreMalletAction_EntryPointForParallelisation {
 			e.printStackTrace();
 		}
 	}
-	
-	
-	private static Properties forLocalExcetution() throws Exception{
-		
-		
-		Properties prop ;
+
+	private static Properties forLocalExcetution() throws Exception {
+
+		Properties prop;
 		String fileName = "src/test/resources/localwikiconfig.ini";
 
 		File f = new File(fileName);
-		if (f.exists())
-		{
+		if (f.exists()) {
 			prop = new Properties();
 			// prop.load(this.getClass().getResourceAsStream("/config.ini"));
 
 			FileInputStream fis = new FileInputStream(fileName);
 
 			prop.load(fis);
-						
+
 			return prop;
-			
-		}
-		else
-		{
+
+		} else {
 			System.err.print(f.getAbsolutePath() + "\n");
 			throw new FileNotFoundException(f + "not found.");
 		}
-		
+
 	}
-	
-	
-	public static void main(String[] args){
-		
+
+	public static void main(String[] args) {
+
 		try {
-			PreMalletAction_EntryPointForParallelisation p = new PreMalletAction_EntryPointForParallelisation(forLocalExcetution());
+			PreMalletAction_EntryPointForParallelisation p = new PreMalletAction_EntryPointForParallelisation(
+					forLocalExcetution());
 			p.start();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 	}
-	
+
 }

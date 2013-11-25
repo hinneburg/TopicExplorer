@@ -1,6 +1,7 @@
 package tools;
 
 import java.io.BufferedWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -47,6 +48,8 @@ public class WikiTextToCSVForeward {
 	private String extraNextToLeftElement = "";
 
 	private HashMap<Integer, Integer> sectionCaptionPosition = new HashMap<Integer, Integer>();
+
+	private Boolean boolBreak = false;
 
 	public WikiTextToCSVForeward(WikiArticle w) {
 
@@ -147,8 +150,6 @@ public class WikiTextToCSVForeward {
 
 	private void tokenize() throws Exception {
 
-		// posBracketsBox = getBracketedPositionsBoxBrackets();
-
 		getBracketsPositionAndPutIntoNavigableSet();
 
 		Scanner scParsed = new Scanner(wikiParsedText); // liegt zeilenweise vor
@@ -166,7 +167,7 @@ public class WikiTextToCSVForeward {
 			if (tmpLine.trim().length() > 0) {
 				// find the line in the original wiki-text
 
-				tmpLineWithoutExtraInfo = getNormalText(tmpLine);
+				tmpLineWithoutExtraInfo = getNormalTextIfExtraInfosAddedToTheEnd(tmpLine);
 				bool_dont_shift_position = getBoolShift(tmpLine);
 
 				// HashMap <Integer,Integer> pictureList = new HashMap<Integer,
@@ -175,28 +176,23 @@ public class WikiTextToCSVForeward {
 				// ArrayList<PointInteger>();
 				// pictureList2.add(new PointInteger(startPoint, endPoint));
 
-				pos = wikiOrigText.substring(savedPosition, wikiOrigText.length() - 1).indexOf(tmpLineWithoutExtraInfo);
+				pos = wikiOrigText.substring(savedPosition).indexOf(tmpLineWithoutExtraInfo);
 
 				if (pos > -1) {
 
 					// System.out.println(pos + " " + tmpLine + " old " );
 
 					try {
-						// // // pos =
-						// // //
-						// checkIfPositionOfWordIsWithinBoxBrackets(pos+savedPosition,
-						// // // tmpLine);
-						// //
 
-						pos = checkIfFoundedPositionIsWithinABracketNaviagbleSet(pos + savedPosition,
-								tmpLineWithoutExtraInfo);
+						// pos =
+						// checkIfFoundedPositionIsWithinABracketNaviagbleSet(pos
+						// + savedPosition,
+						// tmpLineWithoutExtraInfo);
 
 						while (true) {
 
-							// pos =
-							// checkIfFoundedPositionIsWithinABracketNaviagbleSet(pos
-							// + savedPosition,
-							// tmpLineWithoutExtraInfo);
+							pos = checkIfFoundedPositionIsWithinABracketNaviagbleSet(pos + savedPosition,
+									tmpLineWithoutExtraInfo);
 
 							// System.out.println("schleife " + pos + "  " +
 							// extraNextToLeftElement + " "
@@ -212,8 +208,16 @@ public class WikiTextToCSVForeward {
 									shifting = extraNextToLeftElement.length();
 								}
 
-								tmpExtraInfoTextForControll = wikiOrigText.substring(pos - shifting, pos
-										+ tmpLineWithoutExtraInfo.length());
+								if (wikiOrigText.length() >= (pos + tmpLineWithoutExtraInfo.length() + extraNextToLeftElement
+										.length())) {
+									tmpExtraInfoTextForControll = wikiOrigText.substring(pos - shifting, pos
+											+ tmpLineWithoutExtraInfo.length() + extraNextToLeftElement.length());
+
+								} else {
+
+									tmpExtraInfoTextForControll = wikiOrigText.substring(pos - shifting, pos
+											+ tmpLineWithoutExtraInfo.length());
+								}
 
 								if (tmpExtraInfoTextForControll.startsWith(extraNextToLeftElement)) { // für
 																										// den
@@ -224,17 +228,24 @@ public class WikiTextToCSVForeward {
 																										// dazwischen
 																										// sind
 									bool_found = true;
+								} else if (tmpExtraInfoTextForControll.endsWith(extraNextToLeftElement)) {
+									bool_found = true;
 								}
+
 							}
 
 							if ((pos > -1) && (bool_found == true)) {
 								break;
 							} else if (pos == -1) {
-								throw new Exception("failure in checkIfPositionOfWordIsWithinBoxBrackets");
+
+								bwlogger.append("test:failling in tokenize " + wikiTitle + " " + old_id + "\n");
+
+								throw new Exception(
+										"failure in checkIfPositionOfWordIsWithinBoxBrackets, tokenize() , pos not found , "
+												+ wikiTitle + " " + old_id + " ");
 							}
 
 							Integer posTmpSave = pos + tmpLineWithoutExtraInfo.length();
-
 							pos = wikiOrigText.substring(posTmpSave).indexOf(tmpLineWithoutExtraInfo);
 							if (pos > -1) {
 								pos = pos + posTmpSave;
@@ -250,8 +261,14 @@ public class WikiTextToCSVForeward {
 
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
-						System.err.println("fehler in checkIfPositionOfWordIsWithinBoxBrackets " + this.wikiTitle + " "
-								+ e.getMessage());
+						bwlogger.append("fehler in tokenize " + this.wikiTitle + " " + e.getMessage());
+						System.err.println("fehler in tokenize " + this.wikiTitle + " " + e.getMessage());
+
+						if (boolBreak) {
+							e.printStackTrace();
+							System.exit(25);
+						}
+
 						// e.printStackTrace();
 					}
 
@@ -263,7 +280,7 @@ public class WikiTextToCSVForeward {
 
 					savedPosition = splitForOutputAndReturnNewPosition(tmpLineWithoutExtraInfo, pos);
 
-					// for section position
+					// for section-caption position? TODO
 					if (tmpLine.endsWith(ExtraInformations.extraSectionCaptionAppend)) {
 						sectionCaptionPosition.put(pos, savedPosition);
 					}
@@ -282,7 +299,7 @@ public class WikiTextToCSVForeward {
 		scParsed = null;
 	}
 
-	private String getNormalText(String tmpLine) {
+	private String getNormalTextIfExtraInfosAddedToTheEnd(String tmpLine) {
 
 		String output;
 
@@ -422,13 +439,28 @@ public class WikiTextToCSVForeward {
 	//
 	// }
 
-	private Integer checkIfFoundedPositionIsWithinABracketNaviagbleSet(Integer pos, String tmpLine) throws Exception { // für
-																														// Testzwecke
+	private Integer checkIfFoundedPositionIsWithinABracketNaviagbleSet(Integer pos, String tmpLine) {
+		return checkIfFoundedPositionIsWithinABracketNaviagbleSet(pos, tmpLine, 0);
+	}
+
+	/**
+	 * 
+	 * 
+	 * @param counter
+	 *            um Endlosschleife zu vermeiden, 10 Versuche und dann Abbruch,
+	 *            passiert wenn dann nur bei einzelnen Zeichen
+	 * @return
+	 */
+	private Integer checkIfFoundedPositionIsWithinABracketNaviagbleSet(Integer pos, String tmpLine, Integer counter) {
 
 		Integer x;
 		Integer fx;
 		Boolean bool_within_brackets = false;
 		Integer newPos = -1;
+
+		if (counter >= 10) {
+			return -1;
+		}
 
 		x = bracketsNavigableSet.floor(pos);
 		fx = bracketPositionsHashMap.get(x);
@@ -444,18 +476,25 @@ public class WikiTextToCSVForeward {
 		if (bool_within_brackets) {
 
 			newPos = wikiOrigText.substring(fx).indexOf(tmpLine);
-			// newPos = wikiOrigText.substring(pos + 1,
-			// wikiOrigText.length()).indexOf(tmpLine);
 
 			// rekursion
-			if (newPos != -1) {
-				newPos = checkIfFoundedPositionIsWithinABracketNaviagbleSet(newPos + pos, tmpLine);
-			} else {
-				return pos;
+			// if (newPos == 0 ) {
+			// if (tmpLine.length()>1){
+			// newPos =
+			// checkIfFoundedPositionIsWithinABracketNaviagbleSet(newPos + fx,
+			// tmpLine, counter+1);
+			// }else {
+			// newPos = -1;
+			// }
+			// } else
+			if (newPos > -1) {
+				newPos = checkIfFoundedPositionIsWithinABracketNaviagbleSet(newPos + fx, tmpLine, counter + 1);
+				// } else {
+				// return pos;
 			}
 
-		} else {
-			return pos;
+			// } else {
+			// return pos;
 		}
 
 		if (newPos != -1) {
@@ -467,14 +506,25 @@ public class WikiTextToCSVForeward {
 
 	private void getBracketsPositionAndPutIntoNavigableSet() {
 
-		bracketPositionsHashMap = new HashMap<Integer, Integer>();
-		bracketsNavigableSet = new TreeSet<Integer>();
+		try {
+			bracketPositionsHashMap = new HashMap<Integer, Integer>();
+			bracketsNavigableSet = new TreeSet<Integer>();
 
-		BracketPositions bp = new BracketPositions(wikiOrigText);
-		bracketPositionsHashMap = bp.getBracketPositionWhereTheLinkTargetIsAsHashMap();
+			BracketPositions bp = new BracketPositions(wikiOrigText);
+			bracketPositionsHashMap = bp.getBracketPositionWhereTheLinkTargetIsAsHashMap();
 
-		for (Integer e : bracketPositionsHashMap.keySet()) {
-			bracketsNavigableSet.add(e);
+			for (Integer e : bracketPositionsHashMap.keySet()) {
+				bracketsNavigableSet.add(e);
+			}
+		} catch (Exception e) {
+
+			try {
+				bwlogger.append("getBracketsPositionAndPutIntoNavigableSet: failure " + e.getMessage() + ", "
+						+ e.getCause() + " " + e.getClass() + "\n");
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+
 		}
 	}
 
@@ -666,9 +716,6 @@ public class WikiTextToCSVForeward {
 
 		tokenize();
 
-		// //old
-		// tokenizeReadableTextWithFixedTokenSequence(wikiParsedTextReadable,
-		// tokensParsedText);
 		tokenizeReadableText(wikiParsedTextReadable);
 
 		StringBuilder sb = new StringBuilder();
@@ -689,6 +736,12 @@ public class WikiTextToCSVForeward {
 		Integer seqReadableForSave = -1;
 
 		Boolean boolTokenEquals = false;
+
+		String oldReadable;
+		Integer oldSeqReadable;
+		// Vorbereitung, fuer ungleiches parsen, also wenn links nicht im
+		// normalen Text
+		// geladen werden
 
 		// init the values
 		if (itTokenReadable.hasNext() && itSeqReadableNew.hasNext()) {

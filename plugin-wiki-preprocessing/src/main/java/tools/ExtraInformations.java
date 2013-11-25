@@ -9,6 +9,10 @@ public class ExtraInformations {
 	public static final String extraPicure2Append = "_isPicture2IsPicture2_";
 	public static final String extraPicure3Append = "_isPicture3IsPicture3_";
 
+	public static final String extraOptionalForReadableAppend = "_isOptionalAndDoesNotGetAnyConsideration_"; // within
+																												// readable
+																												// tokenisation
+
 	public static final String extraSectionCaptionAppend = "_isSectionCaptionisSectionCaption_";
 
 	public static final String extraFileNameGerman = "Datei:";

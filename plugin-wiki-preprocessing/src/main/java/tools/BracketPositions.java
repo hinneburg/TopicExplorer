@@ -24,10 +24,6 @@ public class BracketPositions {
 		return bracketPositionsHashMapLinkTargetInclPipePosition;
 	}
 
-	public TreeMap<Integer, Integer> getOnlyBracketsWithoutPipes() {
-		return bracketPositionsLinksWithoutAnyPipes;
-	}
-
 	private void putBracketPositionsIntoHashMaps() {
 		Integer posBracketStarts = 0;
 		Boolean boolBracketOpen = false;
@@ -47,8 +43,6 @@ public class BracketPositions {
 
 		// length -1, because char at i + 1
 		for (Integer i = 0; i < wikiOrigText.length() - 1; i++) {
-
-			;
 
 			if (wikiOrigText.charAt(i) == '[' && wikiOrigText.charAt(i + 1) == '[') {
 				if (!boolBracketOpen) {

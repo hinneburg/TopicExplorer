@@ -94,7 +94,7 @@ public class PreMalletParallelisation extends Thread {
 
 			stmt = db.getConnection().prepareStatement("UPDATE text set old_text = ? WHERE old_id = ?");
 
-			if (prop.getProperty("Wiki_debug").equalsIgnoreCase("1")) {
+			if (prop.getProperty("Wiki_debug").equalsIgnoreCase("true")) {
 				debug = true;
 			}
 
@@ -116,8 +116,8 @@ public class PreMalletParallelisation extends Thread {
 	private String getWikiTextWithRevID(WikiIDTitlePair id_title) throws SQLException, Exception {
 
 		SupporterForBothTypes t = new SupporterForBothTypes(db);
-
 		String wikitxt = t.getWikiTextOnlyWithID(id_title.getOld_id());
+		t = null;
 		wikitxt = doArticleCorrection(wikitxt, id_title);
 
 		return wikitxt;
@@ -135,10 +135,10 @@ public class PreMalletParallelisation extends Thread {
 		// remove link
 		// important, with this the correct coloring of links is guaranteed
 		if (wikitxt.contains("[[")) {
-			Integer tmp = wikitxt.length();
+			Integer tmpLength = wikitxt.length();
 			wikitxt = correctLinksWithoutPipes(wikitxt);
 
-			if (tmp != wikitxt.length())
+			if (tmpLength != wikitxt.length())
 				needsSaving = true;
 		}
 
@@ -150,7 +150,7 @@ public class PreMalletParallelisation extends Thread {
 				bwLogger.append(id_title.getWikiTitle() + " updated.\n");
 			} catch (IOException e) {
 				System.err.println("Cannot write in logger.");
-				e.printStackTrace();
+				// e.printStackTrace();
 			}
 
 			updateReplacedTextInDatabase(wikitxt, id_title.getOld_id());
@@ -298,11 +298,12 @@ public class PreMalletParallelisation extends Thread {
 
 		} catch (SQLException e) {
 			try {
-				bwLogger.append("failure update updateReplacedTextInDatabase: " + e.getMessage());
+				bwLogger.append("fail update updateReplacedTextInDatabase: id = " + old_id + ", " + e.getMessage()
+						+ "\n");
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
-			System.err.println("updateReplacedTextInDatabase: ");
+			System.err.println("updateReplacedTextInDatabase: " + e.getMessage());
 			e.printStackTrace();
 		}
 
@@ -450,6 +451,15 @@ public class PreMalletParallelisation extends Thread {
 			db.executeUpdateQuery("START TRANSACTION;");
 
 			for (int i = 0; i < articleNames.size(); i++) {
+
+				// testausgabe 
+				if (debug) {
+					bwLogger.append(articleNames.get(i).getWikiTitle() + " , "
+							+ new Integer(articleNames.size() - i - 1) + " left \n");
+					System.out.println(articleNames.get(i).getWikiTitle() + " , "
+							+ new Integer(articleNames.size() - i - 1) + " left ");
+				}
+
 				w = getParsedWikiArticle(articleNames.get(i));
 
 				// fürs logging
@@ -477,12 +487,17 @@ public class PreMalletParallelisation extends Thread {
 					}
 
 					try {
-						// malletfile with position in wikitext
-						textTocsv = new WikiTextToCSVForeward(w, bwLogger);
-						// textTocsv = new WikiTextToCsvbackward(w, bwLogger);
 
+						// //// malletfile with position in wikitext
+						// // textTocsv = new WikiTextToCsvbackward(w,
+						// bwLogger);
+						textTocsv = new WikiTextToCSVForeward(w, bwLogger);
 						appendToBW(textTocsv.getCSV());
 						textTocsv = null;
+
+						// appendToBW(w.getOldID() + " " + w.getWikiTitle() +
+						// " "
+						// + new Integer(articleNames.size() - i - 1) + "\n");
 
 						// saving the readable text for import into the database
 						// for displaying the normalized text in the UI
@@ -508,7 +523,10 @@ public class PreMalletParallelisation extends Thread {
 					}
 				}
 
+				// System.err.println(w.getWikiTitle() + "  " + w.getOldID());
 				w = null;
+				bwLogger.flush();
+
 			}
 
 			bwCSVOrigText.flush();
@@ -521,6 +539,7 @@ public class PreMalletParallelisation extends Thread {
 			bwLogger.close();
 
 			stmt.close();
+
 			db.executeUpdateQuery("COMMIT;");
 
 		} catch (Exception e) {
@@ -528,7 +547,7 @@ public class PreMalletParallelisation extends Thread {
 
 			// for finishing the files
 			try {
-				bwLogger.append("Failure in run: " + this.getName() + " " + e.getMessage() + e.getStackTrace());
+				bwLogger.append("Failure in run: " + this.getName() + " " + e.getMessage() + e.getStackTrace() + " \n");
 
 				bwInputSQLParsedText.flush();
 				bwInputSQLParsedText.close();

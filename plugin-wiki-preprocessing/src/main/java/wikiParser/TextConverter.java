@@ -229,17 +229,15 @@ public class TextConverter extends AstVisitor<WtNode> {
 	public void visit(WtText text) {
 
 		String txt = text.getContent();
+		String txt_orig = txt;
 
 		if (csvOrReadable) {
 			txt = txt.trim();
 
-			if (txt.length() == 0)
+			if (txt.length() == 0) {
+				resetSettingsBeforeReturn();
 				return;
-
-			if (txt.equals("{{") || txt.equals("[[") || txt.equals("]]") || txt.equals("]") || txt.equals("|")
-					|| txt.equals("[") || txt.equals(".") || txt.equals(":") || txt.equals(",") || txt.equals(";")
-					|| txt.equals("(") || txt.equals(")"))
-				return;
+			}
 
 			if (txt.startsWith(ExtraInformations.extraFileNameGerman)
 					|| txt.startsWith(ExtraInformations.extraFileNameEnglish)
@@ -262,7 +260,7 @@ public class TextConverter extends AstVisitor<WtNode> {
 		//
 		// }
 
-		write(txt);
+		write(txt_orig);
 	}
 
 	public void visit(WtWhitespace w) {
@@ -274,12 +272,18 @@ public class TextConverter extends AstVisitor<WtNode> {
 
 		bool_has_extra_information = true;
 		extra_information = ExtraInformations.extraBoldAppend;
+		if (b.size() > 1) {
+			resetSettingsBeforeReturn(); // only reset,
+		}
 		iterate(b);
 	}
 
 	public void visit(WtItalics i) {
 		bool_has_extra_information = true;
 		extra_information = ExtraInformations.extraCursiveAppend;
+		if (i.size() > 1) {
+			resetSettingsBeforeReturn(); // only reset,
+		}
 		iterate(i);
 	}
 
@@ -296,25 +300,32 @@ public class TextConverter extends AstVisitor<WtNode> {
 	 * übersetzt xml , z.B. &alpha in alphazeichen
 	 */
 	public void visit(WtXmlEntityRef er) {
-		// TODO nochmal überdenken ob wirklich auslassen, wirft aber immer
-		// Fehler weil die zeichen nicht so bleiben wie sie im originaltext
-		// waren
-		// //System.out.println(er.getName()+ " " +
-		// er.getLocation().toString());
+		// // TODO nochmal überdenken ob wirklich auslassen, wirft aber immer
+		// // Fehler weil die zeichen nicht so bleiben wie sie im originaltext
+		// // waren
+		// // //System.out.println(er.getName()+ " " +
+		// // er.getLocation().toString());
+		//
+		// // if (!csvOrReadable) {
 
-		if (!csvOrReadable) {
-			String ch = er.getResolved();
-			if (ch == null) {
-				write('&');
-				write(er.getName());
-				write(';');
-			} else {
-				write(ch);
-			}
-		}
-		if (debug) {
-			System.err.println("WtXmlEntityRef " + er.getName());
-		}
+		// String ch = er.getResolved();
+		// if (ch == null) {
+		// write('&');
+		// write(er.getName());
+		// write(';');
+		// } else {
+		// // // einzelnes geschütztes leerzeichen stört, wenn es innerhalb von
+		// // // bold-Element an führender Stelle eingesetz wird
+		// if (!ch.trim().equalsIgnoreCase("\u00A0")) {
+		// write(ch);
+		// } else {
+		// resetSettingsBeforeReturn();
+		// }
+		// }
+		// // // }
+		// if (debug) {
+		// System.err.println("WtXmlEntityRef " + er.getName());
+		// }
 	}
 
 	public void visit(WtUrl wtUrl) {
@@ -597,16 +608,29 @@ public class TextConverter extends AstVisitor<WtNode> {
 
 	private void writeWord(String s) {
 
+		int length = s.length();
+		if (length == 0) {
+			resetSettingsBeforeReturn();
+			return;
+		}
+
+		// einzelnes geschütztes Leerzeichen
+		if (s.trim().equalsIgnoreCase("\u00A0")) {
+			resetSettingsBeforeReturn();
+			return;
+		}
+
+		if (!getIsTermAllowed(s)) {
+			resetSettingsBeforeReturn();
+			return;
+		}
+
 		if (csvOrReadable) {
 			if (bool_has_extra_information) {
 				bool_has_extra_information = false;
 				s = s + extra_information;
 			}
 		}
-
-		int length = s.length();
-		if (length == 0)
-			return;
 
 		if (!noWrap && needNewlines <= 0) {
 			if (needSpace)
@@ -627,6 +651,13 @@ public class TextConverter extends AstVisitor<WtNode> {
 		line.append(s);
 	}
 
+	private void resetSettingsBeforeReturn() {
+		if (bool_has_extra_information) {
+			bool_has_extra_information = false;
+			extra_information = "";
+		}
+	}
+
 	/**
 	 * s.trim(); eingefügt damit keine leerzeichen geschrieben werden, nur aktiv
 	 * wenn csvOrReadable = true
@@ -635,12 +666,17 @@ public class TextConverter extends AstVisitor<WtNode> {
 	 */
 	private void write(String s) {
 
-		if (s.isEmpty())
+		if (s.isEmpty()) {
+			resetSettingsBeforeReturn();
 			return;
+		}
 
 		if (csvOrReadable) {
-			writeWord(s.trim());
-			newline(1);
+			// writeWord(s.trim());
+			if (s.trim().length() > 0) {
+				writeWord(s);
+				newline(1);
+			}
 		} else {
 			if (Character.isSpaceChar(s.charAt(0)))
 				wantSpace();
@@ -667,6 +703,17 @@ public class TextConverter extends AstVisitor<WtNode> {
 
 	private void write(int num) {
 		writeWord(String.valueOf(num));
+	}
+
+	private boolean getIsTermAllowed(String txt) {
+		if (txt.equals("{{") || txt.equals("[[") || txt.equals("]]") || txt.equals("]") || txt.equals("|")
+				|| txt.equals("[") || txt.equals(".") || txt.equals(":") || txt.equals(",") || txt.equals(";")
+				|| txt.equals("(") || txt.equals(")") || txt.equals("|") || txt.equals("||") || txt.equals("=")
+				|| txt.equals("==") || txt.equals("|-")) {
+			return false;
+		} else {
+			return true;
+		}
 	}
 
 	public void setCsvOrReadable(boolean boolCsvOrReadable) {

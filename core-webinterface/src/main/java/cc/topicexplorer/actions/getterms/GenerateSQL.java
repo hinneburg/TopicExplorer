@@ -1,7 +1,5 @@
 package cc.topicexplorer.actions.getterms;
 
-import java.sql.SQLException;
-
 import org.apache.commons.chain.Context;
 
 import cc.topicexplorer.chain.CommunicationContext;
@@ -15,12 +13,7 @@ public class GenerateSQL extends TableSelectCommand {
 
 		AllTerms allTermsAction = (AllTerms) communicationContext.get("ALL_TERMS_ACTION");
 
-		try {
-			allTermsAction.readAllTermsAndGenerateJson();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		allTermsAction.readAllTermsAndGenerateJson();
 	}
 
 	@Override

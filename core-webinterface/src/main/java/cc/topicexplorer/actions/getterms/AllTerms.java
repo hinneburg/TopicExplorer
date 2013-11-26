@@ -8,6 +8,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.sf.json.JSONObject;
+
+import org.apache.log4j.Logger;
+
 import cc.topicexplorer.database.Database;
 import cc.topicexplorer.database.SelectMap;
 
@@ -48,23 +51,40 @@ public final class AllTerms {
 		this.databaseQuery.select.add(tableColumn + " as " + tableColumnName);
 	}
 
-	public void readAllTermsAndGenerateJson() throws SQLException {
-		List<String> columnNames = new ArrayList<String>();
+	public void readAllTermsAndGenerateJson() {
+		List<String> columnNamesWithoutId = new ArrayList<String>();
 		JSONObject rowsWithIndex = new JSONObject();
 		JSONObject row = new JSONObject();
+		String term_id_columnName = "TERM_ID";
+		int term_id;
+		ResultSet resultSet;
 
-		ResultSet resultSet = database.executeQuery(this.databaseQuery.getSQLString());
+		try {
+			resultSet = database.executeQuery(this.databaseQuery.getSQLString());
 
-		for (int i = 0; i < resultSet.getMetaData().getColumnCount(); i++) {
-			columnNames.add(resultSet.getMetaData().getColumnName(i + 1));
-		}
-		while (resultSet.next()) {
-			for (String columnName : columnNames) {
-				row.put(columnName, resultSet.getObject(columnName));
+			String columnNameTmp;
+			for (int i = 0; i < resultSet.getMetaData().getColumnCount(); i++) {
+				columnNameTmp = resultSet.getMetaData().getColumnName(i + 1);
+				if (!columnNameTmp.equals(term_id_columnName)) {
+					columnNamesWithoutId.add(columnNameTmp);
+				}
 			}
-			rowsWithIndex.put(resultSet.getObject("TERM_ID"), row);
-			row.clear();
+
+			while (resultSet.next()) {
+				term_id = (Integer) resultSet.getObject(term_id_columnName);
+				row.put(term_id_columnName, term_id);
+				for (String columnName : columnNamesWithoutId) {
+					row.put(columnName, resultSet.getObject(columnName));
+				}
+				rowsWithIndex.put(term_id, row);
+				row.clear();
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			Logger.getRootLogger().info(e);
 		}
+
 		this.outWriter.print(rowsWithIndex);
 	}
 }

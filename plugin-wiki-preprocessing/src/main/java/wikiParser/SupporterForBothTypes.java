@@ -23,6 +23,10 @@ public class SupporterForBothTypes {
 
 	private boolean debug = false;
 
+	public SupporterForBothTypes() {
+
+	}
+
 	public SupporterForBothTypes(Properties prop) {
 		this.prop = prop;
 		try {

@@ -56,6 +56,12 @@ public class PreMalletAction_EntryPointForParallelisation {
 		dir = new File(outputFolder + fileSeparator + "temp");
 		dir.mkdir();
 
+		if (prop.getProperty("Wiki_fileOutput").equalsIgnoreCase("true")) {
+			String outputFolderFiles = prop.getProperty("Wiki_fileOutputFolder");
+			dir = new File(outputFolderFiles);
+			dir.mkdir();
+		}
+
 		stopWatch = new Stopwatch();
 	}
 

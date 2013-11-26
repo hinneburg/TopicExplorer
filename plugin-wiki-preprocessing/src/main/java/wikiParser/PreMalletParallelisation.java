@@ -448,11 +448,19 @@ public class PreMalletParallelisation extends Thread {
 			// WikiTextToCsvbackward textTocsv ;
 
 			this.init();
+
+			SupporterForBothTypes s = new SupporterForBothTypes();
+			Boolean bool_japanFileOutput = false;
+			if (prop.getProperty("Wiki_fileOutput").equalsIgnoreCase("true")) {
+				bool_japanFileOutput = true;
+			}
+			String fileOutputFolder = prop.getProperty("Wiki_fileOutputFolder");
+
 			db.executeUpdateQuery("START TRANSACTION;");
 
 			for (int i = 0; i < articleNames.size(); i++) {
 
-				// testausgabe 
+				// testausgabe
 				if (debug) {
 					bwLogger.append(articleNames.get(i).getWikiTitle() + " , "
 							+ new Integer(articleNames.size() - i - 1) + " left \n");
@@ -476,49 +484,69 @@ public class PreMalletParallelisation extends Thread {
 					// temporäre Ausgabe, zur Veranschaulichung nur wenn ein
 					// Artikel geladen wird
 					if (onlyOneOutput) {
-						SupporterForBothTypes s = new SupporterForBothTypes(prop);
+
 						s.printIntoFile(w.getParsedWikiText(), "outputparsed.txt");
 						s.printIntoFile(w.getWikiOrigText(), "inputorig.txt");
 
 						s.printIntoFile(s.tokenizeEveryElementOfTheTextForTestOutput(w.getWikiOrigText()),
 								"tokensInputorigText.txt");
 
-						s.closeDBConnection();
 					}
 
-					try {
+					if (bool_japanFileOutput) {
+						// separate output of every article
+						s.printIntoFile(w.getParsedWikiTextReadable(), fileOutputFolder + fileseparator
+								+ w.getOldID().toString() + "_readableText");
 
-						// //// malletfile with position in wikitext
-						// // textTocsv = new WikiTextToCsvbackward(w,
-						// bwLogger);
+						// get link informations
 						textTocsv = new WikiTextToCSVForeward(w, bwLogger);
-						appendToBW(textTocsv.getCSV());
+						String fileInput = textTocsv.getLinkInfos();
 						textTocsv = null;
+						s.printIntoFile(fileInput, fileOutputFolder + fileseparator + w.getOldID().toString()
+								+ "_linkPositions");
 
-						// appendToBW(w.getOldID() + " " + w.getWikiTitle() +
-						// " "
-						// + new Integer(articleNames.size() - i - 1) + "\n");
+					} else {
 
-						// saving the readable text for import into the database
-						// for displaying the normalized text in the UI
-						bwInputSQLParsedText.append(w.getOldID() + " ;\"" + w.getWikiTitle() + " \";\""
-								+ w.getParsedWikiTextReadable() + " \"" + endOfDocumentInSQLOutput);
+						try {
 
-						// bwLogger.append(w.getWikiTitle() + " parsed.");
-						// System.out.println(w.getWikiTitle() + "\t" +
-						// this.getName() + "\t" + System.currentTimeMillis() );
-						// bwLogger.append(w.getWikiTitle() + "\t" +
-						// this.getName() + "\t" + System.currentTimeMillis() +
-						// "\n");
-						// System.out.println(w.getWikiTitle() + "\t" +
-						// this.getName() + "\t" + System.currentTimeMillis() );
+							// //// malletfile with position in wikitext
+							// // textTocsv = new WikiTextToCsvbackward(w,
+							// bwLogger);
+							textTocsv = new WikiTextToCSVForeward(w, bwLogger);
+							appendToBW(textTocsv.getCSV());
+							textTocsv = null;
 
-					} catch (Exception e) {
-						bwLogger.append(w.getWikiTitle() + " " + w.getOldID() + " " + this.getClass()
-								+ ".java :failure in preparing original wikitext with wikitextocsv for mallet, "
-								+ e.getMessage() + "\n");
-						if (debug) {
-							e.printStackTrace();
+							// appendToBW(w.getOldID() + " " + w.getWikiTitle()
+							// +
+							// " "
+							// + new Integer(articleNames.size() - i - 1) +
+							// "\n");
+
+							// saving the readable text for import into the
+							// database
+							// for displaying the normalized text in the UI
+							bwInputSQLParsedText.append(w.getOldID() + " ;\"" + w.getWikiTitle() + " \";\""
+									+ w.getParsedWikiTextReadable() + " \"" + endOfDocumentInSQLOutput);
+
+							// bwLogger.append(w.getWikiTitle() + " parsed.");
+							// System.out.println(w.getWikiTitle() + "\t" +
+							// this.getName() + "\t" +
+							// System.currentTimeMillis() );
+							// bwLogger.append(w.getWikiTitle() + "\t" +
+							// this.getName() + "\t" +
+							// System.currentTimeMillis() +
+							// "\n");
+							// System.out.println(w.getWikiTitle() + "\t" +
+							// this.getName() + "\t" +
+							// System.currentTimeMillis() );
+
+						} catch (Exception e) {
+							bwLogger.append(w.getWikiTitle() + " " + w.getOldID() + " " + this.getClass()
+									+ ".java :failure in preparing original wikitext with wikitextocsv for mallet, "
+									+ e.getMessage() + "\n");
+							if (debug) {
+								e.printStackTrace();
+							}
 						}
 					}
 				}

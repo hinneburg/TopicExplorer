@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.NavigableMap;
 import java.util.Queue;
 import java.util.TreeMap;
 
@@ -14,6 +15,8 @@ public class BracketPositions {
 	private HashMap<Integer, Integer> bracketPositionsHashMapLinkTargetInclPipePosition = new HashMap<Integer, Integer>();
 	private HashMap<Integer, Integer> bracketPositionsNestedLinks = new HashMap<Integer, Integer>();
 	private TreeMap<Integer, Integer> bracketPositionsLinksWithoutAnyPipes = new TreeMap<Integer, Integer>();
+
+	private NavigableMap<Integer, Integer> bracketPositionsLinkTarget = new TreeMap<Integer, Integer>();
 
 	public BracketPositions(String wikiText) {
 		this.wikiOrigText = wikiText;
@@ -66,6 +69,7 @@ public class BracketPositions {
 					} else if (boolHasPipe && pipeList.size() == 1 && bracketsCounter == 1 && nestedStart.size() == 0) {
 						// 100 % correct link, with only one pipe
 						bracketPositionsHashMapLinkTargetInclPipePosition.put(posBracketStarts, pipeList.getFirst()); // link-target
+						bracketPositionsHashMapLinksStartTillEnd.put(posBracketStarts, i);
 						boolBracketOpen = false;
 					} else {
 
@@ -96,17 +100,16 @@ public class BracketPositions {
 									Integer start = nestedStart.remove();
 									Integer end = nestedEnd.remove();
 
-									bracketPositionsNestedLinks.put(start, end);
+									// bracketPositionsNestedLinks.put(start,
+									// end);
 
-									if (checkIfhasNoPipe(start, end)) {
+									Integer pipePos = getPipePositionIfOnlyOnePipe(start, end);
+
+									if (pipePos > 0) {
+										bracketPositionsHashMapLinkTargetInclPipePosition.put(start, pipePos + start);
+										bracketPositionsHashMapLinksStartTillEnd.put(start, end);
+									} else if (pipePos == -1) {
 										bracketPositionsLinksWithoutAnyPipes.put(start, end);
-									} else {
-
-										Integer pipePos = getPipePositionIfOnlyOnePipe(start, end);
-
-										if (pipePos > start && pipePos > 0) {
-											bracketPositionsHashMapLinkTargetInclPipePosition.put(start, pipePos);
-										}
 									}
 
 								}
@@ -149,6 +152,16 @@ public class BracketPositions {
 			}
 
 		}
+
+		generateTreeMapLinkTargetInclPipe();
+
+	}
+
+	private void generateTreeMapLinkTargetInclPipe() {
+
+		for (Integer i : bracketPositionsHashMapLinkTargetInclPipePosition.keySet()) {
+			bracketPositionsLinkTarget.put(i, bracketPositionsHashMapLinkTargetInclPipePosition.get(i));
+		}
 	}
 
 	/**
@@ -186,6 +199,34 @@ public class BracketPositions {
 
 		for (Integer i : bracketPositionsLinksWithoutAnyPipes.keySet()) {
 			output.add(new PointInteger(i, bracketPositionsLinksWithoutAnyPipes.get(i)));
+		}
+		return output;
+	}
+
+	public List<LinkElement> getLinkElementListOfAllLinks() {
+
+		ArrayList<LinkElement> output = new ArrayList<LinkElement>();
+		LinkElement l;
+
+		for (Integer i : bracketPositionsLinkTarget.keySet()) {
+
+			l = new LinkElement();
+			// System.out.println(i + " " +
+			// bracketPositionsHashMapLinkTargetInclPipePosition.get(i) + " "
+			// + bracketPositionsHashMapLinksStartTillEnd.get(i) + " "
+			// + wikiOrigText.substring(i,
+			// bracketPositionsHashMapLinksStartTillEnd.get(i)));
+			l.setCompleteLinkSpan(new PointInteger(i, bracketPositionsHashMapLinksStartTillEnd.get(i)));
+			l.setLinkTextPosition(new PointInteger(bracketPositionsLinkTarget.get(i),
+					bracketPositionsHashMapLinksStartTillEnd.get(i)));
+			l.setTargetString(wikiOrigText.substring(l.getCompleteLinkStartPosition(), l.getLinkTextStart()));
+			l.setText(wikiOrigText.substring(l.getLinkTextStart() + 1, l.getLinkTextEnd()));
+
+			// System.out.println(l.getText() + " " + l.getTarget());
+
+			output.add(l);
+
+			l = null;
 		}
 		return output;
 	}

@@ -50,6 +50,7 @@ public class WikiTextToCSVForeward {
 	private HashMap<Integer, Integer> sectionCaptionPosition = new HashMap<Integer, Integer>();
 
 	private Boolean boolBreak = false;
+	private BracketPositions bp;
 
 	public WikiTextToCSVForeward(WikiArticle w) {
 
@@ -510,7 +511,7 @@ public class WikiTextToCSVForeward {
 			bracketPositionsHashMap = new HashMap<Integer, Integer>();
 			bracketsNavigableSet = new TreeSet<Integer>();
 
-			BracketPositions bp = new BracketPositions(wikiOrigText);
+			bp = new BracketPositions(wikiOrigText);
 			bracketPositionsHashMap = bp.getBracketPositionWhereTheLinkTargetIsAsHashMap();
 
 			for (Integer e : bracketPositionsHashMap.keySet()) {
@@ -522,7 +523,7 @@ public class WikiTextToCSVForeward {
 				bwlogger.append("getBracketsPositionAndPutIntoNavigableSet: failure " + e.getMessage() + ", "
 						+ e.getCause() + " " + e.getClass() + "\n");
 			} catch (IOException e1) {
-				e1.printStackTrace();
+				System.err.println("bwlogger error");
 			}
 
 		}
@@ -712,11 +713,16 @@ public class WikiTextToCSVForeward {
 		return posOfLineInOriginalText + tmpLine.length();
 	}
 
-	public String getCSV() throws Exception {
+	private void startTokenizing() throws Exception {
 
 		tokenize();
-
 		tokenizeReadableText(wikiParsedTextReadable);
+
+	}
+
+	public String getCSV() throws Exception {
+
+		startTokenizing();
 
 		StringBuilder sb = new StringBuilder();
 
@@ -810,4 +816,36 @@ public class WikiTextToCSVForeward {
 		return sb.toString();
 
 	}
+
+	// private HashMap<String, Boolean> getHashmapTokens(){
+	//
+	// Set<String> map = new Set<String>();
+	//
+	// Iterator<String> itToken = tokensParsedText.iterator();
+	// String token;
+	//
+	// while (itToken.hasNext()){
+	// token = itToken.next();
+	// map
+	// }
+	//
+	//
+	// }
+
+	public String getLinkInfos() throws Exception {
+
+		startTokenizing();
+		StringBuilder sb = new StringBuilder();
+
+		List<LinkElement> list = bp.getLinkElementListOfAllLinks();
+
+		for (LinkElement e : list) {
+			// if (e.getLinkText())
+			System.out.println(e.getInfosSeparatedInColumns());
+			sb.append(e.getInfosSeparatedInColumns() + "\n");
+		}
+
+		return sb.toString();
+	}
+
 }

@@ -6,7 +6,6 @@ import static org.mockito.Mockito.when;
 import java.io.CharArrayWriter;
 import java.io.PrintWriter;
 import java.math.BigInteger;
-import java.net.MalformedURLException;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -15,7 +14,6 @@ import java.util.Arrays;
 
 import net.sf.json.JSONObject;
 
-import org.dbunit.dataset.DataSetException;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -79,7 +77,7 @@ public final class AllTermsTest {
 	}
 
 	@Test
-	public void testReadAllTermsAndGenerateJson_oneRow() throws SQLException, DataSetException, MalformedURLException {
+	public void testReadAllTermsAndGenerateJson_oneRow() throws SQLException {
 		when(_mockedResultSet.next()).thenReturn(true).thenReturn(false);
 		when(_mockedResultSet.getObject(_columnNames.get(0))).thenReturn(_term_id1);
 		when(_mockedResultSet.getObject(_columnNames.get(1))).thenReturn(_document_frequency1);
@@ -101,7 +99,7 @@ public final class AllTermsTest {
 	}
 
 	@Test
-	public void testReadAllTermsAndGenerateJson_twoRows() throws SQLException, DataSetException, MalformedURLException {
+	public void testReadAllTermsAndGenerateJson_twoRows() throws SQLException {
 		when(_mockedResultSet.next()).thenReturn(true).thenReturn(true).thenReturn(false);
 		when(_mockedResultSet.getObject(_columnNames.get(0))).thenReturn(_term_id1).thenReturn(_term_id2);
 		when(_mockedResultSet.getObject(_columnNames.get(1))).thenReturn(_document_frequency1).thenReturn(

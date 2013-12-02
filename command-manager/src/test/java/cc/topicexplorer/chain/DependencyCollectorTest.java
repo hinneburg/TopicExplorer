@@ -2,6 +2,7 @@ package cc.topicexplorer.chain;
 
 import static org.fest.assertions.Assertions.assertThat;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -9,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -98,5 +100,14 @@ public class DependencyCollectorTest {
 		assertThat(orderedCommands)
 				.containsSequence("DummyCommand1", "DummyCommand4", "DummyCommand2", "DummyCommand3");
 
+	}
+
+	@AfterClass
+	public static void removeDotFile() {
+		if (new File("/home/user/workspace/topicexplorer-parent/command-manager/etc/graph.dot").delete()
+				&& new File("/home/user/workspace/topicexplorer-parent/command-manager/etc").delete()) {
+		} else {
+			System.err.println("NOTE: A file or directory created for testing issues could not be removed.");
+		}
 	}
 }

@@ -95,7 +95,6 @@ public class DependencyCollectorTest {
 				TestUtil.initializeNewCatalog("/DummyCatalog_for_ordering.xml"));
 		this.dependencies = this.dependencyCollector.getDependencies();
 		final List<String> orderedCommands = this.dependencyCollector.orderCommands(this.dependencies);
-		System.err.println("Hier");
 		orderedCommands.remove(("DummyCommand5"));
 		assertThat(orderedCommands)
 				.containsSequence("DummyCommand1", "DummyCommand4", "DummyCommand2", "DummyCommand3");

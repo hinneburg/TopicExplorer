@@ -138,6 +138,30 @@ public class SupporterForBothTypes {
 	// return new WikiIDTitlePair(rev_text_id, wikiTitle);
 	// }
 
+	public Integer getNumberOfElementsForGettingCapacity(String fulltxt, String searchElement) {
+
+		Integer counter = 0;
+		Integer pos = 0;
+		Integer savedPos = 0;
+
+		while (true) {
+
+			pos = fulltxt.substring(savedPos).indexOf(searchElement);
+
+			if (pos > -1) {
+				savedPos = savedPos + pos + 1;
+				counter++;
+			} else {
+				break;
+			}
+
+		}
+		counter = (int) Math.ceil(counter / 0.75); // wegen load
+
+		return counter;
+
+	}
+
 	public WikiIDTitlePair getOldIdAndWikiTitleFromWikiPageIdFromDatabase(Integer old_id) throws SQLException,
 			Exception {
 

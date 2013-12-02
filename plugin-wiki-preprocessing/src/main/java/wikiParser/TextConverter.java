@@ -239,28 +239,18 @@ public class TextConverter extends AstVisitor<WtNode> {
 				return;
 			}
 
-			if (txt.startsWith(ExtraInformations.extraFileNameGerman)
-					|| txt.startsWith(ExtraInformations.extraFileNameEnglish)
-					|| txt.startsWith(ExtraInformations.extraFileNameJapan)) {
-				// System.err.println("Datei: wurde erstmal absichtlich unterschlagen..");
+			if (ExtraInformations.getIsPictureStartsWith(txt)) {
 				bool_has_extra_information = true;
 				extra_information = ExtraInformations.extraPicure3Append;
 			}
 
 		}
-		// else {
-		// // not in normalized text
-		// if (txt.startsWith(ExtraInformations.extraFileNameGerman)
-		// || txt.startsWith(ExtraInformations.extraFileNameEnglish)
-		// || txt.startsWith(ExtraInformations.extraFileNameJapan)) {
-		// //
-		// System.err.println("Datei: wurde erstmal absichtlich unterschlagen..");
-		// return;
-		// }
-		//
-		// }
 
 		write(txt_orig);
+
+		if (!csvOrReadable && ExtraInformations.getIsPictureStartsWith(txt)) {
+			newline(1);
+		}
 	}
 
 	public void visit(WtWhitespace w) {
@@ -300,7 +290,7 @@ public class TextConverter extends AstVisitor<WtNode> {
 	 * übersetzt xml , z.B. &alpha in alphazeichen
 	 */
 	public void visit(WtXmlEntityRef er) {
-		// // TODO nochmal überdenken ob wirklich auslassen, wirft aber immer
+		// // T O D O nochmal überdenken ob wirklich auslassen, wirft aber immer
 		// // Fehler weil die zeichen nicht so bleiben wie sie im originaltext
 		// // waren
 		// // //System.out.println(er.getName()+ " " +
@@ -355,10 +345,54 @@ public class TextConverter extends AstVisitor<WtNode> {
 
 	public void visit(WtInternalLink link) {
 
-		// TODO testen ob richtig
-
 		if (link.getTarget().getContent().contains(":")) {
-			return;
+
+			String target = link.getTarget().getContent();
+			if (ExtraInformations.getIsPictureStartsWith(target)) {
+
+				// // Adaptation zu Section
+				// finishLine();
+				//
+				// StringBuilder saveSb = sb; // stringbuiler gespeichert
+				// boolean saveNoWrap = noWrap;
+				//
+				// sb = new StringBuilder(); // sb neu erstellt
+				// noWrap = true;
+				//
+				// String tmpTarget = link.getTarget().getContent();
+				//
+				// iterate(link.getTitle());
+				//
+				// finishLine();
+				// tmpTarget = tmpTarget + "|" + sb.toString();
+				//
+				// sb = saveSb; // gespeicherteret sb zurück
+				//
+				// bool_has_extra_information = true;
+				// extra_information = ExtraInformations.extraPicure4Append;
+				//
+				// write(tmpTarget);
+				//
+				// noWrap = saveNoWrap;
+
+				bool_has_extra_information = true;
+				extra_information = ExtraInformations.extraPicure4Append;
+
+				write(link.getTarget().getContent() + "|");
+
+				bool_has_extra_information = true;
+				extra_information = ExtraInformations.extraPicure5Append;
+				iterate(link.getTitle());
+
+				if (!csvOrReadable) {
+					newline(1);
+				}
+
+				return;
+
+			} else {
+				return;
+			}
 		}
 
 		try {
@@ -400,6 +434,10 @@ public class TextConverter extends AstVisitor<WtNode> {
 
 		sb = new StringBuilder(); // sb neu erstellt
 		noWrap = true;
+
+		bool_has_extra_information = true;
+		extra_information = ExtraInformations.extraSectionCaptionAppend + ExtraInformations.extraSectionLevelStart
+				+ s.getLevel() + ExtraInformations.extraSectionLevelEnd;
 
 		iterate(s.getHeading()); // wahrscheinlich in sb gespeichert
 

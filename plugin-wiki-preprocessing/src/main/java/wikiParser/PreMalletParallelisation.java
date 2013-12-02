@@ -190,8 +190,8 @@ public class PreMalletParallelisation extends Thread {
 
 		for (Integer i = list.size() - 1; i >= 0; i--) {
 
-			Integer x = list.get(i).getStartPoint();
-			Integer y = list.get(i).getEndPoint();
+			Integer x = list.get(i).getStartPosition();
+			Integer y = list.get(i).getEndPosition();
 
 			wikitxt = wikitxt.substring(0, x) + wikitxt.substring(x, y) + "|" + wikitxt.substring(x, y)
 					+ wikitxt.substring(y, wikitxt.length());
@@ -359,7 +359,7 @@ public class PreMalletParallelisation extends Thread {
 	private void appendToBW(String csv) {
 		try {
 			bwCSVOrigText.append(csv);
-			// bwCSVOrigText.flush(); // TODO flush machen?
+			// bwCSVOrigText.flush();
 		} catch (IOException e) {
 			System.err.println("append to bw ");
 			e.printStackTrace();
@@ -373,7 +373,7 @@ public class PreMalletParallelisation extends Thread {
 		try {
 			bwLogger.append(loggingLine);
 			bwLogger.append("\n");
-			// bwLogger.flush(); //TODO flush machen?
+			// bwLogger.flush();
 		} catch (IOException e) {
 			System.err.println("appendLogging " + this.getName());
 			// e.printStackTrace();
@@ -456,19 +456,32 @@ public class PreMalletParallelisation extends Thread {
 			}
 			String fileOutputFolder = prop.getProperty("Wiki_fileOutputFolder");
 
-			db.executeUpdateQuery("START TRANSACTION;");
+			if (prop.getProperty("Wiki_transaction").equalsIgnoreCase("true")) {
+				db.executeUpdateQuery("START TRANSACTION;");
+			}
 
 			for (int i = 0; i < articleNames.size(); i++) {
 
 				// testausgabe
 				if (debug) {
+
+					String next = "";
+					if (i + 1 < articleNames.size()) {
+						next = "( nächster Artikel:" + articleNames.get(i + 1).getWikiTitle() + ")";
+					}
+
 					bwLogger.append(articleNames.get(i).getWikiTitle() + " , "
-							+ new Integer(articleNames.size() - i - 1) + " left \n");
+							+ new Integer(articleNames.size() - i - 1) + " left " + next + " \n");
 					System.out.println(articleNames.get(i).getWikiTitle() + " , "
 							+ new Integer(articleNames.size() - i - 1) + " left ");
 				}
 
 				w = getParsedWikiArticle(articleNames.get(i));
+
+				// if (debug) {
+				// bwLogger.append(articleNames.get(i).getWikiTitle() + " , "
+				// + new Integer(articleNames.size() - i - 1) + " left \n");
+				// }
 
 				// fürs logging
 				if (w.getFailureId() <= 0) {
@@ -476,7 +489,7 @@ public class PreMalletParallelisation extends Thread {
 					this.appendLogging(w.getWikiTitle() + " " + w.getOldID() + "\t\t\t failure_id <= 0 , "
 							+ w.getParsedWikiText());
 
-					System.err.println("wohl Postprocessing-Fehler aba weiter gehts. ");
+					// System.err.println("wohl Postprocessing-Fehler aba weiter gehts. ");
 
 				} else if (w.getParsedWikiTextReadable().length() == 0) {
 					this.appendLogging(w.getWikiTitle() + " " + w.getOldID() + "\t\t\t readableText.length() is 0 ");
@@ -499,12 +512,23 @@ public class PreMalletParallelisation extends Thread {
 								+ w.getOldID().toString() + "_readableText");
 
 						// get link informations
-						textTocsv = new WikiTextToCSVForeward(w, bwLogger);
+						textTocsv = new WikiTextToCSVForeward(w, bwLogger, prop);
 						String fileInput = textTocsv.getLinkInfos();
-						textTocsv = null;
+
 						s.printIntoFile(fileInput, fileOutputFolder + fileseparator + w.getOldID().toString()
 								+ "_linkPositions");
 
+						// get section positions
+						fileInput = textTocsv.getSectionCaptions();
+						s.printIntoFile(fileInput, fileOutputFolder + fileseparator + w.getOldID().toString()
+								+ "_sectionPositions");
+
+						// get picture positions
+						fileInput = textTocsv.getPictures();
+						s.printIntoFile(fileInput, fileOutputFolder + fileseparator + w.getOldID().toString()
+								+ "_picturePositions");
+
+						textTocsv = null;
 					} else {
 
 						try {
@@ -512,7 +536,8 @@ public class PreMalletParallelisation extends Thread {
 							// //// malletfile with position in wikitext
 							// // textTocsv = new WikiTextToCsvbackward(w,
 							// bwLogger);
-							textTocsv = new WikiTextToCSVForeward(w, bwLogger);
+
+							textTocsv = new WikiTextToCSVForeward(w, bwLogger, prop);
 							appendToBW(textTocsv.getCSV());
 							textTocsv = null;
 
@@ -552,6 +577,10 @@ public class PreMalletParallelisation extends Thread {
 				}
 
 				// System.err.println(w.getWikiTitle() + "  " + w.getOldID());
+				// if (debug) {
+				// bwLogger.append(articleNames.get(i).getWikiTitle() + " , "
+				// + new Integer(articleNames.size() - i - 1) + " left \n");
+				// }
 				w = null;
 				bwLogger.flush();
 
@@ -568,7 +597,9 @@ public class PreMalletParallelisation extends Thread {
 
 			stmt.close();
 
-			db.executeUpdateQuery("COMMIT;");
+			if (prop.getProperty("Wiki_transaction").equalsIgnoreCase("true")) {
+				db.executeUpdateQuery("COMMIT;");
+			}
 
 		} catch (Exception e) {
 			System.err.println(this.getClass() + ".run - " + this.getName());

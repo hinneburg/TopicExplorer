@@ -8,19 +8,34 @@ import java.util.NavigableMap;
 import java.util.Queue;
 import java.util.TreeMap;
 
+import wikiParser.SupporterForBothTypes;
+
 public class BracketPositions {
 
 	private final String wikiOrigText;
-	private HashMap<Integer, Integer> bracketPositionsHashMapLinksStartTillEnd = new HashMap<Integer, Integer>();
-	private HashMap<Integer, Integer> bracketPositionsHashMapLinkTargetInclPipePosition = new HashMap<Integer, Integer>();
-	private HashMap<Integer, Integer> bracketPositionsNestedLinks = new HashMap<Integer, Integer>();
-	private TreeMap<Integer, Integer> bracketPositionsLinksWithoutAnyPipes = new TreeMap<Integer, Integer>();
+	private HashMap<Integer, Integer> bracketPositionsHashMapLinksStartTillEnd;
+	private HashMap<Integer, Integer> bracketPositionsHashMapLinkTargetInclPipePosition;
+	private HashMap<Integer, Integer> bracketPositionsNestedLinks;
+	private TreeMap<Integer, Integer> bracketPositionsLinksWithoutAnyPipes;
 
-	private NavigableMap<Integer, Integer> bracketPositionsLinkTarget = new TreeMap<Integer, Integer>();
+	private NavigableMap<Integer, Integer> bracketPositionsLinkTarget;
 
 	public BracketPositions(String wikiText) {
 		this.wikiOrigText = wikiText;
+		init();
 		putBracketPositionsIntoHashMaps();
+	}
+
+	private void init() {
+
+		SupporterForBothTypes s = new SupporterForBothTypes();
+		Integer capacity = s.getNumberOfElementsForGettingCapacity(wikiOrigText, "[[");
+
+		bracketPositionsHashMapLinksStartTillEnd = new HashMap<Integer, Integer>(capacity);
+		bracketPositionsHashMapLinkTargetInclPipePosition = new HashMap<Integer, Integer>(capacity);
+		bracketPositionsNestedLinks = new HashMap<Integer, Integer>();
+		bracketPositionsLinksWithoutAnyPipes = new TreeMap<Integer, Integer>();
+		bracketPositionsLinkTarget = new TreeMap<Integer, Integer>();
 	}
 
 	public HashMap<Integer, Integer> getBracketPositionWhereTheLinkTargetIsAsHashMap() {
@@ -67,10 +82,20 @@ public class BracketPositions {
 						nestedEnd.add(i);
 						bracketsCounter--;
 					} else if (boolHasPipe && pipeList.size() == 1 && bracketsCounter == 1 && nestedStart.size() == 0) {
-						// 100 % correct link, with only one pipe
-						bracketPositionsHashMapLinkTargetInclPipePosition.put(posBracketStarts, pipeList.getFirst()); // link-target
-						bracketPositionsHashMapLinksStartTillEnd.put(posBracketStarts, i);
-						boolBracketOpen = false;
+
+						// Links als Bilder mit nur einem Pipe erkennen und
+						// ignorieren
+						if (ExtraInformations.getIsPictureStartsWith(wikiOrigText.substring(posBracketStarts, i))) {
+							boolBracketOpen = false;
+
+						} else {
+
+							// 100 % correct link, with only one pipe
+							bracketPositionsHashMapLinkTargetInclPipePosition
+									.put(posBracketStarts, pipeList.getFirst()); // link-target
+							bracketPositionsHashMapLinksStartTillEnd.put(posBracketStarts, i);
+							boolBracketOpen = false;
+						}
 					} else {
 
 						// wenigstens Behandlung der inneren Links
@@ -106,8 +131,16 @@ public class BracketPositions {
 									Integer pipePos = getPipePositionIfOnlyOnePipe(start, end);
 
 									if (pipePos > 0) {
-										bracketPositionsHashMapLinkTargetInclPipePosition.put(start, pipePos + start);
-										bracketPositionsHashMapLinksStartTillEnd.put(start, end);
+
+										if (ExtraInformations
+												.getIsPictureStartsWith(wikiOrigText.substring(start, end))) {
+											// do nothing
+										} else {
+
+											bracketPositionsHashMapLinkTargetInclPipePosition.put(start, pipePos
+													+ start);
+											bracketPositionsHashMapLinksStartTillEnd.put(start, end);
+										}
 									} else if (pipePos == -1) {
 										bracketPositionsLinksWithoutAnyPipes.put(start, end);
 									}
@@ -203,9 +236,9 @@ public class BracketPositions {
 		return output;
 	}
 
-	public List<LinkElement> getLinkElementListOfAllLinks() {
+	public List<LinkElement> getLinkElementlistOfAllLinks() {
 
-		ArrayList<LinkElement> output = new ArrayList<LinkElement>();
+		ArrayList<LinkElement> output = new ArrayList<LinkElement>(bracketPositionsLinkTarget.size());
 		LinkElement l;
 
 		for (Integer i : bracketPositionsLinkTarget.keySet()) {
@@ -217,10 +250,18 @@ public class BracketPositions {
 			// + wikiOrigText.substring(i,
 			// bracketPositionsHashMapLinksStartTillEnd.get(i)));
 			l.setCompleteLinkSpan(new PointInteger(i, bracketPositionsHashMapLinksStartTillEnd.get(i)));
-			l.setLinkTextPosition(new PointInteger(bracketPositionsLinkTarget.get(i),
-					bracketPositionsHashMapLinksStartTillEnd.get(i)));
-			l.setTargetString(wikiOrigText.substring(l.getCompleteLinkStartPosition(), l.getLinkTextStart()));
-			l.setText(wikiOrigText.substring(l.getLinkTextStart() + 1, l.getLinkTextEnd()));
+			l.setWikiTextPosition(new PointInteger(bracketPositionsLinkTarget.get(i) + 1,
+					bracketPositionsHashMapLinksStartTillEnd.get(i))); // eine
+																		// Stelle
+																		// nach
+																		// dem
+																		// pipe
+			l.setTargetString(wikiOrigText.substring(l.getCompleteLinkStartPosition(), l.getWikiTextStartPosition() - 1)); // sonst
+			// ist
+			// pipe
+			// mit
+			// drauf
+			l.setText(wikiOrigText.substring(l.getWikiTextStartPosition(), l.getWikiTextEndPosition()));
 
 			// System.out.println(l.getText() + " " + l.getTarget());
 

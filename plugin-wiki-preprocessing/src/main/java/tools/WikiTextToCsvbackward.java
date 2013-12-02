@@ -173,12 +173,12 @@ public class WikiTextToCsvbackward
 		
 		Integer posOfFoundedWord = -1;
 		
-		if (posBracketsCurly.get(intPointerBracketsCurly).getEndPoint()< pos )
+		if (posBracketsCurly.get(intPointerBracketsCurly).getEndPosition()< pos )
 		{
 			return pos ;			
 		}
 		// wenn er genau drin liegt, neu suchen
-		else if (posBracketsCurly.get(intPointerBracketsCurly).getStartPoint() <= pos && posBracketsCurly.get(intPointerBracketsCurly).getEndPoint() >= pos)
+		else if (posBracketsCurly.get(intPointerBracketsCurly).getStartPosition() <= pos && posBracketsCurly.get(intPointerBracketsCurly).getEndPosition() >= pos)
 		{
 //		rekursiv
 			intPointerBracketsCurly--;
@@ -186,17 +186,17 @@ public class WikiTextToCsvbackward
 			posOfFoundedWord = 	checkIfPositionOfWordIsWithinDoubleCurlyBrackets(wikiOrigText.substring(0, pos).lastIndexOf(tmpLine), tmpLine);
 			
 		}
-		else if (posBracketsCurly.get(intPointerBracketsCurly).getStartPoint() > pos )
+		else if (posBracketsCurly.get(intPointerBracketsCurly).getStartPosition() > pos )
 		{
 			if (intPointerBracketsCurly > 0)
 			{
 				Integer tmp = intPointerBracketsCurly - 1;
-				if (posBracketsCurly.get(tmp).getEndPoint() < pos)
+				if (posBracketsCurly.get(tmp).getEndPosition() < pos)
 				{
 					intPointerBracketsCurly --;
 					posOfFoundedWord = pos;
 				}
-				else if (posBracketsCurly.get(tmp).getEndPoint() > pos)
+				else if (posBracketsCurly.get(tmp).getEndPosition() > pos)
 				{
 					// rekursiv
 					intPointerBracketsCurly--;
@@ -298,12 +298,12 @@ public class WikiTextToCsvbackward
 		
 		Integer posOfFoundedWord = -1;
 		
-		if (posBracketsBox.get(intPointerBracketsBox).getEndPoint()< pos )
+		if (posBracketsBox.get(intPointerBracketsBox).getEndPosition()< pos )
 		{
 			return pos ;			
 		}
 		// wenn er genau drin liegt, neu suchen
-		else if (posBracketsBox.get(intPointerBracketsBox).getStartPoint() <= pos && posBracketsBox.get(intPointerBracketsBox).getEndPoint() >= pos)
+		else if (posBracketsBox.get(intPointerBracketsBox).getStartPosition() <= pos && posBracketsBox.get(intPointerBracketsBox).getEndPosition() >= pos)
 		{
 //		rekursiv
 			intPointerBracketsBox--;
@@ -311,18 +311,18 @@ public class WikiTextToCsvbackward
 			posOfFoundedWord = 	checkIfPositionOfWordIsWithinBoxBrackets(wikiOrigText.substring(0, pos).lastIndexOf(tmpLine), tmpLine);
 			
 		}
-		else if (posBracketsBox.get(intPointerBracketsBox).getStartPoint() > pos )
+		else if (posBracketsBox.get(intPointerBracketsBox).getStartPosition() > pos )
 		{
 			if (intPointerBracketsBox > 0)
 			{
 				Integer tmp = intPointerBracketsBox - 1;
-				if (posBracketsBox.get(tmp).getEndPoint() < pos)
+				if (posBracketsBox.get(tmp).getEndPosition() < pos)
 				{
 					intPointerBracketsBox--;
 					posOfFoundedWord = pos;
 				}
 				// rekursiv
-				else if (posBracketsBox.get(tmp).getEndPoint() > pos)
+				else if (posBracketsBox.get(tmp).getEndPosition() > pos)
 				{
 					intPointerBracketsBox--;
 					posOfFoundedWord = checkIfPositionOfWordIsWithinBoxBrackets(pos, tmpLine);

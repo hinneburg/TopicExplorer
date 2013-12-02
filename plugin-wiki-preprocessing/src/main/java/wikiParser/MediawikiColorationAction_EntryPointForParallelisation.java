@@ -159,7 +159,6 @@ public class MediawikiColorationAction_EntryPointForParallelisation {
 					forLocalExcetution());
 			p.start();
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

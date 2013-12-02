@@ -1,20 +1,12 @@
 package tools;
 
-public class LinkElement {
+public class LinkElement extends Element {
 
 	public LinkElement() {
 	}
 
 	private String target;
-	private String text;
 	private PointInteger completeLink;
-	private PointInteger linkText;
-	private Integer pipePosition;
-	private PointInteger posParsedText;
-
-	public Integer getpipePosition() {
-		return pipePosition;
-	}
 
 	public String getTarget() {
 		return target;
@@ -24,65 +16,34 @@ public class LinkElement {
 		this.target = target;
 	}
 
-	public String getText() {
-		return text;
-	}
-
-	public void setText(String text) {
-		this.text = text;
-	}
-
 	public PointInteger getCompleteLinkSpan() {
 		return completeLink;
 	}
 
 	public Integer getCompleteLinkStartPosition() {
-		return completeLink.getStartPoint();
+		return completeLink.getStartPosition();
 	}
 
 	public Integer getCompleteLinkEndPosition() {
-		return completeLink.getEndPoint();
+		return completeLink.getEndPosition();
 	}
 
 	public void setCompleteLinkSpan(PointInteger completeLink) {
 		this.completeLink = completeLink;
 	}
 
-	public PointInteger getLinkText() {
-		return linkText;
-	}
-
-	public Integer getLinkTextStart() {
-		return linkText.getStartPoint();
-	}
-
-	public Integer getLinkTextEnd() {
-		return linkText.getEndPoint();
-	}
-
-	public void setLinkTextPosition(PointInteger linkText) {
-		this.linkText = linkText;
-		this.pipePosition = linkText.getStartPoint();
-	}
-
-	public Integer getPosParsedTextStartPoint() {
-		return posParsedText.getStartPoint();
-	}
-
-	public Integer getPosParsedTextEndPoint() {
-		return posParsedText.getEndPoint();
-	}
-
-	public void setPosParsedText(PointInteger posParsedText) {
-		this.posParsedText = posParsedText;
-	}
-
+	/**
+	 * 
+	 * @return csv format : link-target, link-text, startposition of linktarget
+	 *         in original text, startposition of linktext in original text,
+	 *         startposition of parsed text in normalized text
+	 */
+	@Override
 	public String getInfosSeparatedInColumns() {
-		String space = "\" ; \"";
-		return "\"" + target + space + text + space + getCompleteLinkStartPosition() + space + getpipePosition()
-				+ space + getCompleteLinkEndPosition() + "\"";
-		// + space + getPosParsedTextStartPoint + space +
-		// getPosParsedTextEndPoint + "\"";
+		// String space = "\" ; \"";
+
+		return "\"" + target + getSpace() + super.getText() + getSpace() + getCompleteLinkStartPosition() + getSpace()
+				+ super.getWikiTextStartPosition() + getSpace() + super.getParsedTextStartPosition() + "\"";
 	}
 
 }

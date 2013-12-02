@@ -4,11 +4,17 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NavigableSet;
+import java.util.Properties;
 import java.util.Scanner;
+import java.util.Set;
+import java.util.TreeMap;
 import java.util.TreeSet;
+
+import wikiParser.SupporterForBothTypes;
 
 /*
  - pointersache kann auch mit hashmaps oder treemap gemacht werden , wäre glaube besser, damit nicht eventtuell pointerfehler entstehen kann bei checkIfPositionOfWordIsWithinBoxBrackets
@@ -25,14 +31,13 @@ import java.util.TreeSet;
 public class WikiTextToCSVForeward {
 
 	private final String wikiOrigText;
-	private final String wikiParsedText;
+	private final String wikiParsedTextLineByLine;
 	private final Integer old_id;
 	private final String wikiTitle;
 	private final String wikiParsedTextReadable;
 
 	private List<String> tokensParsedText = new ArrayList<String>();
 	private List<Integer> startPositionsWikiText = new ArrayList<Integer>();
-	private List<Integer> startPositionsReadableText = new ArrayList<Integer>();
 
 	private List<String> tokensParsedReadableText = new ArrayList<String>();
 	private List<Integer> startPositionsReadableTextNew = new ArrayList<Integer>();
@@ -46,24 +51,53 @@ public class WikiTextToCSVForeward {
 	private NavigableSet<Integer> bracketsNavigableSet;
 
 	private String extraNextToLeftElement = "";
+	private Integer extraSectionLevel = 0;
+	private boolean isPicture = false;
 
-	private HashMap<Integer, Integer> sectionCaptionPosition = new HashMap<Integer, Integer>();
+	private HashMap<Integer, SectionElement> sectionCaptionPosition = new HashMap<Integer, SectionElement>();
+	private TreeMap<Integer, PictureElement> picturePosition = new TreeMap<Integer, PictureElement>();
 
-	private Boolean boolBreak = false;
 	private BracketPositions bp;
+	private ArrayList<TokenElement> tokenList;
 
-	public WikiTextToCSVForeward(WikiArticle w) {
+	private HashMap<Integer, Integer> mapOfPositionInOrigWikiTextAndListPositionInJoinedTokens;
+
+	private final boolean onlyParsedLinks;
+
+	public WikiTextToCSVForeward(WikiArticle w, BufferedWriter bwLogger, Properties prop) {
 
 		this.wikiOrigText = new String(w.getWikiOrigText());
-		this.wikiParsedText = w.getParsedWikiText();
+		this.wikiParsedTextLineByLine = w.getParsedWikiText();
 		this.old_id = w.getOldID();
 		this.wikiTitle = w.getWikiTitle();
 		this.wikiParsedTextReadable = w.getParsedWikiTextReadable();
+
+		this.bwlogger = bwLogger;
+
+		onlyParsedLinks = prop.getProperty("Wiki_onlyParsedLinks").equalsIgnoreCase("true");
+
+		init();
+
 	}
 
-	public WikiTextToCSVForeward(WikiArticle w, BufferedWriter bwLogger) {
-		this(w);
-		this.bwlogger = bwLogger;
+	// public WikiTextToCSVForeward(WikiArticle w, BufferedWriter bwLogger) {
+	// this(w);
+	// this.bwlogger = bwLogger;
+	// }
+
+	private void init() {
+		try {
+			startTokenizing();
+		} catch (Exception e) {
+			System.err.println("Fehler in " + this.getClass());
+
+			try {
+				bwlogger.append("Fehler in " + this.getClass() + "\n");
+			} catch (IOException e1) {
+				System.err.println("kein logger in " + this.getClass() + " definiert.");
+			}
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -153,7 +187,9 @@ public class WikiTextToCSVForeward {
 
 		getBracketsPositionAndPutIntoNavigableSet();
 
-		Scanner scParsed = new Scanner(wikiParsedText); // liegt zeilenweise vor
+		Scanner scParsed = new Scanner(wikiParsedTextLineByLine); // liegt
+																	// zeilenweise
+																	// vor
 		Integer savedPosition = 0;
 		Integer pos = -1;
 		String tmpLineWithoutExtraInfo;
@@ -161,6 +197,7 @@ public class WikiTextToCSVForeward {
 		Boolean bool_dont_shift_position = false;
 		Integer shifting = 0;
 		String tmpExtraInfoTextForControll;
+		Boolean bool_from_saved_position = false;
 
 		while (scParsed.hasNextLine()) {
 			// read line
@@ -171,13 +208,20 @@ public class WikiTextToCSVForeward {
 				tmpLineWithoutExtraInfo = getNormalTextIfExtraInfosAddedToTheEnd(tmpLine);
 				bool_dont_shift_position = getBoolShift(tmpLine);
 
+				// System.err.println(tmpLineWithoutExtraInfo + " " +
+				// savedPosition);
+
 				// HashMap <Integer,Integer> pictureList = new HashMap<Integer,
 				// Integer>();
 				// ArrayList<PointInteger> pictureList2 = new
 				// ArrayList<PointInteger>();
 				// pictureList2.add(new PointInteger(startPoint, endPoint));
 
-				pos = wikiOrigText.substring(savedPosition).indexOf(tmpLineWithoutExtraInfo);
+				if (tmpLineWithoutExtraInfo.length() > 0) {
+					pos = wikiOrigText.substring(savedPosition).indexOf(tmpLineWithoutExtraInfo);
+				} else {
+					pos = -1;
+				}
 
 				if (pos > -1) {
 
@@ -192,8 +236,12 @@ public class WikiTextToCSVForeward {
 
 						while (true) {
 
-							pos = checkIfFoundedPositionIsWithinABracketNaviagbleSet(pos + savedPosition,
-									tmpLineWithoutExtraInfo);
+							if (bool_from_saved_position) {
+								bool_from_saved_position = false;
+								pos = pos + savedPosition;
+							}
+
+							pos = checkIfFoundedPositionIsWithinABracketNaviagbleSet(pos, tmpLineWithoutExtraInfo);
 
 							// System.out.println("schleife " + pos + "  " +
 							// extraNextToLeftElement + " "
@@ -209,11 +257,14 @@ public class WikiTextToCSVForeward {
 									shifting = extraNextToLeftElement.length();
 								}
 
-								if (wikiOrigText.length() >= (pos + tmpLineWithoutExtraInfo.length() + extraNextToLeftElement
+								if (pos - shifting < 0) {
+									tmpExtraInfoTextForControll = wikiOrigText.substring(pos, pos
+											+ tmpLineWithoutExtraInfo.length() + extraNextToLeftElement.length());
+
+								} else if (wikiOrigText.length() >= (pos + tmpLineWithoutExtraInfo.length() + extraNextToLeftElement
 										.length())) {
 									tmpExtraInfoTextForControll = wikiOrigText.substring(pos - shifting, pos
 											+ tmpLineWithoutExtraInfo.length() + extraNextToLeftElement.length());
-
 								} else {
 
 									tmpExtraInfoTextForControll = wikiOrigText.substring(pos - shifting, pos
@@ -236,6 +287,7 @@ public class WikiTextToCSVForeward {
 							}
 
 							if ((pos > -1) && (bool_found == true)) {
+								bool_found = false;
 								break;
 							} else if (pos == -1) {
 
@@ -261,16 +313,11 @@ public class WikiTextToCSVForeward {
 						}
 
 					} catch (Exception e) {
-						// TODO Auto-generated catch block
 						bwlogger.append("fehler in tokenize " + this.wikiTitle + " " + e.getMessage());
 						System.err.println("fehler in tokenize " + this.wikiTitle + " " + e.getMessage());
 
-						if (boolBreak) {
-							e.printStackTrace();
-							System.exit(25);
-						}
-
 						// e.printStackTrace();
+						// System.exit(25);
 					}
 
 					// System.out.println(pos + " " + tmpLine + " new ");
@@ -279,12 +326,18 @@ public class WikiTextToCSVForeward {
 					// elements, saves the position of every token from the text
 					// and returns the new startposition (the last )
 
-					savedPosition = splitForOutputAndReturnNewPosition(tmpLineWithoutExtraInfo, pos);
+					if (tmpLine.contains(ExtraInformations.extraSectionCaptionAppend)) {
+						sectionCaptionPosition.put(pos, new SectionElement(tmpLineWithoutExtraInfo, pos,
+								extraSectionLevel));
+					} else if (isPicture) {
 
-					// for section-caption position? TODO
-					if (tmpLine.endsWith(ExtraInformations.extraSectionCaptionAppend)) {
-						sectionCaptionPosition.put(pos, savedPosition);
+						picturePosition.put(pos, new PictureElement(tmpLineWithoutExtraInfo, pos));
+
+						isPicture = false;
 					}
+
+					savedPosition = splitForOutputAndReturnNewPosition(tmpLineWithoutExtraInfo, pos);
+					bool_from_saved_position = true;
 
 				} else {
 					// error output to logger
@@ -301,6 +354,10 @@ public class WikiTextToCSVForeward {
 	}
 
 	private String getNormalTextIfExtraInfosAddedToTheEnd(String tmpLine) {
+		return getNormalTextIfExtraInfosAddedToTheEnd(tmpLine, true);
+	}
+
+	private String getNormalTextIfExtraInfosAddedToTheEnd(String tmpLine, Boolean changeExtraElement) {
 
 		String output;
 
@@ -316,18 +373,61 @@ public class WikiTextToCSVForeward {
 		} else if (tmpLine.endsWith(ExtraInformations.extraPicure1Append)) {
 			output = tmpLine.replace(ExtraInformations.extraPicure1Append, "");
 			extraNextToLeftElement = getExtraNextToElementForPictures(tmpLine);
+			isPicture = true;
 		} else if (tmpLine.endsWith(ExtraInformations.extraPicure2Append)) {
 			output = tmpLine.replace(ExtraInformations.extraPicure2Append, "");
 			extraNextToLeftElement = "|";
+			isPicture = true;
 		} else if (tmpLine.endsWith(ExtraInformations.extraPicure3Append)) {
 			output = tmpLine.replace(ExtraInformations.extraPicure3Append, "");
 			extraNextToLeftElement = getExtraNextToElementForPictures(tmpLine);
-		} else if (tmpLine.endsWith(ExtraInformations.extraSectionCaptionAppend)) {
-			output = tmpLine.replace(ExtraInformations.extraSectionCaptionAppend, "");
+			isPicture = true;
+
+		} else if (tmpLine.endsWith(ExtraInformations.extraPicure4Append)) {
+			output = tmpLine.replace(ExtraInformations.extraPicure4Append, "");
+			extraNextToLeftElement = getExtraNextToElementForPictures(tmpLine);
+			isPicture = true;
+
+		} else if (tmpLine.endsWith(ExtraInformations.extraPicure5Append)) {
+			output = tmpLine.replace(ExtraInformations.extraPicure5Append, "");
 			extraNextToLeftElement = "";
+			// isPicture = true; // eigentlich kein Bild sondern nur der Text
+
+		} else if (tmpLine.contains(ExtraInformations.extraSectionCaptionAppend)) {
+
+			Integer tmp = tmpLine.indexOf(ExtraInformations.extraSectionCaptionAppend);
+			output = tmpLine.substring(0, tmp);
+
+			extraSectionLevel = getExtraSectionLevelAsInteger(tmpLine);
+			extraNextToLeftElement = getExtraNextToElementForSectionsLevel(tmpLine);
+
+			// extraNextToLeftElement = "";
+
 		} else {
 			extraNextToLeftElement = "";
+			extraSectionLevel = -1;
+			isPicture = false;
 			output = tmpLine;
+		}
+		return output;
+	}
+
+	private Integer getExtraSectionLevelAsInteger(String tmpLine) {
+
+		Integer tmp = tmpLine.indexOf(ExtraInformations.extraSectionLevelStart);
+		String tmpString = tmpLine.substring(tmp + ExtraInformations.extraSectionLevelStart.length());
+		tmpString = tmpString.replace(ExtraInformations.extraSectionLevelEnd, "");
+
+		return Integer.valueOf(tmpString);
+	}
+
+	private String getExtraNextToElementForSectionsLevel(String tmpLine) {
+
+		Integer intLevel = getExtraSectionLevelAsInteger(tmpLine);
+
+		String output = "";
+		for (Integer i = 0; i < intLevel; i++) {
+			output = output + "=";
 		}
 		return output;
 	}
@@ -339,7 +439,8 @@ public class WikiTextToCSVForeward {
 	private boolean getBoolShift(String tmpLine) {
 		if (tmpLine.endsWith(ExtraInformations.extraPicure1Append)
 				|| tmpLine.endsWith(ExtraInformations.extraPicure2Append)
-				|| tmpLine.endsWith(ExtraInformations.extraPicure3Append)) {
+				|| tmpLine.endsWith(ExtraInformations.extraPicure3Append)
+				|| tmpLine.endsWith(ExtraInformations.extraPicure4Append)) {
 			return true;
 		} else {
 			return false;
@@ -508,7 +609,10 @@ public class WikiTextToCSVForeward {
 	private void getBracketsPositionAndPutIntoNavigableSet() {
 
 		try {
-			bracketPositionsHashMap = new HashMap<Integer, Integer>();
+			SupporterForBothTypes s = new SupporterForBothTypes();
+			bracketPositionsHashMap = new HashMap<Integer, Integer>(s.getNumberOfElementsForGettingCapacity(
+					wikiOrigText, "[["));
+			s = null;
 			bracketsNavigableSet = new TreeSet<Integer>();
 
 			bp = new BracketPositions(wikiOrigText);
@@ -625,7 +729,7 @@ public class WikiTextToCSVForeward {
 	// //
 	// // bracketPositionsHashMap.put(posBracketStarts, i);
 	// // boolBracketOpen = false;
-	// // // FIXME hier werden wohl erstmal alle Bilder
+	// // // F I X M E hier werden wohl erstmal alle Bilder
 	// // // geblockt...
 	// //
 	//
@@ -718,18 +822,181 @@ public class WikiTextToCSVForeward {
 		tokenize();
 		tokenizeReadableText(wikiParsedTextReadable);
 
+		joinTheTwoIteratorsAndFillList();
+
 	}
 
 	public String getCSV() throws Exception {
 
-		startTokenizing();
+		// joinTheTwoIteratorsAndFillList();
+		return getMalletInput();
+
+		// startTokenizing();
+
+		// StringBuilder sb = new StringBuilder();
+		//
+		// Iterator<String> itToken = tokensParsedText.iterator();
+		// Iterator<Integer> itSeqWikitext = startPositionsWikiText.iterator();
+		// // Iterator<Integer> itSeqReadable =
+		// // startPositionsReadableText.iterator();
+		//
+		// Iterator<String> itTokenReadable =
+		// tokensParsedReadableText.iterator();
+		// Iterator<Integer> itSeqReadableNew =
+		// startPositionsReadableTextNew.iterator();
+		//
+		// String tokenReadable = "";
+		// String token;
+		// Integer seqWikitext;
+		// // Integer seqReadable ; //kann wohl weg
+		// Integer seqReadableNew = -1;
+		// Integer seqReadableForSave = -1;
+		//
+		// Boolean boolTokenEquals = false;
+		//
+		// String oldReadable;
+		// Integer oldSeqReadable;
+		// // Vorbereitung, fuer ungleiches parsen, also wenn links nicht im
+		// // normalen Text
+		// // geladen werden
+		//
+		// // init the values
+		// if (itTokenReadable.hasNext() && itSeqReadableNew.hasNext()) {
+		// tokenReadable = itTokenReadable.next();
+		// seqReadableNew = itSeqReadableNew.next();
+		// }
+		//
+		// while (itToken.hasNext() && itSeqWikitext.hasNext()) {
+		//
+		// token = itToken.next();
+		// seqWikitext = itSeqWikitext.next();
+		// // seqReadable = itSeqReadable.next();
+		//
+		// if (token.equals(tokenReadable)) {
+		// boolTokenEquals = true;
+		// } else if (tokenReadable.startsWith(token)) { // for links with
+		// // postfixes , they
+		// // are not equal,
+		// // T O D O vielleicht prozentual was machen? aba dürfte nur
+		// // links
+		// // betreffen
+		// boolTokenEquals = true;
+		// } else {
+		// boolTokenEquals = false;
+		// seqReadableForSave = -1;
+		// }
+		//
+		// if (boolTokenEquals) {
+		// seqReadableForSave = seqReadableNew;
+		//
+		// // switch to next record from readable text
+		// if (itTokenReadable.hasNext() && itSeqReadableNew.hasNext()) {
+		// tokenReadable = itTokenReadable.next();
+		// seqReadableNew = itSeqReadableNew.next();
+		// }
+		// }
+		//
+		// // System.out.println(token);
+		//
+		// sb.append("\"" + old_id + "\";" + "\"" +
+		// String.valueOf(seqReadableForSave) + "\";" + "\""
+		// + token.toLowerCase() + "\";" + "\"" + token + "\";" + "\"" +
+		// String.valueOf(seqWikitext) + "\""
+		// + "\n");
+		//
+		// // Iterator<String> itToken = tokensParsedText.iterator();
+		// // Iterator<Integer> itSeqWikitext =
+		// // startPositionsWikiText.iterator();
+		// // Iterator<Integer> itSeqReadable =
+		// // startPositionsReadableText.iterator();
+		// //
+		// // while (itToken.hasNext() && itSeqWikitext.hasNext()) {
+		// // String token = itToken.next();
+		// // Integer seqWikitext = itSeqWikitext.next();
+		// // Integer seqReadable = itSeqReadable.next();
+		// //
+		// // sb.append("\"" + old_id + "\";" + "\"" +
+		// // String.valueOf(seqReadable) + "\";" + "\"" + token.toLowerCase()
+		// // + "\";" + "\"" + token + "\";" + "\"" +
+		// // String.valueOf(seqWikitext) + "\"" + "\n");
+		//
+		// // temp assert which is working
+		// // if (seq > -1 ){
+		// // Assert.assertEquals(token, wikiOrigText.substring(seq, seq+
+		// // token.length()));
+		// // }
+		// }
+		//
+		// return sb.toString();
+
+	}
+
+	private Set<String> getSetOfParsedLines() {
+
+		SupporterForBothTypes s = new SupporterForBothTypes();
+		Set<String> set = new HashSet<String>(s.getNumberOfElementsForGettingCapacity(wikiParsedTextLineByLine, "\n"));
+		s = null;
+
+		Scanner scParsed = new Scanner(wikiParsedTextLineByLine);
+		String token;
+
+		while (scParsed.hasNextLine()) {
+			token = scParsed.nextLine();
+			token = getNormalTextIfExtraInfosAddedToTheEnd(token, false);
+
+			set.add(token);
+			token = null;
+		}
+
+		scParsed = null;
+
+		return set;
+	}
+
+	public String getLinkInfos() throws Exception {
+
+		generateMapPositionsInOrigTextAndListPositions();
 
 		StringBuilder sb = new StringBuilder();
+		List<LinkElement> listOfLinks = bp.getLinkElementlistOfAllLinks();
+
+		// im Link ist die Position von wikiText enthalten, damit kann die
+		// Verbindung zum geparsten Text hergestellt werden
+
+		for (LinkElement e : listOfLinks) {
+			// System.out.println(e.getInfosSeparatedInColumns());
+
+			Integer i = mapOfPositionInOrigWikiTextAndListPositionInJoinedTokens.get(e.getWikiTextStartPosition());
+			if (i != null) {
+
+				// Link wird extra bzw anders erstellt, dh. er muss noch mit
+				// Positionsangabe verbunden werden, falls eine existiert, es
+				// kann keine Positionsangabe geben, wenn das Wort nicht geparst
+				// wurde
+				e.setParsedTextPoint(tokenList.get(i).getPosReadableTextPointInteger());
+			}
+
+			// wenn nur die geparsten Links ausgegeben werden sollen dann muss
+			// es einen Joinpartner, d.h. die posReadable geben >=0,
+			// anderenfalls werden alle Links ausgegeben
+			if (onlyParsedLinks && e.getParsedTextStartPosition() >= 0) {
+				sb.append(e.getInfosSeparatedInColumns() + "\n");
+			} else if (!onlyParsedLinks) {
+				sb.append(e.getInfosSeparatedInColumns() + "\n");
+			}
+
+		}
+
+		return sb.toString();
+	}
+
+	private void joinTheTwoIteratorsAndFillList() {
+
+		tokenList = new ArrayList<TokenElement>();
+		TokenElement te;
 
 		Iterator<String> itToken = tokensParsedText.iterator();
 		Iterator<Integer> itSeqWikitext = startPositionsWikiText.iterator();
-		// Iterator<Integer> itSeqReadable =
-		// startPositionsReadableText.iterator();
 
 		Iterator<String> itTokenReadable = tokensParsedReadableText.iterator();
 		Iterator<Integer> itSeqReadableNew = startPositionsReadableTextNew.iterator();
@@ -737,17 +1004,10 @@ public class WikiTextToCSVForeward {
 		String tokenReadable = "";
 		String token;
 		Integer seqWikitext;
-		// Integer seqReadable ; //kann wohl weg
 		Integer seqReadableNew = -1;
 		Integer seqReadableForSave = -1;
 
 		Boolean boolTokenEquals = false;
-
-		String oldReadable;
-		Integer oldSeqReadable;
-		// Vorbereitung, fuer ungleiches parsen, also wenn links nicht im
-		// normalen Text
-		// geladen werden
 
 		// init the values
 		if (itTokenReadable.hasNext() && itSeqReadableNew.hasNext()) {
@@ -759,14 +1019,14 @@ public class WikiTextToCSVForeward {
 
 			token = itToken.next();
 			seqWikitext = itSeqWikitext.next();
-			// seqReadable = itSeqReadable.next();
 
 			if (token.equals(tokenReadable)) {
 				boolTokenEquals = true;
 			} else if (tokenReadable.startsWith(token)) { // for links with
 															// postfixes , they
 															// are not equal,
-				// TODO vielleicht prozentual was machen? aba dürfte nur links
+				// T O D O vielleicht prozentual was machen? aba dürfte nur
+				// links
 				// betreffen
 				boolTokenEquals = true;
 			} else {
@@ -786,66 +1046,101 @@ public class WikiTextToCSVForeward {
 
 			// System.out.println(token);
 
-			sb.append("\"" + old_id + "\";" + "\"" + String.valueOf(seqReadableForSave) + "\";" + "\""
-					+ token.toLowerCase() + "\";" + "\"" + token + "\";" + "\"" + String.valueOf(seqWikitext) + "\""
-					+ "\n");
+			te = new TokenElement(token.toLowerCase(), token, seqReadableForSave, seqWikitext);
+			tokenList.add(te);
+		}
+	}
 
-			// Iterator<String> itToken = tokensParsedText.iterator();
-			// Iterator<Integer> itSeqWikitext =
-			// startPositionsWikiText.iterator();
-			// Iterator<Integer> itSeqReadable =
-			// startPositionsReadableText.iterator();
-			//
-			// while (itToken.hasNext() && itSeqWikitext.hasNext()) {
-			// String token = itToken.next();
-			// Integer seqWikitext = itSeqWikitext.next();
-			// Integer seqReadable = itSeqReadable.next();
-			//
-			// sb.append("\"" + old_id + "\";" + "\"" +
-			// String.valueOf(seqReadable) + "\";" + "\"" + token.toLowerCase()
-			// + "\";" + "\"" + token + "\";" + "\"" +
-			// String.valueOf(seqWikitext) + "\"" + "\n");
+	private void generateMapPositionsInOrigTextAndListPositions() {
+		mapOfPositionInOrigWikiTextAndListPositionInJoinedTokens = new HashMap<Integer, Integer>(tokenList.size());
 
-			// temp assert which is working
-			// if (seq > -1 ){
-			// Assert.assertEquals(token, wikiOrigText.substring(seq, seq+
-			// token.length()));
+		TokenElement tokenElement;
+		for (Integer k = 0; k < tokenList.size(); k++) {
+
+			tokenElement = tokenList.get(k);
+			mapOfPositionInOrigWikiTextAndListPositionInJoinedTokens.put(tokenElement.getPosWikitext(), k);
+
+			// System.out.println(tokenElement.getPosWikitext() + " " +
+			// tokenElement.getTerm());
+			// if (k > 10) {
+			// return;
 			// }
 		}
 
-		return sb.toString();
-
 	}
 
-	// private HashMap<String, Boolean> getHashmapTokens(){
-	//
-	// Set<String> map = new Set<String>();
-	//
-	// Iterator<String> itToken = tokensParsedText.iterator();
-	// String token;
-	//
-	// while (itToken.hasNext()){
-	// token = itToken.next();
-	// map
-	// }
-	//
-	//
-	// }
+	public String getMalletInput() {
 
-	public String getLinkInfos() throws Exception {
-
-		startTokenizing();
 		StringBuilder sb = new StringBuilder();
 
-		List<LinkElement> list = bp.getLinkElementListOfAllLinks();
+		for (TokenElement e : tokenList) {
+			sb.append("\"" + old_id + "\";" + "\"" + String.valueOf(e.getPosReadableText()) + "\";" + "\""
+					+ e.getToken() + "\";" + "\"" + e.getTerm() + "\";" + "\"" + String.valueOf(e.getPosWikitext())
+					+ "\"" + "\n");
+		}
+		return sb.toString();
+	}
 
-		for (LinkElement e : list) {
-			// if (e.getLinkText())
-			System.out.println(e.getInfosSeparatedInColumns());
-			sb.append(e.getInfosSeparatedInColumns() + "\n");
+	public String getSectionCaptions() {
+
+		if (mapOfPositionInOrigWikiTextAndListPositionInJoinedTokens != null) {
+			generateMapPositionsInOrigTextAndListPositions();
+		}
+
+		StringBuilder sb = new StringBuilder();
+		SectionElement s;
+		Integer j;
+		Integer seqReadable;
+
+		TreeSet<Integer> set = new TreeSet<Integer>();
+
+		for (Integer i : sectionCaptionPosition.keySet()) {
+			set.add(i);
+		}
+
+		Iterator<Integer> itSet = set.iterator();
+
+		while (itSet.hasNext()) {
+			j = itSet.next();
+
+			seqReadable = mapOfPositionInOrigWikiTextAndListPositionInJoinedTokens.get(j);
+
+			if (seqReadable != null) {
+				s = sectionCaptionPosition.get(j);
+				s.setParsedTextPoint(new PointInteger(seqReadable, new Integer(seqReadable + s.getText().length())));
+
+				sb.append(s.getInfosSeparatedInColumns() + "\n");
+
+				seqReadable = null;
+			}
 		}
 
 		return sb.toString();
 	}
 
+	public String getPictures() {
+
+		if (mapOfPositionInOrigWikiTextAndListPositionInJoinedTokens != null) {
+			generateMapPositionsInOrigTextAndListPositions();
+		}
+
+		StringBuilder sb = new StringBuilder();
+		PictureElement e;
+		Integer seqReadable;
+
+		for (Integer i : picturePosition.keySet()) {
+			e = picturePosition.get(i);
+
+			seqReadable = mapOfPositionInOrigWikiTextAndListPositionInJoinedTokens.get(e.getWikiTextStartPosition());
+			if (seqReadable != null) {
+
+				e.setParsedTextPoint(new PointInteger(seqReadable, new Integer(seqReadable + e.getText().length())));
+				sb.append(e.getInfosSeparatedInColumns() + "\n");
+
+				seqReadable = null;
+			}
+		}
+
+		return sb.toString();
+	}
 }

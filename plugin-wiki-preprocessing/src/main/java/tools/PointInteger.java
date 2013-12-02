@@ -10,11 +10,11 @@ public class PointInteger {
 		this.endPoint = endPoint;
 	}
 
-	public Integer getStartPoint() {
+	public Integer getStartPosition() {
 		return this.startPoint;
 	}
 
-	public Integer getEndPoint() {
+	public Integer getEndPosition() {
 		return this.endPoint;
 	}
 

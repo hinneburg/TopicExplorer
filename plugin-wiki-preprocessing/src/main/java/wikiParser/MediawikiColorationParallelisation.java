@@ -52,45 +52,49 @@ public class MediawikiColorationParallelisation extends Thread {
 				+ " ORDER BY POSITION_OF_TOKEN_IN_DOCUMENT DESC");
 		while (rsToken.next()) {
 
-			if (tempPosition >= rsToken.getInt("DOCUMENT_TERM_TOPIC.WIKI$POSITION")
-					+ rsToken.getString("DOCUMENT_TERM_TOPIC.TOKEN").length()) {
-				// get the temporary pos, token and color
+			if (rsToken.getInt("WIKI$POSITION") > 0) {
 
-				tempPosition = rsToken.getInt("DOCUMENT_TERM_TOPIC.WIKI$POSITION"); // tempPosition
-																					// =
-				// rsToken.getInt("Seq");
-				tempToken = rsToken.getString("DOCUMENT_TERM_TOPIC.TOKEN"); // tempToken
-																			// =
-				// rsToken.getString("Token_Original");
-				tempColor = rsToken.getString("TOPIC.COLOR_TOPIC$COLOR"); // tempColor
+				if (tempPosition >= rsToken.getInt("DOCUMENT_TERM_TOPIC.WIKI$POSITION")
+						+ rsToken.getString("DOCUMENT_TERM_TOPIC.TOKEN").length()) {
+					// get the temporary pos, token and color
 
-				tempLabel = rsToken.getString("TOPIC.TEXT$TOPIC_LABEL");
+					tempPosition = rsToken.getInt("DOCUMENT_TERM_TOPIC.WIKI$POSITION"); // tempPosition
+																						// =
+					// rsToken.getInt("Seq");
+					tempToken = rsToken.getString("DOCUMENT_TERM_TOPIC.TOKEN"); // tempToken
+																				// =
+					// rsToken.getString("Token_Original");
+					tempColor = rsToken.getString("TOPIC.COLOR_TOPIC$COLOR"); // tempColor
 
-				completeText = completeText.substring(0, tempPosition) + "<span style=\"background-color:" + tempColor
-						+ "; padding:0 1.5pt 0 1.5pt;\" " + "title = \"" + tempLabel + "\" >" + tempToken + "</span>"
-						+ completeText.substring(tempPosition + tempToken.length(), completeText.length());
+					tempLabel = rsToken.getString("TOPIC.TEXT$TOPIC_LABEL");
 
-				// // mit titel ohne padding
-				// completeText = completeText.substring(0, tempPosition)
-				// + "<span style=\"background-color:"
-				// + tempColor
-				// + ";\" "
-				// + "title = \"" + tempLabel + "\" >"
-				// + tempToken
-				// + "</span>"
-				// + completeText.substring(tempPosition
-				// + tempToken.length(), completeText.length());
-				//
+					completeText = completeText.substring(0, tempPosition) + "<span style=\"background-color:"
+							+ tempColor + "; padding:0 1.5pt 0 1.5pt;\" " + "title = \"" + tempLabel + "\" >"
+							+ tempToken + "</span>"
+							+ completeText.substring(tempPosition + tempToken.length(), completeText.length());
 
-				// // ohne titel
-				// completeText = completeText.substring(0, tempPosition)
-				// + "<span style=\"background-color:"
-				// + tempColor
-				// + ";\">"
-				// + tempToken
-				// + "</span>"
-				// + completeText.substring(tempPosition
-				// + tempToken.length(), completeText.length());
+					// // mit titel ohne padding
+					// completeText = completeText.substring(0, tempPosition)
+					// + "<span style=\"background-color:"
+					// + tempColor
+					// + ";\" "
+					// + "title = \"" + tempLabel + "\" >"
+					// + tempToken
+					// + "</span>"
+					// + completeText.substring(tempPosition
+					// + tempToken.length(), completeText.length());
+					//
+
+					// // ohne titel
+					// completeText = completeText.substring(0, tempPosition)
+					// + "<span style=\"background-color:"
+					// + tempColor
+					// + ";\">"
+					// + tempToken
+					// + "</span>"
+					// + completeText.substring(tempPosition
+					// + tempToken.length(), completeText.length());
+				}
 			}
 		}
 		rsToken.close();

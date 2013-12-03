@@ -341,9 +341,12 @@ public class WikiTextToCSVForeward {
 
 				} else {
 					// error output to logger
-					bwlogger.append("catched error, " + wikiTitle + ": " + old_id + " *" + tmpLineWithoutExtraInfo
-							+ "*:" + (new Integer(pos + savedPosition)) + ": last_savedposition= " + savedPosition
-							+ " id:" + old_id + "\n");
+
+					if (tmpLineWithoutExtraInfo.length() > 0) {
+						bwlogger.append("catched error, " + wikiTitle + ": " + old_id + " *" + tmpLineWithoutExtraInfo
+								+ "*:" + (new Integer(pos + savedPosition)) + ": last_savedposition= " + savedPosition
+								+ " id:" + old_id + "\n");
+					}
 				}
 			} else {
 				savedPosition = savedPosition + 1; // new line also counts as

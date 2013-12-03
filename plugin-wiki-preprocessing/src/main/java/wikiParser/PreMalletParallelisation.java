@@ -509,7 +509,7 @@ public class PreMalletParallelisation extends Thread {
 					if (bool_japanFileOutput) {
 						// separate output of every article
 						s.printIntoFile(w.getParsedWikiTextReadable(), fileOutputFolder + fileseparator
-								+ w.getOldID().toString() + "_readableText");
+								+ w.getOldID().toString() + "_" + w.getWikiTitle() + "_readableText");
 
 						// get link informations
 						textTocsv = new WikiTextToCSVForeward(w, bwLogger, prop);

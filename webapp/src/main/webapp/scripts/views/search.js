@@ -4,12 +4,16 @@ view.content = '';
 
 view.init = function() {
 	autocomplete('searchField');	
+	$("#searchForm").on("submit", function(e){
+		getSearch($('#searchField').val(), 'document', 20);
+		return false;
+	});
 	//this.content = $('<div>').attr('class', 'documentList').html(template());
 	
 	//assign documentModel to GUI
 	//ko.applyBindings(documentModel, this.content[0]);
 };
-
+/*
 function template()
 {
 	var template = '<ul data-bind="foreach: documentData">'+
@@ -29,7 +33,7 @@ function template()
 	'</ul>';
 	return template;
 }
-
+*/
 function autocomplete(boxID) {
 
 	$('#' + boxID).bind('keydown', function() {
@@ -41,24 +45,25 @@ function autocomplete(boxID) {
 	$("#" + boxID).autocomplete( {
 		source : function(request, response) {
 			$.ajax( {
-				url : "autocomplete.jsp",
+				url : "JsonServlet",
 				dataType : "json",
 				cache : true,
 				data : {
-					where : request.term
+					Command: 'autocomplete',
+					SearchWord : request.term
 				},
-				type : 'POST',
+				type : 'GET',
 				success : function(data) {
 					response($.map(data, function(item) {
 						return {
-							label : item.label,
-							color1 : item.color1,
-							color2 : item.color2,
-							color3 : item.color3,
-							color4 : item.color4,
+							label : item.TERM_NAME,
+							color1 : item.TOP_TOPIC[0],
+							color2 : item.TOP_TOPIC[1],
+							color3 : item.TOP_TOPIC[2],
+							color4 : item.TOP_TOPIC[3],
 							value : item.label,
-							item : item.item
-						}
+							item : 'document'
+						};
 					}));
 				}
 			});
@@ -94,13 +99,15 @@ function autocomplete(boxID) {
 }
 
 function getSearch(searchWord, item, limit) {
-	$.getJSON('search.jsp', {item:item, searchWord:searchWord, limit:limit})
+	alert(searchWord + ", " + item + ", " + limit);	
+	$.getJSON('JsonServlet', {Command:'search', SearchWord:searchWord})
 	.done(function(json) {
-		documentModel.documentData.removeAll();
-		$.each(json, function( key, document ) {
-			documentModel.documentData.push(new DocumentModel(document.DOCUMENT_ID, document.TEXT$TITLE, document.TOP_TOPIC, document.TEXT$FULLTEXT));
-		});
+		topicExplorer.jsonModel.DOCUMENT = ko.mapping.fromJS(json.DOCUMENT);
 	});
+	var textModel = topicExplorer.viewModel.getView('browser').getDocumentViewModel("topicRelevance", 0);
+	var template = topicExplorer.viewModel.getView('browser').getTemplate();//(topicExplorer.jsonModel);
+	ko.applyBindings(textModel, template[0]);
+	gui.drawTab("Search: " + searchWord, true, true, template);
 }
 
 function move(e) {
@@ -116,7 +123,7 @@ function generateCircle(color) {
 		return "";
 	var circleString = "<circle class=\"topic_"+color+"\" onmouseover=\"$(this).attr('r','7');\" onmouseout=\"$(this).attr('r','5');\" "
 		+ " r=\"5\" cx=\""+cx+"\" cy=\"14\" fill=\""
-		+ topic.topicColor()
+		+ topic.topicColor
 		+ "\" title=\""
 		+ topic.topicTitle[0]
 		+ "\" stroke=\"black\" stroke-width=\"0.5\" style=\"cursor:pointer\"/>";

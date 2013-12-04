@@ -2,6 +2,7 @@ topicExplorer = new Object();
 topicExplorer.viewModel;
 
 var topicTitleFields = new Array(); 
+var topicBodyFields = new Array();
 var documentTitleFields = new Array();
 var documentBodyFields = new Array();
 var topicColor = "#ffffff";
@@ -78,10 +79,10 @@ $(document).ready(function() {
 		start = new Date().getTime();
 		$.each(json.PLUGINS,function(key, value){		
 			$.getScript('scripts/plugins/'+value+'.js').success(function(data) {
-				
-				
-			}).complete(function(){
-				$( "#ajaxLoader" ).hide();				
+			}).done(function(script){
+				console.log('scripts/plugins/'+value+'.js loaded');		
+			}).fail(function( jqxhr, settings, exception ){
+				console.log('scripts/plugins/'+value+'.js not loaded');
 			});
 		});
 	
@@ -103,13 +104,30 @@ $(document).ready(function() {
 		}
 	};
 	ko.bindingHandlers.topicTest = {
-			update: function(elem,valueAccessor, allBindingsAccessor, viewModel, bindingContext) {			
-				$(elem).append($('<div class="">').append('<input data-bind="value: $data.name">'));
-			}
-		};
+		update: function(elem,valueAccessor, allBindingsAccessor, viewModel, bindingContext) {			
+			$(elem).append($('<div class="">').append('<input data-bind="value: $data.name">'));
+		}
+	};
 	$('#tabView').delegate("p", 'click', function(){		
 		gui.switchTab($(this), false);
 	});
+	
+	$(".menu").menu({
+        select: function(event, ui) {
+            $(this).parent().hide('slow');
+            
+        	console.log($(this).attr('id').split('Menu')[0] + ui.item.text());
+        	
+        	
+            
+        }
+    });
+	
+	$('body').delegate(".menuActivator", 'click', function(e){
+	    $(this).toggleClass("rotate1 rotate2");
+	    $(this).parent().next().toggle('slow');
+	});
+
 });
 //ko.applyBindings(modelView);
 

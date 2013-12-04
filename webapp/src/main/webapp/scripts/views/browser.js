@@ -4,6 +4,8 @@ view.setActive = true;
 view.tabName = 'Dokumentenview';
 view.view = '';
 view.content = '';
+view.text = ko.observableArray();
+
 
 view.init = function() {
 	this.content = $('<div>').attr('class', 'documentList').html(view.Template());
@@ -40,6 +42,28 @@ view.init = function() {
 	
 	//assign documentModel to GUI
 	ko.applyBindings(view.documentModel, this.content[0]);
+	
+	if(documentTitleFields.length > 1 || documentBodyFields.length > 1) {
+		var template;
+		$('#test').before('<div><img class="menuActivator rotate1" src="images/Black_Settings.png" alt="&gt;"/></div>' 
+			+ '<div id="browserMenu" style="display: none;background-color: #EEEEEE; border: 1px solid #D1D1D1; position: absolute; z-index: 1;"/>');
+		if(documentTitleFields.length > 1) {
+			template = 'DocTitle: <ul id="documentTitleMenu" class="menu" > ';
+			$.each(documentTitleFields, function(key, value) {
+				template += '<li><a href="#">' + value + '</a></li>';
+			});
+			template += '</ul>';
+			$('#browserMenu').html(template);
+		}
+		if(documentBodyFields.length > 1) {
+			template = 'DocBody: <ul id="documentBodyMenu" class="menu"> ';
+			$.each(documentBodyFields, function(key, value) {
+				template += '<li><a href="#">' + value + '</a></li>';
+			});
+			template += '</ul>';
+			$('#browserMenu').html($('#browserMenu').html() + template);
+		}
+	}
 };
 
 ko.observableArray.fn.sortByPropertyAsc = function(prop) {
@@ -105,8 +129,11 @@ view.DocumentViewModel = function () {
 //	console.log(self.documentData());
 };
 
-view.DocumentModel = function (document) {
+view.DocumentModel = function (document, docTitleIdx, docBodyIdx) {
 //	console.log(document);
+//	self.documentTitle = ko.observableArray();
+	if(!docTitleIdx)docTitleIdx = 0;
+	if(!docBodyIdx)docBodyIdx = 0;
 	var self = this;
 	self.id = document.DOCUMENT_ID();
 	self.relevanzen = ko.observableArray(document.TOP_TOPIC());
@@ -114,16 +141,17 @@ view.DocumentModel = function (document) {
 	if(typeof document.PR_DOCUMENT_GIVEN_TOPIC == "function") {
 		self.topicRelevance = document.PR_DOCUMENT_GIVEN_TOPIC(); 
 	}
+	
 	if(documentTitleFields.length > 0) {
-		self.documentTitle = document[documentTitleFields[0]]();
+		self.documentTitle = ko.observable(document[documentTitleFields[docTitleIdx]]());
 		$.each(documentTitleFields, function(key, value){
 			self[value] = document[value]();
 		});
 	} else {
-		self.documentTitle = "Document " + document.DOCUMENT_ID();
+		self.documentTitle = ko.observable("Document " + document.DOCUMENT_ID());
 	}
 	if(documentBodyFields.length > 0) {
-		self.documentBody = document[documentBodyFields[0]]();
+		self.documentBody = document[documentBodyFields[docBodyIdx]]();
 		$.each(documentBodyFields, function(key, value){
 			self[value] = document[value]();
 		});
@@ -135,6 +163,7 @@ view.DocumentModel = function (document) {
 view.showDocument = function (e) {
 	var doc = $(e.currentTarget).parents('li').attr('id').split('doc_')[1];
 	var wordList = null;
+	
 	
 	$.getJSON('JsonServlet', {Command:'getDoc', DocId:doc})
 	.done(function(json) {
@@ -168,7 +197,7 @@ view.setDocumentModel = function () {
 };
 
 view.Template = function () {
-	var template = '<ul data-bind="foreach: $root.documentData">'+
+	var template = '<ul class="browser" data-bind="foreach: $root.documentData">'+
 	'<!-- ko if: hasOwnProperty("id") -->'+
 	'<li class="documents" data-bind="attr: { \'id\': \'doc_\'+$data.id }">'+
 		'<div class="docButtons">'+

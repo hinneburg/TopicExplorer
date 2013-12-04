@@ -49,6 +49,14 @@ public class JsonServlet extends HttpServlet {
 				startCommands.add("BestDocsCoreCreate");
 			} else if (command.contains("allTerms")) {
 				startCommands.add("AllTermsCoreCreate");
+			} else if (command.contains("autocomplete")) {
+				communicationContext.put("SEARCH_WORD", request.getParameter("SearchWord"));
+
+				startCommands.add("AutocompleteCoreCreate");
+			} else if (command.contains("search")) {
+				communicationContext.put("SEARCH_WORD", request.getParameter("SearchWord"));
+
+				startCommands.add("SearchCoreCreate");
 			}
 			WebChainManagement.executeCommands(WebChainManagement.getOrderedCommands(startCommands, endCommands),
 					communicationContext);

@@ -79,12 +79,12 @@ html, body {
 .leftBody .leftBodyContent {
 	position: relative;		
 }
-.leftBody .documentList ul {
+.leftBody .documentList ul.browser {
 	list-style: none outside none;
     margin: 0px;
     padding: 0px;	
 }
-.leftBody .documentList ul li {
+.leftBody .documentList ul.browser li {
 	position: relative;
 	background-color: #FFFFFF;
     border: 1px solid gainsboro;
@@ -327,4 +327,31 @@ html, body {
 }
 #tabView .reiter .closeIcon:hover {
 	background-color: orange;
+}
+.rotate1 {
+  -webkit-transform: rotate(0deg) translate3d( 0, 0, 0);
+     -moz-transform: rotate(0deg);
+       -o-transform: rotate(0deg);
+      -ms-transform: rotate(0deg);
+          transform: rotate(0deg);
+  -o-transition:.5s;
+  -ms-transition:.5s;
+  -moz-transition:.5s;
+  -webkit-transition:.5s;
+  transition:.5s;
+    filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=0);
+}
+
+.rotate2 {
+  -webkit-transform: rotate(90deg) translate3d( 0, 0, 0);
+     -moz-transform: rotate(90deg);
+       -o-transform: rotate(90deg);
+      -ms-transform: rotate(90deg);
+          transform: rotate(90deg);
+  -o-transition:.5s;
+  -ms-transition:.5s;
+  -moz-transition:.5s;
+  -webkit-transition:.5s;
+  transition:.5s;
+    filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=2);
 }

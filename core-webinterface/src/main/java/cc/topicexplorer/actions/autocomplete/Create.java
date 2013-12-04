@@ -15,8 +15,9 @@ public class Create extends TableSelectCommand {
 
 		String searchWord = (String) communicationContext.get("SEARCH_WORD");
 		PrintWriter pw = (PrintWriter) communicationContext.get("SERVLET_WRITER");
+		int numberOfTopics = Integer.parseInt(properties.getProperty("malletNumTopics"));
 
-		Autocomplete autocompleteAction = new Autocomplete(searchWord, database, pw);
+		Autocomplete autocompleteAction = new Autocomplete(searchWord, database, pw, numberOfTopics);
 		communicationContext.put("AUTOCOMPLETE_ACTION", autocompleteAction);
 	}
 

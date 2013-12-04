@@ -1,7 +1,6 @@
 package cc.topicexplorer.actions.bestdocs;
 
 import java.io.PrintWriter;
-import java.util.Properties;
 
 import org.apache.commons.chain.Context;
 
@@ -13,8 +12,6 @@ public class Create extends TableSelectCommand {
 	@Override
 	public void tableExecute(Context context) {
 		CommunicationContext communicationContext = (CommunicationContext) context;
-
-		Properties properties = (Properties) communicationContext.get("properties");
 
 		String topicId = (String) communicationContext.get("TOPIC_ID");
 		PrintWriter pw = (PrintWriter) communicationContext.get("SERVLET_WRITER");

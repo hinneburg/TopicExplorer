@@ -11,9 +11,9 @@ public class GenerateSQL extends TableSelectCommand {
 	public void tableExecute(Context context) {
 		CommunicationContext communicationContext = (CommunicationContext) context;
 
-		Search autocompleteAction = (Search) communicationContext.get("SEARCH_ACTION");
+		Search searchAction = (Search) communicationContext.get("SEARCH_ACTION");
 
-		autocompleteAction.executeQuery();
+		searchAction.executeQuery();
 	}
 
 	@Override

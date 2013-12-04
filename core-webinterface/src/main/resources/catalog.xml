@@ -16,4 +16,8 @@
 	<command name="BestDocsCoreGenerateSQL" className="cc.topicexplorer.actions.bestdocs.GenerateSQL"/>	
 	<command name="AllTermsCoreCreate" className="cc.topicexplorer.actions.getterms.Create"/>
 	<command name="AllTermsCoreGenerateSQL" className="cc.topicexplorer.actions.getterms.GenerateSQL"/>
+	<command name="AutocompleteCoreCreate" className="cc.topicexplorer.actions.autocomplete.Create"/>
+	<command name="AutocompleteCoreGenerateSQL" className="cc.topicexplorer.actions.autocomplete.GenerateSQL"/>
+	<command name="SearchCoreCreate" className="cc.topicexplorer.actions.search.Create"/>
+	<command name="SearchCoreGenerateSQL" className="cc.topicexplorer.actions.search.GenerateSQL"/>
 </catalog>

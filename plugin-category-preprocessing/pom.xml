@@ -5,8 +5,8 @@
     <artifactId>topicexplorer-parent</artifactId>
     <version>1.0-SNAPSHOT</version>
   </parent>
-  <artifactId>plugin-category-preprocessing</artifactId>
-  <name>plugin-category-preprocessing</name>
+  <artifactId>plugin-frame-preprocessing</artifactId>
+  <name>plugin-frame-preprocessing</name>
   <dependencies>
   	<dependency>
   		<groupId>cc.topicexplorer</groupId>

@@ -12,6 +12,8 @@ public class MediawikiColorationParallelisation extends Thread {
 	private List<WikiIDTitlePair> list;
 	private SupporterForBothTypes s;
 	private Database db;
+	private boolean bool_transaction;
+	private Integer positionInArray;
 
 	private final String databasePreprocessing;
 
@@ -33,6 +35,7 @@ public class MediawikiColorationParallelisation extends Thread {
 		this.list = list;
 
 		this.databasePreprocessing = prop.getProperty("database.DB");
+		this.bool_transaction = prop.getProperty("Wiki_transaction").equalsIgnoreCase("true");
 	}
 
 	// aus UI kopiert und erweitert mit TOPIC_LABEL, padding,
@@ -173,17 +176,20 @@ public class MediawikiColorationParallelisation extends Thread {
 
 		try {
 
-			db.executeUpdateQuery("START TRANSACTION;");
+			if (bool_transaction) {
+				db.executeUpdateQuery("START TRANSACTION;");
+			}
 
 			PreparedStatement stmt = db.getConnection().prepareStatement(
 					"UPDATE text set old_text = ? WHERE old_id = ?");
 
 			for (Integer i = 0; i < list.size(); i++) {
+				positionInArray = i;
 				id = list.get(i).getOld_id();
 				text = s.getWikiTextOnlyWithID(id);
 				textAsByte = getTokenTopicAssignment(id, text).getBytes();
 
-				// System.out.println(id + "\t" + this.getName() + "\t"+
+				// System.out.println(id + "\t" + this.getName() + "\t" +
 				// System.currentTimeMillis());
 
 				stmt.setBytes(1, textAsByte);
@@ -201,11 +207,13 @@ public class MediawikiColorationParallelisation extends Thread {
 			stmt.executeBatch();
 			stmt.close();
 
-			db.executeUpdateQuery("COMMIT;");
+			if (bool_transaction) {
+				db.executeUpdateQuery("COMMIT;");
+			}
 			db.shutdownDB();
 		} catch (Exception e) {
-			e.printStackTrace();
-			System.err.println("Error in run - jsonoutgettoken ");
+			// e.printStackTrace();
+			System.err.println("Error in run - jsonoutgettoken " + list.get(positionInArray).getOld_id());
 		}
 
 	}

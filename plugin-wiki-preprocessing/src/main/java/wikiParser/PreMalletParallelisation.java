@@ -136,7 +136,7 @@ public class PreMalletParallelisation extends Thread {
 		// important, with this the correct coloring of links is guaranteed
 		if (wikitxt.contains("[[")) {
 			Integer tmpLength = wikitxt.length();
-			wikitxt = correctLinksWithoutPipes(wikitxt);
+			wikitxt = correctLinksWithoutPipes(wikitxt, id_title);
 
 			if (tmpLength != wikitxt.length())
 				needsSaving = true;
@@ -181,11 +181,11 @@ public class PreMalletParallelisation extends Thread {
 	// return wikitxt;
 	// }
 
-	private String correctLinksWithoutPipes(String wikitxt) {
+	private String correctLinksWithoutPipes(String wikitxt, WikiIDTitlePair idTitle) {
 
 		// List<Point> list = getDoubleBracketsPositionsWithoutPipes(wikitxt);
 
-		BracketPositions bp = new BracketPositions(wikitxt);
+		BracketPositions bp = new BracketPositions(wikitxt, idTitle.getOld_id(), idTitle.getWikiTitle());
 		List<PointInteger> list = bp.getSortedListOfAllBracketsWithoutPipes();
 
 		for (Integer i = list.size() - 1; i >= 0; i--) {
@@ -527,6 +527,11 @@ public class PreMalletParallelisation extends Thread {
 						fileInput = textTocsv.getPictures();
 						s.printIntoFile(fileInput, fileOutputFolder + fileseparator + w.getOldID().toString()
 								+ "_picturePositions");
+
+						// get category infos
+						fileInput = textTocsv.getCategroryInfos();
+						s.printIntoFile(fileInput, fileOutputFolder + fileseparator + w.getOldID().toString()
+								+ "_category");
 
 						textTocsv = null;
 					} else {

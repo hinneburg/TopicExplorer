@@ -20,8 +20,15 @@ public class BracketPositions {
 
 	private NavigableMap<Integer, Integer> bracketPositionsLinkTarget;
 
-	public BracketPositions(String wikiText) {
+	private Integer oldId;
+	private String title;
+
+	private HashMap<Integer, Integer> bracketPositionsCategoryLinks;
+
+	public BracketPositions(String wikiText, Integer oldId, String wikiTitle) {
 		this.wikiOrigText = wikiText;
+		this.oldId = oldId;
+		this.title = wikiTitle;
 		init();
 		putBracketPositionsIntoHashMaps();
 	}
@@ -36,6 +43,8 @@ public class BracketPositions {
 		bracketPositionsNestedLinks = new HashMap<Integer, Integer>();
 		bracketPositionsLinksWithoutAnyPipes = new TreeMap<Integer, Integer>();
 		bracketPositionsLinkTarget = new TreeMap<Integer, Integer>();
+
+		bracketPositionsCategoryLinks = new HashMap<Integer, Integer>();
 	}
 
 	public HashMap<Integer, Integer> getBracketPositionWhereTheLinkTargetIsAsHashMap() {
@@ -142,7 +151,14 @@ public class BracketPositions {
 											bracketPositionsHashMapLinksStartTillEnd.put(start, end);
 										}
 									} else if (pipePos == -1) {
-										bracketPositionsLinksWithoutAnyPipes.put(start, end);
+
+										if (!ExtraInformations.getIsCategory(wikiOrigText.substring(start, end))) {
+											bracketPositionsLinksWithoutAnyPipes.put(start, end);
+										} else {
+											// category
+											bracketPositionsCategoryLinks.put(posBracketStarts, i);
+										}
+
 									}
 
 								}
@@ -152,7 +168,14 @@ public class BracketPositions {
 						} else if (nestedStart.size() == 0) {
 							// ending of normal link without any nested links
 							if (!boolHasPipe) {
-								bracketPositionsLinksWithoutAnyPipes.put(posBracketStarts, i);
+
+								if (!ExtraInformations.getIsCategory(wikiOrigText.substring(posBracketStarts, i))) {
+									bracketPositionsLinksWithoutAnyPipes.put(posBracketStarts, i);
+								} else {
+									// category
+									bracketPositionsCategoryLinks.put(posBracketStarts, i);
+								}
+
 								boolBracketOpen = false;
 							}
 						}
@@ -249,6 +272,8 @@ public class BracketPositions {
 			// + bracketPositionsHashMapLinksStartTillEnd.get(i) + " "
 			// + wikiOrigText.substring(i,
 			// bracketPositionsHashMapLinksStartTillEnd.get(i)));
+
+			l.setOldId(oldId);
 			l.setCompleteLinkSpan(new PointInteger(i, bracketPositionsHashMapLinksStartTillEnd.get(i)));
 			l.setWikiTextPosition(new PointInteger(bracketPositionsLinkTarget.get(i) + 1,
 					bracketPositionsHashMapLinksStartTillEnd.get(i))); // eine
@@ -264,6 +289,33 @@ public class BracketPositions {
 			l.setText(wikiOrigText.substring(l.getWikiTextStartPosition(), l.getWikiTextEndPosition()));
 
 			// System.out.println(l.getText() + " " + l.getTarget());
+
+			output.add(l);
+
+			l = null;
+		}
+		return output;
+	}
+
+	public List<CategoryElement> getCategoryLinkList() {
+
+		ArrayList<CategoryElement> output = new ArrayList<CategoryElement>(bracketPositionsCategoryLinks.size());
+		CategoryElement l;
+
+		for (Integer i : bracketPositionsCategoryLinks.keySet()) {
+
+			l = new CategoryElement();
+			// System.out.println(i + " " +
+			// bracketPositionsHashMapLinkTargetInclPipePosition.get(i) + " "
+			// + bracketPositionsHashMapLinksStartTillEnd.get(i) + " "
+			// + wikiOrigText.substring(i,
+			// bracketPositionsHashMapLinksStartTillEnd.get(i)));
+
+			l.setOldId(oldId);
+			// categoryspan...
+			Integer endPosition = bracketPositionsCategoryLinks.get(i);
+			l.setText(wikiOrigText.substring(i, endPosition));
+			l.setTitle(title);
 
 			output.add(l);
 

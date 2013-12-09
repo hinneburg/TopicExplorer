@@ -45,5 +45,4 @@ public class LinkElement extends Element {
 		return "\"" + target + getSpace() + super.getText() + getSpace() + getCompleteLinkStartPosition() + getSpace()
 				+ super.getWikiTextStartPosition() + getSpace() + super.getParsedTextStartPosition() + "\"";
 	}
-
 }

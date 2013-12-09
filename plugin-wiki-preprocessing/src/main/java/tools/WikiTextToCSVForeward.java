@@ -211,11 +211,15 @@ public class WikiTextToCSVForeward {
 				// System.err.println(tmpLineWithoutExtraInfo + " " +
 				// savedPosition);
 
-				// HashMap <Integer,Integer> pictureList = new HashMap<Integer,
-				// Integer>();
-				// ArrayList<PointInteger> pictureList2 = new
-				// ArrayList<PointInteger>();
-				// pictureList2.add(new PointInteger(startPoint, endPoint));
+				// System.err.println(wikiOrigText.substring(savedPosition,
+				// savedPosition + tmpLineWithoutExtraInfo.length())
+				// + " "
+				// + tmpLineWithoutExtraInfo
+				// + " "
+				// + pos
+				// + " "
+				// +
+				// wikiOrigText.substring(0).indexOf(tmpLineWithoutExtraInfo));
 
 				if (tmpLineWithoutExtraInfo.length() > 0) {
 					pos = wikiOrigText.substring(savedPosition).indexOf(tmpLineWithoutExtraInfo);
@@ -225,7 +229,9 @@ public class WikiTextToCSVForeward {
 
 				if (pos > -1) {
 
-					// System.out.println(pos + " " + tmpLine + " old " );
+					// System.err.println(pos + " " + tmpLine + " old ");
+					// bwlogger.append(tmpLine + "\n");
+					// bwlogger.flush();
 
 					try {
 
@@ -313,8 +319,13 @@ public class WikiTextToCSVForeward {
 						}
 
 					} catch (Exception e) {
-						bwlogger.append("fehler in tokenize " + this.wikiTitle + " " + e.getMessage());
-						System.err.println("fehler in tokenize " + this.wikiTitle + " " + e.getMessage());
+
+						// passiert nur bei Kleinigkeiten
+						bwlogger.append("fehler in tokenize " + this.wikiTitle + " " + this.old_id + " "
+								+ e.getMessage() + "\n");
+						// System.err.println("fehler in tokenize " +
+						// this.wikiTitle + " " + this.old_id + " "
+						// + e.getMessage());
 
 						// e.printStackTrace();
 						// System.exit(25);
@@ -322,19 +333,30 @@ public class WikiTextToCSVForeward {
 
 					// System.out.println(pos + " " + tmpLine + " new ");
 
-					// takes the last position of the line, iterates all
-					// elements, saves the position of every token from the text
-					// and returns the new startposition (the last )
-
 					if (tmpLine.contains(ExtraInformations.extraSectionCaptionAppend)) {
-						sectionCaptionPosition.put(pos, new SectionElement(tmpLineWithoutExtraInfo, pos,
-								extraSectionLevel));
+
+						// führende Leerzeichen müssen gezählt und entfernt
+						// werden, weil es sonst zu Problemen beim Verbinden der
+						// zwei Ausgaben kommen kann, Leerzeichen müssen bis
+						// hierhin (von TextConverter kommend) erhalten bleiben,
+						// weil sonst Kontrolle mit ExtraNextToLeftElement nicht
+						// korrekt dem SectionLevel entsprechend geprüft werden
+						// kann
+
+						Integer posSectionStart = getNewPositionWithoutBeginningSpaces(tmpLineWithoutExtraInfo, pos);
+
+						sectionCaptionPosition.put(posSectionStart, new SectionElement(tmpLineWithoutExtraInfo.trim(),
+								posSectionStart, extraSectionLevel, old_id));
 					} else if (isPicture) {
 
-						picturePosition.put(pos, new PictureElement(tmpLineWithoutExtraInfo, pos));
+						picturePosition.put(pos, new PictureElement(tmpLineWithoutExtraInfo, pos, old_id));
 
 						isPicture = false;
 					}
+
+					// takes the last position of the line, iterates all
+					// elements, saves the position of every token from the text
+					// and returns the new startposition (the last )
 
 					savedPosition = splitForOutputAndReturnNewPosition(tmpLineWithoutExtraInfo, pos);
 					bool_from_saved_position = true;
@@ -343,23 +365,39 @@ public class WikiTextToCSVForeward {
 					// error output to logger
 
 					if (tmpLineWithoutExtraInfo.length() > 0) {
-						bwlogger.append("catched error, " + wikiTitle + ": " + old_id + " *" + tmpLineWithoutExtraInfo
-								+ "*:" + (new Integer(pos + savedPosition)) + ": last_savedposition= " + savedPosition
-								+ " id:" + old_id + "\n");
+						bwlogger.append("catched error, " + wikiTitle + " *" + tmpLineWithoutExtraInfo + "*:" + pos
+								+ ": last_savedposition= " + savedPosition + " id:" + old_id + "\n");
 					}
 				}
 			} else {
 				savedPosition = savedPosition + 1; // new line also counts as
 													// one character in utf-8
+				bool_from_saved_position = true; // neu 20131205
 			}
 		}
 		scParsed = null;
+	}
+
+	private Integer getNewPositionWithoutBeginningSpaces(String tmpLineWithoutExtraInfo, Integer pos) {
+		Integer output = pos;
+
+		String space = " ";
+		Integer counter = 0;
+
+		while (tmpLineWithoutExtraInfo.substring(counter).startsWith(space)) {
+			counter++;
+		}
+
+		return output + counter;
 	}
 
 	private String getNormalTextIfExtraInfosAddedToTheEnd(String tmpLine) {
 		return getNormalTextIfExtraInfosAddedToTheEnd(tmpLine, true);
 	}
 
+	/*
+	 * extrapicture 3 und 5 werden wohl nicht merh verwendet
+	 */
 	private String getNormalTextIfExtraInfosAddedToTheEnd(String tmpLine, Boolean changeExtraElement) {
 
 		String output;
@@ -393,7 +431,7 @@ public class WikiTextToCSVForeward {
 
 		} else if (tmpLine.endsWith(ExtraInformations.extraPicure5Append)) {
 			output = tmpLine.replace(ExtraInformations.extraPicure5Append, "");
-			extraNextToLeftElement = "";
+			extraNextToLeftElement = "|";
 			// isPicture = true; // eigentlich kein Bild sondern nur der Text
 
 		} else if (tmpLine.contains(ExtraInformations.extraSectionCaptionAppend)) {
@@ -437,14 +475,17 @@ public class WikiTextToCSVForeward {
 
 	/**
 	 * because [[Datei:...]] or [[File:...]] is within the string, no shifting
-	 * is needed
+	 * is needed TODO erweitern mit allen möglichen Bildern die geshifftet
+	 * werden können bzw müssen
 	 */
 	private boolean getBoolShift(String tmpLine) {
 		if (tmpLine.endsWith(ExtraInformations.extraPicure1Append)
-				|| tmpLine.endsWith(ExtraInformations.extraPicure2Append)
 				|| tmpLine.endsWith(ExtraInformations.extraPicure3Append)
 				|| tmpLine.endsWith(ExtraInformations.extraPicure4Append)) {
 			return true;
+		} else if (tmpLine.endsWith(ExtraInformations.extraPicure2Append)
+				|| tmpLine.endsWith(ExtraInformations.extraPicure5Append)) {
+			return false;
 		} else {
 			return false;
 		}
@@ -618,7 +659,7 @@ public class WikiTextToCSVForeward {
 			s = null;
 			bracketsNavigableSet = new TreeSet<Integer>();
 
-			bp = new BracketPositions(wikiOrigText);
+			bp = new BracketPositions(wikiOrigText, old_id, wikiTitle);
 			bracketPositionsHashMap = bp.getBracketPositionWhereTheLinkTargetIsAsHashMap();
 
 			for (Integer e : bracketPositionsHashMap.keySet()) {
@@ -958,7 +999,9 @@ public class WikiTextToCSVForeward {
 
 	public String getLinkInfos() throws Exception {
 
-		generateMapPositionsInOrigTextAndListPositions();
+		if (mapOfPositionInOrigWikiTextAndListPositionInJoinedTokens == null) {
+			generateMapPositionsInOrigTextAndListPositions();
+		}
 
 		StringBuilder sb = new StringBuilder();
 		List<LinkElement> listOfLinks = bp.getLinkElementlistOfAllLinks();
@@ -987,6 +1030,25 @@ public class WikiTextToCSVForeward {
 			} else if (!onlyParsedLinks) {
 				sb.append(e.getInfosSeparatedInColumns() + "\n");
 			}
+
+		}
+
+		return sb.toString();
+	}
+
+	public String getCategroryInfos() {
+
+		StringBuilder sb = new StringBuilder();
+		List<CategoryElement> listOfLinks = bp.getCategoryLinkList();
+
+		// im Link ist die Position von wikiText enthalten, damit kann die
+		// Verbindung zum geparsten Text hergestellt werden
+
+		for (CategoryElement e : listOfLinks) {
+
+			// if (ExtraInformations.getIsCategory(e.getTarget())) {
+			sb.append(e.getInfosSeparatedInColumns() + "\n");
+			// }
 
 		}
 
@@ -1077,9 +1139,13 @@ public class WikiTextToCSVForeward {
 		StringBuilder sb = new StringBuilder();
 
 		for (TokenElement e : tokenList) {
-			sb.append("\"" + old_id + "\";" + "\"" + String.valueOf(e.getPosReadableText()) + "\";" + "\""
-					+ e.getToken() + "\";" + "\"" + e.getTerm() + "\";" + "\"" + String.valueOf(e.getPosWikitext())
-					+ "\"" + "\n");
+
+			// z.B. werden Bilder nicht geparst und erzeugen somit -1 Werte
+			if (e.getPosReadableText() > -1) {
+				sb.append("\"" + old_id + "\";" + "\"" + String.valueOf(e.getPosReadableText()) + "\";" + "\""
+						+ e.getToken() + "\";" + "\"" + e.getTerm() + "\";" + "\"" + String.valueOf(e.getPosWikitext())
+						+ "\"" + "\n");
+			}
 		}
 		return sb.toString();
 	}

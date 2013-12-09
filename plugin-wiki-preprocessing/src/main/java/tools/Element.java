@@ -6,14 +6,16 @@ public abstract class Element {
 	private String text;
 	private PointInteger textPosition;
 	private PointInteger posParsedText = new PointInteger(-1, -1);
+	private Integer oldId;
 
 	public Element() {
 
 	}
 
-	public Element(String text, Integer posWikitextStart) {
+	public Element(String text, Integer posWikitextStart, Integer oldId) {
 		setText(text);
 		setWikiTextPosition(new PointInteger(posWikitextStart, new Integer(posWikitextStart + text.length())));
+		setOldId(oldId);
 	}
 
 	public String getSpace() {
@@ -55,6 +57,14 @@ public abstract class Element {
 	public String getInfosSeparatedInColumns() {
 
 		return "\"" + text + getSpace() + getWikiTextStartPosition() + getSpace() + getParsedTextStartPosition() + "\"";
+	}
+
+	public Integer getOldId() {
+		return oldId;
+	}
+
+	public void setOldId(Integer oldId) {
+		this.oldId = oldId;
 	}
 
 }

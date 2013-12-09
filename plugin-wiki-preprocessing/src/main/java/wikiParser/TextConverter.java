@@ -262,8 +262,11 @@ public class TextConverter extends AstVisitor<WtNode> {
 
 		bool_has_extra_information = true;
 		extra_information = ExtraInformations.extraBoldAppend;
-		if (b.size() > 1) {
+
+		if (b.size() > 0 && b.get(0).size() > 1) {
 			resetSettingsBeforeReturn(); // only reset,
+			// System.err.println(b.size() + " " + b.get(0).size() + " " +
+			// b.get(0).toString());
 		}
 		iterate(b);
 	}
@@ -271,8 +274,10 @@ public class TextConverter extends AstVisitor<WtNode> {
 	public void visit(WtItalics i) {
 		bool_has_extra_information = true;
 		extra_information = ExtraInformations.extraCursiveAppend;
-		if (i.size() > 1) {
+		if (i.size() > 0 && i.get(0).size() > 1) {
 			resetSettingsBeforeReturn(); // only reset,
+			// System.err.println(i.size() + " " + i.get(0).size() + " " +
+			// i.get(0).toString());
 		}
 		iterate(i);
 	}
@@ -348,7 +353,8 @@ public class TextConverter extends AstVisitor<WtNode> {
 		if (link.getTarget().getContent().contains(":")) {
 
 			String target = link.getTarget().getContent();
-			if (ExtraInformations.getIsPictureStartsWith(target)) {
+			// nur wenn csv erstellt wird,
+			if (ExtraInformations.getIsPictureStartsWith(target) && csvOrReadable) {
 
 				// // Adaptation zu Section
 				// finishLine();
@@ -378,10 +384,15 @@ public class TextConverter extends AstVisitor<WtNode> {
 				bool_has_extra_information = true;
 				extra_information = ExtraInformations.extraPicure4Append;
 
-				write(link.getTarget().getContent() + "|");
+				write(target);
 
-				bool_has_extra_information = true;
-				extra_information = ExtraInformations.extraPicure5Append;
+				// bool_has_extra_information = true;
+				// extra_information = ExtraInformations.extraPicure5Append;
+
+				// für Abstand zwischen Bild und Bildtext
+				if (!csvOrReadable) {
+					write(" ");
+				}
 				iterate(link.getTitle());
 
 				if (!csvOrReadable) {
@@ -416,6 +427,21 @@ public class TextConverter extends AstVisitor<WtNode> {
 		if (!link.hasTitle()) {
 			write(link.getTarget().getContent());
 		} else {
+
+			// wenn mehr als nur ein Textfeld im Linktitel enthalten ist, kann
+			// die Extrainformation nicht mehr an den Linktitel angefügt werden,
+			// weil es sonst zu Fehlern beim suchen kommt. tritt z.B. auf wenn
+			// xml Tags enthalten sind
+			// link.get(1) == titel
+
+			if (link.get(1).size() > 1) {
+				resetSettingsBeforeReturn();
+			} else if (link.get(1).size() == 1) {
+				if (link.get(1).get(0).size() > 1) {
+					resetSettingsBeforeReturn();
+				}
+			}
+
 			iterate(link.getTitle());
 		}
 
@@ -443,13 +469,13 @@ public class TextConverter extends AstVisitor<WtNode> {
 
 		finishLine();
 
-		String title = sb.toString().trim();
+		String title = sb.toString(); // .trim();
 
 		sb = saveSb; // gespeicherteret sb zurück
 
 		if (!csvOrReadable) {
 			newline(2);
-			write(title);
+			write(title.trim());
 			newline(1);
 		} else {
 			write(title);
@@ -508,8 +534,10 @@ public class TextConverter extends AstVisitor<WtNode> {
 			// Titel??, gibt es auch mehr Unterknoten? eventuell dynamisch
 			// machen?
 
-			bool_has_extra_information = true;
-			extra_information = ExtraInformations.extraPicure2Append;
+			// bool_has_extra_information = true;
+			// extra_information = ExtraInformations.extraPicure2Append; wird
+			// falsch geparst in: Australia_at_the_1984_Summer_Olympics , Bild
+			// in überschrift
 
 			dispatch(n.get(2));
 		} else {

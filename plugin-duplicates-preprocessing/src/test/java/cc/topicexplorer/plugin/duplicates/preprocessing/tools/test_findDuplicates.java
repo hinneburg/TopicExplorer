@@ -6,7 +6,6 @@ import org.junit.Test;
 
 
 import cc.topicexplorer.database.Database;
-//import cc.topicexplorer.database.Database;
 import cc.topicexplorer.plugin.duplicates.preprocessing.implementation.Duplicates;
 
 public class test_findDuplicates {

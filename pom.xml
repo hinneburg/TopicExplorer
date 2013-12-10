@@ -18,7 +18,7 @@
 		<module>plugin-hierarchicaltopic-preprocessing</module>
 		<module>plugin-prune-preprocessing</module>
 		<module>plugin-category-preprocessing</module>
-		<!-- <module>plugin-frame-preprocessing</module> -->
+		<module>plugin-frame-preprocessing</module>
 		<module>plugin-fulltext-preprocessing</module>
 		<module>plugin-link-preprocessing</module>
 		<module>plugin-time-preprocessing</module>
@@ -46,7 +46,6 @@
 			<artifactId>guava</artifactId>
 			<version>15.0</version>
 		</dependency>
-
 	</dependencies>
 	<build>
 		<plugins>

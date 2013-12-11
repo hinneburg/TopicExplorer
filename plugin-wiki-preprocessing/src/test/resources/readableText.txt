@@ -1,0 +1,107 @@
+In evolutionary biology a group of organisms share common descent if they have a common ancestor There is strong quantitative support for the theory that all living organisms on
+Earth are descended from a common ancestor
+
+Charles Darwin proposed the theory of universal common descent through an evolutionary process in On the Origin of Species twice stating the hypothesis that there was only one
+progenitor for all life forms and ending with "There is a grandeur in this view of life, with its several powers, having been originally breathed into a few forms or into one".
+The theory asserts that all currently living organisms on Earth share a common genetic heritage with each being the descendant from a single original species, though the
+suggestion of substantial horizontal gene transfer during early evolution has led to questions about monophyly of life.
+
+The last universal ancestor (LUA) (also called the last universal common ancestor, LUCA), that is, the most recent common ancestor of all currently living organisms, is believed
+to have appeared about 3.9 billion years ago
+
+History
+
+In the 1740s, Pierre-Louis Moreau de Maupertuis made the first known suggestion in a series of essays that all organisms may have had a common ancestor, and that they had diverged
+through random variation and natural selection In Essai de Cosmologie Maupertuis noted:
+
+Could one not say that, in the fortuitous combinations of the productions of nature, as there must be some characterized by a certain relation of fitness which are able to
+subsist, it is not to be wondered at that this fitness is present in all the species that are currently in existence? Chance, one would say, produced an innumerable multitude of
+individuals; a small number found themselves constructed in such a manner that the parts of the animal were able to satisfy its needs; in another infinitely greater number, there
+was neither fitness nor order: all of these latter have perished. Animals lacking a mouth could not live; others lacking reproductive organs could not perpetuate themselves ...
+The species we see today are but the smallest part of what blind destiny has produced ... In 1790, Immanuel Kant wrote in Kritik der Urtheilskraft Critique of Judgement that the
+analogy of animal forms implies a common original type, and thus a common parent.
+
+In 1795, Charles Darwin's grandfather, Erasmus Darwin asked:
+
+[W]ould it be too bold to imagine, that in the great length of time, since the earth began to exist, perhaps millions of ages before the commencement of the history of mankind,
+would it be too bold to imagine, that all warm-blooded animals have arisen from one living filament, which endued with animality, with the power of acquiring new parts attended
+with new propensities, directed by irritations, sensations, volitions, and associations; and thus possessing the faculty of continuing to improve by its own inherent activity, and
+of delivering down those improvements by generation to its posterity, world without end? In 1859, Charles Darwin's The Origin of Species was published. The views about common
+descent expressed therein were that it was possible that there was only one progenitor for all life forms.
+
+"Therefore I should infer from analogy that probably all the organic beings which have ever lived on this earth have descended from some one primordial form, into which life was
+first breathed." (p 484) Darwin's famous closing sentence describes the "grandeur in this view of life, with its several powers, having been originally breathed into a few forms
+or into one." (p 490)
+
+Evidence of universal common descent
+
+Common biochemistry and genetic code
+All known forms of life are based on the same fundamental biochemical organisation: genetic information encoded in DNA transcribed into RNA, through the effect of protein- and
+RNA-enzymes then translated into proteins by (highly similar) ribosomes, with ATP, NADPH and others as energy sources, etc. Furthermore, the genetic code (the "translation table"
+according to which DNA information is translated into proteins) is nearly identical for all known lifeforms, from bacteria and archaea to animals and plants The universality of
+this code is generally regarded by biologists as definitive evidence in favor of the theory of universal common descent. Analysis of the small differences in the genetic code has
+also provided support for universal common descent. An example would be Cytochrome c which most organisms actually share. A statistical comparison of various alternative
+hypotheses has shown that universal common ancestry is significantly more probable than models involving multiple origins.
+
+Selectively neutral similarities
+Similarities which have no adaptive relevance cannot be explained by convergent evolution, and therefore they provide compelling support for the theory of universal common
+descent.
+
+Such evidence has come from two areas: amino acid sequences and DNA sequences. Proteins with the same three-dimensional structure need not have identical amino acid sequences; any
+irrelevant similarity between the sequences is evidence for common descent. In certain cases, there are several codons (DNA triplets) that code for the same amino acid. Thus, if
+two species use the same codon at the same place to specify an amino acid that can be represented by more than one codon, that is evidence for a recent common ancestor.
+
+Other similarities
+The universality of many aspects of cellular life is often pointed to as supportive evidence to the more compelling evidence listed above. These similarities include the energy
+carrier adenosine triphosphate (ATP), and the fact that all amino acids found in proteins are left-handed. It is, however, possible that these similarities resulted because of the
+laws of physics and chemistry, rather than universal common descent and therefore resulted in convergent evolution
+
+Phylogenetic trees
+Another important piece of evidence is that it is possible to construct detailed phylogenetic trees (that is, "genealogic trees" of species) mapping out the proposed divisions and
+common ancestors of all living species. In 2010 an analysis of available genetic data, mapping them to phylogenetic trees, gave "firm quantitative support for the unity of life.
+...there is now strong quantitative support, by a formal test, for the unity of life. It should be noted, however, the 'formal' test is criticised for not including consideration
+of convergent evolution and Theobald has defended the method against this claim.
+
+Traditionally, these trees have been built using morphological methods, such as appearance, embryology etc. Recently, it has been possible to construct these trees using molecular
+data, based on similarities and differences between genetic and protein sequences. All these methods produce essentially similar results, even though most genetic variation has no
+influence over external morphology. That phylogenetic trees based on different types of information agree with each other is strong evidence of a real underlying common descent.
+
+Illustrations of common descent
+
+Artificial selection
+Artificial selection demonstrates the diversity that can exist among organisms that share a relatively recent common ancestor. In artificial selection, one species is bred
+selectively at each generation, allowing only those organisms that exhibit desired characteristics to reproduce. These characteristics become increasingly well-developed in
+successive generations. Artificial selection was successful long before science discovered the genetic basis.
+
+Image:Big and little dog 1.jpgThe Chihuahua mix and Great Dane illustrate the range of sizes among dog breeds. 
+
+Dog breeding
+The diversity of domesticated dogs is an example of the power of artificial selection. All breeds share common ancestry, having descended from wolves Humans selectively bred them
+to enhance specific characteristics, such as color and length or body size. This created a range of breeds that include the Chihuahua Great Dane Basset Hound Pug and Poodle Wild
+wolves, which did not undergo artificial selection, are relatively uniform in comparison.
+
+Wild cabbage
+
+Image:Brassica oleracea0.jpgWild Cabbage plant  Early farmers cultivated many popular vegetables from the Brassica oleracea (wild cabbage) by artificially selecting for certain
+attributes. Common vegetables such as cabbage kale broccoli cauliflower kohlrabi and Brussels sprouts are all descendants of the wild cabbage plant. Brussels sprouts were created
+by artificially selecting for large bud size. Broccoli was bred by selecting for large flower stalks. Cabbage was created by selecting for short petioles Kale was bred by
+selecting for large leaves
+
+Natural selection
+
+Image:Darwin's finches.jpegDarwin's finches  Natural selection is the evolutionary process by which heritable traits that increase an individual's fitness become more common, and
+heritable traits that decrease an individual's fitness become less common.
+
+Darwin's finches
+During Charles Darwin's studies on the Galápagos Islands Darwin observed 13 species of finches that are closely related and differ most markedly in the shape of their beaks The
+beak of each species is suited to the food available in its particular environment, suggesting that beak shapes evolved by natural selection Large beaks were found on the islands
+where the primary source of food for the finches are nuts and therefore the large beaks allowed the birds to be better equipped for opening the nuts and staying well nourished.
+Slender beaks were found on the finches which found insects to be the best source of food on the island they inhabited; their slender beaks allowed the birds to be better equipped
+for pulling out the insects from their tiny hiding places. The finch is also found on the main land and it is thought that they migrated to the islands and began adapting to their
+environment through natural selection
+
+See also
+
+References
+
+External links

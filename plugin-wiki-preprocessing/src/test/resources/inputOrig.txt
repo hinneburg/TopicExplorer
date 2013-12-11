@@ -1,0 +1,143 @@
+{{for|use of the term in linguistics and philology|Comparative method|Historical linguistics|Proto-language|Textual criticism}}
+{{Evolutionary biology}}
+
+In [[evolutionary biology|evolutionary biology]], a group of [[organism|organism]]s share '''common descent''' if they have a '''common [[ancestor|ancestor]]'''. There is [[evidence of common descent|strong quantitative support]] for the theory that all [[Life on Earth|living organisms on Earth]] are descended from a [[Last universal ancestor|common ancestor]].<ref name="theobald" /><ref name = "steel">{{cite journal | last1 = Steel | first1 = Mike|author1-link=Mike Steel (mathematician) | last2 = Penny | first2 = David | title = Origins of life: Common ancestry put to the test | journal = Nature | volume = 465 | issue = 7295 | pages = 168–9 | year = 2010 | pmid = 20463725 | doi = 10.1038/465168a }}</ref>
+
+[[Charles Darwin|Charles Darwin]] proposed the theory of universal common descent through an [[evolution|evolution]]ary process in ''[[On the Origin of Species|On the Origin of Species]]'', twice stating the hypothesis that there was only one progenitor for all life forms and ending with "There is a grandeur in this view of life, with its several powers, having been originally breathed into a few forms or into one".<ref name = "origin">Darwin, C., "The Origin of Species by Means of Natural Selection, or the Preservation of Favoured Races in the Struggle For Life", London, John Murrary, (1859) p. 490</ref> The theory asserts that all currently living organisms on Earth share a common genetic heritage with each being the descendant from a single original species, though the suggestion of substantial [[horizontal gene transfer|horizontal gene transfer]] during early evolution has led to questions about [[monophyly|monophyly]] of life.<ref name="theobald" />
+
+The [[last universal ancestor|last universal ancestor]] (LUA) (also called the last universal common ancestor, LUCA), that is, the [[most recent common ancestor|most recent common ancestor]] of all currently living organisms,<ref name="theobald" /> is believed to have appeared about [[Timeline of evolution|3.9 billion years ago]].<ref>{{cite journal | doi=10.1038/scientificamerican0200-90 | month=February | last1=Doolittle | url=http://shiva.msu.montana.edu/courses/mb437_537_2005_fall/docs/uprooting.pdf | first1=WF |title=Uprooting the tree of life | journal= Scientific American | year=2000 | volume=282 |issue=6 |pages= 90–95 | pmid = 10710791 }}</ref><ref>{{cite journal | last1 = Glansdorff | first1 = N | last2 = Xu | first2 = Y | last3 = Labedan | first3 = B | title = The last universal common ancestor: emergence, constitution and genetic legacy of an elusive forerunner. | journal = Biology direct | volume = 3 | issue = 1 | pages = 29 | year = 2008 | pmid = 18613974 | pmc = 2478661 | doi = 10.1186/1745-6150-3-29 }}</ref>
+
+==History==
+{{See also|History of evolutionary thought}}
+
+In the 1740s, [[Pierre-Louis Moreau de Maupertuis|Pierre-Louis Moreau de Maupertuis]] made the first known suggestion in a series of essays that all organisms may have had a common ancestor, and that they had diverged through random variation and [[natural selection|natural selection]].<ref name="bromley">J. S. Bromley, [http://books.google.com/books?id=OOgzAAAAIAAJ&pg=PA62&dq=Maupertuis+%22for+the+first+time%22&cd=1#v=onepage&q=Maupertuis%20%22for%20the%20first%20time%22&f=false The new Cambridge modern history: The rise of Great Britain and Russia, 1688-1715/25], CUP Archive, 1970, ISBN 978-0-521-07524-4, pgs. 62-63.</ref><ref>Geoffrey Russell Richards Treasure, [http://books.google.com/books?id=C94OAAAAQAAJ&pg=PA142&dq=%22blind+destiny+has+produced%22&cd=6#v=onepage&q=%22blind%20destiny%20has%20produced%22&f=false The making of modern Europe, 1648-1780], Taylor & Francis, 1985, ISBN 978-0-416-72370-0, pg. 142</ref> In ''Essai de Cosmologie'', Maupertuis noted:
+
+<blockquote>Could one not say that, in the fortuitous combinations of the productions of nature, as there must be some characterized by a certain relation of fitness which are able to subsist, it is not to be wondered at that this fitness is present in all the species that are currently in existence? Chance, one would say, produced an innumerable multitude of individuals; a small number found themselves constructed in such a manner that the parts of the animal were able to satisfy its needs; in another infinitely greater number, there was neither fitness nor order: all of these latter have perished. Animals lacking a mouth could not live; others lacking reproductive organs could not perpetuate themselves ... The species we see today are but the smallest part of what blind destiny has produced ...<ref>C. Leon Harris, [http://books.google.com/books?id=Fkqg3TIkBJwC&pg=PA107&dq=Essai+de+Cosmologie+%22blind+destiny%22&cd=1#v=onepage&q=Essai%20de%20Cosmologie%20%22blind%20destiny%22&f=false Evolution, genesis and revelations, with readings from Empedocles to Wilson], SUNY Press, 1981, ISBN 978-0-87395-487-7, pg. 107</ref></blockquote>
+
+In 1790, [[Immanuel Kant|Immanuel Kant]] wrote in ''Kritik der Urtheilskraft'' (''[[Critique of Judgement|Critique of Judgement]]'') that the analogy of animal forms implies a common original type, and thus a common parent.<ref>Immanuel Kant and Werner S. Pluhar, [http://books.google.com/books?id=y5wQD-ioaUUC&pg=PA304&dq=Critique+of+Judgment+%22original+mother%22&cd=1#v=onepage&q=&f=false ''Critique of Judgment''], Hackett Publishing, 1987, ISBN 978-0-87220-025-8, p. 304: "Despite all the variety among these forms, they seem to have been produced according to a common archetype, and this analogy among them reinforces our suspicion that they are actually akin, produced by a common original mother."</ref>
+
+In 1795, Charles Darwin's grandfather, [[Erasmus Darwin|Erasmus Darwin]], asked:
+<blockquote>[W]ould it be too bold to imagine, that in the great length of time, since the earth began to exist, perhaps millions of ages before the commencement of the history of mankind, would it be too bold to imagine, that all warm-blooded animals have arisen from one living filament, which {{Smallcaps|the great First Cause}} endued with animality, with the power of acquiring new parts attended with new propensities, directed by irritations, sensations, volitions, and associations; and thus possessing the faculty of continuing to improve by its own inherent activity, and of delivering down those improvements by generation to its posterity, world without end?<ref>{{Cite book
+|last=Darwin
+|first=Erasmus
+|authorlink=Erasmus Darwin
+|title=[[Zoonomia|Zoonomia; or the Laws of Organic Life]]
+|origyear=1795
+|url=http://books.google.com/?id=XRUaAAAAMAAJ&printsec=frontcover&q=
+|accessdate=November 20, 2009
+|edition=4th American
+|volume=1
+|year=1818
+|publisher=Edward Earle
+|location=Philadelphia
+|isbn=
+|oclc=
+|doi=
+|id=
+|page=397 [§&nbsp;39.4.8]
+|chapter=Generation
+|ref=
+}}</ref></blockquote>
+
+In 1859, Charles Darwin's ''The Origin of Species'' was published. The views about common descent expressed therein were that it was possible that there was only one progenitor for all life forms.
+
+<blockquote>"Therefore I should infer from analogy that probably all the organic beings which have ever lived on this earth have descended from some one primordial form, into which life was first breathed." <ref name = "origin"/> (p 484)</blockquote>
+
+Darwin's famous closing sentence describes the "grandeur in this view of life, with its several powers, having been originally breathed into a few forms or into one."<ref name = "origin"/> (p 490)
+
+==Evidence of universal common descent==
+{{Main|Evidence of common descent}}
+
+===Common biochemistry and genetic code===
+All known forms of life are based on the same fundamental biochemical organisation: genetic information encoded in [[DNA|DNA]], transcribed into RNA, through the effect of protein- and RNA-[[enzyme|enzyme]]s, then translated into [[protein|protein]]s by (highly similar) ribosomes, with ATP, NADPH and others as energy sources, etc. Furthermore, the [[genetic code|genetic code]] (the "translation table" according to which DNA information is translated into proteins) is nearly identical for all known lifeforms, from [[bacteria|bacteria]] and [[archaea|archaea]] to [[animal|animal]]s and [[plant|plant]]s. The universality of this code is generally regarded by biologists as definitive evidence in favor of the theory of universal common descent. Analysis of the small differences in the genetic code has also provided support for universal common descent. An example would be [[Cytochrome c|Cytochrome c]] which most organisms actually share. <ref>{{Cite journal| author=Knight, Robin, et al. | year=2001 | month=January | title=Rewiring the Keyboard: Evolvability of the Genetic Code | journal=Nature Reviews Genetics | pages=49–58 | volume=2 | issue=1 | pmid=11253070 | doi=10.1038/35047500}}</ref> A statistical comparison of various alternative hypotheses has shown that universal common ancestry is significantly more probable than models involving multiple origins.<ref name="theobald">{{Cite journal | author=A formal test of the theory of universal common ancestry | date=13 May 2010 | journal=Nature | volume=465 | pages=219–222 | doi=10.1038/nature09014 | issue=7295 | pmid=20463738 | title=A formal test of the theory of universal common ancestry.}}</ref><ref name="NGS-20100514">{{cite web |last=Than |first=Ker |title=All Species Evolved From Single Cell, Study Finds |url=http://news.nationalgeographic.com/news/2010/05/100513-science-evolution-darwin-single-ancestor/ |date=14 May 2010 |publisher=[[National Geographic Society|National Geographic Society]] |accessdate=2011-10-30 }}</ref>
+
+====Selectively neutral similarities====
+Similarities which have no adaptive relevance cannot be explained by convergent evolution, and therefore they provide compelling support for the theory of universal common descent.
+
+Such evidence has come from two areas: amino acid sequences and DNA sequences. Proteins with the same three-dimensional structure need not have identical [[amino acid|amino acid]] sequences; any irrelevant similarity between the sequences is evidence for common descent. In certain cases, there are several [[codon|codon]]s (DNA triplets) that code for the same amino acid. Thus, if two species use the same codon at the same place to specify an amino acid that can be represented by more than one codon, that is evidence for a recent common ancestor.
+
+====Other similarities====
+The universality of many aspects of cellular life is often pointed to as supportive evidence to the more compelling evidence listed above. These similarities include the energy carrier [[adenosine triphosphate|adenosine triphosphate]] (ATP), and the fact that all amino acids found in proteins are left-handed. It is, however, possible that these similarities resulted because of the laws of physics and chemistry, rather than universal common descent and therefore resulted in [[convergent evolution|convergent evolution]].
+
+===Phylogenetic trees===
+{{PhylomapB|caption=A phylogenetic tree based on rRNA genes.}}
+{{See also|Tree of life (science)}}
+Another important piece of evidence is that it is possible to construct detailed [[phylogenetic tree|phylogenetic tree]]s (that is, "genealogic trees" of species) mapping out the proposed divisions and common ancestors of all living species. In 2010 an analysis of available genetic data, mapping them to phylogenetic trees, gave "firm quantitative support for the unity of life. ...there is now strong quantitative support, by a formal test,<ref name="theobald" /> for the unity of life.<ref name = "steel" />  It should be noted, however, the 'formal' test is criticised<ref>{{cite journal|last=Yonezawa|first=Takahiro|coauthors=Hasegawa, Masami|title=Was the universal common ancestry proved?|journal=Nature|date=16 December 2010|volume=468|issue=7326|pages=E9–E9|doi=10.1038/nature09482}}</ref> for not including consideration of [[convergent evolution|convergent evolution]], and Theobald has defended the method against this claim.<ref>{{cite journal|last=Theobald|first=D. L.|title=Theobald reply|journal=Nature|date=16 December 2010|volume=468|issue=7326|pages=E10–E10|doi=10.1038/nature09483}}</ref><ref>{{cite journal|last=Theobald|first=D. L.|title=On universal common ancestry, sequence similarity, and phylogenetic structure: The sins of P-values and the virtues of Bayesian evidence|journal=Biology Direct|year=2011|volume=6|pages=60|doi=10.1186/1745-6150-6-60|pmid=22114984|issue=1|pmc=3314578}}</ref>
+
+Traditionally, these trees have been built using morphological methods, such as appearance, [[embryology|embryology]], etc. Recently, it has been possible to construct these trees using molecular data, based on similarities and differences between genetic and protein sequences. All these methods produce essentially similar results, even though most [[genetic variation|genetic variation]] has no influence over external morphology. That phylogenetic trees based on different types of information agree with each other is strong evidence of a real underlying common descent.<ref>{{Cite web
+|url=http://www.talkorigins.org/faqs/comdesc/section1.html#independent_convergence
+|title=Prediction 1.3: Consilience of Independent Phylogenies
+|accessdate=November 20, 2009
+|last=Theobald
+|first=Douglas
+|authorlink=
+|year=2004
+|work=29+ Evidences for Macroevolution
+|publisher=TalkOrigins Foundation
+|doi=
+|archiveurl=
+|archivedate=
+|quote=
+}}</ref>
+{{-}}
+
+==Illustrations of common descent==
+{{Details|Evidence of common descent}}
+
+===Artificial selection===
+[[Artificial selection|Artificial selection]] demonstrates the diversity that can exist among organisms that share a relatively recent common ancestor. In artificial selection, one species is bred selectively at each generation, allowing only those organisms that exhibit desired characteristics to reproduce. These characteristics become increasingly well-developed in successive generations. Artificial selection was successful long before science discovered the genetic basis. [[Image:Big and little dog 1.jpg|thumb|The [[Chihuahua (dog)|Chihuahua]] [[mixed-breed dog|mix]] and [[Great Dane|Great Dane]] illustrate the range of sizes among dog breeds.]]
+
+====Dog breeding====
+{{Main|Dog breeding}}
+The diversity of domesticated [[dog|dog]]s is an example of the power of artificial selection. All breeds share common ancestry, having descended from [[wolf|wolves]]. Humans selectively bred them to enhance specific characteristics, such as color and length or body size. This created a range of breeds that include the [[Chihuahua (dog)|Chihuahua]], [[Great Dane|Great Dane]], [[Basset Hound|Basset Hound]], [[Pug|Pug]], and [[Poodle|Poodle]]. Wild wolves, which did not undergo artificial selection, are relatively uniform in comparison.
+
+====Wild cabbage====
+[[Image:Brassica oleracea0.jpg|thumb|Wild Cabbage plant]]
+{{Main|Brassica oleracea}}
+Early farmers cultivated many popular vegetables from the [[Brassica oleracea|Brassica oleracea]] (wild cabbage) by artificially selecting for certain attributes. Common vegetables such as [[cabbage|cabbage]], [[kale|kale]], [[broccoli|broccoli]], [[cauliflower|cauliflower]], [[kohlrabi|kohlrabi]] and [[Brussels sprouts|Brussels sprouts]] are all descendants of the wild cabbage plant.<ref>{{Cite book
+|last=Raven
+|first=Peter H., et al.
+|authorlink=Peter H. Raven
+|title=Biology of Plants
+|url=
+|accessdate=
+|edition=7th rev.
+|year=2005
+|publisher=W.H. Freeman
+|location=New York
+|isbn=0-7167-6284-6
+|oclc=183148564
+|doi=
+|id=
+|page=
+|pages=
+|quote=[These vegetables were] all produced from a single species of plant (Brassica oleraca), a member of the [[mustard plant|mustard family]].
+|ref=
+}}</ref>{{Page needed|date=November 2009}} Brussels sprouts were created by artificially selecting for large [[bud|bud]] size. Broccoli was bred by selecting for large [[flower|flower]] stalks. Cabbage was created by selecting for short [[Petiole (botany)|petioles]]. Kale was bred by selecting for large [[leaf|leaves]].
+
+===Natural selection===
+{{Main|Natural selection}}
+[[Image:Darwin's finches.jpeg|thumb|Darwin's finches]]
+Natural selection is the evolutionary process by which [[heritable|heritable]] traits that increase an individual's fitness become more common, and heritable traits that decrease an individual's fitness become less common.
+
+====Darwin's finches====
+{{Main|Darwin's finches}}
+During [[Charles Darwin|Charles Darwin]]'s studies on the [[Galápagos Islands|Galápagos Islands]], Darwin observed 13 species of [[Darwin's finches|finches]] that are closely related and differ most markedly in the shape of their [[beak|beak]]s. The beak of each [[species|species]] is suited to the food available in its particular environment, suggesting that beak shapes evolved by [[natural selection|natural selection]]. Large beaks were found on the islands where the primary source of food for the finches are [[nut (fruit)|nuts]] and therefore the large beaks allowed the birds to be better equipped for opening the nuts and staying well nourished. Slender beaks were found on the finches which found [[insect|insect]]s to be the best source of food on the island they inhabited; their slender beaks allowed the birds to be better equipped for pulling out the insects from their tiny hiding places. The finch is also found on the main land and it is thought that they [[bird migration|migrated]] to the islands and began [[adaptation|adapting]] to their environment through [[natural selection|natural selection]].
+
+==See also==
+
+{{Wikipedia books|Evolution|position=left}}
+
+==References==
+{{Reflist|colwidth=30em}}
+
+==External links==
+* [http://www.talkorigins.org/faqs/comdesc/ 29+ Evidences for Macroevolution: the Scientific Case for Common Descent]. From the [[TalkOrigins Archive|TalkOrigins Archive]]
+* [http://tolweb.org/tree/phylogeny.html The Tree of Life Web Project]
+
+{{origin_of_life}}
+
+{{DEFAULTSORT:Common Descent}}
+[[Category:Evolutionary biology]]
+
+[[ko:공통 조상|ko:공통 조상]]

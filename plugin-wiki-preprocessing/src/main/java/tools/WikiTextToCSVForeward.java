@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.NavigableSet;
 import java.util.Properties;
@@ -63,6 +64,7 @@ public class WikiTextToCSVForeward {
 	private HashMap<Integer, Integer> mapOfPositionInOrigWikiTextAndListPositionInJoinedTokens;
 
 	private final boolean onlyParsedLinks;
+	private final boolean debug;
 
 	public WikiTextToCSVForeward(WikiArticle w, BufferedWriter bwLogger, Properties prop) {
 
@@ -75,6 +77,7 @@ public class WikiTextToCSVForeward {
 		this.bwlogger = bwLogger;
 
 		onlyParsedLinks = prop.getProperty("Wiki_onlyParsedLinks").equalsIgnoreCase("true");
+		debug = prop.getProperty("Wiki_debug").equalsIgnoreCase("true");
 
 		init();
 
@@ -1045,11 +1048,7 @@ public class WikiTextToCSVForeward {
 		// Verbindung zum geparsten Text hergestellt werden
 
 		for (CategoryElement e : listOfLinks) {
-
-			// if (ExtraInformations.getIsCategory(e.getTarget())) {
 			sb.append(e.getInfosSeparatedInColumns() + "\n");
-			// }
-
 		}
 
 		return sb.toString();
@@ -1145,6 +1144,14 @@ public class WikiTextToCSVForeward {
 				sb.append("\"" + old_id + "\";" + "\"" + String.valueOf(e.getPosReadableText()) + "\";" + "\""
 						+ e.getToken() + "\";" + "\"" + e.getTerm() + "\";" + "\"" + String.valueOf(e.getPosWikitext())
 						+ "\"" + "\n");
+			} else {
+				if (debug) {
+					try {
+						bwlogger.append(old_id + " " + wikiTitle + e.getToken() + " getPosReadableText<0 " + "\n");
+					} catch (IOException e1) {
+						// e1.printStackTrace();
+					}
+				}
 			}
 		}
 		return sb.toString();
@@ -1211,5 +1218,20 @@ public class WikiTextToCSVForeward {
 		}
 
 		return sb.toString();
+	}
+
+	public LinkedList<String> getCateroryListAsString() {
+
+		List<CategoryElement> listOfLinks = bp.getCategoryLinkList();
+		LinkedList<String> list = new LinkedList<String>();
+
+		// im Link ist die Position von wikiText enthalten, damit kann die
+		// Verbindung zum geparsten Text hergestellt werden
+
+		for (CategoryElement e : listOfLinks) {
+			list.add(ExtraInformations.getTargetWithoutCategoryInformation(e.getText()));
+		}
+
+		return list;
 	}
 }

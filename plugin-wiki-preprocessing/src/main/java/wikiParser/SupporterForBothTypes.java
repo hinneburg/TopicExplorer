@@ -181,7 +181,7 @@ public class SupporterForBothTypes {
 		rs.close();
 
 		sql = " SELECT page_title FROM page p WHERE page_id = " + rev_page + ";";
-		System.out.println(sql);
+		// System.out.println(sql);
 		rs = db.executeQuery(sql);
 
 		// only 1 result is needed, if not exception
@@ -196,11 +196,18 @@ public class SupporterForBothTypes {
 		return new WikiIDTitlePair(old_id, wikiTitle);
 	}
 
+	public String fillSpacesWithUnderscores(String title) {
+
+		title = title.trim();
+		title = title.replaceAll(" ", "_");
+
+		return title;
+	}
+
 	public String getWikitextFromFromWikiTitleFromDatabase(String wikiTitle) throws SQLException, Exception {
 		// whitespaces in the title must be replaced
 		if (wikiTitle.indexOf(" ") != -1) {
-			wikiTitle = wikiTitle.trim();
-			wikiTitle = wikiTitle.replaceAll(" ", "_");
+			wikiTitle = fillSpacesWithUnderscores(wikiTitle);
 		}
 
 		Integer rev_text_id_old_id = -1;

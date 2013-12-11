@@ -94,9 +94,18 @@ public class BracketPositions {
 
 						// Links als Bilder mit nur einem Pipe erkennen und
 						// ignorieren
-						if (ExtraInformations.getIsPictureStartsWith(wikiOrigText.substring(posBracketStarts, i))) {
+						String subString = wikiOrigText.substring(posBracketStarts, i);
+
+						if (ExtraInformations.getIsPictureStartsWith(subString)) {
 							boolBracketOpen = false;
 
+						} else if (ExtraInformations.getIsCategory(subString)) {
+							boolBracketOpen = false;
+							// pipe ist für die Sortierung zuständig und stört
+							Integer posPipe = subString.indexOf('|');
+							if (posPipe > -1) {
+								bracketPositionsCategoryLinks.put(posBracketStarts, posPipe + posBracketStarts);
+							}
 						} else {
 
 							// 100 % correct link, with only one pipe
@@ -105,6 +114,7 @@ public class BracketPositions {
 							bracketPositionsHashMapLinksStartTillEnd.put(posBracketStarts, i);
 							boolBracketOpen = false;
 						}
+						subString = null;
 					} else {
 
 						// wenigstens Behandlung der inneren Links
@@ -139,10 +149,11 @@ public class BracketPositions {
 
 									Integer pipePos = getPipePositionIfOnlyOnePipe(start, end);
 
+									String subString2 = wikiOrigText.substring(start, end);
+
 									if (pipePos > 0) {
 
-										if (ExtraInformations
-												.getIsPictureStartsWith(wikiOrigText.substring(start, end))) {
+										if (ExtraInformations.getIsPictureStartsWith(subString2)) {
 											// do nothing
 										} else {
 
@@ -152,7 +163,7 @@ public class BracketPositions {
 										}
 									} else if (pipePos == -1) {
 
-										if (!ExtraInformations.getIsCategory(wikiOrigText.substring(start, end))) {
+										if (!ExtraInformations.getIsCategory(subString2)) {
 											bracketPositionsLinksWithoutAnyPipes.put(start, end);
 										} else {
 											// category
@@ -160,6 +171,7 @@ public class BracketPositions {
 										}
 
 									}
+									subString2 = null;
 
 								}
 								boolInsertNestedLinksIntoBracketsPositionsHashMap = false;
@@ -167,9 +179,11 @@ public class BracketPositions {
 
 						} else if (nestedStart.size() == 0) {
 							// ending of normal link without any nested links
+
+							String subString3 = wikiOrigText.substring(posBracketStarts, i);
 							if (!boolHasPipe) {
 
-								if (!ExtraInformations.getIsCategory(wikiOrigText.substring(posBracketStarts, i))) {
+								if (!ExtraInformations.getIsCategory(subString3)) {
 									bracketPositionsLinksWithoutAnyPipes.put(posBracketStarts, i);
 								} else {
 									// category
@@ -177,7 +191,14 @@ public class BracketPositions {
 								}
 
 								boolBracketOpen = false;
+							} else if (ExtraInformations.getIsCategory(subString3)) {
+
+								Integer posPipe = subString3.indexOf('|');
+								if (posPipe > -1) {
+									bracketPositionsCategoryLinks.put(posBracketStarts, posPipe + posBracketStarts);
+								}
 							}
+							subString3 = null;
 						}
 
 						// Behandlung der äusseren Klammer abschließen bzw.

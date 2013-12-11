@@ -12,7 +12,7 @@ public class WikiTextToCSVForewardIntegrationTest {
 
 	private WikiTextToCSVForeward wikiTestToCSVForeward;
 
-	private String path = "/home/user/workspace/topicexplorer-parent/plugin-wiki-preprocessing/src/test/resources/";
+	private String path = "src/test/resources/";
 
 	private String parsedWikiTxt = TestUtil.returnFileAsString(this.path + "outputParsed.txt");
 	private String parsedWikiOriginal = TestUtil.returnFileAsString(this.path + "inputOrig.txt");

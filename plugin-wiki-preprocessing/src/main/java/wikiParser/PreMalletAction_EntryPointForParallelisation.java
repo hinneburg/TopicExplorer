@@ -152,7 +152,7 @@ public class PreMalletAction_EntryPointForParallelisation {
 
 		t.closeDBConnection();
 
-		PreMalletParallelisation h = new PreMalletParallelisation(vec, prop, null, "Thread-0");
+		PreMalletParallelization h = new PreMalletParallelization(vec, prop, null, "Thread-0");
 		h.setOnlyOneOutputParameter(true);
 
 		h.start();
@@ -187,7 +187,7 @@ public class PreMalletAction_EntryPointForParallelisation {
 		// start the threads
 		for (Integer i = 0; i < splittedWikiIDTitleArray.length; i++) {
 			newList = (ArrayList<WikiIDTitlePair>) splittedWikiIDTitleArray[i].clone();
-			poolExecutor.execute(new PreMalletParallelisation(newList, prop, group, "threadpart-" + new Integer(i + 1)
+			poolExecutor.execute(new PreMalletParallelization(newList, prop, group, "threadpart-" + new Integer(i + 1)
 					+ "of" + listLenght));
 			newList = null;
 		}

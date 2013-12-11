@@ -27,7 +27,7 @@ import tools.WikiArticle;
 import tools.WikiIDTitlePair;
 import tools.WikiTextToCSVForeward;
 
-public class PreMalletParallelisation extends Thread {
+public class PreMalletParallelization extends Thread {
 
 	final int wrapCol = 180; // Breite bis Zeilenumbruch, könnte erhöht werden
 								// aba
@@ -51,14 +51,14 @@ public class PreMalletParallelisation extends Thread {
 
 	private PreparedStatement stmt;
 
-	public PreMalletParallelisation() {
+	public PreMalletParallelization() {
 	}
 
-	public PreMalletParallelisation(List<WikiIDTitlePair> articleNames, Properties prop) {
+	public PreMalletParallelization(List<WikiIDTitlePair> articleNames, Properties prop) {
 		this(articleNames, prop, null, "Thread-" + System.currentTimeMillis()); // ????
 	}
 
-	public PreMalletParallelisation(List<WikiIDTitlePair> articleNames, Properties prop, ThreadGroup tg,
+	public PreMalletParallelization(List<WikiIDTitlePair> articleNames, Properties prop, ThreadGroup tg,
 			String threadName) {
 		super(tg, null, threadName);
 
@@ -510,7 +510,7 @@ public class PreMalletParallelisation extends Thread {
 					if (bool_japanFileOutput) {
 						// separate output of every article
 						s.printIntoFile(w.getParsedWikiTextReadable(), fileOutputFolder + fileseparator
-								+ w.getOldID().toString() + "_" + "_readableText");
+								+ w.getOldID().toString() + "_readableText");
 
 						// get link informations
 						textTocsv = new WikiTextToCSVForeward(w, bwLogger, prop);

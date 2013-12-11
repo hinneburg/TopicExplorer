@@ -74,7 +74,9 @@ public class WikiTextToCSVForeward {
 		this.wikiTitle = w.getWikiTitle();
 		this.wikiParsedTextReadable = w.getParsedWikiTextReadable();
 
-		this.bwlogger = bwLogger;
+		if (bwlogger != null) {
+			this.bwlogger = bwLogger;
+		}
 
 		onlyParsedLinks = prop.getProperty("Wiki_onlyParsedLinks").equalsIgnoreCase("true");
 		debug = prop.getProperty("Wiki_debug").equalsIgnoreCase("true");
@@ -95,7 +97,9 @@ public class WikiTextToCSVForeward {
 			System.err.println("Fehler in " + this.getClass());
 
 			try {
-				bwlogger.append("Fehler in " + this.getClass() + "\n");
+				if (bwlogger != null) {
+					bwlogger.append("Fehler in " + this.getClass() + "\n");
+				}
 			} catch (IOException e1) {
 				System.err.println("kein logger in " + this.getClass() + " definiert.");
 			}
@@ -300,7 +304,9 @@ public class WikiTextToCSVForeward {
 								break;
 							} else if (pos == -1) {
 
-								bwlogger.append("test:failling in tokenize " + wikiTitle + " " + old_id + "\n");
+								if (bwlogger != null) {
+									bwlogger.append("test:failling in tokenize " + wikiTitle + " " + old_id + "\n");
+								}
 
 								throw new Exception(
 										"failure in checkIfPositionOfWordIsWithinBoxBrackets, tokenize() , pos not found , "
@@ -324,8 +330,11 @@ public class WikiTextToCSVForeward {
 					} catch (Exception e) {
 
 						// passiert nur bei Kleinigkeiten
-						bwlogger.append("fehler in tokenize " + this.wikiTitle + " " + this.old_id + " "
-								+ e.getMessage() + "\n");
+						if (bwlogger != null) {
+							bwlogger.append("fehler in tokenize " + this.wikiTitle + " " + this.old_id + " "
+									+ e.getMessage() + "\n");
+						}
+
 						// System.err.println("fehler in tokenize " +
 						// this.wikiTitle + " " + this.old_id + " "
 						// + e.getMessage());
@@ -368,8 +377,10 @@ public class WikiTextToCSVForeward {
 					// error output to logger
 
 					if (tmpLineWithoutExtraInfo.length() > 0) {
-						bwlogger.append("catched error, " + wikiTitle + " *" + tmpLineWithoutExtraInfo + "*:" + pos
-								+ ": last_savedposition= " + savedPosition + " id:" + old_id + "\n");
+						if (bwlogger != null) {
+							bwlogger.append("catched error, " + wikiTitle + " *" + tmpLineWithoutExtraInfo + "*:" + pos
+									+ ": last_savedposition= " + savedPosition + " id:" + old_id + "\n");
+						}
 					}
 				}
 			} else {
@@ -671,8 +682,10 @@ public class WikiTextToCSVForeward {
 		} catch (Exception e) {
 
 			try {
-				bwlogger.append("getBracketsPositionAndPutIntoNavigableSet: failure " + e.getMessage() + ", "
-						+ e.getCause() + " " + e.getClass() + "\n");
+				if (bwlogger != null) {
+					bwlogger.append("getBracketsPositionAndPutIntoNavigableSet: failure " + e.getMessage() + ", "
+							+ e.getCause() + " " + e.getClass() + "\n");
+				}
 			} catch (IOException e1) {
 				System.err.println("bwlogger error");
 			}
@@ -1000,7 +1013,7 @@ public class WikiTextToCSVForeward {
 		return set;
 	}
 
-	public String getLinkInfos() throws Exception {
+	public String getLinkInfos() {
 
 		if (mapOfPositionInOrigWikiTextAndListPositionInJoinedTokens == null) {
 			generateMapPositionsInOrigTextAndListPositions();
@@ -1147,7 +1160,9 @@ public class WikiTextToCSVForeward {
 			} else {
 				if (debug) {
 					try {
-						bwlogger.append(old_id + " " + wikiTitle + e.getToken() + " getPosReadableText<0 " + "\n");
+						if (bwlogger != null) {
+							bwlogger.append(old_id + " " + wikiTitle + e.getToken() + " getPosReadableText<0 " + "\n");
+						}
 					} catch (IOException e1) {
 						// e1.printStackTrace();
 					}
@@ -1159,7 +1174,7 @@ public class WikiTextToCSVForeward {
 
 	public String getSectionCaptions() {
 
-		if (mapOfPositionInOrigWikiTextAndListPositionInJoinedTokens != null) {
+		if (mapOfPositionInOrigWikiTextAndListPositionInJoinedTokens == null) {
 			generateMapPositionsInOrigTextAndListPositions();
 		}
 
@@ -1196,7 +1211,7 @@ public class WikiTextToCSVForeward {
 
 	public String getPictures() {
 
-		if (mapOfPositionInOrigWikiTextAndListPositionInJoinedTokens != null) {
+		if (mapOfPositionInOrigWikiTextAndListPositionInJoinedTokens == null) {
 			generateMapPositionsInOrigTextAndListPositions();
 		}
 
@@ -1208,8 +1223,9 @@ public class WikiTextToCSVForeward {
 			e = picturePosition.get(i);
 
 			seqReadable = mapOfPositionInOrigWikiTextAndListPositionInJoinedTokens.get(e.getWikiTextStartPosition());
-			if (seqReadable != null) {
-
+			if (null != seqReadable) {
+				seqReadable = mapOfPositionInOrigWikiTextAndListPositionInJoinedTokens
+						.get(e.getWikiTextStartPosition());
 				e.setParsedTextPoint(new PointInteger(seqReadable, new Integer(seqReadable + e.getText().length())));
 				sb.append(e.getInfosSeparatedInColumns() + "\n");
 

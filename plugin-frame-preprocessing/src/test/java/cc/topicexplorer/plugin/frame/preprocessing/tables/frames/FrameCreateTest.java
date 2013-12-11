@@ -39,4 +39,16 @@ public class FrameCreateTest {
 	public void testCreateTableThrowsException() throws SQLException {
 		this.frameCreate.createTable();
 	}
+
+	@Test
+	public void testDropTable() throws SQLException {
+		this.frameCreate.setTableName();
+		this.frameCreate.dropTable();
+		verify(this.dbMock).executeUpdateQuery("DROP TABLE Frames");
+	}
+
+	@Test(expected = IllegalStateException.class)
+	public void testDropTableThrowsException() throws SQLException {
+		this.frameCreate.dropTable();
+	}
 }

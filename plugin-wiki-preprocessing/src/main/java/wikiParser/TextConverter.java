@@ -56,6 +56,8 @@ import tools.ExtraInformations;
 import de.fau.cs.osr.ptk.common.AstVisitor;
 import de.fau.cs.osr.utils.StringUtils;
 
+import tools.ExtraInformations;
+
 //neu dazu
 
 /**
@@ -695,6 +697,10 @@ public class TextConverter extends AstVisitor<WtNode> {
 			if (bool_has_extra_information) {
 				bool_has_extra_information = false;
 				s = s + extra_information;
+			}
+		}else{
+			if (ExtraInformations.getIsPictureStartsWith(s+extra_information)){
+				newline(1);
 			}
 		}
 

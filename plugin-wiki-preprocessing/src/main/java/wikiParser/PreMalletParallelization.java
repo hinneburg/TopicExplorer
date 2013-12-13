@@ -21,7 +21,6 @@ import org.sweble.wikitext.engine.utils.DefaultConfigEn;
 import org.sweble.wikitext.parser.parser.LinkTargetException;
 
 import tools.BracketPositions;
-import tools.CategoryResolver;
 import tools.PointInteger;
 import tools.WikiArticle;
 import tools.WikiIDTitlePair;
@@ -533,8 +532,6 @@ public class PreMalletParallelization extends Thread {
 						fileInput = textTocsv.getCategroryInfos();
 						s.printIntoFile(fileInput, fileOutputFolder + fileseparator + w.getOldID().toString()
 								+ "_category");
-
-						CategoryResolver c = new CategoryResolver(db, textTocsv.getCateroryListAsString());
 
 						textTocsv = null;
 

@@ -1,143 +1,221 @@
-{{for|use of the term in linguistics and philology|Comparative method|Historical linguistics|Proto-language|Textual criticism}}
-{{Evolutionary biology}}
+[[Datei:Konrad Zuse (1992).jpg|miniatur|Konrad Zuse (1992)]]
+[[Datei:Signatur von Konrad Zuse.svg|rahmenlos|rechts|Zuses Unterschrift]]
 
-In [[evolutionary biology|evolutionary biology]], a group of [[organism|organism]]s share '''common descent''' if they have a '''common [[ancestor|ancestor]]'''. There is [[evidence of common descent|strong quantitative support]] for the theory that all [[Life on Earth|living organisms on Earth]] are descended from a [[Last universal ancestor|common ancestor]].<ref name="theobald" /><ref name = "steel">{{cite journal | last1 = Steel | first1 = Mike|author1-link=Mike Steel (mathematician) | last2 = Penny | first2 = David | title = Origins of life: Common ancestry put to the test | journal = Nature | volume = 465 | issue = 7295 | pages = 168–9 | year = 2010 | pmid = 20463725 | doi = 10.1038/465168a }}</ref>
+'''Konrad Ernst Otto Zuse''' (* [[22. Juni|22. Juni]] [[1910|1910]] in [[Berlin-Wilmersdorf|Deutsch-Wilmersdorf b. Berlin]]; † [[18. Dezember|18. Dezember]] [[1995|1995]] in [[Hünfeld|Hünfeld]]) war ein deutscher [[Bauingenieurwesen|Bauingenieur]], [[Erfinder|Erfinder]] und [[Unternehmer|Unternehmer]] ([[Zuse KG|Zuse KG]]). Mit seiner Entwicklung der [[Zuse Z3|Z3]] im Jahre 1941 baute Zuse den ersten funktionstüchtigen vollautomatischen, programmgesteuerten und frei programmierbaren, in [[Binärcode|binärer]] [[Gleitkommazahl|Gleitkommarechnung]] arbeitenden Rechner und somit den ersten funktionsfähigen [[Computer|Computer]] der Welt.
 
-[[Charles Darwin|Charles Darwin]] proposed the theory of universal common descent through an [[evolution|evolution]]ary process in ''[[On the Origin of Species|On the Origin of Species]]'', twice stating the hypothesis that there was only one progenitor for all life forms and ending with "There is a grandeur in this view of life, with its several powers, having been originally breathed into a few forms or into one".<ref name = "origin">Darwin, C., "The Origin of Species by Means of Natural Selection, or the Preservation of Favoured Races in the Struggle For Life", London, John Murrary, (1859) p. 490</ref> The theory asserts that all currently living organisms on Earth share a common genetic heritage with each being the descendant from a single original species, though the suggestion of substantial [[horizontal gene transfer|horizontal gene transfer]] during early evolution has led to questions about [[monophyly|monophyly]] of life.<ref name="theobald" />
+== Leben ==
+Konrad Zuse wurde als Sohn von Maria und Emil Zuse geboren. Er hatte eine ältere Schwester, über die er meinte: „Sie hatte das Pech, in der damaligen Zeit als intelligenter Mensch und Frau geboren zu sein.“<ref>[[#LIT Zuse 1993|Zuse 1993]], S. 2.</ref> Als er zwei Jahre alt war, zog die Familie in das ostpreußische [[Braniewo|Braunsberg]], wo der Vater als Postbeamter im mittleren Dienst arbeitete. Dort besuchte er das humanistische Gymnasium [[Lyceum Hosianum|Hosianum]]. Als er 1923 in der 9. Klasse war, zog die Familie Zuse nach [[Hoyerswerda|Hoyerswerda]], wo er das Reform-Realgymnasium, das heutige Lessing-Gymnasium, absolvierte. 1927 legte er sein Abitur ab.
 
-The [[last universal ancestor|last universal ancestor]] (LUA) (also called the last universal common ancestor, LUCA), that is, the [[most recent common ancestor|most recent common ancestor]] of all currently living organisms,<ref name="theobald" /> is believed to have appeared about [[Timeline of evolution|3.9 billion years ago]].<ref>{{cite journal | doi=10.1038/scientificamerican0200-90 | month=February | last1=Doolittle | url=http://shiva.msu.montana.edu/courses/mb437_537_2005_fall/docs/uprooting.pdf | first1=WF |title=Uprooting the tree of life | journal= Scientific American | year=2000 | volume=282 |issue=6 |pages= 90–95 | pmid = 10710791 }}</ref><ref>{{cite journal | last1 = Glansdorff | first1 = N | last2 = Xu | first2 = Y | last3 = Labedan | first3 = B | title = The last universal common ancestor: emergence, constitution and genetic legacy of an elusive forerunner. | journal = Biology direct | volume = 3 | issue = 1 | pages = 29 | year = 2008 | pmid = 18613974 | pmc = 2478661 | doi = 10.1186/1745-6150-3-29 }}</ref>
+Zuse hat sich selbst als „Bummelstudent" bezeichnet.<ref>[[#LIT Zuse 1993|Zuse 1993]], S. 159.</ref> Als 17-jähriger studierte er an der Technischen Hochschule Berlin-Charlottenburg (heute [[Technische Universität Berlin|Technische Universität Berlin]]) zunächst Maschinenbau, wechselte dann zur Architektur und schließlich zum Bauingenieurswesen. Zwischendurch arbeitete er fast ein Jahr lang als Reklamezeichner.<ref>[[#LIT Zuse 1993|Zuse 1993]], S. 19.</ref> Während seines Studiums wurde er Mitglied in der Berliner [[Studentenverbindung|Studentenkorporation]] [[Akademischer Verein Motiv Berlin|AV Motiv]].<ref name="ZS9332">[[#LIT Zuse 1993|Zuse 1993]], S. 32.</ref> Schon früh entdeckte er seine Vorliebe für Technik und Kunst.
 
-==History==
-{{See also|History of evolutionary thought}}
+[[Datei:Zuse Z1-2.jpg|miniatur|Nachbau der Z1 im [[Deutsches Technikmuseum Berlin|Deutschen Technikmuseum Berlin]]. Das Original war im Wohnzimmer seiner Eltern aufgebaut und wurde samt den Plänen im Bombenkrieg zerstört. In den Jahren 1987 bis 1989 hat der damals fast 80-jährige Zuse seine Z1 aus der Erinnerung nachgebaut.]]
 
-In the 1740s, [[Pierre-Louis Moreau de Maupertuis|Pierre-Louis Moreau de Maupertuis]] made the first known suggestion in a series of essays that all organisms may have had a common ancestor, and that they had diverged through random variation and [[natural selection|natural selection]].<ref name="bromley">J. S. Bromley, [http://books.google.com/books?id=OOgzAAAAIAAJ&pg=PA62&dq=Maupertuis+%22for+the+first+time%22&cd=1#v=onepage&q=Maupertuis%20%22for%20the%20first%20time%22&f=false The new Cambridge modern history: The rise of Great Britain and Russia, 1688-1715/25], CUP Archive, 1970, ISBN 978-0-521-07524-4, pgs. 62-63.</ref><ref>Geoffrey Russell Richards Treasure, [http://books.google.com/books?id=C94OAAAAQAAJ&pg=PA142&dq=%22blind+destiny+has+produced%22&cd=6#v=onepage&q=%22blind%20destiny%20has%20produced%22&f=false The making of modern Europe, 1648-1780], Taylor & Francis, 1985, ISBN 978-0-416-72370-0, pg. 142</ref> In ''Essai de Cosmologie'', Maupertuis noted:
+1935 schloss Zuse sein Ingenieurstudium mit einem Diplom ab. Danach arbeitete er zunächst als [[Tragwerksplaner|Statiker]] bei der [[Henschel & Sohn#Henschel als Flugzeughersteller|Henschel Flugzeug-Werke AG]] in [[Schönefeld|Schönefeld]] bei [[Berlin|Berlin]], gab diese Stelle jedoch bald auf und richtete eine Erfinderwerkstatt in der Wohnung seiner Eltern ein. Hier entstand die [[Zuse Z1|Z1]], eine programmierbare Rechenmaschine, die allerdings noch nicht voll funktionsfähig war, weil sie mechanisch funktionierte. Das Prinzip der Z1 übernahm Zuse dann für die [[Zuse Z3|Z3]], die er mit [[Relais|Relais]] aufbaute. Dies war der erste voll funktionsfähige Computer der Welt (siehe Abschnitt „Leistungen“). Zuse verfügte über die Gabe, Menschen mit seiner Begeisterung so anzustecken, dass sie ihm immer wieder Geld gaben – sein Vater ließ sich sogar aus dem Ruhestand reaktivieren, um die Entwicklung mitzufinanzieren<ref name="ZS9332" /> – oder Arbeitszeit spendeten.
 
-<blockquote>Could one not say that, in the fortuitous combinations of the productions of nature, as there must be some characterized by a certain relation of fitness which are able to subsist, it is not to be wondered at that this fitness is present in all the species that are currently in existence? Chance, one would say, produced an innumerable multitude of individuals; a small number found themselves constructed in such a manner that the parts of the animal were able to satisfy its needs; in another infinitely greater number, there was neither fitness nor order: all of these latter have perished. Animals lacking a mouth could not live; others lacking reproductive organs could not perpetuate themselves ... The species we see today are but the smallest part of what blind destiny has produced ...<ref>C. Leon Harris, [http://books.google.com/books?id=Fkqg3TIkBJwC&pg=PA107&dq=Essai+de+Cosmologie+%22blind+destiny%22&cd=1#v=onepage&q=Essai%20de%20Cosmologie%20%22blind%20destiny%22&f=false Evolution, genesis and revelations, with readings from Empedocles to Wilson], SUNY Press, 1981, ISBN 978-0-87395-487-7, pg. 107</ref></blockquote>
+Während des Zweiten Weltkrieges wurde Konrad Zuse zweimal einberufen, nahm aber nie an Kriegshandlungen teil. Mit Hilfe von [[Herbert Wagner (Ingenieur)|Herbert Wagner]] – Leiter der Sonderabteilung F bei der Henschel Flugzeug-Werke AG, in der ferngesteuerte Gleitbomben entwickelt wurden – konnte er erreichen, dass er „unabkömmlich“ gestellt und bei den Henschel-Werken beschäftigt wurde. Dort arbeitete er an der [[Henschel Hs 293|Gleitbombe Hs 293]] mit, einer Kombination aus fliegender Bombe und Torpedo, und entwickelte Spezialrechner zur Flügelvermessung. Für wie wichtig Zuses Arbeiten gehalten wurden, zeigt auch die Tatsache, dass er mitten im Krieg 1941 die „Zuse Ingenieurbüro und Apparatebau, Berlin“ gründen konnte, die zuletzt 20 Mitarbeiter beschäftigte.<ref>[[#LIT Zuse 1993|Zuse 1993]], S. 57f.</ref> Es war die einzige Firma, die in Deutschland Rechner entwickeln durfte.<ref>[[#LIT Zuse 1993|Zuse 1993]], S. 67.</ref>
 
-In 1790, [[Immanuel Kant|Immanuel Kant]] wrote in ''Kritik der Urtheilskraft'' (''[[Critique of Judgement|Critique of Judgement]]'') that the analogy of animal forms implies a common original type, and thus a common parent.<ref>Immanuel Kant and Werner S. Pluhar, [http://books.google.com/books?id=y5wQD-ioaUUC&pg=PA304&dq=Critique+of+Judgment+%22original+mother%22&cd=1#v=onepage&q=&f=false ''Critique of Judgment''], Hackett Publishing, 1987, ISBN 978-0-87220-025-8, p. 304: "Despite all the variety among these forms, they seem to have been produced according to a common archetype, and this analogy among them reinforces our suspicion that they are actually akin, produced by a common original mother."</ref>
+Auch wenn Zuse nie Mitglied der [[Nationalsozialistische Deutsche Arbeiterpartei|NSDAP]] wurde, hat er während des Kriegs keine erkennbaren Vorbehalte gegen die Arbeit in der Rüstungsindustrie gezeigt. Dokumente aus dem Nachlass Zuses belegen, wie „Rüstungsbetriebe und NS-Institutionen Zuses Computer mit über 250.000 Reichsmark“ finanzierten.<ref>''Rassenforschung am Rechner.'' In: ''[[Der Spiegel|Der Spiegel]].'' 24, 14. Juni 2010, S. 118 f.</ref> Seine Erfahrungen mit dem Militär hat Zuse im Rückblick folgendermaßen resümiert: „Nur zu oft ist der Erfinder der faustische Idealist, der die Welt verbessern möchte, aber an den harten Realitäten scheitert. Will er seine Ideen durchsetzen, muß er sich mit Mächten einlassen, deren Realitätssinn schärfer und ausgeprägter ist. In der heutigen Zeit sind solche Mächte, ohne daß ich damit ein Werturteil aussprechen möchte, vornehmlich Militärs und Manager. […] Nach meiner Erfahrung sind die Chancen des Einzelnen, sich gegen solches Paktieren zu wehren, gering.“<ref>[[#LIT Zuse 1993|Zuse 1993]], S. X.</ref>
 
-In 1795, Charles Darwin's grandfather, [[Erasmus Darwin|Erasmus Darwin]], asked:
-<blockquote>[W]ould it be too bold to imagine, that in the great length of time, since the earth began to exist, perhaps millions of ages before the commencement of the history of mankind, would it be too bold to imagine, that all warm-blooded animals have arisen from one living filament, which {{Smallcaps|the great First Cause}} endued with animality, with the power of acquiring new parts attended with new propensities, directed by irritations, sensations, volitions, and associations; and thus possessing the faculty of continuing to improve by its own inherent activity, and of delivering down those improvements by generation to its posterity, world without end?<ref>{{Cite book
-|last=Darwin
-|first=Erasmus
-|authorlink=Erasmus Darwin
-|title=[[Zoonomia|Zoonomia; or the Laws of Organic Life]]
-|origyear=1795
-|url=http://books.google.com/?id=XRUaAAAAMAAJ&printsec=frontcover&q=
-|accessdate=November 20, 2009
-|edition=4th American
-|volume=1
-|year=1818
-|publisher=Edward Earle
-|location=Philadelphia
-|isbn=
-|oclc=
-|doi=
-|id=
-|page=397 [§&nbsp;39.4.8]
-|chapter=Generation
-|ref=
-}}</ref></blockquote>
+Im Januar 1945 heiratete er seine Frau Gisela, geb. Brandes, in Berlin, mit der er später fünf Kinder hatte. [[Horst Zuse|Horst]], der Erstgeborene, ist heute Hochschullehrer für Informatik. Der Familie gelang die Flucht aus Berlin über Göttingen in das Allgäu, wobei Konrad Zuse den zuletzt entstandenen Rechner [[Zuse Z4|Z4]] retten konnte. Er bildete die Grundlage, um nach dem Krieg die erste deutsche Computerfirma, die „Zuse KG“, aufzubauen. Nach stürmischem Wachstum musste Konrad Zuse 1964 seine Kapitalanteile wegen Überschuldung abgeben. Danach war er als Berater tätig und schrieb sein Buch zum „Rechnenden Raum“.
 
-In 1859, Charles Darwin's ''The Origin of Species'' was published. The views about common descent expressed therein were that it was possible that there was only one progenitor for all life forms.
+1983 durfte Zuse nach einer privaten Einladung eine öffentliche Vorlesung an der [[Technische Universität Ilmenau|Technischen Hochschule Ilmenau]] in Thüringen halten. Das Rechenzentrum der TH durfte er nicht besuchen.<ref>Reinhold Schönefeld:''Wat isn datte? Ex-Professor Reinhold Schönefeld erinnert sich an Konrad Zuse und dessen Zeit in Ilmenau.'' Thüringer Allgemeine, 22. Juni 2010</ref>
 
-<blockquote>"Therefore I should infer from analogy that probably all the organic beings which have ever lived on this earth have descended from some one primordial form, into which life was first breathed." <ref name = "origin"/> (p 484)</blockquote>
+Im Ruhestand widmete Zuse sich seinem Hobby, dem Malen im [[Expressionismus|expressionistischen Stil]].
 
-Darwin's famous closing sentence describes the "grandeur in this view of life, with its several powers, having been originally breathed into a few forms or into one."<ref name = "origin"/> (p 490)
+{{Anker|Motivation}}
 
-==Evidence of universal common descent==
-{{Main|Evidence of common descent}}
+== Leistungen ==
+=== Die Z1 – ein „mechanisches Gehirn“ ===
+{{Hauptartikel|Zuse Z1}}
 
-===Common biochemistry and genetic code===
-All known forms of life are based on the same fundamental biochemical organisation: genetic information encoded in [[DNA|DNA]], transcribed into RNA, through the effect of protein- and RNA-[[enzyme|enzyme]]s, then translated into [[protein|protein]]s by (highly similar) ribosomes, with ATP, NADPH and others as energy sources, etc. Furthermore, the [[genetic code|genetic code]] (the "translation table" according to which DNA information is translated into proteins) is nearly identical for all known lifeforms, from [[bacteria|bacteria]] and [[archaea|archaea]] to [[animal|animal]]s and [[plant|plant]]s. The universality of this code is generally regarded by biologists as definitive evidence in favor of the theory of universal common descent. Analysis of the small differences in the genetic code has also provided support for universal common descent. An example would be [[Cytochrome c|Cytochrome c]] which most organisms actually share. <ref>{{Cite journal| author=Knight, Robin, et al. | year=2001 | month=January | title=Rewiring the Keyboard: Evolvability of the Genetic Code | journal=Nature Reviews Genetics | pages=49–58 | volume=2 | issue=1 | pmid=11253070 | doi=10.1038/35047500}}</ref> A statistical comparison of various alternative hypotheses has shown that universal common ancestry is significantly more probable than models involving multiple origins.<ref name="theobald">{{Cite journal | author=A formal test of the theory of universal common ancestry | date=13 May 2010 | journal=Nature | volume=465 | pages=219–222 | doi=10.1038/nature09014 | issue=7295 | pmid=20463738 | title=A formal test of the theory of universal common ancestry.}}</ref><ref name="NGS-20100514">{{cite web |last=Than |first=Ker |title=All Species Evolved From Single Cell, Study Finds |url=http://news.nationalgeographic.com/news/2010/05/100513-science-evolution-darwin-single-ancestor/ |date=14 May 2010 |publisher=[[National Geographic Society|National Geographic Society]] |accessdate=2011-10-30 }}</ref>
+Da die statischen Berechnungen im Bauingenieurwesen sehr monoton und mühselig waren, kam Zuse die Idee, diese zu automatisieren. Er kündigte 1935 seine Statiker-Tätigkeit und widmete sich ausschließlich der Umsetzung seiner Pläne,<ref>[[#LIT Zuse 1993|Zuse 1993]], S. 29.</ref> die er in einem Tagebucheintrag vom Juni 1937 beschreibt: „Seit etwa einem Jahr beschäftige ich mich mit dem Gedanken des mechanischen Gehirns.“ Das Resultat war der 1938 fertiggestellte, elektrisch angetriebene mechanische Rechner [[Zuse Z1|Z1]]. Er arbeitete als erster Rechner mit [[Dualsystem|binären Zahlen]] und besaß bereits ein Ein- / Ausgabewerk, ein Rechenwerk, ein Speicherwerk und ein Programmwerk, das die Programme von gelochten Kinofilmstreifen ablas. Die Z1 arbeitete aufgrund von Problemen mit der mechanischen Präzision nie zuverlässig; die mechanischen Schaltwerke klemmten regelmäßig. Von [[Charles Babbage|Charles Babbage]] – den auch Zuse als „den eigentlichen Vater des Computers“<ref>[[#LIT Zuse 1993|Zuse 1993]], S. 30.</ref> anerkennt – hat er erst lange nach dem Ende des Zweiten Weltkriegs erfahren.
 
-====Selectively neutral similarities====
-Similarities which have no adaptive relevance cannot be explained by convergent evolution, and therefore they provide compelling support for the theory of universal common descent.
+Für die Z1 entwickelte Zuse die Methode der computergerechten [[Gleitkommazahl|Gleitkommazahl]]en auf der Grundlage von [[Mantisse|Mantisse]] und [[Exponent (Mathematik)|Exponent]]. Mit diesem Verfahren berechnet heute jeder gängige Computer, vom [[Taschenrechner|Taschenrechner]] bis zum [[Computercluster|Cluster]], Gleitkommazahlen. Auch die weithin verwendete [[IEEE|IEEE]]-[[IEEE 754|754]]-Normierung, d.&nbsp;h. die Festlegung auf ein bestimmtes Gleitkommazahlenformat, ist eine Folge von Zuses Grundlagenarbeit.
 
-Such evidence has come from two areas: amino acid sequences and DNA sequences. Proteins with the same three-dimensional structure need not have identical [[amino acid|amino acid]] sequences; any irrelevant similarity between the sequences is evidence for common descent. In certain cases, there are several [[codon|codon]]s (DNA triplets) that code for the same amino acid. Thus, if two species use the same codon at the same place to specify an amino acid that can be represented by more than one codon, that is evidence for a recent common ancestor.
+Noch während er an der Z1 arbeitete, übertrug er die mechanische Schaltung in die elektromechanische [[Relais|Relais]]technik. Zuse erprobte sie zunächst an einem Prototyp [[Zuse Z2|Z2]], den er 1939 fertigstellte. 1940 führte er das Gerät dem technischen Direktor der [[Deutsche Versuchsanstalt für Luftfahrt|Deutschen Versuchsanstalt für Luftfahrt]] [[Günther Bock (Aeronautiker)|Günther Bock]] vor, der sich daraufhin bereit erklärte, die Entwicklung der Z3 mitzufinanzieren.<ref>[[#LIT Zuse 1993|Zuse 1993]], S. 55.</ref>
 
-====Other similarities====
-The universality of many aspects of cellular life is often pointed to as supportive evidence to the more compelling evidence listed above. These similarities include the energy carrier [[adenosine triphosphate|adenosine triphosphate]] (ATP), and the fact that all amino acids found in proteins are left-handed. It is, however, possible that these similarities resulted because of the laws of physics and chemistry, rather than universal common descent and therefore resulted in [[convergent evolution|convergent evolution]].
+=== Die Z3 – der erste funktionsfähige Computer der Welt ===
+{{Hauptartikel|Zuse Z3}}
 
-===Phylogenetic trees===
-{{PhylomapB|caption=A phylogenetic tree based on rRNA genes.}}
-{{See also|Tree of life (science)}}
-Another important piece of evidence is that it is possible to construct detailed [[phylogenetic tree|phylogenetic tree]]s (that is, "genealogic trees" of species) mapping out the proposed divisions and common ancestors of all living species. In 2010 an analysis of available genetic data, mapping them to phylogenetic trees, gave "firm quantitative support for the unity of life. ...there is now strong quantitative support, by a formal test,<ref name="theobald" /> for the unity of life.<ref name = "steel" />  It should be noted, however, the 'formal' test is criticised<ref>{{cite journal|last=Yonezawa|first=Takahiro|coauthors=Hasegawa, Masami|title=Was the universal common ancestry proved?|journal=Nature|date=16 December 2010|volume=468|issue=7326|pages=E9–E9|doi=10.1038/nature09482}}</ref> for not including consideration of [[convergent evolution|convergent evolution]], and Theobald has defended the method against this claim.<ref>{{cite journal|last=Theobald|first=D. L.|title=Theobald reply|journal=Nature|date=16 December 2010|volume=468|issue=7326|pages=E10–E10|doi=10.1038/nature09483}}</ref><ref>{{cite journal|last=Theobald|first=D. L.|title=On universal common ancestry, sequence similarity, and phylogenetic structure: The sins of P-values and the virtues of Bayesian evidence|journal=Biology Direct|year=2011|volume=6|pages=60|doi=10.1186/1745-6150-6-60|pmid=22114984|issue=1|pmc=3314578}}</ref>
+1941 baute Zuse in den Räumen des Ingenieurbüros, das er inzwischen gegründet hatte, die Z3. Am 12. Mai 1941 stellte Zuse diese von ihm in Zusammenarbeit mit [[Helmut Schreyer|Helmut Schreyer]] gebaute Rechenmaschine Z3 vor. Es war ein vollautomatischer, in binärer [[Gleitkomma|Gleitkomma]]rechnung arbeitender Rechner mit Speicher und einer Zentralrecheneinheit aus Telefonrelais. Berechnungen konnten programmiert werden, jedoch waren keine bedingten Sprünge und Programmschleifen möglich.<ref>[[#LIT Zuse 1993|Zuse 1993]], S. 76f, schreibt, dass er die Möglichkeit zu bedingten Sprüngen zwar gesehen hat, aber eine Scheu davor hatte, sie zu ermöglichen, weil dadurch der Programmablauf unübersehbar wurde.</ref> Die Z3 gilt heute als erster funktionstüchtiger [[Computer|Computer]] der Welt.<ref>[http://www.culture.hu-berlin.de/verstaerker/vs002/dotzler_zuse.html Interview mit Konrad Zuse]</ref>
 
-Traditionally, these trees have been built using morphological methods, such as appearance, [[embryology|embryology]], etc. Recently, it has been possible to construct these trees using molecular data, based on similarities and differences between genetic and protein sequences. All these methods produce essentially similar results, even though most [[genetic variation|genetic variation]] has no influence over external morphology. That phylogenetic trees based on different types of information agree with each other is strong evidence of a real underlying common descent.<ref>{{Cite web
-|url=http://www.talkorigins.org/faqs/comdesc/section1.html#independent_convergence
-|title=Prediction 1.3: Consilience of Independent Phylogenies
-|accessdate=November 20, 2009
-|last=Theobald
-|first=Douglas
-|authorlink=
-|year=2004
-|work=29+ Evidences for Macroevolution
-|publisher=TalkOrigins Foundation
-|doi=
-|archiveurl=
-|archivedate=
-|quote=
-}}</ref>
-{{-}}
+Eine Notiz Zuses aus dem Jahr 1942 zu möglichen Anwendungsfeldern des Rechners nennt unter dem Stichwort „Verwandtschaftslehre“, die Möglichkeit „Verwandtschaftsbeziehungen von zwei beliebigen Menschen A, B zu berechnen“. Praktische Bedeutung sah er in der „systematische[n] [[Rassentheorie|Rassenforschung]], [[Genealogie|Ahnenforschung]] [und als] Unterlage für [die] [[Genetik|Vererbungslehre]]“. Hierfür sei die „Registrierung von bestimmten charakteristischen, eindeutig bestimmbaren Eigenschaften, z. B. Erbkrankheiten (Bluter)“, für „Verwandtschaftsverhältnisse ist eine eindeutige Kurzschrift [?] erforderlich.“<ref>Abdruck der Notiz Zuses im Katalog des Deutschen Museums zur Zuse-Ausstellung, S. 109.</ref>
 
-==Illustrations of common descent==
-{{Details|Evidence of common descent}}
+Das Gerät wurde praktisch zur Berechnung einer komplexen [[Matrix (Mathematik)|Matrix]] eingesetzt, die zur Untersuchung des [[Flattern (Luftfahrt)|Flügelflatterns]], das zum Absturz zahlreicher Flugzeuge geführt hatte, benötigt wurde. Allerdings ist die Z3 nie als „dringlich“ eingestuft und nie in den Routinebetrieb übernommen worden. Nachdem das Original am 21. Dezember 1943 bei einem Bombenangriff zerstört wurde, befindet sich ein funktionsfähiger Nachbau im Deutschen Museum in München. Dieser Nachbau wurde 1962 von der Zuse KG zu Ausstellungszwecken angefertigt.<ref>[[#LIT Zuse 1993|Zuse 1993]], S. 57.</ref>
 
-===Artificial selection===
-[[Artificial selection|Artificial selection]] demonstrates the diversity that can exist among organisms that share a relatively recent common ancestor. In artificial selection, one species is bred selectively at each generation, allowing only those organisms that exhibit desired characteristics to reproduce. These characteristics become increasingly well-developed in successive generations. Artificial selection was successful long before science discovered the genetic basis. [[Image:Big and little dog 1.jpg|thumb|The [[Chihuahua (dog)|Chihuahua]] [[mixed-breed dog|mix]] and [[Great Dane|Great Dane]] illustrate the range of sizes among dog breeds.]]
+1998 wies [[Raúl Rojas|Raúl Rojas]] die [[Turing-Vollständigkeit|Turing-Vollständigkeit]] des Designs des Z3-Computers nach. Es ist damit der erste tatsächlich gebaute Rechner, der diese Eigenschaft besaß. [[Charles Babbage|Charles Babbage]]s „Analytical Engine“ wäre ebenfalls Turing-vollständig gewesen, wurde aber nicht fertiggestellt.<ref>[http://www.heise.de/ct/artikel/Der-Rechenplaner-1022815.html Andreas Stiller: '''Der Rechenplaner''' / Zum hundertsten Geburtstag von Konrad Zuse]</ref>
 
-====Dog breeding====
-{{Main|Dog breeding}}
-The diversity of domesticated [[dog|dog]]s is an example of the power of artificial selection. All breeds share common ancestry, having descended from [[wolf|wolves]]. Humans selectively bred them to enhance specific characteristics, such as color and length or body size. This created a range of breeds that include the [[Chihuahua (dog)|Chihuahua]], [[Great Dane|Great Dane]], [[Basset Hound|Basset Hound]], [[Pug|Pug]], and [[Poodle|Poodle]]. Wild wolves, which did not undergo artificial selection, are relatively uniform in comparison.
+{{Anker|S1}}
 
-====Wild cabbage====
-[[Image:Brassica oleracea0.jpg|thumb|Wild Cabbage plant]]
-{{Main|Brassica oleracea}}
-Early farmers cultivated many popular vegetables from the [[Brassica oleracea|Brassica oleracea]] (wild cabbage) by artificially selecting for certain attributes. Common vegetables such as [[cabbage|cabbage]], [[kale|kale]], [[broccoli|broccoli]], [[cauliflower|cauliflower]], [[kohlrabi|kohlrabi]] and [[Brussels sprouts|Brussels sprouts]] are all descendants of the wild cabbage plant.<ref>{{Cite book
-|last=Raven
-|first=Peter H., et al.
-|authorlink=Peter H. Raven
-|title=Biology of Plants
-|url=
-|accessdate=
-|edition=7th rev.
-|year=2005
-|publisher=W.H. Freeman
-|location=New York
-|isbn=0-7167-6284-6
-|oclc=183148564
-|doi=
-|id=
-|page=
-|pages=
-|quote=[These vegetables were] all produced from a single species of plant (Brassica oleraca), a member of the [[mustard plant|mustard family]].
-|ref=
-}}</ref>{{Page needed|date=November 2009}} Brussels sprouts were created by artificially selecting for large [[bud|bud]] size. Broccoli was bred by selecting for large [[flower|flower]] stalks. Cabbage was created by selecting for short [[Petiole (botany)|petioles]]. Kale was bred by selecting for large [[leaf|leaves]].
+=== Die Idee zur Prozesssteuerung ===
+Für die [[Henschel-Werke#Henschel als Flugzeughersteller|Henschel-Flugzeug-Werke]] entwickelte Konrad Zuse die fest programmierten Spezialrechner S1 (1942) und S2 (1943) zur Flügelvermessung der [[Henschel Hs 293|Henschel-Gleitbombe Hs 293]]. Dabei kam ihm die Idee, das Ablesen der Messuhren zu mechanisieren. Die dafür gebauten Messgeräte waren die ersten [[Analog-Digital-Umsetzer|Analog-Digital-Wandler]]. 1944 verwirklichte Zuse in einem ausgelagerten Werk der Henschel-Flugzeug-Werke in [[Varnsdorf|Warnsdorf]] im Sudetenland die erste [[Steuerungstechnik|Prozesssteuerung]] per Computer.<ref>[[#LIT Zuse 1993|Zuse 1993]], S. 62–65.</ref>
 
-===Natural selection===
-{{Main|Natural selection}}
-[[Image:Darwin's finches.jpeg|thumb|Darwin's finches]]
-Natural selection is the evolutionary process by which [[heritable|heritable]] traits that increase an individual's fitness become more common, and heritable traits that decrease an individual's fitness become less common.
+=== Die Z4 – Grundlage einer deutschen Computerindustrie ===
+{{Hauptartikel|Zuse Z4}}
 
-====Darwin's finches====
-{{Main|Darwin's finches}}
-During [[Charles Darwin|Charles Darwin]]'s studies on the [[Galápagos Islands|Galápagos Islands]], Darwin observed 13 species of [[Darwin's finches|finches]] that are closely related and differ most markedly in the shape of their [[beak|beak]]s. The beak of each [[species|species]] is suited to the food available in its particular environment, suggesting that beak shapes evolved by [[natural selection|natural selection]]. Large beaks were found on the islands where the primary source of food for the finches are [[nut (fruit)|nuts]] and therefore the large beaks allowed the birds to be better equipped for opening the nuts and staying well nourished. Slender beaks were found on the finches which found [[insect|insect]]s to be the best source of food on the island they inhabited; their slender beaks allowed the birds to be better equipped for pulling out the insects from their tiny hiding places. The finch is also found on the main land and it is thought that they [[bird migration|migrated]] to the islands and began [[adaptation|adapting]] to their environment through [[natural selection|natural selection]].
+Auch die Weiterentwicklung der Z3 wurde von der Deutschen Versuchsanstalt für Luftfahrt gefördert. Es handelte sich wieder um einen aus Relais aufgebauten elektromechanischen Rechner. Bis dahin waren alle Rechner mit dem Anfangsbuchstaben Z wie „Zuse“ benannt worden. Ein Mitarbeiter kam auf die Idee, das Gerät als V4 zu bezeichnen, um damit zu suggerieren, es handele sich wie die [[Fieseler Fi 103|V1]] und [[Aggregat 4|V2]] um [[Vergeltungswaffe|Vergeltungswaffe]]n. Unter dieser Tarnung war es möglich, gegen Kriegsende einen Transport nach Göttingen zu organisieren, wo die [[Zuse Z4|Z4]] im März 1945 in der [[Aerodynamische Versuchsanstalt|Aerodynamischen Versuchsanstalt]] des [[KWI für Strömungsforschung|KWI für Strömungsforschung]] fertiggestellt wurde. Bei dieser Gelegenheit bekam Zuse auch das Konzentrationslager [[KZ Mittelbau-Dora|Mittelbau-Dora]] und die Arbeitsbedingungen der Zwangsarbeiter zu sehen.<ref>[[#LIT Zuse 1993|Zuse 1993]], S. 81f.</ref> Es gelang ihm, sich der Gruppe [[Wernher von Braun|Wernher von Braun]]s anzuschließen, die nach Bayern flüchtete.
 
-==See also==
+Nach mehreren Zwischenstationen kam Zuses Gruppe nach [[Hinterstein|Hinterstein]] im Allgäu. Die Z4 wurde im Mehllager einer Bäckerei in [[Hopferau|Hopferau]] bei Füssen wiederaufgebaut. Der Erfinder hielt seine Familie mit Malen von Gemsen in Öl für US-amerikanische Touristen über Wasser und unterstützte ortsansässige Bauern bei der Abrechnung ihrer Milcherträge. Das Gerücht von der Z4 sprach sich allerdings herum. Die [[IBM|IBM]] interessierte sich für die Schutzrechte, um die weitere Entwicklung zu unterdrücken.<ref>[[#LIT Zuse 1993|Zuse 1993]], S. 102.</ref> Mit [[Remington Rand|Remington Rand]] kam eine Kooperation für [[Lochkartenleser|Lochkartenleser]] zustande. 1949 spürte Prof. [[Eduard Stiefel|Eduard Stiefel]] von der [[ETH Zürich|ETH Zürich]] Zuse im Allgäu auf und ließ sich die Eignung der Z4 für seine Forschung demonstrieren. Mit ihm kam ein großzügiger Mietvertrag zustande, der Konrad Zuse die notwendigen Mittel verschaffte, um die [[Zuse KG|Zuse KG]] zu gründen. 1950 war die Z4 der einzige funktionierende Computer in Kontinentaleuropa und der erste kommerzielle Computer weltweit. Sie wurde einige Monate früher als die [[Universal Automatic Calculator|UNIVAC]] installiert.
+Die Z4 war von 1950 bis 1955 an der ETH Zürich in Betrieb. Aus Anlass des 100. Geburtstages von Konrad Zuse veröffentlichte die ETH Zürich eine Festschrift, die die Nutzung des Relaisrechners Z4 in Zürich ausführlich beschreibt, u. a. mit einem eingehenden Zeitzeugenbericht von Prof. Urs Hochstrasser, einer Liste des damaligen Institutpersonals und der noch lebenden Zeitzeugen sowie einer Übersicht über die 55 Aufträge und mathematischen Untersuchungen, die in den fünf Jahren mit der Z4 an der ETH Zürich durchgeführt wurden. Vgl. dazu: Herbert Bruderer, Konrad Zuse und die Schweiz. Zur Sprache kommt auch der Rechenlocher M9 (=Z9), den die Zuse KG als Folgeauftrag für die Schweizer Remington Rand entwickelt und in Serie gebaut hat. Die M9 wurde in Verwaltung, Industrie und Forschung verwendet. Die Erfahrungen mit der Z4 erleichterten den Eigenbau des Röhrenrechners ERMETH (elektronische Rechenmaschine der ETH).
 
-{{Wikipedia books|Evolution|position=left}}
+=== Der „Plankalkül“ – eine höhere Programmiersprache ===
+{{Hauptartikel|Plankalkül}}
 
-==References==
-{{Reflist|colwidth=30em}}
+1937 entdeckte Zuse während der Arbeiten an seinem ersten Computer den [[Aussagenkalkül|Aussagenkalkül]] neu. Während der Arbeit an der Z4 erkannte er, dass die Programmierung in [[Maschinensprache|Maschinensprache]] zu aufwändig war und deswegen eine höhere Programmiersprache nötig sein würde. Zunächst dachte er, dass [[Esperanto|Esperanto]] dies leisten könnte. In den Jahren 1945/46, als Zuse durch die Kriegsereignisse nicht praktisch arbeiten konnte, entwarf er den „[[Plankalkül|Plankalkül]]“, konnte ihn aber nicht veröffentlichen. Die Idee zu Programmiersprachen wurde erst zehn Jahre später wieder aufgegriffen, als Sprachen wie [[Fortran|Fortran]], [[ALGOL|Algol]] und [[COBOL|Cobol]] entworfen wurden.<ref>[[#LIT Zuse 1993|Zuse 1993]], S. 91f.</ref> Der „Plankalkül“ wäre universeller als diese Sprachen gewesen, ist aber erst im Jahr 1975 im Rahmen einer Dissertation von Joachim Hohmann [[Implementierung|implementiert]] worden.<ref>Joachim Hohmann: ''Der Plankalkül im Vergleich mit algorithmischen Sprachen.'' Reihe Informatik und Operations Research, S. Toeche-Mittler Verlag, Darmstadt 1979, ISBN 3-87820-028-5.</ref>
 
-==External links==
-* [http://www.talkorigins.org/faqs/comdesc/ 29+ Evidences for Macroevolution: the Scientific Case for Common Descent]. From the [[TalkOrigins Archive|TalkOrigins Archive]]
-* [http://tolweb.org/tree/phylogeny.html The Tree of Life Web Project]
+=== Der Patentanspruch scheitert ===
+Zuse hatte schon vor dem Krieg mehrere Patente angemeldet. Am wichtigsten war jedoch eine Patentanmeldung von 1941, in der er die Z3 beschrieb. Die deutschen Prüfer hatten gegen Zuses Ansprüche keine Einwände, und das Patent wurde 1952 bekanntgemacht. Dagegen erhoben die Firma [[Triumph-Adler|Triumph]], später auch [[IBM|IBM]] Einspruch. Der Prozess zog sich durch sämtliche Instanzen, bis das [[Bundespatentgericht (Deutschland)|Bundespatentgericht]] 1967 zur endgültigen Entscheidung kam, dass dem Erfinder des Computers „mangels Erfindungshöhe“ kein Patent erteilt werden könne.<ref>[[#LIT Zuse 1993|Zuse 1993]], S. 97–100.</ref><ref>Susanne Faber: „[http://www.uni-weimar.de/medien/medman/sites/ss2000/grundlagen/grundlagen_content/hausarbeiten/konrad_zuse_faber.pdf Konrad Zuses Bemuehungen um die Patentanmeldung der Z3]“, 2000</ref>Auf die Idee, die Prozesssteuerung zu patentieren, kam Zuse nie.
 
-{{origin_of_life}}
+=== Die Zuse KG ===
+{{Hauptartikel|Zuse KG}}
+[[Datei:Zuse-Werkstatt-Neukirchen-Jan-2010.jpg|miniatur|links|Konrad Zuses Werkstatt in Neukirchen Januar 2010]]
+[[Datei:Zuse-Z-11.jpg|miniatur|Zuse Z11]]
 
-{{DEFAULTSORT:Common Descent}}
-[[Category:Evolutionary biology]]
+Nach dem Krieg gründete Zuse 1949 in [[Neukirchen (Haunetal)|Neukirchen]] im damaligen [[Landkreis Hünfeld|Kreis Hünfeld]] die [[Zuse KG|Zuse KG]]. Weitere Computer wurden gebaut, die Typenbezeichnung war immer ein ''Z'' und eine fortlaufende Nummer. Mit der Z5 berechnete die Firma [[Leitz (Optik)|Leitz]] Objektive. Herausragend war die noch in Relaistechnik ausgeführte [[Zuse Z11|Z11]], die der optischen Industrie, Universitäten und [[Flurbereinigung|Flurbereinigung]]sbehörden verkauft wurde. Mit der Einführung der Elektronik begann eine neue Zählung, und die [[Zuse Z22|Z22]] wurde 1955 zum ersten in [[Röhrencomputer|Röhrentechnik]] aufgebauten Computer der Firma. Die Daten wurden in einem [[Datenspeicher|Magnetspeicher]] gespeichert.
 
-[[ko:공통 조상|ko:공통 조상]]
+[[Datei:Zuse-logo.svg|100px|miniatur|links|Logo der Zuse KG]]
+[[Datei:Zuse Z64 Graphomat.jpg|miniatur|Zuse Graphomat Z64]]
+
+1957 wurde der Firmensitz von Neukirchen nach [[Bad Hersfeld|Bad Hersfeld]] verlegt. Bis 1967 baute die Firma insgesamt 251 Computer. Die Firma entwickelte auch den ersten [[Plotter|Plotter]], den „Graphomat Z64“. Das schnelle Wachstum überforderte jedoch die Firma, Banken waren nur gegen hohe Zinsen bereit, Kredite für das ihnen unbekannte Computergeschäft zu geben, eine staatliche Forschungsförderung gab es noch nicht, und als es zu Verzögerungen bei der Auslieferung der Z25 kam, stand die Firma vor dem Ruin.<ref>[[#LIT Zuse 1993|Zuse 1993]], S. 137f.</ref> Ab 1964 stieg Zuse als aktiver Teilhaber aus der Firma aus, sie wurde zunächst von der deutschen [[Brown, Boveri & Cie.|BBC]] in [[Mannheim|Mannheim]], Anfang 1967 dann von [[Siemens|Siemens]] übernommen.
+
+=== Der „Rechnende Raum“ ===
+Während seines Aufenthalts 1945/46 in Hinterstein war Zuse zum ersten Mal der Gedanke gekommen, dass der [[Universum|Kosmos]] selbst als gigantische Rechenmaschine aufgefasst werden könnte.<ref>[[#LIT Zuse 1993|Zuse 1993]], S. 93.</ref> Er baute ihn zur Idee des „Rechnenden Raums“ aus. 1969 schrieb Zuse unter diesem Titel ein Buch, in dem er eine Theorie der [[Zellulärer Automat|zellulären Automaten]] entwickelte und sie, ähnlich wie später [[Stephen Wolfram|Stephen Wolfram]], auch auf die [[Kosmologie|Kosmologie]] anwendete.
+
+=== Der Künstler Konrad Zuse ===
+Schon während seiner Jugendzeit hatte Zuse ein Talent, seine Visionen auch in künstlerischer Form auf Papier zu bringen. „Ich habe zwar kein Kunststudium, aber ein Informatikstudium habe ich auch nicht,“ sagte er über sich selbst. Seine Ölgemälde, Kreidezeichnungen und Linolschnitte signierte er zeitweise mit dem Pseudonym ''Kuno See''. Ein Großteil des künstlerischen Nachlasses befindet sich in der [[Staatliche Graphische Sammlung München|Staatlichen Graphischen Sammlung München]]. Einige Werke sind im Hünfelder Konrad-Zuse-Museum und im [[Museen in Kassel#Astronomisch-Physikalisches Kabinett|Astronomisch-Physikalischen Kabinett]] in [[Kassel|Kassel]] ausgestellt. Anlässlich des einhundertsten Geburtstages Zuses zeigt das Weiterbildungsinstitut (WbI) in Oberhausen eine Ausstellung von mehr als 130 Werken von Zuse.<ref>[http://www.weiterbildungsinstitut.de/wirueberuns_newsdetail.php?id=52 ''WbI feiert den Künstler Konrad Zuse.''] auf: ''weiterbildungsinstitut.de''</ref>
+2012 wurden im Rahmen der [[dOCUMENTA (13)|documenta 13]] in Kassel Bilder von Konrad Zuse ausgestellt.<ref>Matthias Lohr: ''[http://www.hna.de/nachrichten/kultur/kultur-lokal/auch-zuse-dabei-carolyn-christov-bakargiev-stellte-documenta-kuenstler-1390414.html Auch Zuse ist dabei: Carolyn Christov-Bakargiev stellte documenta-Künstler vor.]'' Meldung bei [[Hessische/Niedersächsische Allgemeine|HNA.de]] vom 4. September 2011; siehe auch: Ausstellungskatalog ''dOCUMENTA 13'', Kassel 2012.</ref>
+
+== Würdigungen ==
+[[Datei:KZuse denkmal.jpg|miniatur|links|Denkmal des Konrad Zuse vor der [[Stiftsruine|Stiftsruine]] in [[Bad Hersfeld|Bad Hersfeld]]]]
+[[Datei:Konrad Zuse Denkmal im Huenfelder Stadtpark.JPG|miniatur|Denkmal des Konrad Zuse im [[Hünfeld|Hünfeld]]er Stadtpark]]
+[[Datei:Grab von Konrad Zuse in Hünfeld.jpg|miniatur|Grab von Konrad Zuse]]
+
+Insgesamt erhielt Konrad Zuse acht [[Ehrendoktor|Ehrendoktor]]titel (darunter [[Technische Universität Dresden|Technische Universität Dresden]] 1981, [[Bauhaus-Universität Weimar|Bauhaus-Universität Weimar]] 1991) und zwei Ehrenprofessuren.
+
+1973 wurde ihm das [[Verdienstorden der Bundesrepublik Deutschland|Große Verdienstkreuz]] der Bundesrepublik Deutschland verliehen,<ref>{{BVK|GrVK|43/1973|nokat=1}}</ref> 1995 dazu Stern und Schulterband. Er war Träger des [[Werner-von-Siemens-Ring|Werner-von-Siemens-Ring]]es (1964), der [[Wilhelm-Leuschner-Medaille|Wilhelm-Leuschner-Medaille]] (1987) und der [[Wilhelm-Exner-Medaille|Wilhelm-Exner-Medaille]] (1969). 1972 wurde er Mitglied der [[Leopoldina|Leopoldina]].
+
+1980 erhielt Zuse den mit 60.000&nbsp;DM dotierten [[Carl-Arthur Pastor-Stiftung#Aachener und Münchener Preis für Technik und angewandte Naturwissenschaften|Preis der Aachener und Münchener für Technik und angewandte Naturwissenschaften]].
+
+1984 wurde das [[Konrad-Zuse-Zentrum für Informationstechnik Berlin|Konrad-Zuse-Zentrum für Informationstechnik Berlin]] gegründet.
+
+1985 wurde Zuse das erste Ehrenmitglied der [[Gesellschaft für Informatik|Gesellschaft für Informatik]]. Seit 1987 verleiht diese alle zwei Jahre die [[Konrad-Zuse-Medaille für Verdienste um die Informatik|Konrad-Zuse-Medaille für Verdienste um die Informatik]].
+Die [[Konrad-Zuse-Medaille für Verdienste um die Informatik im Bauwesen|Konrad-Zuse-Medaille für Verdienste um die Informatik im Bauwesen]] wird vom [[Zentralverband des Deutschen Baugewerbes|Zentralverband des Deutschen Baugewerbes]] für besondere Leistungen auf dem Gebiet der [[Informatik|Informatik]] vergeben.
+
+1995 ernannte ihn die Stadt Hoyerswerda zum [[Ehrenbürger|Ehrenbürger]].
+
+Der [[Chaos Computer Club|Chaos Computer Club]] ernannte Zuse zu seinem Ehrenmitglied. Konrad Zuse besaß zeitlebens keinen eigenen PC.<ref>„Ich bin zu faul, um mich in ein solches Gerät noch einzuarbeiten.“ In: Rainer Ickler: [http://www.fuldaerzeitung.de/newsroom/huenfeld/Huenfeld-Computer-Leben-Raumfahrt-Militaer-Politik;art17,312227 ''Ein Rückblick: Zu Besuch bei Konrad Zuse.''] In: ''Fuldaer Zeitung.'' 5. Juli 2010, abgerufen am 16. Oktober 2010</ref>
+
+2002 wurde ein Konrad Zuse gewidmetes Medienzentrum an der [[Bauhaus-Universität Weimar|Bauhaus-Universität Weimar]] eröffnet, das das Rechenzentrum der Hochschule sowie verschiedene Studios beherbergt.
+
+Zuse wurde 2003 im [[ZDF|ZDF]] auf Platz 15 der größten Deutschen gewählt.
+
+Seit dem 21. Juni 2010 trägt der Stadtplatz in [[Hünfeld|Hünfeld]] Konrad Zuses Namen. Die Stadt würdigte damit Zuse, der 15 Jahre zuvor in seiner Wahlheimat Hünfeld gestorben war und dort auch begraben wurde.<ref>[http://www.osthessen-news.de/beitrag_E.php?id=1183601 ''„Konrad-Zuse-Platz“ soll Erinnerung an Erfinder des Computers wachhalten.''] auf: ''Osthessen-News.'' 22. Juni 2010.</ref>
+
+In Hünfeld und in [[Berlin-Pankow|Berlin-Pankow]] gibt es eine Konrad-Zuse-Schule, beide sind Berufsschulen. In Hoyerswerda gibt es das Berufliche Schulzentrum „Konrad Zuse“.
+
+Am 22. Juni 2009 benannte die [[Technische Universität Ilmenau|Technische Universität Ilmenau]] den Neubau für die Fakultät Informatik und Automatisierung Zusebau. Der Gebäudegrundriss des Gebäudes orientiert sich an der Zeichenverschlüsselung einer Lochkarte.<ref>[http://www.thueringen.de/de/homepage/presse/41317/ ''Richtfest für den „Zuse Bau“ der TU Ilmenau.'']</ref> Die Eröffnung fand im Sommer 2011 im Beiseins des Sohnes Horst Zuse statt.<ref>[http://www.tu-ilmenau.de/ia/neubau/feierliche-namensgebung-zusebau/ Neubau der Fakultät für Informatik und Automatisierung wird der Name "Zusebau“ verliehen]</ref>
+
+Am 22. August 2011 wurde der Neubau des Instituts für Informatik und des IT- und Medienzentrums der Universität Rostock, das Konrad-Zuse-Haus, in der Albert-Einstein-Straße 22 eingeweiht.<ref>[http://www.informatik.uni-rostock.de/ ''Institut für Informatik, Universität Rostock'']</ref>
+
+Diverse Straßen wie in [[Berlin|Berlin]], [[Bremen|Bremen]], [[Bielefeld|Bielefeld]], [[Erfurt|Erfurt]], [[Frankfurt am Main|Frankfurt am Main]], [[Heilbronn|Heilbronn]], [[Hoyerswerda|Hoyerswerda]], [[Itzehoe|Itzehoe]], [[Koblenz|Koblenz]], [[Leipzig|Leipzig]] und [[Monheim am Rhein|Monheim am Rhein]] wurden nach ihm benannt.
+
+=== Zuse-Jahr 2010 ===
+[[Datei:DPAG 2010 27 Konrad Zuse.jpg|miniatur|Briefmarke zum 100. Geburtstag von Konrad Zuse]]
+
+Im Jahr 2010 wurden zum hundertsten Geburtstag von Konrad Zuse im Rahmen des „Zuse-Jahr&nbsp;2010“ in sechs deutschen Museen in Berlin, Dresden, Paderborn, Hünfeld, Hoyerswerda und Kiel Ausstellungen veranstaltet, die seinem Leben und Wirken gewidmet sind.<ref>[http://www.zuse-jahr-2010.de/ ''Website zum Zuse-Jahr 2010.'']</ref> Es erinnern bundesweit Ausstellungen, Vorträge und Workshops an den Computerpionier und machen auf die Aktualität seiner Erfindung im digitalen Zeitalter aufmerksam.<ref>[http://www.zuse-jahr-2010.de/ ''Zuse -Jahr 2010, Zum 100. Geburtstag des Computerpioniers Konrad Zuse.'']</ref><ref>Deutsches Technik Museum : [http://www.sdtb.de/Medieninfo-Zuse-Jahr-2010-zum-100-Geburtstag-d.1642.0.html ''Zum 100. Geburtstag des Computerpioniers Konrad Zuse.'']</ref> Des Weiteren würdigte auch die [[Deutsche Post AG|Deutsche Post AG]] Zuse mit einer am 10. Juni 2010 erschienenen [[Sonderbriefmarke|Sonderbriefmarke]]. Diese Marke zeigt ein [[Konterfei|Konterfei]] Konrad Zuses aus grob gerasterten Bildpunkten mit den Lebensdaten 1910–1995 und dem Aufdruck seines Namens. Am gleichen Tag erschien auch eine [[Gedenkmünzen der Bundesrepublik Deutschland#Silbermünzen|10-Euro-Gedenkmünze]].<ref>[http://www.forium.de/redaktion/gedenkmuenze-deutschland-2010-konrad-zuse-der-vater-des-computers/ ''Gedenkmünze Deutschland 2010: Konrad Zuse – Der Vater des Computers.''] 31. Mai 2010</ref>
+
+== Zuse-Rechner in Museen, Ausstellungen und Sammlungen ==
+[[Datei:Zuse Z22.jpg|miniatur|[[Zuse Z22|Zuse Z22]] in Karlsruhe]]
+
+Der von Konrad Zuse nachgebaute erste Computer der Welt, die Z1, steht zusammen mit seinen Rechnern Z11, Z22, Z23, Z25, Z31, Z60 und Z64 in der Zuse-Ausstellung des [[Deutsches Technikmuseum Berlin|Deutschen Technikmuseums Berlin]]. Die Z4 im Zustand von 1950 und ein funktionstüchtiger Nachbau der Z3 sind im [[Deutsches Museum|Deutschen Museum]] in München ausgestellt.
+
+Das Museum der Stadt Hünfeld hat ebenfalls eine Konrad-Zuse-Abteilung, die einige Exponate (zum Beispiel [[Zuse Z22|Z23]], Z25, Z 31, Z64 Graphomat) zeigt. Das Hoyerswerdaer Konrad-Zuse-Computermuseum, welches sich mit der Geschichte der Rechentechnik und dem Leben Zuses beschäftigt, verfügt über die Rechner Z11, Z22, Z22R, Z23 und Z64.
+
+An der Fachhochschule Karlsruhe war eine Z22 in kompletter Ausstattung bis 2005 in Betrieb.<ref>siehe Artikel [[c't|c't]] 20/02, S. 100.</ref> Anfang 2005 wurde sie im Rahmen einer Ausstellung im [[Zentrum für Kunst und Medientechnologie|Zentrum für Kunst und Medientechnologie]] in Karlsruhe noch betriebsfähig aufgebaut.<ref>http://www.heise.de/newsticker/meldung/Die-Zuse-laeuft-wieder-142122.html</ref> Über eine heute noch funktionsfähige [[Zuse Z25|Z25]] aus dem Jahr 1967 verfügt das [[Arithmeum|Arithmeum]] in Bonn und eine Z25 (derzeit im Depot) besitzt das Museum für Kommunikation Bern (Übernahme vom [[Swiss Science Center Technorama|Technorama]] Winterthur). Im [[Heinz Nixdorf MuseumsForum|Heinz Nixdorf MuseumsForum]] in [[Paderborn|Paderborn]] sind eine Z11, eine Z23 und eine seltene Z80 aus dem Jahr 1960 zur Berechnung von Flächeninhalten zu sehen.
+
+Im Astronomisch-Physikalischen Kabinett der Stadt Kassel, Abteilung „Mathematik und Informationstechnik“ befindet sich ebenfalls ein Z11. Dieser Rechner aus Kunststoff und Metall mit den Maßen: Breite 200 cm, Tiefe 90 cm, Höhe 105 cm, wurde 1957 in Neukirchen gebaut.
+
+Das [[Museum für Kommunikation Bern|Museum für Kommunikation Bern]] besitzt<ref>Das Gerät stammt ursprünglich aus der Stadtverwaltung Winterthur und wurde im Juni 2010 aus der aufgelösten Sammlung des Winterthurer Technoramas übernommen.</ref> einen Rechenlocher Z9 (''Tarnbezeichnung M9'', später auch als ''Remington-Rechenlocher M9 mit Kartenstation'' bezeichnet) der Zuse KG. Die Z9/M9 war ein Auftragsrechner der Schweizer [[Remington Rand|Remington Rand]] in Zürich, der aufgrund des Erfolges der Z4 an der ETHZ bestellt wurde. Zur Tarnbezeichnung M9 kam es (das „M“ kommt von der Firma Mitra, die im selben Haus in Zürich ihren Sitz hatte), weil Zuse seine eigenen Patente umgehen musste, da er sie zeitweise an die Frankfurter Remington-Niederlassung (Powers) übertragen hatte. Es ist mit hoher Wahrscheinlichkeit<ref>Aufgrund der Nachforschungen von Herbert Bruderer, Departement Informatik, Professur für Informationstechnologie und Ausbildung an der [http://www.educ.ethz.ch/people/herbertb ETH Zürich] im In- und Ausland ist davon auszugehen, dass dieses Exemplar das einzige in einem Museum ist. Das Deutsche Museum in München, das Deutsche Technikmuseum Berlin und das [[Heinz Nixdorf MuseumsForum|Heinz-Nixdorf-Museumsforum]] in Paderborn haben keine Z9/M9 im Bestand.</ref> das einzige noch erhaltene Exemplar der Z9/M9.<ref>Herbert Bruderer: [http://www.nzz.ch/magazin/digital/innovative_investitionen_1.8534496.html ''Innovative Investitionen.''] auf: ''NZZ online.'' 2. Dezember 2010 (abgerufen am 18. Februar 2011). Dazu siehe auch [http://www.educ.ethz.ch/unt/um/inf/hgr/kz Konrad Zuse und die ETH Zürich] (abgerufen 17. Februar 2011)</ref> Der Rechner steht zur Zeit (Stand Februar 2011) noch im Depot des MfK Bern.<ref>Information durch die Kuratorin Kommunikationstechnologien und digitale Kultur des MfK in Bern, 17. Februar 2011</ref> Die programmgesteuerte Rechenmaschine Z9/M9 arbeitete nicht mehr rein mechanisch, sondern mit elektromagnetischen Relais. Sie setzte sich aus einem Kartenleser, einem [[Rechenwerk|Rechenwerk]] und einem [[Lochkartenlocher|Kartenlocher]] zusammen. Die Relaismaschine konnte über eine auswechselbare [[Schalttafel|Schalttafel]] gesteuert werden, auf der der jeweilige Operationsablauf verdrahtet war. Die Z9/M9 war in der Lage, alle vier [[Grundrechenart|Grundrechenart]]en auszuführen.<ref>H. Bruderer: ''Konrad Zuse und die ETH Zürich - Zum 100. Geburtstag des Informatikpioniers Konrad Zuse.'' Festschrift der ETH Zürich, 2. Auflage. Februar 2011, S. 14–15.</ref>
+
+Im [[Computermuseum der Fachhochschule Kiel|Computermuseum der Fachhochschule Kiel]] sind die Rechner Z11, Z22, Z23, Z25 sowie der Graphomat Z64 ausgestellt.
+
+== Publikationen (Auswahl) ==
+* {{Literatur| Autor=Konrad Zuse | Titel=[ftp://ftp.idsia.ch/pub/juergen/zuse67scan.pdf Rechnender Raum] | Band=8 | Jahr=1967 | Sammelwerk=Elektronische Datenverarbeitung | Seiten=336–344 | Online=[ftp://ftp.idsia.ch/pub/juergen/zuse67scan.pdf PDF] | Kommentar=[http://www.idsia.ch/~juergen/digitalphysics.html Eine Einordnung] }}
+* {{Literatur| Autor=Konrad Zuse | Titel=Rechnender Raum | Verlag=Vieweg | Ort=Braunschweig | Jahr=1969 | ISBN=3-528-09609-8 | Sammelwerk=Schriften zur Datenverarbeitung | Band=1}}
+* {{Literatur| Autor=Konrad Zuse | Titel=[[Der Computer – Mein Lebenswerk|Der Computer – Mein Lebenswerk]] | Verlag=Springer | Ort=Berlin | Jahr=1984 | ISBN=3-540-13814-5 | Auflage=3. | Kommentar=[http://www.zib.de/zuse/Inhalt/Texte/Chrono/60er/281.html Erstes Konzept von 1968] als PDF-Scan im Konrad Zuse Internet Archiv des Zuse-Instituts Berlin, [http://www.mediaculture-online.de/fileadmin/bibliothek/zuse_lebenswerk/zuse_lebenswerk.html Auszüge aus der Autobiografie] }}
+
+== Literatur ==
+* Hadwig Dorsch: ''Der erste Computer. Konrad Zuses Z1 – Berlin 1936. Beginn und Entwicklung einer technischen Revolution.'' Mit Beiträgen von Konrad Zuse und Otto Lührs. Museum für Verkehr und Technik, Berlin 1989.
+* {{Anker|LIT Zuse 1993}}{{Literatur| Autor=Konrad Zuse | Titel=[[Der Computer – Mein Lebenswerk|Der Computer – Mein Lebenswerk]] | Auflage=3. | Verlag=Springer | Ort=Berlin | Jahr=1993 | ISBN=3-540-56292-3}}
+* Jürgen Alex: [http://www.spektrum.de/artikel/823599 ''Wege und Irrwege des Konrad Zuse.''] In: ''Spektrum der Wissenschaft.'' 1/1997, {{ISSN|0170-2971}}. (dt. Ausgabe von ''Scientific American'')
+* [[Raul Rojas|Raul Rojas]] (Hrsg.): ''Die Rechenmaschinen von Konrad Zuse.'' Springer, Berlin 1998, ISBN 3-540-63461-4.
+* [[Arno Peters|Arno Peters]]: ''Was ist und wie verwirklicht sich Computer-Sozialismus: Gespräche mit Konrad Zuse.'' Verlag Neues Leben, Berlin 2000, ISBN 3-355-01510-5.
+* {{Literatur| Autor=Jürgen Alex, Hermann Flessner, [[Wilhelm Mons|Wilhelm Mons]] und [[Horst Zuse|Horst Zuse]] | Titel=Konrad Zuse: Der Vater des Computers | Verlag=Parzeller | Ort=Fulda | Jahr=2000 | ISBN=3-7900-0317-4}}
+* Clemens Kieser: [http://www.denkmalpflege-bw.de/fileadmin/media/publikationen_und_service/nachrichtenblaetter/2005-04.pdf ''„Ich bin zu faul zum Rechnen“ – Konrad Zuses Computer Z22 im Zentrum für Kunst und Medientechnologie Karlsruhe.''] (PDF; 3,2&nbsp;MB) In: ''Denkmalpflege in Baden-Württemberg.'' 4/34/2005, Esslingen am Neckar, {{ISSN|0342-0027}}, S. 180–184.
+* [[Wilfried de Beauclair|Wilfried de Beauclair]], F. Genser: ''Vom Zahnrad zum Chip: eine Bildgeschichte der Datenverarbeitung.'' 3 Bde. Superbrain-Verlag, Balje 2005, ISBN 3-00-013791-2.
+* Genser Friedrich: ''Hommage an Konrad Zuse'', Superbrain-Verlag, Balje 2013, ISBN 987-3-9815891-1-5.
+* Paul Janositz: [http://www.tagesspiegel.de/zeitung/das-verkannte-genie-aus-adlershof/691520.html ''Informatik und Konrad Zuse: Der Pionier des Computerbaus in Europa – Das verkannte Genie aus Adlershof.''] In: ''[[Der Tagesspiegel|Der Tagesspiegel]].'' Nr. 19127, Berlin, 9. März 2006, Beilage S. B3.
+* Jürgen Alex: [http://d-nb.info/98092328x/34 ''Zum Einfluß elementarer Sätze der mathematischen Logik bei Alfred Tarski auf die drei Computerkonzepte des Konrad Zuse.''] Dissertation TU Chemnitz 2006.
+* Jürgen Alex: ''Zur Entstehung des Computers – von Alfred Tarski zu Konrad Zuse.'' VDI-Verlag, Düsseldorf 2007, ISBN 978-3-18-150051-4, {{ISSN|0082-2361}}.
+* [[Friedrich Christian Delius|Friedrich Christian Delius]]: ''Die Frau, für die ich den Computer erfand.'' Biographischer Roman, Rowohlt, Reinbek bei Hamburg 2009, ISBN 978-3-87134-642-2.
+* ''100 Jahre Konrad Zuse. Einblicke in seinen Nachlass'', Ausstellungskatalog des [[Deutsches Museum|Deutschen Museums]], München 2010, ISBN 978-3-940396-14-3
+* {{Literatur| Autor=Herbert Bruderer | Titel=[http://e-collection.library.ethz.ch/eserv/eth:2428/eth-2428-01.pdf Konrad Zuse und die ETH Zürich. Zum 100. Geburtstag des Informatikpioniers Konrad Zuse] | Auflage=2. | Verlag=ETH Zürich, Departement Informatik | Kommentar=Technischer Bericht | Nummer=705 | Jahr=2011 | Online=[http://e-collection.library.ethz.ch/eserv/eth:2428/eth-2428-01.pdf PDF]}}
+* Helmut Böttiger: ''Konrad Zuse - Erfinder, Unternehmer, Philosoph und Künstler.'' Michael Imhof Verlag, Petersberg 2011, ISBN 978-3-86568-743-2.
+* Herbert Bruderer: ''Konrad Zuse und die Schweiz. Wer hat den Computer erfunden? Charles Babbage, Alan Turing und John von Neumann.'' Oldenbourg Verlag, München 2012, ISBN 978-3-486-71366-4.
+
+== Weblinks ==
+{{Commonscat}}
+{{Wikiquote}}
+* {{DNB-Portal|118637436}}
+* [http://zuse.zib.de/ Konrad Zuse Internet Archive] Originaldokumente aus Konrad Zuses Nachlass, Umfangreiche Dokumentation seines Lebenswerks und vieles weiteres mehr
+* [http://zuse-z1.zib.de/ Z1-Seite des Konrad Zuse Internet Archives] Simulation und Panorama der Z1
+* {{LeMO|ZuseKonrad|Konrad Zuse|Stefan Kuhn}}
+* [http://www.horst-zuse.homepage.t-online.de/konrad-zuse.html Konrad Zuse und seine Rechner] zusammengestellt von seinem Sohn Dr.-Ing. Horst Zuse, [[TU Berlin|TU Berlin]]
+* [http://www.ard.de/technik-forschung/konrad-zuse/-/id=1482882/z3pqcr/index.html ARD.de-Spezial zum 100. Geburtstag von Konrad Zuse] - Ein deutscher Computervisionär
+* [http://www.konrad-zuse-computermuseum.de/ Konrad Zuse Computermuseum] in Hoyerswerda. Beinhaltet auch biografische Daten Zuses.
+* [http://www.cczwei.de/index.php?id=issuearchive&issueid=111 Konrad Zuse – Der Computer sein Lebenswerk] Artikel und [[Podcast|Podcast]] der Weihnachtssondersendung vom ComputerClub 2
+* Original-Bericht von 1949: [http://www.spiegel.de/spiegel/print/d-44437000.html Höhere Mathematik auf Knöpfen] Der Spiegel 28 / 1949
+
+== Einzelnachweise ==
+<references />
+
+{{Normdaten|TYP=p|GND=118637436|LCCN=n/84/801928|VIAF=71477130}}
+
+{{SORTIERUNG:Zuse, Konrad}}
+[[Kategorie:Konrad Zuse| ]]
+[[Kategorie:Informatiker|Kategorie:Informatiker]]
+[[Kategorie:Computeringenieur|Kategorie:Computeringenieur]]
+[[Kategorie:Bauingenieur|Kategorie:Bauingenieur]]
+[[Kategorie:Erfinder|Kategorie:Erfinder]]
+[[Kategorie:Entwickler eines Computersystems|Kategorie:Entwickler eines Computersystems]]
+[[Kategorie:Persönlichkeit der Elektrotechnik|Kategorie:Persönlichkeit der Elektrotechnik]]
+[[Kategorie:Unternehmer (IT)|Kategorie:Unternehmer (IT)]]
+[[Kategorie:Träger des Großen Bundesverdienstkreuzes mit Stern und Schulterband|Kategorie:Träger des Großen Bundesverdienstkreuzes mit Stern und Schulterband]]
+[[Kategorie:Träger des Bayerischen Maximiliansordens für Wissenschaft und Kunst|Kategorie:Träger des Bayerischen Maximiliansordens für Wissenschaft und Kunst]]
+[[Kategorie:Träger des Werner-von-Siemens-Rings|Kategorie:Träger des Werner-von-Siemens-Rings]]
+[[Kategorie:Träger der Wilhelm-Leuschner-Medaille|Kategorie:Träger der Wilhelm-Leuschner-Medaille]]
+[[Kategorie:Träger der Wilhelm-Exner-Medaille|Kategorie:Träger der Wilhelm-Exner-Medaille]]
+[[Kategorie:Träger der Ernst-Reuter-Plakette|Kategorie:Träger der Ernst-Reuter-Plakette]]
+[[Kategorie:Ehrenbürger von Hoyerswerda|Kategorie:Ehrenbürger von Hoyerswerda]]
+[[Kategorie:Ehrendoktor der Technischen Universität Dresden|Kategorie:Ehrendoktor der Technischen Universität Dresden]]
+[[Kategorie:Ehrendoktor der Bauhaus-Universität Weimar|Kategorie:Ehrendoktor der Bauhaus-Universität Weimar]]
+[[Kategorie:Geschichte der Informatik|Kategorie:Geschichte der Informatik]]
+[[Kategorie:Korporierter (Studentenverbindung)|Kategorie:Korporierter (Studentenverbindung)]]
+[[Kategorie:Person (Chaos Computer Club)|Kategorie:Person (Chaos Computer Club)]]
+[[Kategorie:Person (Berlin)|Kategorie:Person (Berlin)]]
+[[Kategorie:Person (Hünfeld)|Kategorie:Person (Hünfeld)]]
+[[Kategorie:Deutscher|Kategorie:Deutscher]]
+[[Kategorie:Geboren 1910|Kategorie:Geboren 1910]]
+[[Kategorie:Gestorben 1995|Kategorie:Gestorben 1995]]
+[[Kategorie:Mann|Kategorie:Mann]]
+[[Kategorie:Mitglied der Leopoldina (20. Jahrhundert)|Kategorie:Mitglied der Leopoldina (20. Jahrhundert)]]
+
+{{Personendaten
+|NAME=Zuse, Konrad
+|ALTERNATIVNAMEN=Zuse, Konrad Ernst Otto (vollständiger Name)
+|KURZBESCHREIBUNG=deutscher Ingenieur und Computerpionier; Erfinder des ersten funktionstüchtigen Computers
+|GEBURTSDATUM=22. Juni 1910
+|GEBURTSORT=[[Berlin-Wilmersdorf|Wilmersdorf]]
+|STERBEDATUM=18. Dezember 1995
+|STERBEORT=[[Hünfeld|Hünfeld]]
+}}

@@ -30,8 +30,8 @@ public class WikiTextToCSVForewardIntegrationTest {
 		prop.setProperty("Wiki_debug", "false");
 		prop.setProperty("Wiki_onlyParsedLinks", "true");
 
-		old_id = 553357580;
-		wikiTitle = "Common_descent";
+		old_id = 115181661;
+		wikiTitle = "Konrad_Zuse";
 
 		wikiArticle = new WikiArticle(parsedWikiTxt, old_id, parsedWikiOriginal, wikiTitle, 0, parsedWikiTextReadable);
 		wikiTestToCSVForeward = new WikiTextToCSVForeward(wikiArticle, null, prop);
@@ -40,9 +40,7 @@ public class WikiTextToCSVForewardIntegrationTest {
 	@Test
 	public void testGetPictures() {
 
-		String test = "\"Image:Big and little dog 1.jpg\" ; \"14148\" ; \"1136\"\n"
-				+ "\"Image:Brassica oleracea0.jpg\" ; \"14932\" ; \"1228\"\n"
-				+ "\"Image:Darwin's finches.jpeg\" ; \"16187\" ; \"1311\"\n";
+		String test = TestUtil.returnFileAsString(this.path + "picturePositions.txt");
 		assertThat(wikiTestToCSVForeward.getPictures()).isEqualTo(test);
 	}
 

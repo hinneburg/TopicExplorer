@@ -17,6 +17,14 @@ public class CategoryElement extends Element {
 		return "\"" + getOldId() + getSpace() + title + getSpace()
 				+ ExtraInformations.getTargetWithoutCategoryInformation(getText()) + "\"";
 	}
+	
+
+	public String getCategroryTreeOutput() {
+
+		return "\"" + title + getSpace()
+				+ ExtraInformations.getTargetWithoutCategoryInformation(getText()) + "\"";
+	}
+	
 
 	public void setTitle(String title) {
 		this.title = title;

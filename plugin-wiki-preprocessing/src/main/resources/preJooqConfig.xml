@@ -2,5 +2,6 @@
 <catalog>	
   
 	<command name="Wiki_DocumentTermTopicCreate" className="cc.topicexplorer.plugin.wiki.preprocessing.tables.documenttermtopic.DocumentTermTopicCreate"/>
+	<command name="Wiki_CategoryTreeCreate" className="cc.topicexplorer.plugin.wiki.preprocessing.tables.categorytree.CategoryTreeCreate"/>
 
 </catalog>

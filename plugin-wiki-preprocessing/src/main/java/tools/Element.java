@@ -2,7 +2,7 @@ package tools;
 
 public abstract class Element {
 
-	private final String space = "\" ; \"";
+	private final String space = "\";\"";
 	private String text;
 	private PointInteger textPosition;
 	private PointInteger posParsedText = new PointInteger(-1, -1);

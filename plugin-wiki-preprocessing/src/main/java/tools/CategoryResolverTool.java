@@ -8,7 +8,7 @@ import java.util.List;
 import wikiParser.Database;
 import wikiParser.SupporterForBothTypes;
 
-public class CategoryResolver {
+public class CategoryResolverTool {
 	private static final Integer CATPARENT = 0;
 	private static final String CATPARENTTEXT = "";
 	private LinkedList<String> list = new LinkedList<String>();
@@ -18,7 +18,7 @@ public class CategoryResolver {
 	private StringBuilder sb = new StringBuilder();
 	private SupporterForBothTypes s;
 
-	public CategoryResolver(Database db, LinkedList<String> list) {
+	public CategoryResolverTool(Database db, LinkedList<String> list) {
 
 		this.db = db;
 		this.list = list;

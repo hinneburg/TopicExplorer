@@ -57,6 +57,8 @@ public class JsonServlet extends HttpServlet {
 				communicationContext.put("SEARCH_WORD", request.getParameter("SearchWord"));
 
 				startCommands.add("SearchCoreCreate");
+			} else if (command.contains("getFrames")) {
+				startCommands.add("FrameCreate");
 			}
 			WebChainManagement.executeCommands(WebChainManagement.getOrderedCommands(startCommands, endCommands),
 					communicationContext);

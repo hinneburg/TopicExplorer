@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog>
+	<command name="FrameCreate" className="cc.topicexplorer.plugin.frame.actions.getframes.Create"/>
+	<command name="FrameGenerateSQL" className="cc.topicexplorer.plugin.frame.actions.getframes.GenerateSQL"/>
+</catalog>

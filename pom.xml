@@ -33,6 +33,7 @@
 		<module>plugin-colortopic-webinterface</module>
 		<module>plugin-hierarchicaltopic-webinterface</module>
 		<module>webapp</module>
+		<module>plugin-frame-webinterface</module>
 	</modules>
 	<dependencies>
 		<dependency>

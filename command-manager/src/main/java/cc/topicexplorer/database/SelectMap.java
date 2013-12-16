@@ -8,6 +8,7 @@ public class SelectMap {
 	public ArrayList<String> select = new ArrayList<String>();
 	public ArrayList<String> from = new ArrayList<String>();
 	public ArrayList<String> where = new ArrayList<String>();
+	public ArrayList<String> groupBy = new ArrayList<String>();
 	public ArrayList<String> orderBy = new ArrayList<String>();
 	public int limit, offset;
 
@@ -16,7 +17,7 @@ public class SelectMap {
 	}
 
 	public String getSQLString() {
-		String select, from, where, orderBy, limit;
+		String select, from, where, groupBy, orderBy, limit;
 
 		select = "SELECT " + this.getSQLPart(this.select, ", ");
 		from = " FROM " + this.getSQLPart(this.from, ", ");
@@ -24,6 +25,11 @@ public class SelectMap {
 			where = " WHERE " + this.getSQLPart(this.where, " AND ");
 		} else {
 			where = "";
+		}
+		if (this.groupBy.size() > 0) {
+			groupBy = " GROUP BY " + this.getSQLPart(this.groupBy, ", ");
+		} else {
+			groupBy = "";
 		}
 		if (this.orderBy.size() > 0) {
 			orderBy = " ORDER BY " + this.getSQLPart(this.orderBy, ", ");
@@ -40,7 +46,7 @@ public class SelectMap {
 			limit = "";
 		}
 
-		return select + from + where + orderBy + limit;
+		return select + from + where + groupBy + orderBy + limit;
 	}
 
 	public ArrayList<String> getCleanColumnNames() {

@@ -112,14 +112,32 @@ $(document).ready(function() {
 		gui.switchTab($(this), false);
 	});
 	
-	$(".menu").menu({
+	$(".documentMenu").menu({
         select: function(event, ui) {
             $(this).parent().hide('slow');
-            
+            var changeObject = $(this).attr('id').split('Menu')[0];
         	console.log($(this).attr('id').split('Menu')[0] + ui.item.text());
-        	
-        	
-            
+        	$.each(topicExplorer.viewModel.getView('browser').documentModel.documentData(), function(key, doc) {
+        		if(doc) {
+        			doc[changeObject](doc[ui.item.text()]);
+        		}
+        	});
+        	topicExplorer.viewModel.getView('browser')[changeObject] = ui.item.text();
+        	var template = topicExplorer.viewModel.getView('browser').repaint('.documentList');
+        	if(template)
+        		$('#desktop').html(template);
+        }
+    });
+	$(".topicMenu").menu({
+        select: function(event, ui) {
+            $(this).parent().hide('slow');
+            var changeObject = $(this).attr('id').split('Menu')[0];
+        	console.log($(this).attr('id').split('Menu')[0] + ui.item.text());
+        	$.each(topicExplorer.viewModel.getView('browser').documentModel.documentData(), function(key, doc) {
+        		if(doc) {
+        			doc[changeObject]();
+        		}
+        	});
         }
     });
 	

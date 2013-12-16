@@ -5,9 +5,22 @@ view.tabName = 'Dokumentenview';
 view.view = '';
 view.content = '';
 view.text = ko.observableArray();
-
+view.documentTitle = '';
+view.documentBody = '';
 
 view.init = function() {
+	if(documentTitleFields.length > 0) {
+		view.documentTitle = documentTitleFields[0];
+	} else {
+		view.documentTitle = 'DOCUMENT_ID';
+	}
+	
+	if(documentBodyFields.length > 0) {
+		view.documentBody = documentBodyFields[0];
+	} else {
+		view.documentBody = '';
+	}
+	
 	this.content = $('<div>').attr('class', 'documentList').html(view.Template());
 	
 	//use delegate, cause content is not loaded yet	
@@ -42,13 +55,13 @@ view.init = function() {
 	
 	//assign documentModel to GUI
 	ko.applyBindings(view.documentModel, this.content[0]);
-	
+		
 	if(documentTitleFields.length > 1 || documentBodyFields.length > 1) {
 		var template;
 		$('#test').before('<div><img class="menuActivator rotate1" src="images/Black_Settings.png" alt="&gt;"/></div>' 
 			+ '<div id="browserMenu" style="display: none;background-color: #EEEEEE; border: 1px solid #D1D1D1; position: absolute; z-index: 1;"/>');
 		if(documentTitleFields.length > 1) {
-			template = 'DocTitle: <ul id="documentTitleMenu" class="menu" > ';
+			template = 'DocTitle: <ul id="documentTitleMenu" class="documentMenu" > ';
 			$.each(documentTitleFields, function(key, value) {
 				template += '<li><a href="#">' + value + '</a></li>';
 			});
@@ -56,7 +69,7 @@ view.init = function() {
 			$('#browserMenu').html(template);
 		}
 		if(documentBodyFields.length > 1) {
-			template = 'DocBody: <ul id="documentBodyMenu" class="menu"> ';
+			template = 'DocBody: <ul id="documentBodyMenu" class="documentMenu"> ';
 			$.each(documentBodyFields, function(key, value) {
 				template += '<li><a href="#">' + value + '</a></li>';
 			});
@@ -129,11 +142,12 @@ view.DocumentViewModel = function () {
 //	console.log(self.documentData());
 };
 
-view.DocumentModel = function (document, docTitleIdx, docBodyIdx) {
-//	console.log(document);
+view.DocumentModel = function (document) {
+	console.log(document);
+	if(topicExplorer.viewModel != undefined) {
+		view = topicExplorer.viewModel.getView('browser');
+	}
 //	self.documentTitle = ko.observableArray();
-	if(!docTitleIdx)docTitleIdx = 0;
-	if(!docBodyIdx)docBodyIdx = 0;
 	var self = this;
 	self.id = document.DOCUMENT_ID();
 	self.relevanzen = ko.observableArray(document.TOP_TOPIC());
@@ -143,7 +157,7 @@ view.DocumentModel = function (document, docTitleIdx, docBodyIdx) {
 	}
 	
 	if(documentTitleFields.length > 0) {
-		self.documentTitle = ko.observable(document[documentTitleFields[docTitleIdx]]());
+		self.documentTitle = ko.observable(document[view.documentTitle]());
 		$.each(documentTitleFields, function(key, value){
 			self[value] = document[value]();
 		});
@@ -151,7 +165,7 @@ view.DocumentModel = function (document, docTitleIdx, docBodyIdx) {
 		self.documentTitle = ko.observable("Document " + document.DOCUMENT_ID());
 	}
 	if(documentBodyFields.length > 0) {
-		self.documentBody = document[documentBodyFields[docBodyIdx]]();
+		self.documentBody = ko.observable(document[view.documentBody]());
 		$.each(documentBodyFields, function(key, value){
 			self[value] = document[value]();
 		});
@@ -161,34 +175,39 @@ view.DocumentModel = function (document, docTitleIdx, docBodyIdx) {
 };
 
 view.showDocument = function (e) {
-	var doc = $(e.currentTarget).parents('li').attr('id').split('doc_')[1];
+	var view = topicExplorer.viewModel.getView('browser');
+	var docId = $(e.currentTarget).parents('li').attr('id').split('doc_')[1];
 	var wordList = null;
+	var document = null;
+	text ="";
 	
-	
-	$.getJSON('JsonServlet', {Command:'getDoc', DocId:doc})
+	$.getJSON('JsonServlet', {Command:'getDoc', DocId:docId})
 	.done(function(json) {
-		doc = json.DOCUMENT;	
+		document = json.DOCUMENT;	
 		wordList = json.WORD_LIST;
 	});
 	
 	if(documentTitleFields.length > 0) {
-		title = doc[documentTitleFields[0]];
+		view.documentModel.documentData()[document.DOCUMENT_ID].documentTitle = ko.observable(document[view.documentTitle]);
+		$.each(documentTitleFields, function(key, value){
+			view[value] = document[value];
+		});
 	} else {
-		title = "Document " + doc.DOCUMENT_ID;
+		view.documentTitle = ko.observable("Document " + document.DOCUMENT_ID());
 	}
 	if(documentBodyFields.length > 0) {
-		text = doc[documentBodyFields[0]];
-		for(var i = 0; i < wordList.length; i++) {
-			var topic = topicModel.topicList()[wordList[i].TOPIC_ID];
-			text = text.substring(0, wordList[i].POSITION_OF_TOKEN_IN_DOCUMENT) + '<span style="background-color: '+topic.topicColor+'">' + wordList[i].TOKEN + "</span>" + text.substring(Number(wordList[i].POSITION_OF_TOKEN_IN_DOCUMENT) + wordList[i].TOKEN.length);
-		}
+		view.documentModel.documentData()[document.DOCUMENT_ID].documentBody = ko.observable(document[view.documentBody]);
+		$.each(documentBodyFields, function(key, value){
+			view.documentModel.documentData()[document.DOCUMENT_ID][value] = document[value];
+		});
 	}else {
-		text = "";
+		view.documentBody = "";
 	}
+//	this.documentData()[doc.DOCUMENT_ID] = new view.DocumentModel(doc);
 	
 	
-	gui.drawTab(title,true,true, "<h2>" + title + "</h2>" + text);
-	e.preventDefault();
+	gui.drawTab(view.documentModel.documentData()[document.DOCUMENT_ID].documentTitle(),true,true, "<h2>" + view.documentModel.documentData()[document.DOCUMENT_ID].documentTitle() + "</h2>" + text);
+//	e.preventDefault();
 	return false;
 };
 
@@ -218,4 +237,13 @@ view.getTemplate = function ()
 {
 	var template = $('<div>').attr('class', 'documentList').html(this.Template());
 	return template;
+};
+view.repaint = function (mustExists)
+{
+	if($(mustExists).length > 0) {
+		var template = topicExplorer.viewModel.getView('browser').getTemplate();
+		ko.applyBindings(topicExplorer.viewModel.getView('browser').documentModel, template[0]);
+		return template;
+	}
+	return false;
 };

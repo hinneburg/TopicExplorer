@@ -30,7 +30,7 @@ view.init = function() {
 		$('#topicModel').before('<div><img class="menuActivator rotate1" src="images/Black_Settings.png" alt="&gt;"/></div>' 
 			+ '<div id="topicMenu" style="display: none;background-color: #EEEEEE; border: 1px solid #D1D1D1; position: absolute; z-index: 6;"/>');
 		if(topicTitleFields.length > 1) {
-			template = 'TopicTitle: <ul id="topicTitleMenu" class="menu" > ';
+			template = 'TopicTitle: <ul id="topicTitleMenu" class="topicMenu" > ';
 			$.each(topicTitleFields, function(key, value) {
 				template += '<li><a href="#">' + value + '</a></li>';
 			});
@@ -38,7 +38,7 @@ view.init = function() {
 			$('#topicMenu').html(template);
 		}
 		if(topicBodyFields.length > 1) {
-			template = 'TopicBody: <ul id="topicBodyMenu" class="menu"> ';
+			template = 'TopicBody: <ul id="topicBodyMenu" class="topicMenu"> ';
 			$.each(topicBodyFields, function(key, value) {
 				template += '<li><a href="#">' + value[0] + ' -> ' + value[2] + '</a></li>';
 			});

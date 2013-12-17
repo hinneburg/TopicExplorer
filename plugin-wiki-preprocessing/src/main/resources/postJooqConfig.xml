@@ -2,7 +2,6 @@
 <catalog>
 	<command name="Wiki_PreMallet" className="cc.topicexplorer.plugin.wiki.preprocessing.PreMallet" />
 	<command name="Wiki_OrgTable" className="cc.topicexplorer.plugin.wiki.preprocessing.tables.orgtable.OrgTableCreateAndFill" />
-	<command name="Wiki_DocumentTermTopicCreate" className="cc.topicexplorer.plugin.wiki.preprocessing.tables.documenttermtopic.DocumentTermTopicCreate" />
 	<command name="Wiki_MediawikiColoration" className="cc.topicexplorer.plugin.wiki.preprocessing.MediawikiColoration" />
 	<command name="Wiki_CategoryResolver" className="cc.topicexplorer.plugin.wiki.preprocessing.CategoryResolver"/>
 	<command name="Wiki_CategoryTreeFill" className="cc.topicexplorer.plugin.wiki.preprocessing.tables.categorytree.CategoryTreeFill"/>

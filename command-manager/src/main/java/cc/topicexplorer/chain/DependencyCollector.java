@@ -68,7 +68,6 @@ public class DependencyCollector {
 				}
 			}
 		}
-
 		for (String key : optionalDependencies.keySet()) {
 			if (!optionalDependencies.get(key).isEmpty()) {
 				for (String value : optionalDependencies.get(key)) {
@@ -151,6 +150,7 @@ public class DependencyCollector {
 
 			for (Iterator<?> it = catalog.getNames(); it.hasNext();) {
 				name = (String) it.next();
+
 				Command command = catalog.getCommand(name);
 				command.execute(dependencyContext);
 
@@ -161,22 +161,91 @@ public class DependencyCollector {
 						dependencyContext.getOptionalAfterDependencies(),
 						dependencyContext.getOptionalBeforeDependencies());
 			}
+		
+		// start
+	} catch (Exception e) {
+			logger.info("Error 1");
+			logger.error(e.getStackTrace());
+		}
+
+		logger.info("deps " + dependencies);
+		logger.info("opt deps " + optionalDependencies);
+		try {
+					
+			// ende einfügung
 
 			composedDependencies = new HashMap<String, Set<String>>(
 					dependencies);
+		
+		//start
+		} catch (Exception e) {
+			logger.info("Error 2");
+			logger.error(e.getStackTrace());
+		}
+		try {
+			
+			//ende
 
 			for (String key : optionalDependencies.keySet()) {
-				for (String value : optionalDependencies.get(key)) {
-					if (composedDependencies.containsKey(value)) {
-						composedDependencies.get(key).add(value);
+				
+				
+				//start
+					logger.info(key);
+				try {
+					//ende
+					
+					optionalDependencies.get(key);
+				
+				//start
+				} catch (Exception e) {
+					logger.info("Error 3a");
+					logger.error(e.getStackTrace());
+				}
+				//ende
+				
+				// If anweisung als erster Fix eingefuegt. Bitte pruefen ob das richtig ist. 
+				if (composedDependencies.containsKey(key)) {
+					for (String value : optionalDependencies.get(key)) {
+						if (composedDependencies.containsKey(value)) {
+						//start
+							try {
+								//ende
+								
+								composedDependencies.get(key).add(value);
+			//start
+								} catch (Exception e) {
+								logger.info("Error 3b");
+								logger.info("key " + key);
+								logger.info("value " + value);
+								logger.info("containsKey "
+										+ composedDependencies
+												.containsKey(value)
+										+ " getKey "
+										+ composedDependencies.get(key));
+								logger.error(e.getStackTrace());
+							}
+							//ende
+						}
 					}
 				}
 			}
-
+		//start
+		} catch (Exception e) {
+			logger.info("Error 3");
+			logger.error(e.getStackTrace());
+		}
+		
+		try {
+//ende
 			makeDotFile(composedDependencies, optionalDependencies, "");
 
 		} catch (Exception e) {
-			logger.error(e);
+//			logger.error(e.getMessage());
+			
+			//start
+			logger.info("Error 4");
+			logger.error(e.getStackTrace());
+			//ende
 		}
 
 		return composedDependencies;

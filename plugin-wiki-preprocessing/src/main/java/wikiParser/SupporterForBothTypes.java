@@ -371,7 +371,7 @@ public class SupporterForBothTypes {
 					+ " WHERE page_is_redirect = 0 AND page_namespace = 0 ";
 
 			try {
-				if (prop.getProperty("Wiki_sqlAddBoolean").equals(1)) {
+				if (prop.getProperty("Wiki_sqlAddBoolean").equalsIgnoreCase("true")) {
 
 					String sqlAdd = prop.getProperty("Wiki_sqlAddToWhere");
 

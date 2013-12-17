@@ -54,6 +54,11 @@ public class CategoryResolver extends DependencyCommand {
 
 	}
 
+	@Override
+	public void addDependencies() {
+		beforeDependencies.add("Wiki_CategoryTreeCreate");
+	};
+
 	private void init() throws IOException {
 		// eigene DB Zugriff auf Wikidb
 		try {

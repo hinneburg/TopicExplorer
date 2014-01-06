@@ -56,8 +56,6 @@ import tools.ExtraInformations;
 import de.fau.cs.osr.ptk.common.AstVisitor;
 import de.fau.cs.osr.utils.StringUtils;
 
-import tools.ExtraInformations;
-
 //neu dazu
 
 /**
@@ -230,29 +228,26 @@ public class TextConverter extends AstVisitor<WtNode> {
 
 	public void visit(WtText text) {
 
-		String txt = text.getContent();
-		String txt_orig = txt;
+		String txt_orig = text.getContent();
+		String txt = txt_orig.trim();
 
-		if (csvOrReadable) {
-			txt = txt.trim();
+		if (ExtraInformations.getIsPictureStartsWith(txt)) {
+			bool_has_extra_information = true;
+			extra_information = ExtraInformations.extraPicure3Append;
 
-			if (txt.length() == 0) {
+			// erkanntes bild entfernen
+			if (!csvOrReadable) {
 				resetSettingsBeforeReturn();
 				return;
 			}
+		}
 
-			if (ExtraInformations.getIsPictureStartsWith(txt)) {
-				bool_has_extra_information = true;
-				extra_information = ExtraInformations.extraPicure3Append;
-			}
-
+		if (csvOrReadable && txt.length() == 0) {
+			return;
 		}
 
 		write(txt_orig);
 
-		if (!csvOrReadable && ExtraInformations.getIsPictureStartsWith(txt)) {
-			newline(1);
-		}
 	}
 
 	public void visit(WtWhitespace w) {
@@ -356,54 +351,40 @@ public class TextConverter extends AstVisitor<WtNode> {
 
 			String target = link.getTarget().getContent();
 			// nur wenn csv erstellt wird,
-			if (ExtraInformations.getIsPictureStartsWith(target) && csvOrReadable) {
+			if (ExtraInformations.getIsPictureStartsWith(target)) {
 
-				// // Adaptation zu Section
-				// finishLine();
-				//
-				// StringBuilder saveSb = sb; // stringbuiler gespeichert
-				// boolean saveNoWrap = noWrap;
-				//
-				// sb = new StringBuilder(); // sb neu erstellt
-				// noWrap = true;
-				//
-				// String tmpTarget = link.getTarget().getContent();
-				//
-				// iterate(link.getTitle());
-				//
-				// finishLine();
-				// tmpTarget = tmpTarget + "|" + sb.toString();
-				//
-				// sb = saveSb; // gespeicherteret sb zurück
-				//
-				// bool_has_extra_information = true;
-				// extra_information = ExtraInformations.extraPicure4Append;
-				//
-				// write(tmpTarget);
-				//
-				// noWrap = saveNoWrap;
+				if (csvOrReadable) {
+					bool_has_extra_information = true;
+					extra_information = ExtraInformations.extraPicure4Append;
 
-				bool_has_extra_information = true;
-				extra_information = ExtraInformations.extraPicure4Append;
+					write(target);
 
-				write(target);
+					// bool_has_extra_information = true;
+					// extra_information = ExtraInformations.extraPicure5Append;
 
-				// bool_has_extra_information = true;
-				// extra_information = ExtraInformations.extraPicure5Append;
+					// für Abstand zwischen Bild und Bildtext
+					if (!csvOrReadable) {
+						write(" ");
+					}
 
-				// für Abstand zwischen Bild und Bildtext
-				if (!csvOrReadable) {
-					write(" ");
+					iterate(link.getTitle());
+
+					if (!csvOrReadable) {
+						newline(1);
+					}
+					// abbruch weil restliche Teil für Links ohne Doppelpunkte
+					// bestimmt ist und nicht doppelt ausgeführt werden soll
+					return;
+				} else {
+					// abbruch damit keine bilder ausgegeben werden im
+					// readablemodus ,
+					// aba eigentlich schlecht für steuerung wenn doch...
+					return;
 				}
-				iterate(link.getTitle());
-
-				if (!csvOrReadable) {
-					newline(1);
-				}
-
-				return;
 
 			} else {
+				// abbruch damit keine kategorien oder allgemein Links mit
+				// Doppelpunkt ausgeben werden
 				return;
 			}
 		}
@@ -542,11 +523,12 @@ public class TextConverter extends AstVisitor<WtNode> {
 			// in überschrift
 
 			dispatch(n.get(2));
-		} else {
 
-			write(n.getTarget().getContent());
-			dispatch(n.get(2));
-			writeWord(" ");
+			// Bilder sollen nicht in den Text
+			// } else {
+			// write(n.getTarget().getContent());
+			// dispatch(n.get(2));
+			// writeWord(" ");
 		}
 
 	}
@@ -688,7 +670,7 @@ public class TextConverter extends AstVisitor<WtNode> {
 			return;
 		}
 
-		if (!getIsTermAllowed(s)) {
+		if (getIsTermNOTAllowed(s)) {
 			resetSettingsBeforeReturn();
 			return;
 		}
@@ -697,10 +679,6 @@ public class TextConverter extends AstVisitor<WtNode> {
 			if (bool_has_extra_information) {
 				bool_has_extra_information = false;
 				s = s + extra_information;
-			}
-		}else{
-			if (ExtraInformations.getIsPictureStartsWith(s+extra_information)){
-				newline(1);
 			}
 		}
 
@@ -749,7 +727,16 @@ public class TextConverter extends AstVisitor<WtNode> {
 				writeWord(s);
 				newline(1);
 			}
-		} else {
+		} else if (!csvOrReadable) {
+
+			// bilder werden nicht ausgegeben
+			if (bool_has_extra_information) {
+				if (testIfContainsPicturePhrase(extra_information)) {
+					resetSettingsBeforeReturn();
+					return;
+				}
+			}
+
 			if (Character.isSpaceChar(s.charAt(0)))
 				wantSpace();
 
@@ -777,15 +764,30 @@ public class TextConverter extends AstVisitor<WtNode> {
 		writeWord(String.valueOf(num));
 	}
 
-	private boolean getIsTermAllowed(String txt) {
-		if (txt.equals("{{") || txt.equals("[[") || txt.equals("]]") || txt.equals("]") || txt.equals("|")
-				|| txt.equals("[") || txt.equals(".") || txt.equals(":") || txt.equals(",") || txt.equals(";")
-				|| txt.equals("(") || txt.equals(")") || txt.equals("|") || txt.equals("||") || txt.equals("=")
-				|| txt.equals("==") || txt.equals("|-")) {
-			return false;
-		} else {
-			return true;
+	private boolean getIsTermNOTAllowed(String txt) {
+
+		Boolean bool = false;
+		if (csvOrReadable) {
+			if (txt.equals("{{") || txt.equals("[[") || txt.equals("]]") || txt.equals("]") || txt.equals("|")
+					|| txt.equals("[") || txt.equals(".") || txt.equals(":") || txt.equals(",") || txt.equals(";")
+					|| txt.equals("(") || txt.equals(")") || txt.equals("|") || txt.equals("||") || txt.equals("=")
+					|| txt.equals("==") || txt.equals("|-")) {
+				bool = true;
+			}
+
+		} else if (!csvOrReadable) {
+			if (txt.equals("{{") || txt.equals("}}") || txt.equals("[[") || txt.equals("]]") || txt.equals("|")
+					|| txt.equals("|-")) {
+				bool = true;
+			}
+
 		}
+
+		return bool;
+	}
+
+	private boolean testIfContainsPicturePhrase(String s) {
+		return (s.contains("isPicture"));
 	}
 
 	public void setCsvOrReadable(boolean boolCsvOrReadable) {

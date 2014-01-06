@@ -15,6 +15,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import wikiParser.PreMalletParallelization;
 import wikiParser.SupporterForBothTypes;
 
 /*
@@ -989,6 +990,11 @@ public class WikiTextToCSVForeward {
 		//
 		// return sb.toString();
 
+	}
+
+	public String getOrgTableString() {
+		return this.old_id + " ;\"" + this.wikiTitle + " \";\"" + this.wikiParsedTextReadable + " \""
+				+ PreMalletParallelization.endOfDocumentInSQLOutput;
 	}
 
 	private Set<String> getSetOfParsedLines() {

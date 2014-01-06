@@ -28,7 +28,7 @@ import tools.WikiTextToCSVForeward;
 
 public class PreMalletParallelization extends Thread {
 
-	final int wrapCol = 180; // Breite bis Zeilenumbruch, könnte erhöht werden
+	final int wrapCol = 500; // Breite bis Zeilenumbruch, könnte erhöht werden
 								// aba
 
 	private Properties prop;
@@ -40,7 +40,7 @@ public class PreMalletParallelization extends Thread {
 	private BufferedWriter bwInputSQLParsedText;
 	private BufferedWriter bwLogger;
 
-	private final String endOfDocumentInSQLOutput = "|s|q|l|e|n|d|i|n|g|\n";
+	public static final String endOfDocumentInSQLOutput = "|s|q|l|e|n|d|i|n|g|\n";
 
 	private final String fileseparator = System.getProperty("file.separator");
 
@@ -118,42 +118,40 @@ public class PreMalletParallelization extends Thread {
 		SupporterForBothTypes t = new SupporterForBothTypes(db);
 		String wikitxt = t.getWikiTextOnlyWithID(id_title.getOld_id());
 		t = null;
-		wikitxt = doArticleCorrection(wikitxt, id_title);
 
-		return wikitxt;
-	}
+		Integer tmpLength = wikitxt.length();
+		String wikiTextCorrected = doArticleCorrection(wikitxt, id_title);
 
-	private String doArticleCorrection(String wikitxt, WikiIDTitlePair id_title) {
-		Boolean needsSaving = false;
+		if (tmpLength != wikiTextCorrected.length()) {
 
-		// remove comments from wikitext
-		if (wikitxt.contains("<!--")) {
-			wikitxt = replaceTheOpenAndCloseTagsFromText(wikitxt, "<!--", "-->");
-			needsSaving = true;
-		}
-
-		// remove link
-		// important, with this the correct coloring of links is guaranteed
-		if (wikitxt.contains("[[")) {
-			Integer tmpLength = wikitxt.length();
-			wikitxt = correctLinksWithoutPipes(wikitxt, id_title);
-
-			if (tmpLength != wikitxt.length())
-				needsSaving = true;
-		}
-
-		// only do updates on the first run, e.g. after the import of a fresh
-		// dump
-		if (needsSaving) {
+			updateReplacedTextInDatabase(wikiTextCorrected, id_title.getOld_id());
+			wikitxt = wikiTextCorrected;
 
 			try {
-				bwLogger.append(id_title.getWikiTitle() + " updated.\n");
+				// für test
+				if (bwLogger != null) {
+					bwLogger.append(id_title.getWikiTitle() + " updated.\n");
+				}
 			} catch (IOException e) {
 				System.err.println("Cannot write in logger.");
 				// e.printStackTrace();
 			}
+		}
 
-			updateReplacedTextInDatabase(wikitxt, id_title.getOld_id());
+		return wikitxt;
+	}
+
+	public String doArticleCorrection(String wikitxt, WikiIDTitlePair id_title) {
+
+		// remove comments from wikitext
+		if (wikitxt.contains("<!--")) {
+			wikitxt = replaceTheOpenAndCloseTagsFromText(wikitxt, "<!--", "-->");
+		}
+
+		// remove links
+		// important, with this the correct coloring of links is guaranteed
+		if (wikitxt.contains("[[")) {
+			wikitxt = correctLinksWithoutPipes(wikitxt, id_title);
 		}
 
 		return wikitxt;
@@ -183,8 +181,6 @@ public class PreMalletParallelization extends Thread {
 
 	private String correctLinksWithoutPipes(String wikitxt, WikiIDTitlePair idTitle) {
 
-		// List<Point> list = getDoubleBracketsPositionsWithoutPipes(wikitxt);
-
 		BracketPositions bp = new BracketPositions(wikitxt, idTitle.getOld_id(), idTitle.getWikiTitle());
 		List<PointInteger> list = bp.getSortedListOfAllBracketsWithoutPipes();
 
@@ -201,78 +197,6 @@ public class PreMalletParallelization extends Thread {
 
 		return wikitxt;
 	}
-
-	// // private List<Point> getDoubleBracketsPositionsWithoutPipes(String
-	// // wikiTxt, Character openBracket, Character closeBracket) {
-	// private List<Point> getDoubleBracketsPositionsWithoutPipes(String
-	// wikiTxt) {
-	//
-	// List<Point> returnList = new ArrayList<Point>();
-	//
-	// // Boolean has_pipe = false;
-	//
-	// char openBracket = '[';
-	// char closeBracket = ']';
-	//
-	// Boolean isLinkOpen = false;
-	// Integer tmpPosition = 0;
-	// Integer bracketsCounter = 0;
-	// //
-	// // Länge -1, wegen char at i + 1
-	// for (Integer i = 0; i < wikiTxt.length() - 1; i++) {
-	//
-	// if (wikiTxt.charAt(i) == openBracket && wikiTxt.charAt(i + 1) ==
-	// openBracket) {
-	// if (!isLinkOpen) {
-	// isLinkOpen = true;
-	// tmpPosition = i + 2;
-	// }
-	// bracketsCounter++;
-	// }
-	//
-	// if (isLinkOpen && bracketsCounter == 1) {
-	// if (wikiTxt.charAt(i) == closeBracket && wikiTxt.charAt(i + 1) ==
-	// closeBracket) {
-	// // only adds a point, when there are no "|" or ":"
-	// if (!wikiTxt.substring(tmpPosition, i).contains("|")
-	// && !wikiTxt.substring(tmpPosition, i).contains(":"))
-	// returnList.add(new Point(tmpPosition, i));
-	//
-	// // System.out.println(wikiTxt.substring(tmpPosition, i));
-	// isLinkOpen = false;
-	//
-	// }
-	// } else if (isLinkOpen && bracketsCounter > 1) {
-	// bracketsCounter--;
-	// }
-	//
-	// // if (!isLinkOpen)
-	// // {
-	// // if (wikiTxt.charAt(i) == openBracket && wikiTxt.charAt(i + 1) ==
-	// // openBracket)
-	// // {
-	// // isLinkOpen = true;
-	// // tmpPosition = i + 2;
-	// // }
-	// // }
-	// // else if (isLinkOpen)
-	// // {
-	// // if (wikiTxt.charAt(i) == closeBracket && wikiTxt.charAt(i + 1) ==
-	// // closeBracket)
-	// // {
-	// // // only adds a point, when there are no "|" or ":"
-	// // if (!wikiTxt.substring(tmpPosition, i).contains("|") &&
-	// // !wikiTxt.substring(tmpPosition, i).contains(":"))
-	// // returnList.add(new Point(tmpPosition, i));
-	// //
-	// // // System.out.println(wikiTxt.substring(tmpPosition, i));
-	// // isLinkOpen = false;
-	// //
-	// // }
-	// // }
-	// }
-	// return returnList;
-	// }
 
 	/**
 	 * 
@@ -366,6 +290,16 @@ public class PreMalletParallelization extends Thread {
 		}
 	}
 
+	private void appendToSqlFile(String filesForOrgTable) {
+		try {
+			bwInputSQLParsedText.append(filesForOrgTable);
+			// bwInputSQLParsedText.flush();
+		} catch (IOException e) {
+			System.err.println("append to inputsql ");
+			e.printStackTrace();
+		}
+	}
+
 	/**
 	 * output: logging
 	 */
@@ -395,14 +329,14 @@ public class PreMalletParallelization extends Thread {
 			// double parsing, one for the Wikitext and one for text
 			return new WikiArticle(parse(wikiText, id_title, true), id_title.getOld_id(), wikiText,
 					id_title.getWikiTitle(), 1, parse(wikiText, id_title, false));
+			//
+			//
 		} catch (CompilerException e3) {
-
 			System.err.println("Failure getParsedWikiText compiler exception " + id_title.getWikiTitle() + " "
 					+ id_title.getOld_id());
 			return new WikiArticle("Failure in getParsedWikiArticle(): " + e3.getMessage(), id_title.getOld_id(), "",
 					id_title.getWikiTitle(), -4, "");
 		} catch (LinkTargetException e2) {
-
 			System.err.println("Failure getParsedWikiText linktarget exception" + id_title.getWikiTitle() + " "
 					+ id_title.getOld_id());
 			return new WikiArticle("Failure in getParsedWikiArticle(): " + e2.getMessage(), id_title.getOld_id(), "",
@@ -410,7 +344,6 @@ public class PreMalletParallelization extends Thread {
 		} catch (Exception e) {
 			System.err.println("Failure getParsedWikiText exception " + id_title.getWikiTitle() + " "
 					+ id_title.getOld_id());
-
 			// if (debug){
 			// e.printStackTrace();
 			// }
@@ -419,8 +352,8 @@ public class PreMalletParallelization extends Thread {
 		}
 	}
 
-	private String parse(String wikiOrigText, WikiIDTitlePair id_title, boolean csvOrReadable)
-			throws CompilerException, LinkTargetException {
+	public String parse(String wikiOrigText, WikiIDTitlePair id_title, boolean csvOrReadable) throws CompilerException,
+			LinkTargetException {
 		WikiConfig config = DefaultConfigEn.generate();
 
 		WtEngine engine = new WtEngine(config);
@@ -439,6 +372,16 @@ public class PreMalletParallelization extends Thread {
 		return (String) p.go(cp.getPage());
 	}
 
+	private void createOutputOfInputMalletAndOrgTable(WikiTextToCSVForeward textTocsv) throws Exception {
+
+		// bw für inputmallet.sql
+		appendToBW(textTocsv.getCSV());
+
+		// für orgTable
+		appendToSqlFile(textTocsv.getOrgTableString());
+
+	}
+
 	@Override
 	public void run() {
 
@@ -450,9 +393,9 @@ public class PreMalletParallelization extends Thread {
 			this.init();
 
 			SupporterForBothTypes s = new SupporterForBothTypes();
-			Boolean bool_japanFileOutput = false;
+			Boolean bool_outputInMetaFiles = false;
 			if (prop.getProperty("Wiki_fileOutput").equalsIgnoreCase("true")) {
-				bool_japanFileOutput = true;
+				bool_outputInMetaFiles = true;
 			}
 			String fileOutputFolder = prop.getProperty("Wiki_fileOutputFolder");
 
@@ -478,11 +421,6 @@ public class PreMalletParallelization extends Thread {
 
 				w = getParsedWikiArticle(articleNames.get(i));
 
-				// if (debug) {
-				// bwLogger.append(articleNames.get(i).getWikiTitle() + " , "
-				// + new Integer(articleNames.size() - i - 1) + " left \n");
-				// }
-
 				// fürs logging
 				if (w.getFailureId() <= 0) {
 					// as failuretext
@@ -501,92 +439,63 @@ public class PreMalletParallelization extends Thread {
 						s.printIntoFile(w.getParsedWikiText(), "outputparsed.txt");
 						s.printIntoFile(w.getWikiOrigText(), "inputorig.txt");
 
+						// alle Wörter einzeln mit Positionsangaben
 						s.printIntoFile(s.tokenizeEveryElementOfTheTextForTestOutput(w.getWikiOrigText()),
 								"tokensInputorigText.txt");
 
 					}
 
-					if (bool_japanFileOutput) {
-						// separate output of every article
-						s.printIntoFile(w.getParsedWikiTextReadable(), fileOutputFolder + fileseparator
-								+ w.getOldID().toString() + "_readableText");
+					try {
 
-						// get link informations
 						textTocsv = new WikiTextToCSVForeward(w, bwLogger, prop);
-						String fileInput = textTocsv.getLinkInfos();
 
-						s.printIntoFile(fileInput, fileOutputFolder + fileseparator + w.getOldID().toString()
-								+ "_linkPositions");
+						if (bool_outputInMetaFiles) {
+							// separate output of every article
+							s.printIntoFile(w.getParsedWikiTextReadable(), fileOutputFolder + fileseparator
+									+ w.getOldID().toString() + "_readableText");
 
-						// get section positions
-						fileInput = textTocsv.getSectionCaptions();
-						s.printIntoFile(fileInput, fileOutputFolder + fileseparator + w.getOldID().toString()
-								+ "_sectionPositions");
+							// get link informations
+							String fileInput = textTocsv.getLinkInfos();
 
-						// get picture positions
-						fileInput = textTocsv.getPictures();
-						s.printIntoFile(fileInput, fileOutputFolder + fileseparator + w.getOldID().toString()
-								+ "_picturePositions");
+							s.printIntoFile(fileInput, fileOutputFolder + fileseparator + w.getOldID().toString()
+									+ "_linkPositions");
 
-						// get category infos
-						fileInput = textTocsv.getCategroryInfos();
-						s.printIntoFile(fileInput, fileOutputFolder + fileseparator + w.getOldID().toString()
-								+ "_category");
+							// get section positions
+							fileInput = textTocsv.getSectionCaptions();
+							s.printIntoFile(fileInput, fileOutputFolder + fileseparator + w.getOldID().toString()
+									+ "_sectionPositions");
 
-						textTocsv = null;
+							// get picture positions
+							fileInput = textTocsv.getPictures();
+							s.printIntoFile(fileInput, fileOutputFolder + fileseparator + w.getOldID().toString()
+									+ "_picturePositions");
 
-					} else {
+							// get category infos
+							fileInput = textTocsv.getCategroryInfos();
+							s.printIntoFile(fileInput, fileOutputFolder + fileseparator + w.getOldID().toString()
+									+ "_category");
 
-						try {
+							createOutputOfInputMalletAndOrgTable(textTocsv);
 
-							// //// malletfile with position in wikitext
-							// // textTocsv = new WikiTextToCsvbackward(w,
-							// bwLogger);
-
-							textTocsv = new WikiTextToCSVForeward(w, bwLogger, prop);
-							appendToBW(textTocsv.getCSV());
 							textTocsv = null;
 
-							// appendToBW(w.getOldID() + " " + w.getWikiTitle()
-							// +
-							// " "
-							// + new Integer(articleNames.size() - i - 1) +
-							// "\n");
+						} else if (!bool_outputInMetaFiles) {
 
-							// saving the readable text for import into the
-							// database
-							// for displaying the normalized text in the UI
-							bwInputSQLParsedText.append(w.getOldID() + " ;\"" + w.getWikiTitle() + " \";\""
-									+ w.getParsedWikiTextReadable() + " \"" + endOfDocumentInSQLOutput);
+							createOutputOfInputMalletAndOrgTable(textTocsv);
 
-							// bwLogger.append(w.getWikiTitle() + " parsed.");
-							// System.out.println(w.getWikiTitle() + "\t" +
-							// this.getName() + "\t" +
-							// System.currentTimeMillis() );
-							// bwLogger.append(w.getWikiTitle() + "\t" +
-							// this.getName() + "\t" +
-							// System.currentTimeMillis() +
-							// "\n");
-							// System.out.println(w.getWikiTitle() + "\t" +
-							// this.getName() + "\t" +
-							// System.currentTimeMillis() );
+						}
 
-						} catch (Exception e) {
-							bwLogger.append(w.getWikiTitle() + " " + w.getOldID() + " " + this.getClass()
-									+ ".java :failure in preparing original wikitext with wikitextocsv for mallet, "
-									+ e.getMessage() + "\n");
-							if (debug) {
-								e.printStackTrace();
-							}
+					} catch (Exception e) {
+						bwLogger.append(w.getWikiTitle() + " " + w.getOldID() + " " + this.getClass()
+								+ ".java :failure in preparing original wikitext with wikitextocsv for mallet, "
+								+ e.getMessage() + "\n");
+						if (debug) {
+							e.printStackTrace();
 						}
 					}
 				}
 
-				// System.err.println(w.getWikiTitle() + "  " + w.getOldID());
-				// if (debug) {
-				// bwLogger.append(articleNames.get(i).getWikiTitle() + " , "
-				// + new Integer(articleNames.size() - i - 1) + " left \n");
-				// }
+				textTocsv = null;
 				w = null;
 				bwLogger.flush();
 

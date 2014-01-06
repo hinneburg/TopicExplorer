@@ -15,7 +15,7 @@ public class WikiTextToCSVForewardIntegrationTest {
 	private String path = "src/test/resources/";
 
 	private String parsedWikiTxt = TestUtil.returnFileAsString(this.path + "outputParsed.txt");
-	private String parsedWikiOriginal = TestUtil.returnFileAsString(this.path + "inputOrig.txt");
+	private String inputWikiOriginal = TestUtil.returnFileAsString(this.path + "inputOrig.txt");
 	private String parsedWikiTextReadable = TestUtil.returnFileAsString(this.path + "readableText.txt");
 	private Integer old_id;
 	private String wikiTitle;
@@ -30,10 +30,10 @@ public class WikiTextToCSVForewardIntegrationTest {
 		prop.setProperty("Wiki_debug", "false");
 		prop.setProperty("Wiki_onlyParsedLinks", "true");
 
-		old_id = 115181661;
+		old_id = 38;
 		wikiTitle = "Konrad_Zuse";
 
-		wikiArticle = new WikiArticle(parsedWikiTxt, old_id, parsedWikiOriginal, wikiTitle, 0, parsedWikiTextReadable);
+		wikiArticle = new WikiArticle(parsedWikiTxt, old_id, inputWikiOriginal, wikiTitle, 0, parsedWikiTextReadable);
 		wikiTestToCSVForeward = new WikiTextToCSVForeward(wikiArticle, null, prop);
 	}
 

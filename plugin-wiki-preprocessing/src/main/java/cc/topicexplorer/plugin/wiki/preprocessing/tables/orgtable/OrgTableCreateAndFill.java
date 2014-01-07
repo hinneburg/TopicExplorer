@@ -39,13 +39,12 @@ public class OrgTableCreateAndFill extends TableCommand {
 
 		// create table
 
-		logger.info("wiki-plug-in." + tableName + " :  filling ");		
+		logger.info("wiki-plug-in." + tableName + " :  filling ");
 		try {
 			this.database.executeUpdateQuery(sql);
 		} catch (SQLException e) {
 			logger.fatal("wiki-plug-in." + tableName + ": cannot create table \n. Program will exit.\n");
-			e.printStackTrace();
-			throw new RuntimeException();
+			throw new RuntimeException(e);
 		}
 
 		// fill table with values from the output of the wiki plug-in
@@ -64,8 +63,7 @@ public class OrgTableCreateAndFill extends TableCommand {
 		} catch (SQLException e) {
 			logger.fatal("wiki-plug-in." + tableName + ": failure in filling the table.\n programm will exit.");
 			// fatal
-			e.printStackTrace();
-			throw new RuntimeException();
+			throw new RuntimeException(e);
 		}
 
 		// debugging kann eigentlich weg

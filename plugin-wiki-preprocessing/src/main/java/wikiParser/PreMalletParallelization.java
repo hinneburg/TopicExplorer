@@ -45,8 +45,9 @@ public class PreMalletParallelization extends Thread {
 	private final String fileseparator = System.getProperty("file.separator");
 
 	private boolean debug;
-
 	private boolean onlyOneOutput;
+	private boolean onlyParsedLinks;
+	private boolean bool_outputInMetaFiles;
 
 	private PreparedStatement stmt;
 
@@ -97,6 +98,11 @@ public class PreMalletParallelization extends Thread {
 			if (prop.getProperty("Wiki_debug").equalsIgnoreCase("true")) {
 				debug = true;
 			}
+			onlyParsedLinks = prop.getProperty("Wiki_onlyParsedLinks").equalsIgnoreCase("true");
+
+			if (prop.getProperty("Wiki_fileOutput").equalsIgnoreCase("true")) {
+				bool_outputInMetaFiles = true;
+			}
 
 		} catch (Exception e) {
 			System.err.println("init " + this.getName());
@@ -141,7 +147,7 @@ public class PreMalletParallelization extends Thread {
 		return wikitxt;
 	}
 
-	public String doArticleCorrection(String wikitxt, WikiIDTitlePair id_title) {
+	String doArticleCorrection(String wikitxt, WikiIDTitlePair id_title) {
 
 		// remove comments from wikitext
 		if (wikitxt.contains("<!--")) {
@@ -352,7 +358,7 @@ public class PreMalletParallelization extends Thread {
 		}
 	}
 
-	public String parse(String wikiOrigText, WikiIDTitlePair id_title, boolean csvOrReadable) throws CompilerException,
+	String parse(String wikiOrigText, WikiIDTitlePair id_title, boolean csvOrReadable) throws CompilerException,
 			LinkTargetException {
 		WikiConfig config = DefaultConfigEn.generate();
 
@@ -372,13 +378,65 @@ public class PreMalletParallelization extends Thread {
 		return (String) p.go(cp.getPage());
 	}
 
-	private void createOutputOfInputMalletAndOrgTable(WikiTextToCSVForeward textTocsv) throws Exception {
+	private void createOutputOfInputMalletAndOrgTable(WikiTextToCSVForeward textTocsv) {
 
 		// bw für inputmallet.sql
 		appendToBW(textTocsv.getCSV());
 
 		// für orgTable
 		appendToSqlFile(textTocsv.getOrgTableString());
+
+	}
+
+	private void ifDebugGenerateOutputAndWriteIntoLogger(Integer i) {
+		// testausgabe
+		if (debug) {
+
+			String next = "";
+			if (i + 1 < articleNames.size()) {
+				next = "( nächster Artikel:" + articleNames.get(i + 1).getWikiTitle() + ")";
+			}
+			appendLogging(articleNames.get(i).getWikiTitle() + " , " + new Integer(articleNames.size() - i - 1)
+					+ " left " + next + " \n");
+			System.out.println(articleNames.get(i).getWikiTitle() + " , " + new Integer(articleNames.size() - i - 1)
+					+ " left ");
+		}
+
+	}
+
+	private void createMetafiles(SupporterForBothTypes s, WikiArticle w, WikiTextToCSVForeward textTocsv) {
+
+		String fileOutputFolder = prop.getProperty("Wiki_fileOutputFolder");
+
+		s.printIntoFile(w.getParsedWikiTextReadable(), fileOutputFolder + fileseparator + w.getOldID().toString()
+				+ "_readableText");
+
+		// get link informations
+		String fileInput = textTocsv.getLinkInfos();
+
+		s.printIntoFile(fileInput, fileOutputFolder + fileseparator + w.getOldID().toString() + "_linkPositions");
+
+		// get section positions
+		fileInput = textTocsv.getSectionCaptions();
+		s.printIntoFile(fileInput, fileOutputFolder + fileseparator + w.getOldID().toString() + "_sectionPositions");
+
+		// get picture positions
+		fileInput = textTocsv.getPictures();
+		s.printIntoFile(fileInput, fileOutputFolder + fileseparator + w.getOldID().toString() + "_picturePositions");
+
+		// get category infos
+		fileInput = textTocsv.getCategroryInfos();
+		s.printIntoFile(fileInput, fileOutputFolder + fileseparator + w.getOldID().toString() + "_category");
+
+	}
+
+	private void generateSingleFileOutput(SupporterForBothTypes s, WikiArticle w) {
+
+		s.printIntoFile(w.getParsedWikiText(), "outputparsed.txt");
+		s.printIntoFile(w.getWikiOrigText(), "inputorig.txt");
+
+		// alle Wörter einzeln mit Positionsangaben
+		s.printIntoFile(s.tokenizeEveryElementOfTheTextForTestOutput(w.getWikiOrigText()), "tokensInputorigText.txt");
 
 	}
 
@@ -393,11 +451,6 @@ public class PreMalletParallelization extends Thread {
 			this.init();
 
 			SupporterForBothTypes s = new SupporterForBothTypes();
-			Boolean bool_outputInMetaFiles = false;
-			if (prop.getProperty("Wiki_fileOutput").equalsIgnoreCase("true")) {
-				bool_outputInMetaFiles = true;
-			}
-			String fileOutputFolder = prop.getProperty("Wiki_fileOutputFolder");
 
 			if (prop.getProperty("Wiki_transaction").equalsIgnoreCase("true")) {
 				db.executeUpdateQuery("START TRANSACTION;");
@@ -405,101 +458,40 @@ public class PreMalletParallelization extends Thread {
 
 			for (int i = 0; i < articleNames.size(); i++) {
 
-				// testausgabe
-				if (debug) {
-
-					String next = "";
-					if (i + 1 < articleNames.size()) {
-						next = "( nächster Artikel:" + articleNames.get(i + 1).getWikiTitle() + ")";
-					}
-
-					bwLogger.append(articleNames.get(i).getWikiTitle() + " , "
-							+ new Integer(articleNames.size() - i - 1) + " left " + next + " \n");
-					System.out.println(articleNames.get(i).getWikiTitle() + " , "
-							+ new Integer(articleNames.size() - i - 1) + " left ");
-				}
+				ifDebugGenerateOutputAndWriteIntoLogger(i);
 
 				w = getParsedWikiArticle(articleNames.get(i));
 
 				// fürs logging
 				if (w.getFailureId() <= 0) {
 					// as failuretext
-					this.appendLogging(w.getWikiTitle() + " " + w.getOldID() + "\t\t\t failure_id <= 0 , "
+					appendLogging(w.getWikiTitle() + " " + w.getOldID() + "\t\t\t failure_id <= 0 , "
 							+ w.getParsedWikiText());
-
-					// System.err.println("wohl Postprocessing-Fehler aba weiter gehts. ");
-
 				} else if (w.getParsedWikiTextReadable().length() == 0) {
-					this.appendLogging(w.getWikiTitle() + " " + w.getOldID() + "\t\t\t readableText.length() is 0 ");
+					appendLogging(w.getWikiTitle() + " " + w.getOldID() + "\t\t\t readableText.length() is 0 ");
 				} else {
+
 					// temporäre Ausgabe, zur Veranschaulichung nur wenn ein
 					// Artikel geladen wird
 					if (onlyOneOutput) {
-
-						s.printIntoFile(w.getParsedWikiText(), "outputparsed.txt");
-						s.printIntoFile(w.getWikiOrigText(), "inputorig.txt");
-
-						// alle Wörter einzeln mit Positionsangaben
-						s.printIntoFile(s.tokenizeEveryElementOfTheTextForTestOutput(w.getWikiOrigText()),
-								"tokensInputorigText.txt");
-
+						generateSingleFileOutput(s, w);
 					}
 
-					try {
+					// generate Metainfos
+					textTocsv = new WikiTextToCSVForeward(w, bwLogger, onlyParsedLinks, debug);
 
-						textTocsv = new WikiTextToCSVForeward(w, bwLogger, prop);
-
-						if (bool_outputInMetaFiles) {
-							// separate output of every article
-							s.printIntoFile(w.getParsedWikiTextReadable(), fileOutputFolder + fileseparator
-									+ w.getOldID().toString() + "_readableText");
-
-							// get link informations
-							String fileInput = textTocsv.getLinkInfos();
-
-							s.printIntoFile(fileInput, fileOutputFolder + fileseparator + w.getOldID().toString()
-									+ "_linkPositions");
-
-							// get section positions
-							fileInput = textTocsv.getSectionCaptions();
-							s.printIntoFile(fileInput, fileOutputFolder + fileseparator + w.getOldID().toString()
-									+ "_sectionPositions");
-
-							// get picture positions
-							fileInput = textTocsv.getPictures();
-							s.printIntoFile(fileInput, fileOutputFolder + fileseparator + w.getOldID().toString()
-									+ "_picturePositions");
-
-							// get category infos
-							fileInput = textTocsv.getCategroryInfos();
-							s.printIntoFile(fileInput, fileOutputFolder + fileseparator + w.getOldID().toString()
-									+ "_category");
-
-							createOutputOfInputMalletAndOrgTable(textTocsv);
-
-							textTocsv = null;
-
-						} else if (!bool_outputInMetaFiles) {
-
-							createOutputOfInputMalletAndOrgTable(textTocsv);
-
-						}
-
-					} catch (Exception e) {
-						bwLogger.append(w.getWikiTitle() + " " + w.getOldID() + " " + this.getClass()
-								+ ".java :failure in preparing original wikitext with wikitextocsv for mallet, "
-								+ e.getMessage() + "\n");
-						if (debug) {
-							e.printStackTrace();
-						}
+					if (bool_outputInMetaFiles) {
+						createMetafiles(s, w, textTocsv);
 					}
+					createOutputOfInputMalletAndOrgTable(textTocsv);
 				}
 
 				textTocsv = null;
 				w = null;
 				bwLogger.flush();
-
 			}
+
+			// alles beenden und schließen, Buffer leeren
 
 			bwCSVOrigText.flush();
 			bwCSVOrigText.close();
@@ -516,33 +508,55 @@ public class PreMalletParallelization extends Thread {
 				db.executeUpdateQuery("COMMIT;");
 			}
 
-		} catch (Exception e) {
-			System.err.println(this.getClass() + ".run - " + this.getName());
+		}
 
-			// for finishing the files
-			try {
-				bwLogger.append("Failure in run: " + this.getName() + " " + e.getMessage() + e.getStackTrace() + " \n");
+		catch (SQLException e2) {
 
-				bwInputSQLParsedText.flush();
-				bwInputSQLParsedText.close();
-				bwCSVOrigText.flush();
-				bwCSVOrigText.close();
-				bwLogger.flush();
-				bwLogger.close();
-
-				db.shutdownDB();
-			} catch (IOException e1) // catchblock von flush & close
-			{
-				if (debug)
-					e1.printStackTrace();
-			} catch (SQLException e2) {
-				if (debug)
-					e2.printStackTrace();
-			}
-
+			appendLogging("sql-failure in run: " + this.getName() + " " + e2.getMessage() + e2.getStackTrace() + " \n");
 			if (debug) {
+				e2.printStackTrace();
+			}
+		} catch (IOException e3) {
+			appendLogging("io-failure in run: " + this.getName() + " " + e3.getMessage() + e3.getStackTrace() + " \n");
+			if (debug) {
+				e3.printStackTrace();
+			}
+		} finally {
+			try {
+				db.shutdownDB();
+			} catch (SQLException e) {
+
 				e.printStackTrace();
 			}
 		}
+
+		// catch (Exception e) {
+		// System.err.println(this.getClass() + ".run - " + this.getName());
+		//
+		// // for finishing the files
+		// try {
+		//
+		// bwInputSQLParsedText.flush();
+		// bwInputSQLParsedText.close();
+		// bwCSVOrigText.flush();
+		// bwCSVOrigText.close();
+		// bwLogger.flush();
+		// bwLogger.close();
+		//
+		// db.shutdownDB();
+		// } catch (IOException e1) // catchblock von flush & close
+		// {
+		// if (debug)
+		// e1.printStackTrace();
+		// } catch (SQLException e2) {
+		// if (debug)
+		// e2.printStackTrace();
+		// }
+		//
+		// if (debug) {
+		// e.printStackTrace();
+		// }
+		// }
 	}
+
 }

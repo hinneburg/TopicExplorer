@@ -4,14 +4,11 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.NavigableSet;
-import java.util.Properties;
 import java.util.Scanner;
-import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
@@ -67,7 +64,7 @@ public class WikiTextToCSVForeward {
 	private final boolean onlyParsedLinks;
 	private final boolean debug;
 
-	public WikiTextToCSVForeward(WikiArticle w, BufferedWriter bwLogger, Properties prop) {
+	public WikiTextToCSVForeward(WikiArticle w, BufferedWriter bwLogger, Boolean onlyParsedLinks, Boolean debug) {
 
 		this.wikiOrigText = new String(w.getWikiOrigText());
 		this.wikiParsedTextLineByLine = w.getParsedWikiText();
@@ -79,8 +76,8 @@ public class WikiTextToCSVForeward {
 			this.bwlogger = bwLogger;
 		}
 
-		onlyParsedLinks = prop.getProperty("Wiki_onlyParsedLinks").equalsIgnoreCase("true");
-		debug = prop.getProperty("Wiki_debug").equalsIgnoreCase("true");
+		this.onlyParsedLinks = onlyParsedLinks;
+		this.debug = debug;
 
 		init();
 
@@ -139,57 +136,6 @@ public class WikiTextToCSVForeward {
 		}
 
 	}
-
-	// //old
-	// private void tokenizeReadableTextWithFixedTokenSequence(String text,
-	// List<String> tokenSequence) {
-	// // assumption: every parsed word of the wikitext can be found in the
-	// // normalised text
-	// // readable text and parsed original text are not equal and could differ
-	// // in some parts like interpunction and prefix postfix of wiki-links)
-	//
-	// try {
-	// Iterator<String> itToken = tokenSequence.iterator();
-	// Integer position = 0;
-	// Integer savedPosition = 0;
-	// String token;
-	//
-	// while (itToken.hasNext()) {
-	// token = itToken.next();
-	// position = text.substring(savedPosition, text.length()).indexOf(token);
-	// // every
-	// // time
-	// // the
-	// // search-string
-	// // becomes
-	// // shorter
-	// startPositionsReadableText.add(position + savedPosition);
-	//
-	// if (position == -1 && itToken.hasNext()) {
-	// try {
-	// bwlogger.append("tokenize readable text: textposition not found, " +
-	// this.wikiTitle + " "
-	// + token + "\n"); // perhaps it
-	// // doesn't
-	// // come to
-	// // this
-	// // point
-	// } catch (IOException e) {
-	// System.err.println("bwlogger not found, tokenize readable text textposition not found");
-	// e.printStackTrace();
-	// }
-	// } else {
-	// savedPosition = position + savedPosition + token.length();
-	//
-	// }
-	// }
-	// } catch (Exception e) {
-	// System.err
-	// .println("failure in tokenizeReadableTextWithFixedTokenSequence, does only belongs to the tokenisation of the readable text. "
-	// + e.getMessage());
-	// // e.printStackTrace();
-	// }
-	// }
 
 	private void tokenize() throws Exception {
 
@@ -517,89 +463,6 @@ public class WikiTextToCSVForeward {
 		}
 	}
 
-	// private Integer checkIfPositionOfWordIsWithinBoxBrackets(Integer pos,
-	// String tmpLine) throws Exception
-	// {
-	// if (intPointerBracketsBox==(posBracketsBox.size()))
-	// return pos;
-	//
-	// Integer posOfFoundedWord = -1;
-	// Integer posRemainingText = pos;
-	// Integer posSummedUp ;
-	// Integer posNew;
-	//
-	// if (posBracketsBox.get(intPointerBracketsBox).getStartPoint() > pos )
-	// {
-	// return pos ;
-	// }
-	// // wenn er genau drin liegt, neu suchen
-	// else if (posBracketsBox.get(intPointerBracketsBox).getStartPoint() <= pos
-	// && posBracketsBox.get(intPointerBracketsBox).getEndPoint() >= pos)
-	// {
-	// // rekursiv
-	//
-	// pos++;
-	// posNew = wikiOrigText.substring(pos,
-	// wikiOrigText.length()).indexOf(tmpLine);
-	//
-	// if (posNew > -1)
-	// {
-	// posSummedUp = posRemainingText + posNew + 1;
-	// posOfFoundedWord = checkIfPositionOfWordIsWithinBoxBrackets(posSummedUp,
-	// tmpLine);
-	//
-	// }else
-	// {
-	// posOfFoundedWord = -1;
-	// }
-	// }
-	// else if (posBracketsBox.get(intPointerBracketsBox).getEndPoint() < pos )
-	// {
-	// if (intPointerBracketsBox < posBracketsBox.size()-1)
-	// {
-	// Integer tmp = intPointerBracketsBox + 1;
-	// if (posBracketsBox.get(tmp).getStartPoint() >= pos)
-	// {
-	// intPointerBracketsBox++;
-	// posOfFoundedWord = pos;
-	// }
-	// // rekursiv
-	// else if (posBracketsBox.get(tmp).getStartPoint() < pos )
-	// {
-	// intPointerBracketsBox++;
-	// posOfFoundedWord = checkIfPositionOfWordIsWithinBoxBrackets(pos,
-	// tmpLine);
-	// }
-	// }
-	// // else
-	// // {
-	// //
-	// // }
-	//
-	// }
-	//
-	// if (posOfFoundedWord != -1 )
-	// {
-	// return posOfFoundedWord;
-	// }
-	// else
-	// {
-	// return pos;
-	// }
-	//
-	//
-	// //// /*
-	// //// pointer muss immer in richtiger und aktueller Position sein
-	// //// d.h. wenn die gefundene Position innerhalb eines Klammernbereiches
-	// liegt,
-	// //// dann wird temporär der vorherige Bereich angeguckt und überprüft,
-	// //// ob die Position nicht innerhalb eines Klammernbereiches liegt,
-	// //// wenn dies so ist, dann Treffer und return,
-	// //// rekursiv
-	// //// */
-	//
-	// }
-
 	private Integer checkIfFoundedPositionIsWithinABracketNaviagbleSet(Integer pos, String tmpLine) {
 		return checkIfFoundedPositionIsWithinABracketNaviagbleSet(pos, tmpLine, 0);
 	}
@@ -639,23 +502,9 @@ public class WikiTextToCSVForeward {
 			newPos = wikiOrigText.substring(fx).indexOf(tmpLine);
 
 			// rekursion
-			// if (newPos == 0 ) {
-			// if (tmpLine.length()>1){
-			// newPos =
-			// checkIfFoundedPositionIsWithinABracketNaviagbleSet(newPos + fx,
-			// tmpLine, counter+1);
-			// }else {
-			// newPos = -1;
-			// }
-			// } else
 			if (newPos > -1) {
 				newPos = checkIfFoundedPositionIsWithinABracketNaviagbleSet(newPos + fx, tmpLine, counter + 1);
-				// } else {
-				// return pos;
 			}
-
-			// } else {
-			// return pos;
 		}
 
 		if (newPos != -1) {
@@ -694,165 +543,6 @@ public class WikiTextToCSVForeward {
 		}
 	}
 
-	/*
-	 * verschachtelte Links machen Probleme, Lösung: Bildlink erkennen, wenn das
-	 * vorkommt, dann wird der äussere "Bildlinks" deaktiviert, während mögliche
-	 * Links innerhalb der Bildbeschreibung aktiviert werden könnten,
-	 */
-	// private void putBracketPositionsIntoHashMap() {
-	// Integer posBracketStarts = 0;
-	// Boolean boolBracketOpen = false;
-	// Boolean boolHasPipe = false;
-	// Integer bracketsCounter = 0;
-	//
-	// LinkedList<Integer> pipeList = new LinkedList<Integer>();
-	//
-	// // um vorne und hinten anzufügen, bei gerader Anzahl sind die jeweiligen
-	// // Endelemente zusammengehörig
-	// // erste und letzte Klammern werden weggelassen, dh. nur
-	// // eingeschlossene Klammern
-	// Deque<Integer> pipedLinks = new LinkedList<Integer>();
-	//
-	// // length -1, because char at i + 1
-	// for (Integer i = 0; i < wikiOrigText.length() - 1; i++) {
-	//
-	// ;
-	//
-	// if (wikiOrigText.charAt(i) == '[' && wikiOrigText.charAt(i + 1) == '[') {
-	// if (!boolBracketOpen) {
-	// posBracketStarts = i;
-	// } else {
-	// pipedLinks.add(i);
-	// }
-	//
-	// boolBracketOpen = true;
-	// bracketsCounter++;
-	//
-	// } else if (wikiOrigText.charAt(i) == ']' && wikiOrigText.charAt(i + 1) ==
-	// ']') {
-	//
-	// if (boolBracketOpen) {
-	//
-	// if (bracketsCounter > 1) {
-	// pipedLinks.addLast(i);
-	// bracketsCounter--;
-	// } else if (boolHasPipe && pipeList.size() == 1 && bracketsCounter == 1 &&
-	// pipedLinks.size() == 0) {
-	// // 100 % correct link, with only one pipe
-	// bracketPositionsHashMap.put(posBracketStarts, pipeList.getFirst()); //
-	// link-target
-	// boolBracketOpen = false;
-	// } else {
-	//
-	// // wenigstens Behandlung der inneren Links
-	// if (pipedLinks.size() > 0) {
-	//
-	// Boolean boolInsertPipedLinksIntoBracketsPositionsHashMap = false;
-	// if (pipedLinks.size() % 2 == 0) {
-	// boolInsertPipedLinksIntoBracketsPositionsHashMap = true;
-	// } else if (pipedLinks.size() % 2 == 1) {
-	// pipedLinks.pollFirst();
-	// boolInsertPipedLinksIntoBracketsPositionsHashMap = true;
-	// }
-	//
-	// if (boolInsertPipedLinksIntoBracketsPositionsHashMap) {
-	// while (pipedLinks.size() > 0) {
-	// bracketPositionsHashMap.put(pipedLinks.pollFirst(),
-	// pipedLinks.pollLast());
-	// }
-	// boolInsertPipedLinksIntoBracketsPositionsHashMap = false;
-	// }
-	//
-	// }
-	//
-	// // Behandlung der äusseren Klammer abschließen
-	// if (bracketsCounter == 1 && boolHasPipe) {
-	// // do nothing, or there will be failures, because
-	// // the "linkparts" must be found, they were parsed
-	// // as normal text
-	//
-	// boolBracketOpen = false;
-	// }
-	//
-	// }
-	//
-	// // } else if (boolHasPipe && pipeList.size() > 1
-	// // && bracketsCounter == 1)
-	// // {
-	// //
-	// //
-	// // if (pipedLinks.size()>1){
-	// // // hier ist mindestens ein Link eingeschlossen
-	// //
-	// //
-	// //
-	// // }
-	// //
-	// // bracketPositionsHashMap.put(posBracketStarts, i);
-	// // boolBracketOpen = false;
-	// // // F I X M E hier werden wohl erstmal alle Bilder
-	// // // geblockt...
-	// //
-	//
-	// if (!boolBracketOpen) {
-	// pipeList.clear();
-	// boolHasPipe = false;
-	// pipedLinks.clear();
-	// bracketsCounter = 0;
-	// }
-	//
-	// }
-	// } else if (boolBracketOpen && wikiOrigText.charAt(i) == '|') {
-	// boolHasPipe = true;
-	// pipeList.add(i);
-	//
-	// }
-	//
-	// }
-	// }
-
-	// -------------------------
-
-	// save positions of linktargets , between boxbracket and | , not the
-	// linktext
-	// pictures could have "|" too
-	// private List <PointInteger> getBracketedPositionsBoxBrackets()
-	// {
-	// Integer tmpx = 0;
-	// Boolean boolBracketOpen = false;
-	//
-	// List <PointInteger> list = new ArrayList<PointInteger>();
-	//
-	// // rather a test
-	// if (-1 == wikiOrigText.indexOf("[[", 0)){
-	// intPointerBracketsBox = 0 ;
-	// return list;
-	// }
-	//
-	//
-	// // length -1, because char at i + 1
-	// for (Integer i = 0 ; i < wikiOrigText.length()-1; i++)
-	// {
-	//
-	// if (wikiOrigText.charAt(i) == '[' && wikiOrigText.charAt(i + 1) == '[')
-	// {
-	// tmpx = i;
-	// boolBracketOpen = true;
-	// }
-	// else if (wikiOrigText.charAt(i) == '|')
-	// {
-	// if (boolBracketOpen)
-	// {
-	// list.add(new PointInteger(tmpx, i));
-	// boolBracketOpen = false;
-	// }
-	// }
-	// }
-	//
-	// intPointerBracketsBox = 0;
-	// return list;
-	// }
-
 	private Integer splitForOutputAndReturnNewPosition(String tmpLine, Integer posOfLineInOriginalText) {
 		Integer endToken = -1;
 		Integer startToken = 0;
@@ -887,136 +577,15 @@ public class WikiTextToCSVForeward {
 
 	}
 
-	public String getCSV() throws Exception {
+	public String getCSV() {
 
-		// joinTheTwoIteratorsAndFillList();
 		return getMalletInput();
-
-		// startTokenizing();
-
-		// StringBuilder sb = new StringBuilder();
-		//
-		// Iterator<String> itToken = tokensParsedText.iterator();
-		// Iterator<Integer> itSeqWikitext = startPositionsWikiText.iterator();
-		// // Iterator<Integer> itSeqReadable =
-		// // startPositionsReadableText.iterator();
-		//
-		// Iterator<String> itTokenReadable =
-		// tokensParsedReadableText.iterator();
-		// Iterator<Integer> itSeqReadableNew =
-		// startPositionsReadableTextNew.iterator();
-		//
-		// String tokenReadable = "";
-		// String token;
-		// Integer seqWikitext;
-		// // Integer seqReadable ; //kann wohl weg
-		// Integer seqReadableNew = -1;
-		// Integer seqReadableForSave = -1;
-		//
-		// Boolean boolTokenEquals = false;
-		//
-		// String oldReadable;
-		// Integer oldSeqReadable;
-		// // Vorbereitung, fuer ungleiches parsen, also wenn links nicht im
-		// // normalen Text
-		// // geladen werden
-		//
-		// // init the values
-		// if (itTokenReadable.hasNext() && itSeqReadableNew.hasNext()) {
-		// tokenReadable = itTokenReadable.next();
-		// seqReadableNew = itSeqReadableNew.next();
-		// }
-		//
-		// while (itToken.hasNext() && itSeqWikitext.hasNext()) {
-		//
-		// token = itToken.next();
-		// seqWikitext = itSeqWikitext.next();
-		// // seqReadable = itSeqReadable.next();
-		//
-		// if (token.equals(tokenReadable)) {
-		// boolTokenEquals = true;
-		// } else if (tokenReadable.startsWith(token)) { // for links with
-		// // postfixes , they
-		// // are not equal,
-		// // T O D O vielleicht prozentual was machen? aba dürfte nur
-		// // links
-		// // betreffen
-		// boolTokenEquals = true;
-		// } else {
-		// boolTokenEquals = false;
-		// seqReadableForSave = -1;
-		// }
-		//
-		// if (boolTokenEquals) {
-		// seqReadableForSave = seqReadableNew;
-		//
-		// // switch to next record from readable text
-		// if (itTokenReadable.hasNext() && itSeqReadableNew.hasNext()) {
-		// tokenReadable = itTokenReadable.next();
-		// seqReadableNew = itSeqReadableNew.next();
-		// }
-		// }
-		//
-		// // System.out.println(token);
-		//
-		// sb.append("\"" + old_id + "\";" + "\"" +
-		// String.valueOf(seqReadableForSave) + "\";" + "\""
-		// + token.toLowerCase() + "\";" + "\"" + token + "\";" + "\"" +
-		// String.valueOf(seqWikitext) + "\""
-		// + "\n");
-		//
-		// // Iterator<String> itToken = tokensParsedText.iterator();
-		// // Iterator<Integer> itSeqWikitext =
-		// // startPositionsWikiText.iterator();
-		// // Iterator<Integer> itSeqReadable =
-		// // startPositionsReadableText.iterator();
-		// //
-		// // while (itToken.hasNext() && itSeqWikitext.hasNext()) {
-		// // String token = itToken.next();
-		// // Integer seqWikitext = itSeqWikitext.next();
-		// // Integer seqReadable = itSeqReadable.next();
-		// //
-		// // sb.append("\"" + old_id + "\";" + "\"" +
-		// // String.valueOf(seqReadable) + "\";" + "\"" + token.toLowerCase()
-		// // + "\";" + "\"" + token + "\";" + "\"" +
-		// // String.valueOf(seqWikitext) + "\"" + "\n");
-		//
-		// // temp assert which is working
-		// // if (seq > -1 ){
-		// // Assert.assertEquals(token, wikiOrigText.substring(seq, seq+
-		// // token.length()));
-		// // }
-		// }
-		//
-		// return sb.toString();
 
 	}
 
 	public String getOrgTableString() {
 		return this.old_id + " ;\"" + this.wikiTitle + " \";\"" + this.wikiParsedTextReadable + " \""
 				+ PreMalletParallelization.endOfDocumentInSQLOutput;
-	}
-
-	private Set<String> getSetOfParsedLines() {
-
-		SupporterForBothTypes s = new SupporterForBothTypes();
-		Set<String> set = new HashSet<String>(s.getNumberOfElementsForGettingCapacity(wikiParsedTextLineByLine, "\n"));
-		s = null;
-
-		Scanner scParsed = new Scanner(wikiParsedTextLineByLine);
-		String token;
-
-		while (scParsed.hasNextLine()) {
-			token = scParsed.nextLine();
-			token = getNormalTextIfExtraInfosAddedToTheEnd(token, false);
-
-			set.add(token);
-			token = null;
-		}
-
-		scParsed = null;
-
-		return set;
 	}
 
 	public String getLinkInfos() {

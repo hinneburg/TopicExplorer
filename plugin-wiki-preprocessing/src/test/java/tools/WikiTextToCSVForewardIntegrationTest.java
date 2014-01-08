@@ -34,7 +34,7 @@ public class WikiTextToCSVForewardIntegrationTest {
 		wikiTitle = "Konrad_Zuse";
 
 		wikiArticle = new WikiArticle(parsedWikiTxt, old_id, inputWikiOriginal, wikiTitle, 0, parsedWikiTextReadable);
-		wikiTestToCSVForeward = new WikiTextToCSVForeward(wikiArticle, null, prop);
+		wikiTestToCSVForeward = new WikiTextToCSVForeward(wikiArticle, null, true, false);
 	}
 
 	@Test

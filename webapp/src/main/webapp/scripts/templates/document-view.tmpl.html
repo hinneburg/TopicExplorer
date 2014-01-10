@@ -1,0 +1,16 @@
+<div>
+	<div>
+		<img class="menuActivator rotate1" src="images/Black_Settings.png" alt="&gt;" />
+	</div>
+	<div id="browserMenu"
+		style="display: none; background-color: #EEEEEE; border: 1px solid #D1D1D1; position: absolute; z-index: 1;">
+		<h2>
+			DocumentView: <span data-bind="text:selectedPluginTemplate"></span>
+		</h2>
+		<div  data-bind="template: {name: 'document-view-menu', afterRender: makeMenu}"></div>
+	</div>
+	<h3>Inhalt</h3>
+	<ul	data-bind="template: { name: function() {return selectedPluginTemplate();}, foreach: selectedDocuments, as: 'selectedDocument'}"></ul>
+	<a href="#" data-bind="click: changeSelectedDocuments">Change
+		Documents</a>
+</div>

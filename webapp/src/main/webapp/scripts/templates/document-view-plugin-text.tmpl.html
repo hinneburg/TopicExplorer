@@ -1,0 +1,8 @@
+<li>
+	<span data-bind="text: $root.topicexplorer.document[selectedDocument].TEXT$TITLE"></span>: 
+	<span data-bind="text: $root.topicexplorer.document[selectedDocument].TEXT$FULLTEXT"></span><br/>
+	<div data-bind="foreach {data: $root.topicexplorer.document[selectedDocument].TOP_TOPIC, as:'topTopic'}">
+		<span data-bind="text: $root.topicexplorer.topic[topTopic].color$color"></span>, 
+		<a href="#" data-bind="click: function(topTopic) {ko.postbox.publish('clickedTopic', topTopic);}">Click Topic</a>
+	</div>	
+</li>

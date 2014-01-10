@@ -1,0 +1,8 @@
+<li>
+	<span data-bind="text: $root.topicexplorer.document[selectedDocument].id"></span>, 
+	topTopics: 
+	<div data-bind="foreach {data: $root.topicexplorer.document[selectedDocument].topTopics, as:'topTopic'}">
+		<span data-bind="text: topTopic"></span>
+	</div>
+</li>
+

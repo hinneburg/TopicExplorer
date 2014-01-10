@@ -1,0 +1,20 @@
+<div>
+<h2>TopicView: <span data-bind="text:selectedPluginTemplate"></span></h2>
+<ul data-bind="foreach: pluginTemplates">
+	<li>
+		<a href="#" data-bind="text: $data, click: $parent.selectedPluginTemplate"></a>
+	</li>
+</ul>
+
+<h3>Inhalt</h3>
+<ul data-bind = "foreach: {data: selectedTopics, as: 'selectedTopic'}">
+	<li>
+		<div data-bind = "template: { name: function() {return $parent.selectedPluginTemplate()+'_head';}}"></div>
+		<div data-bind = "template: { name: function() {return $parent.selectedPluginTemplate()+'_body';}}"></div>
+	</li>
+</ul>
+
+Clicked Topic is: <span data-bind="text: clickedTopic"></span><br/>
+
+<a href="#" data-bind="click: changeSelectedTopics">Change Topics</a>
+</div>

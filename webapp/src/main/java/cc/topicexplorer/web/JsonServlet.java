@@ -64,7 +64,6 @@ public class JsonServlet extends HttpServlet {
 					communicationContext);
 		} else {
 			startCommands.add("InitCoreCreate");
-
 			writer.print("{\"FRONTEND_VIEWS\":"
 					+ this.getFrontendViews((Properties) communicationContext.get("properties")) + ",\"JSON\":");
 

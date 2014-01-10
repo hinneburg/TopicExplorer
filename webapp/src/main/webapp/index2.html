@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>TopicExplorer UI Prototype</title>
+	<link rel="stylesheet" href="css/jquery-ui-1.10.3.custom.min.css" type="text/css">
+	<link rel="stylesheet" href="css/style.css" type="text/css">
+<!--	<script type="text/javascript">
+	$(document).delegate(".menuActivator", 'click', function(e){
+	    $(this).toggleClass("rotate1 rotate2");
+	    $(this).parent().next().toggle('slow');
+	});
+	
+	$(document).ready(function() {
+		$(".documentMenu").menu();
+	});
+		
+	</script>  -->
+</head>
+
+<body>
+	<div class="content">
+		<div data-bind="template: 'topicexplorer-view'"></div>
+		<script data-main="scripts/main-require" src="scripts/lib/require.js"></script>
+	</div>
+</body>
+</html>

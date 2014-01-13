@@ -25,16 +25,12 @@ public final class FrameFill extends TableFillCommand {
 
 	@Override
 	public void fillTable() {
-		this.logger.info("Alter table TERM");
 		alterAndFillTableTerm();
-		this.logger.info("Create and fill table TopTerms");
 		createAndFillTableTopTerms();
-		this.logger.info("Create and fill table TOP_TERMS_DOC_SAME_TOPIC");
 		createAndFillTableTopTermsDocSameTopic();
-		this.logger.info("Fill table FRAMES");
 		fillTableFrames();
-		this.logger.info("Drop temporarily used tables and columns");
 		dropTemporaryTablesAndColumns();
+		this.logger.info(String.format("Table %s is filled.", this.tableName));
 	}
 
 	private void alterAndFillTableTerm() {

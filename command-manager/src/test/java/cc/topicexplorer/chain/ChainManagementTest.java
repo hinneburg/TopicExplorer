@@ -13,22 +13,14 @@ public class ChainManagementTest {
 
 	@Test
 	public void testSetCatalog() {
-		try {
-			_chainManager.setCatalog("/DummyCatalog1.xml");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		assertThat(_chainManager.catalog).isNotNull();
+		this._chainManager.setCatalog("/DummyCatalog1.xml");
+		assertThat(this._chainManager.catalog).isNotNull();
 	}
 
 	@Test(expected = CatalogNotInstantiableException.class)
 	public void testSetCatalogWithNoValidCatalog() throws Exception {
-		try {
-			_chainManager.setCatalog("");
-			fail();
-		} catch (Exception e) {
-			throw e;
-		}
+		this._chainManager.setCatalog("");
+		fail();
 	}
 
 }

@@ -28,7 +28,6 @@ import org.xml.sax.SAXException;
 
 import cc.topicexplorer.chain.ChainCommandLineParser;
 import cc.topicexplorer.chain.ChainManagement;
-import cc.topicexplorer.exceptions.CatalogNotInstantiableException;
 
 public class Run {
 	private static Logger logger = Logger.getRootLogger();
@@ -51,7 +50,7 @@ public class Run {
 		builder = domFactory.newDocumentBuilder();
 
 		// init
-		Document doc = this.getMergedXML(
+		Document doc = getMergedXML(
 				builder.parse(this.getClass().getResourceAsStream(
 						"/cc/topicexplorer/core-preprocessing/catalog/preJooqConfig.xml")),
 				builder.parse(this.getClass().getResourceAsStream(
@@ -61,7 +60,7 @@ public class Run {
 		for (String plugin : plugins.split(",")) {
 			plugin = plugin.trim().toLowerCase();
 			try {
-				doc = this.getMergedXML(
+				doc = getMergedXML(
 						doc,
 						builder.parse(this.getClass().getResourceAsStream(
 								"/cc/topicexplorer/plugin-" + plugin + "-preprocessing/catalog/preJooqConfig.xml")));
@@ -69,7 +68,7 @@ public class Run {
 				logger.warn("/cc/topicexplorer/plugin-" + plugin + "-preprocessing/catalog/preJooqConfig.xml not found");
 			}
 			try {
-				doc = this.getMergedXML(
+				doc = getMergedXML(
 						doc,
 						builder.parse(this.getClass().getResourceAsStream(
 								"/cc/topicexplorer/plugin-" + plugin + "-preprocessing/catalog/postJooqConfig.xml")));
@@ -96,7 +95,6 @@ public class Run {
 	}
 
 	public static void main(String[] args) throws Exception {
-		// TODO Auto-generated method stub
 		Run run = new Run();
 		ChainManagement chainManager = new ChainManagement();
 		ChainCommandLineParser commandLineParser = new ChainCommandLineParser(args);
@@ -124,12 +122,7 @@ public class Run {
 
 		run.makeCatalog(properties.getProperty("plugins"));
 
-		try {
-			chainManager.setCatalog("/catalog.xml");
-		} catch (CatalogNotInstantiableException e) {
-			e.printStackTrace();
-			System.exit(1);
-		}
+		chainManager.setCatalog("/catalog.xml");
 
 		List<String> orderedCommands = chainManager.getOrderedCommands(commandLineParser.getStartCommands(),
 				commandLineParser.getEndCommands());
@@ -138,7 +131,7 @@ public class Run {
 
 		if (!commandLineParser.getOnlyDrawGraph()) {
 			chainManager.executeCommands(orderedCommands);
-			System.out.println("Preprocessing successfully executed!");
+			logger.info("Preprocessing successfully executed!");
 		}
 
 		FileUtils.deleteDirectory(temp);

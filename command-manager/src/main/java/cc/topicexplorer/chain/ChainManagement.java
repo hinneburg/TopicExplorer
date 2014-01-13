@@ -21,10 +21,10 @@ import com.google.common.annotations.VisibleForTesting;
 /**
  * This class is used for the controlled execution of commands. Commands to be
  * executed are declared in an catalog. Those commands will be ordered and then
- * excuted.
+ * executed.
  * <p>
  * This class executes specified initial commands needed for further tasks.
- * Arguments will be parsed from commandline and may then be accessed.
+ * Arguments will be parsed from command line and may then be accessed.
  * 
  * @author Sebastian Baer
  * 
@@ -32,7 +32,7 @@ import com.google.common.annotations.VisibleForTesting;
 public class ChainManagement {
 	@VisibleForTesting
 	public Catalog catalog;
-	private CommunicationContext communicationContext;
+	private final CommunicationContext communicationContext;
 	private DependencyCollector dependencyCollector;
 	private static Logger logger = Logger.getRootLogger();
 
@@ -41,7 +41,7 @@ public class ChainManagement {
 	}
 
 	public ChainManagement(CommunicationContext context) {
-		communicationContext = context;
+		this.communicationContext = context;
 	}
 
 	/**
@@ -52,26 +52,24 @@ public class ChainManagement {
 	 * @param catalogLocation
 	 * @throws Exception
 	 */
-	public void setCatalog(String catalogLocation) throws Exception {
+	public void setCatalog(String catalogLocation) throws CatalogNotInstantiableException {
 		ConfigParser configParser = new ConfigParser();
 
 		try {
-			logger.info("this.getClass().getResource(catalogLocation)"
-					+ this.getClass().getResource(catalogLocation));
+			logger.info("this.getClass().getResource(catalogLocation)" + this.getClass().getResource(catalogLocation));
 
 			configParser.parse(this.getClass().getResource(catalogLocation));
-			catalog = CatalogFactoryBase.getInstance().getCatalog();
+			this.catalog = CatalogFactoryBase.getInstance().getCatalog();
 
 		} catch (Exception e) {
-			logger.fatal("There is no valid catalog at the given path:"
-					+ catalogLocation + "." + e);
+			logger.error(String.format("There is no valid catalog at the given path:/%s.", catalogLocation), e);
 			throw new CatalogNotInstantiableException();
 		}
 	}
 
 	/**
-	 * Executes the in this method declared commands. It contains commands that
-	 * should be executed before other commands or tasks. Information are saved
+	 * Executes the commands, declared in this method. It contains commands that
+	 * should be executed before other commands or tasks. Information is saved
 	 * in the databaseContext.
 	 */
 	public void init() {
@@ -80,116 +78,104 @@ public class ChainManagement {
 			Command propertiesCommand = new PropertiesCommand();
 			Command dbConnectionCommand = new DbConnectionCommand();
 
-			loggerCommand.execute(communicationContext);
-			propertiesCommand.execute(communicationContext);
-			dbConnectionCommand.execute(communicationContext);
+			loggerCommand.execute(this.communicationContext);
+			propertiesCommand.execute(this.communicationContext);
+			dbConnectionCommand.execute(this.communicationContext);
 		} catch (Exception e) {
 			logger.error(e);
 		}
 	}
 
 	public Map<String, Set<String>> getDependencies() {
-		return dependencyCollector.getDependencies();
+		return this.dependencyCollector.getDependencies();
 	}
 
 	/**
-	 * Returns a Set with all commands of the catalog in an ordered sequence.
+	 * Returns a {@linkplain List<String>} with all commands of a given map of
+	 * dependencies in an ordered sequence.
 	 * 
-	 * @return A ordered Set containing the commands of the catalog.
+	 * @return An ordered {@linkplain List<String>} containing the commands of
+	 *         the catalog.
 	 */
 	public List<String> getOrderedCommands() {
-
 		return getOrderedCommands(new HashSet<String>(), new HashSet<String>());
 	}
 
 	/**
-	 * Returns a Set with all commands of a given map of dependencies in an
-	 * ordered sequence.
-	 * 
-	 * @return A ordered Set containing the commands of the catalog.
+	 * Returns a {@linkplain List<String>} with all commands of a given map of
+	 * dependencies in an ordered sequence.
 	 */
 	public List<String> getOrderedCommands(Map<String, Set<String>> dependencies) {
-
-		return getOrderedCommands(dependencies, new HashSet<String>(),
-				new HashSet<String>());
-	}
-
-	public List<String> getOrderedCommands(Set<String> startCommands,
-			Set<String> endCommands) {
-		dependencyCollector = new DependencyCollector(catalog);
-
-		Map<String, Set<String>> dependencies = getDependencies();
-
-		Map<String, Set<String>> strongComponents = dependencyCollector
-				.getStrongComponents(dependencies, startCommands, endCommands);
-
-		return dependencyCollector.orderCommands(strongComponents);
-	}
-
-	public List<String> getOrderedCommands(
-			Map<String, Set<String>> dependencies, Set<String> startCommands,
-			Set<String> endCommands) {
-
-		dependencyCollector = new DependencyCollector();
-
-		dependencies = dependencyCollector.getStrongComponents(dependencies,
-				startCommands, endCommands);
-
-		return dependencyCollector.orderCommands(dependencies);
+		return getOrderedCommands(dependencies, new HashSet<String>(), new HashSet<String>());
 	}
 
 	/**
-	 * Takes a Set of commands and executes them in the sequence of the Set
+	 * Returns a {@linkplain List<String>} with all commands of a given map of
+	 * dependencies in an ordered sequence.
 	 */
-	public void executeCommands(List<String> commands) {
-		try {
-			Command command;
-			for (String commandName : commands) {
-				command = catalog.getCommand(commandName);
-				command.execute(communicationContext);
-			}
-		} catch (Exception e) {
-			logger.error(e);
-		}
+	public List<String> getOrderedCommands(Set<String> startCommands, Set<String> endCommands) {
+		this.dependencyCollector = new DependencyCollector(this.catalog);
+
+		Map<String, Set<String>> dependencies = getDependencies();
+
+		Map<String, Set<String>> strongComponents = this.dependencyCollector.getStrongComponents(dependencies,
+				startCommands, endCommands);
+
+		return this.dependencyCollector.orderCommands(strongComponents);
 	}
 
-	public void executeCommands(List<String> commands,
-			CommunicationContext localCommunicationContext) {
+	public List<String> getOrderedCommands(Map<String, Set<String>> dependencies, Set<String> startCommands,
+			Set<String> endCommands) {
+
+		this.dependencyCollector = new DependencyCollector();
+
+		dependencies = this.dependencyCollector.getStrongComponents(dependencies, startCommands, endCommands);
+
+		return this.dependencyCollector.orderCommands(dependencies);
+	}
+
+	/**
+	 * Takes a {@linkplain List} of commands and executes them in the list's
+	 * sequence
+	 */
+	public void executeCommands(List<String> commands) {
+		this.executeCommands(commands, this.communicationContext);
+	}
+
+	/**
+	 * Takes a {@linkplain List} of commands and executes them in the list's
+	 * sequence, using the specified {@linkplan CommunicationContext}
+	 */
+	public void executeCommands(List<String> commands, CommunicationContext localCommunicationContext) {
 		try {
 			Command command;
 			for (String commandName : commands) {
-				command = catalog.getCommand(commandName);
+				command = this.catalog.getCommand(commandName);
 				command.execute(localCommunicationContext);
 			}
-		} catch (Exception e) {
-			logger.error(e);
+		} catch (RuntimeException e1) {
+			throw e1;
+		} catch (Exception e2) {
+			logger.warn("The current command caused an exception.", e2);
 		}
 	}
 
 	public CommunicationContext getCommunicationContext() {
-		return communicationContext;
+		return this.communicationContext;
 	}
 
-	public static void main(String[] args) throws Exception {
+	public static void main(String[] args) {
 		ChainManagement chainManager = new ChainManagement();
-		ChainCommandLineParser commandLineParser = new ChainCommandLineParser(
-				args);
+		ChainCommandLineParser commandLineParser = new ChainCommandLineParser(args);
 		List<String> orderedCommands;
 		String catalogLocation;
 		chainManager.init();
 
 		catalogLocation = commandLineParser.getCatalogLocation();
 
-		try {
-			chainManager.setCatalog(catalogLocation);
+		chainManager.setCatalog(catalogLocation);
 
-		} catch (CatalogNotInstantiableException e) {
-			e.printStackTrace();
-			System.exit(1);
-		}
-
-		orderedCommands = chainManager.getOrderedCommands(
-				commandLineParser.getStartCommands(),
+		orderedCommands = chainManager.getOrderedCommands(commandLineParser.getStartCommands(),
 				commandLineParser.getEndCommands());
 
 		logger.info("ordered commands: " + orderedCommands);

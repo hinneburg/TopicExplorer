@@ -6,6 +6,7 @@ import java.util.Set;
 import cc.topicexplorer.chain.ChainManagement;
 import cc.topicexplorer.chain.CommunicationContext;
 import cc.topicexplorer.chain.DependencyCollector;
+import cc.topicexplorer.exceptions.CatalogNotInstantiableException;
 
 public class WebChainManagement {
 
@@ -29,7 +30,7 @@ public class WebChainManagement {
 	public static void setCatalog(String catalog) {
 		try {
 			chainManagement.setCatalog(catalog);
-		} catch (Exception e) {
+		} catch (CatalogNotInstantiableException e) {
 			e.printStackTrace();
 		}
 	}
@@ -44,7 +45,14 @@ public class WebChainManagement {
 	}
 
 	public static void executeCommands(List<String> commands, CommunicationContext communicationContext) {
-		chainManagement.executeCommands(commands, communicationContext);
+		try {
+			chainManagement.executeCommands(commands, communicationContext);
+		} catch (RuntimeException e) {
+			// TODO find a channel where the message below can be printed to.
+			// The RuntimeException e should be printed as well.
+			// message:
+			// "A command caused an exception and could not be processed."
+		}
 	}
 
 }

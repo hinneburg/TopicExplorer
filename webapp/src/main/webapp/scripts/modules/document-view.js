@@ -7,8 +7,10 @@ function(ko) {
 	    this.selectedDocuments = ko.observableArray(["1","3"]);
 		this.changeSelectedDocuments = function () { this.selectedDocuments(["2","4"]); };
 		this.makeMenu = function(el) {
-			 $(el).menu({select: function(event, ui) {
-		            $(this).parent().parent().hide('slow');}});
+			$(el).menu({select: function(event, ui) {
+				$(this).parent().parent().hide('slow');
+				$(this).parent().parent().prev().toggleClass("rotate1 rotate2");
+			}});
 		};
     };
 });

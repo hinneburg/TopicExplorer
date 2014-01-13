@@ -14,9 +14,18 @@ require([ "knockout","jquery", "modules/topicexplorer-view-model",
 		"text", "jquery-ui"], function(ko, $, App) {
 	ko.bindingHandlers.module.baseDir = "modules";
 	
+	// global delegates
 	$(document).delegate(".menuActivator", 'click', function(e){
 	    $(this).toggleClass("rotate1 rotate2");
-	    $(this).parent().next().toggle('slow');
+	    $(this).next().toggle('slow');
+	}).delegate(".documentList li", 'mouseover', function(e){
+		$(this).addClass('myHover').children(".docButtons").show();
+	}).delegate(".documentList li", 'mouseout', function(e){
+		$(this).removeClass('myHover').children(".docButtons").hide();
+	}).delegate(".documentList circle", "mouseover",function(){
+		$(this).attr("r", "7");
+	}).delegate(".documentList circle", "mouseout",function(){
+		$(this).attr("r", "5");
 	});
 	
 	setTimeout(function() {

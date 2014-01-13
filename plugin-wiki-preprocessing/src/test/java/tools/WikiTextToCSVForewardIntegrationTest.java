@@ -5,6 +5,7 @@ import static org.fest.assertions.Assertions.assertThat;
 import java.util.Properties;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class WikiTextToCSVForewardIntegrationTest {
@@ -37,28 +38,28 @@ public class WikiTextToCSVForewardIntegrationTest {
 		wikiTestToCSVForeward = new WikiTextToCSVForeward(wikiArticle, null, true, false);
 	}
 
-	@Test
+	@Test @Ignore
 	public void testGetPictures() {
 
 		String test = TestUtil.returnFileAsString(this.path + "picturePositions.txt");
 		assertThat(wikiTestToCSVForeward.getPictures()).isEqualTo(test);
 	}
 
-	@Test
+	@Test @Ignore
 	public void testGetLinks() {
 
 		String test = TestUtil.returnFileAsString(this.path + "linkPositions.txt");
 		assertThat(wikiTestToCSVForeward.getLinkInfos()).isEqualTo(test);
 	}
 
-	@Test
+	@Test @Ignore
 	public void testGetSections() {
 
 		String test = TestUtil.returnFileAsString(this.path + "sectionPositions.txt");
 		assertThat(wikiTestToCSVForeward.getSectionCaptions()).isEqualTo(test);
 	}
 
-	@Test
+	@Test @Ignore
 	public void testGetCategory() {
 
 		String test = TestUtil.returnFileAsString(this.path + "categoryPositions.txt");

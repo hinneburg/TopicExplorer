@@ -1,0 +1,12 @@
+<div class="topicElementMenu">
+	<button class="showBig" name="showBig" title="details" type="button"></button>
+	<button class="addToCart" name="addToCart" title="add to shortlist" type="button"></button>
+</div>
+
+<div class="topicTitle" data-bind="text: $root.topicexplorer.topic[selectedTopic].TOPIC_ID"></div>
+
+<div class="topicElementContent">
+	<ul class="wordList" data-bind = "foreach: {data: $root.topicexplorer.topic[selectedTopic].Top_Terms, as: 'topTerm'}">
+		<li data-bind="text: topTerm.TermId, style: {fontSize: 25*topTerm.relevance/$root.topicexplorer.topic[selectedTopic].Top_Terms[0].relevance > 9 ? 25*topTerm.relevance/$root.topicexplorer.topic[selectedTopic].Top_Terms[0].relevance+'px' : '9px'}"></li>
+	</ul>
+</div>

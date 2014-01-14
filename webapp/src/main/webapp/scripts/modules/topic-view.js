@@ -7,6 +7,12 @@ function(ko) {
     	this.selectedTopics = ko.observableArray(["1","2"]);
     	this.changeSelectedTopics = function () { this.selectedTopics(["1"]); };
 		this.clickedTopic = ko.observable().subscribeTo("clickedTopic");
+		this.makeMenu = function(el) {
+			$(el).menu({select: function(event, ui) {
+				$(this).parent().parent().hide('slow');
+				$(this).parent().parent().prev().toggleClass("rotate1 rotate2");
+			}});
+		};
 	};
 });
 

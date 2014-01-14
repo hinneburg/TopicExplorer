@@ -26,6 +26,12 @@ require([ "knockout","jquery", "modules/topicexplorer-view-model",
 		$(this).attr("r", "7");
 	}).delegate(".documentList circle", "mouseout",function(){
 		$(this).attr("r", "5");
+	}).delegate(".showBig", "click", function() {
+		$.getJSON("http://localhost:8080/webapp/JsonServlet?Command=bestDocs&TopicId=" + $(this).parent().parent().parent().attr('id').substring(5)).success(function(receivedParsedJson) {
+			self.topicexplorerModel.document = receivedParsedJson;
+//			callback(Object.keys(self.topicexplorerModel.document));
+		});
+	//	alert($(this).parent().parent().parent().attr('id'));
 	});
 	
 	setTimeout(function() {

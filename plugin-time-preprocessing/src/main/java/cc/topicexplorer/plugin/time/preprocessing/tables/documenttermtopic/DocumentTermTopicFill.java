@@ -23,7 +23,7 @@ public class DocumentTermTopicFill extends TableFillCommand {
 					+ properties.getProperty("OrgTableName") 
 					+ " org SET tta." + DOCUMENT_TERM_TOPIC.TIME$WEEK.getName()
 					+ " = YEARWEEK(FROM_UNIXTIME(org." + properties.getProperty("Time_OrgTableTstamp")
-					+ ")) WHERE tta." + DOCUMENT_TERM_TOPIC.DOCUMENT_ID.getName()
+					+ " - 86400)) WHERE tta." + DOCUMENT_TERM_TOPIC.DOCUMENT_ID.getName()
 					+ " = org." + properties.getProperty("OrgTableId"));				
 		MIT-JOOQ-ENDE */ 
 	/** OHNE_JOOQ-START */ 	
@@ -31,7 +31,7 @@ public class DocumentTermTopicFill extends TableFillCommand {
 					+ properties.getProperty("OrgTableName") 
 					+ " org SET tta." + "TIME$WEEK"
 					+ " = YEARWEEK(FROM_UNIXTIME(org." + properties.getProperty("Time_OrgTableTstamp")
-					+ ")) WHERE tta." + "DOCUMENT_ID"
+					+ " - 86400)) WHERE tta." + "DOCUMENT_ID"
 					+ " = org." + properties.getProperty("OrgTableId"));
 	/** OHNE_JOOQ-ENDE */ 
 		}

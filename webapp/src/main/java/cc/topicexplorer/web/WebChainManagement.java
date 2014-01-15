@@ -3,36 +3,29 @@ package cc.topicexplorer.web;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 import cc.topicexplorer.chain.ChainManagement;
 import cc.topicexplorer.chain.CommunicationContext;
 import cc.topicexplorer.chain.DependencyCollector;
-import cc.topicexplorer.exceptions.CatalogNotInstantiableException;
 
 public class WebChainManagement {
 
 	private static ChainManagement chainManagement = null;
+	private static Logger logger = Logger.getRootLogger();
 
 	private WebChainManagement() {
-
 	}
 
 	public static void init() {
-		try {
-			if (chainManagement == null) {
-				chainManagement = new ChainManagement();
-				chainManagement.init();
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
+		if (chainManagement == null) {
+			chainManagement = new ChainManagement();
+			chainManagement.init();
 		}
 	}
 
 	public static void setCatalog(String catalog) {
-		try {
-			chainManagement.setCatalog(catalog);
-		} catch (CatalogNotInstantiableException e) {
-			e.printStackTrace();
-		}
+		chainManagement.setCatalog(catalog);
 	}
 
 	public static CommunicationContext getCommunicationContext() {
@@ -48,10 +41,7 @@ public class WebChainManagement {
 		try {
 			chainManagement.executeCommands(commands, communicationContext);
 		} catch (RuntimeException e) {
-			// TODO find a channel where the message below can be printed to.
-			// The RuntimeException e should be printed as well.
-			// message:
-			// "A command caused an exception and could not be processed."
+			logger.error("A command caused a RuntimeException.", e);
 		}
 	}
 

@@ -40,6 +40,8 @@ public class GenerateSQL extends TableSelectCommand {
 		JSONArray topTopic = new JSONArray();
 		JSONArray reverseTopTopic = new JSONArray();
 		JSONArray topTerms = new JSONArray();
+		JSONArray documentSorting = new JSONArray();
+		JSONArray topicSorting = new JSONArray();
 
 		JSONObject doc = new JSONObject();
 		JSONObject docs = new JSONObject();
@@ -93,9 +95,11 @@ public class GenerateSQL extends TableSelectCommand {
 					doc.put("REVERSE_TOP_TOPIC", reverseTopTopic);
 					reverseTopTopic.clear();
 					docs.put(documentRS.getString("DOCUMENT_ID"), doc);
-
+					documentSorting.add(documentRS.getString("DOCUMENT_ID"));
+	
 				}
 				all.put("DOCUMENT", docs);
+				all.put("DOCUMENT_SORTING", documentSorting);
 				Long time = System.currentTimeMillis() - start;
 				logger.info(" DocQueryTime: " + time + " ms");
 				Long start2 = System.currentTimeMillis();
@@ -141,9 +145,11 @@ public class GenerateSQL extends TableSelectCommand {
 					}
 					topic.put("Top_Terms", topTerms);
 					topTerms.clear();
-					topics.put(topicRS.getInt("TOPIC.HIERARCHICAL_TOPIC$START"), topic); // FIXME: hack!
+					topics.put(topicRS.getInt("TOPIC.TOPIC_ID"), topic); 
+					topicSorting.add(topicRS.getInt("TOPIC.TOPIC_ID"));
 				}
 				all.put("Topic", topics);
+				all.put("TOPIC_SORTING", topicSorting);
 				time = System.currentTimeMillis() - start2;
 				logger.info(" TopicQueryTime: " + time + " ms");
 				start2 = System.currentTimeMillis();

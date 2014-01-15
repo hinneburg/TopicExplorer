@@ -62,15 +62,19 @@ public class ChainManagement {
 			this.catalog = CatalogFactoryBase.getInstance().getCatalog();
 
 		} catch (Exception e) {
-			logger.error(String.format("There is no valid catalog at the given path:/%s.", catalogLocation), e);
+			logger.error("There is no valid catalog at the given path: " + catalogLocation, e);
 			throw new CatalogNotInstantiableException();
 		}
 	}
 
 	/**
-	 * Executes the commands, declared in this method. It contains commands that
-	 * should be executed before other commands or tasks. Information is saved
-	 * in the databaseContext.
+	 * Executes the commands, needed for initialization. It contains commands
+	 * that should be executed before other commands or tasks. Information is
+	 * saved in the databaseContext.
+	 * 
+	 * @throws RuntimeException
+	 *             if one of command, needed for initialization, throws a
+	 *             {@link RuntimeException}
 	 */
 	public void init() {
 		try {
@@ -81,8 +85,11 @@ public class ChainManagement {
 			loggerCommand.execute(this.communicationContext);
 			propertiesCommand.execute(this.communicationContext);
 			dbConnectionCommand.execute(this.communicationContext);
-		} catch (Exception e) {
-			logger.error(e);
+		} catch (RuntimeException e1) {
+			logger.error("Initialization abborted, due to a critical exception");
+			throw e1;
+		} catch (Exception e2) {
+			logger.warn("Initialization caused a non critical exception", e2);
 		}
 	}
 
@@ -144,19 +151,20 @@ public class ChainManagement {
 
 	/**
 	 * Takes a {@linkplain List} of commands and executes them in the list's
-	 * sequence, using the specified {@linkplan CommunicationContext}
+	 * sequence, using the specified {@linkplain CommunicationContext}
 	 */
 	public void executeCommands(List<String> commands, CommunicationContext localCommunicationContext) {
-		try {
-			Command command;
-			for (String commandName : commands) {
+		for (String commandName : commands) {
+			try {
+				Command command;
 				command = this.catalog.getCommand(commandName);
 				command.execute(localCommunicationContext);
+			} catch (RuntimeException e1) {
+				logger.error(String.format("The current command %s caused a critical exception", commandName));
+				throw e1;
+			} catch (Exception e2) {
+				logger.warn(String.format("The current command %s caused a non critical exception.", commandName), e2);
 			}
-		} catch (RuntimeException e1) {
-			throw e1;
-		} catch (Exception e2) {
-			logger.warn("The current command caused an exception.", e2);
 		}
 	}
 

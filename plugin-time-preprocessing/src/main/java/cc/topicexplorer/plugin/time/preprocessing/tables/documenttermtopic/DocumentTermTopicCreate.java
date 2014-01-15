@@ -10,20 +10,31 @@ import cc.topicexplorer.chain.commands.TableCreateCommand;
  */
 public class DocumentTermTopicCreate extends TableCreateCommand {
 
+	/**
+	 * @throws SQLException
+	 *             if a database access error occurs or the given SQL statement
+	 *             produces a ResultSet object
+	 */
 	@Override
-	public void createTable() throws SQLException {
-		database.executeUpdateQuery("ALTER IGNORE TABLE `" + this.tableName
-				+ "` ADD COLUMN TIME$WEEK INT(11)");
+	public void createTable() {
+		try {
+			database.executeUpdateQuery("ALTER IGNORE TABLE `" + this.tableName
+					+ "` ADD COLUMN TIME$WEEK INT(11) NOT NULL DEFAULT 1");
+		} catch (SQLException e) {
+			logger.error(String
+					.format("Table %s could not be altered. Column TIME$WEEK was not added.", this.tableName));
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
-	public void dropTable() throws SQLException {
+	public void dropTable() {
 		try {
-			this.database
-					.executeUpdateQuery("ALTER TABLE " + this.tableName
-							+ " DROP COLUMN TIME$WEEK");
+			this.database.executeUpdateQuery("ALTER TABLE " + this.tableName + " DROP COLUMN TIME$WEEK");
 		} catch (Exception e) {
-			logger.warn("DocumentTermTopic.dropColumns: Cannot drop column, perhaps it doesn't exists. Doesn't matter ;)");
+			logger.warn(
+					"DocumentTermTopic.dropColumns: Cannot drop column, perhaps it doesn't exists. Doesn't matter ;)",
+					e);
 
 		}
 	}
@@ -36,5 +47,5 @@ public class DocumentTermTopicCreate extends TableCreateCommand {
 	@Override
 	public void addDependencies() {
 		beforeDependencies.add("DocumentTermTopicCreate");
-	}	
+	}
 }

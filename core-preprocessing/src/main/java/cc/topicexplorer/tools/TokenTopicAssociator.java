@@ -28,7 +28,7 @@ public class TokenTopicAssociator extends DependencyCommand {
 
 	private static Properties properties;
 	private static Logger logger = Logger.getRootLogger();
-	
+
 	private static List<String> outList = new ArrayList<String>();
 
 	public static String TOKENTOPICASSIGNMENTSQLFILE = "temp/tokenTopicAssignment.sql.csv";
@@ -42,9 +42,8 @@ public class TokenTopicAssociator extends DependencyCommand {
 
 		try {
 
-			outListSQLWriter = new BufferedWriter(new OutputStreamWriter(
-					new FileOutputStream(TOKENTOPICASSIGNMENTSQLFILE, true),
-					"UTF-8"));
+			outListSQLWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
+					TOKENTOPICASSIGNMENTSQLFILE, true), "UTF-8"));
 
 			for (String outListElement : outList) {
 				outListSQLWriter.write(outListElement + "\n");
@@ -62,7 +61,8 @@ public class TokenTopicAssociator extends DependencyCommand {
 					outListSQLWriter.flush();
 					outListSQLWriter.close();
 				} catch (IOException e) {
-					logger.error(e);				}
+					logger.error(e);
+				}
 			}
 		}
 
@@ -84,8 +84,7 @@ public class TokenTopicAssociator extends DependencyCommand {
 		}
 	}
 
-	private void readAndWriteBlockwise(String inFile, String stateFile)
-			throws SQLException {
+	private void readAndWriteBlockwise(String inFile, String stateFile) throws SQLException {
 
 		BufferedReader inListinBufferedReader = null;
 
@@ -97,18 +96,17 @@ public class TokenTopicAssociator extends DependencyCommand {
 		BufferedReader stateBufferedReader = null;
 
 		try {
-			stateBufferedReader = new BufferedReader(new InputStreamReader(
-					new GZIPInputStream(new FileInputStream(stateFile)),
-					"UTF-8"));
+			stateBufferedReader = new BufferedReader(new InputStreamReader(new GZIPInputStream(new FileInputStream(
+					stateFile)), "UTF-8"));
 
 			// we have to skip the first 3 lines:
 			stateCurrentLine = stateBufferedReader.readLine();
 			stateCurrentLine = stateBufferedReader.readLine();
 			stateCurrentLine = stateBufferedReader.readLine();
 
-			inListinBufferedReader = new BufferedReader(new InputStreamReader(
-					new FileInputStream(inFile), "UTF-8"));
-			inListcurrentLine = inListinBufferedReader.readLine();;
+			inListinBufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(inFile), "UTF-8"));
+			inListcurrentLine = inListinBufferedReader.readLine();
+			;
 			// checking seperator and names insult a skip of the first column
 			if (InFilePreparation.checkHeader(inFile)) {
 
@@ -119,9 +117,8 @@ public class TokenTopicAssociator extends DependencyCommand {
 
 					stateSplittedCurrentLine = stateCurrentLine.split(" ");
 
-					outList.add(inListcurrentLine.replaceAll("\"", "")
-							.replaceAll(";", "\t")
-							+ "\t" + stateSplittedCurrentLine[5]);
+					outList.add(inListcurrentLine.replaceAll("\"", "").replaceAll(";", "\t") + "\t"
+							+ stateSplittedCurrentLine[5]);
 
 					// irgendwann zusammenführen und listen leeren
 					// blockweise, vielleicht später direkt an bufferedReader
@@ -154,7 +151,7 @@ public class TokenTopicAssociator extends DependencyCommand {
 	}
 
 	@Override
-	public void specialExecute(Context context) throws Exception {
+	public void specialExecute(Context context) throws SQLException {
 
 		logger.info("Current Command : [ " + getClass() + " ] ");
 
@@ -163,7 +160,7 @@ public class TokenTopicAssociator extends DependencyCommand {
 
 		String stateFile = "temp/out.topic-state.gz";
 		String inFile = properties.getProperty("InCSVFile");
-		
+
 		deleteOldTFile();
 
 		readAndWriteBlockwise(inFile, stateFile);
@@ -174,5 +171,5 @@ public class TokenTopicAssociator extends DependencyCommand {
 	@Override
 	public void addDependencies() {
 		beforeDependencies.add("Mallet");
-	}	
+	}
 }

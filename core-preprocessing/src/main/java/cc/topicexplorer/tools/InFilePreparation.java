@@ -24,8 +24,8 @@ import cc.topicexplorer.database.Database;
 import com.csvreader.CsvReader;
 
 /** MIT-JOOQ-START 
-import static jooq.generated.Tables.DOCUMENT_TERM_TOPIC;
-MIT-JOOQ-ENDE */ 
+ import static jooq.generated.Tables.DOCUMENT_TERM_TOPIC;
+ MIT-JOOQ-ENDE */
 
 /**
  * <h1>This class represents the first step in the TopicExplorer-workflow</h1>
@@ -53,23 +53,22 @@ public class InFilePreparation extends DependencyCommand {
 	 *            are the names we have to check
 	 * @return true if all is correct, else false (with a little information)
 	 */
-	public static boolean checkHeader(String inFile) throws SQLException{
+	public static boolean checkHeader(String inFile) throws SQLException {
 		try {
-			inCsv = new CsvReader(new FileInputStream(inFile), ';',
-					Charset.forName("UTF-8"));
+			inCsv = new CsvReader(new FileInputStream(inFile), ';', Charset.forName("UTF-8"));
 			try {
 				if (inCsv.readHeaders()) {
 					String[] headerEntries = inCsv.getHeaders();
-					List<String> tableColumnList=new ArrayList<String>();
-					
-					/** MIT-JOOQ-START 
-					ResultSet rs = database.executeQuery("SELECT * FROM "
-							+ DOCUMENT_TERM_TOPIC.getName());
-                    MIT-JOOQ-ENDE */ 
-					/** OHNE_JOOQ-START */ 
-					ResultSet rs = database.executeQuery("SELECT * FROM "
-							+ "DOCUMENT_TERM_TOPIC");
-					/** OHNE_JOOQ-ENDE */ 
+					List<String> tableColumnList = new ArrayList<String>();
+
+					/**
+					 * MIT-JOOQ-START ResultSet rs =
+					 * database.executeQuery("SELECT * FROM " +
+					 * DOCUMENT_TERM_TOPIC.getName()); MIT-JOOQ-ENDE
+					 */
+					/** OHNE_JOOQ-START */
+					ResultSet rs = database.executeQuery("SELECT * FROM " + "DOCUMENT_TERM_TOPIC");
+					/** OHNE_JOOQ-ENDE */
 					ResultSetMetaData md = rs.getMetaData();
 					for (int i = 1; i <= md.getColumnCount(); i++) {
 						tableColumnList.add(md.getColumnName(i));
@@ -77,9 +76,8 @@ public class InFilePreparation extends DependencyCommand {
 
 					for (int j = 0; j < headerEntries.length; j++) {
 						if (!tableColumnList.contains(headerEntries[j])) {
-							logger.warn("The CSV-Column "
-									+ headerEntries[j]
-													+ " is not in the DOCUMENT_TERM_TOPIC table");
+							logger.warn("The CSV-Column " + headerEntries[j]
+									+ " is not in the DOCUMENT_TERM_TOPIC table");
 							return false;
 						}
 					}
@@ -99,9 +97,8 @@ public class InFilePreparation extends DependencyCommand {
 	}
 
 	private boolean writeMalletInFile() throws IOException {
-		BufferedWriter malletInFileWriter = new BufferedWriter(
-				new OutputStreamWriter(
-						new FileOutputStream(malletPreparedFile), "UTF-8"));
+		BufferedWriter malletInFileWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
+				malletPreparedFile), "UTF-8"));
 		int currentDocID = -1;
 		String documentString = "";
 
@@ -113,8 +110,7 @@ public class InFilePreparation extends DependencyCommand {
 				// start to set the documentString with ID and LANGUAGE
 				documentString = currentDocID + "\tDE\t" + inCsv.get("TERM");
 
-			} else if (currentDocID != Integer.parseInt(inCsv
-					.get("DOCUMENT_ID"))) {
+			} else if (currentDocID != Integer.parseInt(inCsv.get("DOCUMENT_ID"))) {
 
 				// new document, write current down
 				documentString += "\n";
@@ -139,10 +135,9 @@ public class InFilePreparation extends DependencyCommand {
 	}
 
 	@Override
-	public void specialExecute(Context context) throws Exception {
+	public void specialExecute(Context context) throws SQLException, IOException {
 
-		logger.info("[ " + getClass() + " ] - "
-				+ "preparing the in-file for mallet");
+		logger.info("[ " + getClass() + " ] - " + "preparing the in-file for mallet");
 
 		CommunicationContext communicationContext = (CommunicationContext) context;
 		properties = (Properties) communicationContext.get("properties");
@@ -152,8 +147,7 @@ public class InFilePreparation extends DependencyCommand {
 
 		if (checkHeader(inFile)) {
 			if (writeMalletInFile()) {
-				logger.info("[ " + getClass() + " ] - "
-						+ "the in-file for mallet successfully prepared");
+				logger.info("[ " + getClass() + " ] - " + "the in-file for mallet successfully prepared");
 				inCsv.close();
 			} else {
 				System.exit(4);
@@ -162,7 +156,7 @@ public class InFilePreparation extends DependencyCommand {
 			System.exit(0);
 		}
 	}
-	
+
 	@Override
 	public void addDependencies() {
 		beforeDependencies.add("DocumentTermTopicCreate");

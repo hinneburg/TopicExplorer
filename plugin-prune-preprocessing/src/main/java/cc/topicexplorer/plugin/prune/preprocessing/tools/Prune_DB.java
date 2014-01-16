@@ -11,6 +11,7 @@ import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.sql.Types;
 import java.util.Properties;
 
@@ -43,7 +44,7 @@ public class Prune_DB extends DependencyCommand {
 	}
 
 	@Override
-	public void specialExecute(Context context) throws Exception {
+	public void specialExecute(Context context) throws NumberFormatException, SQLException {
 
 		logger.info("[ " + getClass() + " ] - " + "pruning vocabular");
 

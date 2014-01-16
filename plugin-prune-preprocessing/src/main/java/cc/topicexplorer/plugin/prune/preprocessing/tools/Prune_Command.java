@@ -1,5 +1,6 @@
 package cc.topicexplorer.plugin.prune.preprocessing.tools;
 
+import java.io.IOException;
 import java.util.Properties;
 
 import org.apache.commons.chain.Context;
@@ -11,10 +12,10 @@ import cc.topicexplorer.database.Database;
 public class Prune_Command extends DependencyCommand {
 	private Properties properties;
 	protected cc.topicexplorer.database.Database database;
-	private Prune_Ram_SortedCsv prune = new Prune_Ram_SortedCsv();
+	private final Prune_Ram_SortedCsv prune = new Prune_Ram_SortedCsv();
 
 	@Override
-	public void specialExecute(Context context) throws Exception {
+	public void specialExecute(Context context) throws NumberFormatException, IOException {
 		// TODO Auto-generated method stub
 		logger.info("[ " + getClass() + " ] - " + "pruning vocabular");
 

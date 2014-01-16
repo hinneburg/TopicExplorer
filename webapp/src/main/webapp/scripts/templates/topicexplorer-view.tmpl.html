@@ -1,7 +1,7 @@
 <div class="leftBody">
 	<span data-bind="text: version"></span><br/>
 	
-	<div id="document-view" data-bind="module: {name: 'document-view', data: topicexplorer, template: 'document-view'}"></div>
+	<div id="document-view" data-bind="module: {name: 'document-view', data: topicexplorer, template: 'document-view', afterRender: resizeDocumentDivs}"></div>
 	
-	<div id="topic-view" data-bind="module: {name: 'topic-view', data: topicexplorer, template: 'topic-view'}"></div>
+	<div id="topic-view" data-bind="module: {name: 'topic-view', data: topicexplorer, template: 'topic-view', afterRender: resizeTopicDivs}"></div>
 </div>

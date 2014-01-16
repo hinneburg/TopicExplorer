@@ -6,19 +6,16 @@ function(ko) {
     	this.selectedPluginTemplate = ko.observable(this.pluginTemplates[0]);
     	this.selectedTopics = ko.observableArray(topicexplorerModel.topicSorting);
     	this.changeSelectedTopics = function () { this.selectedTopics(["1"]); };
-    	this.changeSelectedDocuments = function () { 
-			this.topicexplorer.loadDocuments({notUsedParameter:"someParameterValue"}, 
-										this.topicexplorer.selectedDocuments
-										); 
+    	this.loadDocumentsForTopic = function (topicId) { 
+			topicexplorer.loadDocuments(
+					{jsonName:"bestDocumentsForTopic_"+topicId+".json"},
+					function(newDocumentIds) {
+						ko.postbox.publish("DocumentView.selectedDocuments", newDocumentIds);
+					}
+			);
 		};   
 		
 		this.clickedTopic = ko.observable().subscribeTo("clickedTopic");
-		this.makeMenu = function(el) {
-			$(el).menu({select: function(event, ui) {
-				$(this).parent().parent().hide('slow');
-				$(this).parent().parent().prev().toggleClass("rotate1 rotate2");
-			}});
-		};
 	};
 });
 

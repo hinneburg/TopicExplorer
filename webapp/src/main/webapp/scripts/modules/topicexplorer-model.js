@@ -4,8 +4,6 @@ define(function() {
 	self.topicexplorerModel.loadDocuments = function (parameter,callback) {
 		$.getJSON("http://localhost:8080/webapp/JsonServlet").success(function(receivedParsedJson) {
 			self.topicexplorerModel.document = receivedParsedJson.JSON.DOCUMENT;
-		//	self.topicexplorerModel.documentSorting = receivedParsedJson.JSON.DOCUMENT_SORTING; 
-			alert(typeof callback);
 			callback(receivedParsedJson.JSON.DOCUMENT_SORTING);
 		});
 	};

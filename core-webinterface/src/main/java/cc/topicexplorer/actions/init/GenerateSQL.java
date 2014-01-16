@@ -52,7 +52,6 @@ public class GenerateSQL extends TableSelectCommand {
 		JSONObject terms = new JSONObject();
 		JSONObject all = new JSONObject();
 		ResultSet preQueryRS;
-
 		long start = System.currentTimeMillis();
 		try {
 			preQueryRS = database
@@ -94,9 +93,10 @@ public class GenerateSQL extends TableSelectCommand {
 					}
 					doc.put("REVERSE_TOP_TOPIC", reverseTopTopic);
 					reverseTopTopic.clear();
+
 					docs.put(documentRS.getString("DOCUMENT_ID"), doc);
 					documentSorting.add(documentRS.getString("DOCUMENT_ID"));
-	
+
 				}
 				all.put("DOCUMENT", docs);
 				all.put("DOCUMENT_SORTING", documentSorting);

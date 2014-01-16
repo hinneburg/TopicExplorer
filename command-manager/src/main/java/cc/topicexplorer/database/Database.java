@@ -3,15 +3,13 @@ package cc.topicexplorer.database;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
-
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
 
+import org.apache.log4j.Logger;
 import org.jooq.SQLDialect;
 import org.jooq.impl.Factory;
-
-import org.apache.log4j.Logger;
 
 /**
  * @author user
@@ -28,116 +26,201 @@ public class Database {
 
 	private Factory create = null;
 
-	private Logger logger = Logger.getRootLogger();
+	private final Logger logger = Logger.getRootLogger();
 
-	public Database(Properties prop) throws Exception {
+	/**
+	 * 
+	 * @param prop
+	 *            A {@link Properties} object which holds all the properties,
+	 *            needed for the database to initialize
+	 * @throws SQLException
+	 *             if a database access error occurs
+	 * @throws ClassNotFoundException
+	 *             if the database driver could not be found
+	 * @throws InstantiationException
+	 *             if the instantiation fails for multiple reasons
+	 * @throws IllegalAccessException
+	 *             if the database driver or its default constructor is not
+	 *             accessible
+	 */
+	public Database(Properties prop) {
 		startUp(prop, false);
 	}
 
-	public Database(Properties prop, Boolean otherDatabase) throws Exception {
+	/**
+	 * 
+	 * @param prop
+	 *            A {@link Properties} object which holds all the properties,
+	 *            needed for the database to initialize
+	 * @param otherDatabase
+	 *            determines whether the another database than the default one
+	 *            should be loaded. Property 'database.other' will be used to
+	 *            define the dbLocation of the other database
+	 * @throws SQLException
+	 *             if a database access error occurs
+	 * @throws ClassNotFoundException
+	 *             if the database driver could not be found
+	 * @throws InstantiationException
+	 *             if the instantiation fails for different possible reasons
+	 * @throws IllegalAccessException
+	 *             if the database driver or its default constructor is not
+	 *             accessible
+	 */
+	public Database(Properties prop, Boolean otherDatabase) {
 		startUp(prop, otherDatabase);
 	}
 
-	private void startUp(Properties prop, Boolean otherDatabase)
-			throws Exception {
-		properties = prop;
+	private void startUp(Properties prop, Boolean otherDatabase) {
+		this.properties = prop;
 
-		String dbLocation = properties.getProperty("database.DbLocation");
+		String dbLocation = this.properties.getProperty("database.DbLocation");
 
 		if (otherDatabase) {
-			dbLocation = dbLocation + "/" + properties.getProperty("database.other");
+			dbLocation = dbLocation + "/" + this.properties.getProperty("database.other");
 		} else {
-			dbLocation = dbLocation + "/" + properties.getProperty("database.DB");
+			dbLocation = dbLocation + "/" + this.properties.getProperty("database.DB");
 		}
 
-		String dbUser = properties.getProperty("database.DbUser");
-		String dbPassword = properties.getProperty("database.DbPassword");
-		this.topicCount = Integer.parseInt(properties
-				.getProperty("malletNumTopics"));
+		String dbUser = this.properties.getProperty("database.DbUser");
+		String dbPassword = this.properties.getProperty("database.DbPassword");
+		try {
+			this.topicCount = Integer.parseInt(this.properties.getProperty("malletNumTopics"));
+		} catch (NumberFormatException e) {
+			this.topicCount = 0;
+		}
 
 		// load Database-Driver
 		try {
-		Class.forName("com.mysql.jdbc.Driver").newInstance();
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error("Current Command : [ " + getClass() + " ]" +" Database-Driver not found" );
+			Class.forName("com.mysql.jdbc.Driver").newInstance();
+		} catch (ClassNotFoundException e1) {
+			this.logger.error("Current Command : [ " + getClass() + " ]" + " Database-Driver class could not be found");
+			throw new RuntimeException(e1);
+		} catch (InstantiationException e2) {
+			this.logger.error("Current Command : [ " + getClass() + " ]"
+					+ " Database-Driver instantiation fails for different possible reasons");
+			throw new RuntimeException(e2);
+		} catch (IllegalAccessException e3) {
+			this.logger.error("Current Command : [ " + getClass() + " ]"
+					+ " Database-Driver database driver or its default constructor is not accessible");
+			throw new RuntimeException(e3);
 		}
 
 		// connect database
 		try {
-			logger.info("Current Command : [ " + getClass() + " ]" +" Trying connect to database" );
+			this.logger.info("Current Command : [ " + getClass() + " ]" + " Trying connect to database");
 
-			connection = DriverManager.getConnection("jdbc:mysql://" + dbLocation
-					+ "?useUnicode=true&characterEncoding=UTF-8&useCursorFetch=true", dbUser,
-					dbPassword);
-			logger.info("Current Command : [ " + getClass() + " ]" +" Database connection established" );
+			this.connection = DriverManager.getConnection("jdbc:mysql://" + dbLocation
+					+ "?useUnicode=true&characterEncoding=UTF-8&useCursorFetch=true", dbUser, dbPassword);
+			this.logger.info("Current Command : [ " + getClass() + " ]" + " Database connection established");
 
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error("Current Command : [ " + getClass() + " ]" +" DB-DriverManager error" );
+		} catch (SQLException e) {
+			this.logger.error("Current Command : [ " + getClass() + " ]" + " DB-DriverManager error");
+			throw new RuntimeException(e);
 		}
 
 		// connect with jooq
-		try {
-			// Class.forName("com.mysql.jdbc.Driver").newInstance();
-			this.create = new Factory(connection, SQLDialect.MYSQL);
+		this.create = new Factory(this.connection, SQLDialect.MYSQL);
 
-		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error("DB-Driver-Jooq-Error");
+		try {
+			this.statement = this.connection.createStatement();
+			this.statement.setFetchSize(100);
+		} catch (SQLException e) {
+			this.logger.error("The statement caused an exception.");
+			throw new RuntimeException(e);
 		}
 
-		statement = connection.createStatement();
-		statement.setFetchSize(100);
-		connection.setAutoCommit(true);
+		try {
+			this.connection.setAutoCommit(true);
+		} catch (SQLException e) {
+			this.logger.error("AutoCommit could not be set.");
+			throw new RuntimeException(e);
+		}
 	}
 
+	/**
+	 * 
+	 * @throws SQLException
+	 *             if a database access error occurs. See the MySQL
+	 *             specification for detailed information on the error code
+	 */
 	public void shutdownDB() throws SQLException {
-		if (!connection.isClosed())
-			connection.close();
+		if (!this.connection.isClosed()) {
+			this.connection.close();
+		}
 	}
 
 	/**
 	 * @param query
-	 * @return ResultSet
-	 * 
+	 * @return a ResultSet object that contains the data produced by the given
+	 *         query; never null
+	 * @throws SQLException
+	 *             if a database access error occurs,
+	 *             <p>
+	 *             this method is called on a closed statement,
+	 *             <p>
+	 *             the given SQL statement produces anything other than a single
+	 *             ResultSet object,
+	 *             <p>
+	 *             the method is called on a PreparedStatement or
+	 *             CallableStatement or
+	 *             <p>
+	 *             See the MySQL specification for detailed information on the
+	 *             error code
 	 */
 	public ResultSet executeQuery(String query) throws SQLException {
-		statement = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
-				ResultSet.CONCUR_UPDATABLE);
-		return statement.executeQuery(query);
+		this.statement = this.connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+		return this.statement.executeQuery(query);
 	}
 
 	/**
 	 * for manipulation of database without "closing" the connection/ resultset
-	 * for insert and update in loop's
+	 * for insert and update in loops
 	 * 
 	 * incl statement = connection..
 	 * 
 	 * @param query
-	 * @return excuteUpdateQuery
+	 * @return either (1) the row count for SQL Data Manipulation Language (DML)
+	 *         statements or (2) 0 for SQL statements that return nothing
+	 * @throws SQLException
+	 *             if a database access error occurs,
+	 *             <p>
+	 *             this method is called on a closed statement,
+	 *             <p>
+	 *             the given SQL statement produces a ResultSet object,
+	 *             <p>
+	 *             the method is called on a PreparedStatement or
+	 *             CallableStatement or
+	 *             <p>
+	 *             See the MySQL specification for detailed information on the
+	 *             error code
 	 */
 	public int executeUpdateQueryForUpdate(String query) throws SQLException {
 		// damit das RS offen bleibt, sonst funktionierten die alten
 		// keywords_themen2 bzw tables.keytopic2 nicht
 		// da es zur exception gekommen ist (cannot perfom ... rs is closed)
-		statement = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
-				ResultSet.CONCUR_UPDATABLE);
-		return statement.executeUpdate(query);
+		this.statement = this.connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+		return this.statement.executeUpdate(query);
 	}
 
 	/**
-	 * for manipulation of database incl. "closing" connection/ resultset
-	 * 
-	 * excl. statement - different to executeUpdateQueryForUpdate
+	 * for manipulation of database incl. "closing" connection/ resultset excl.
+	 * statement
+	 * <p>
+	 * different to executeUpdateQueryForUpdate()
 	 * 
 	 * @param query
-	 * @return excuteUpdateQuery
+	 *            SQL statement that is to be executed
+	 * @return row count or 0 for SQL statements that return nothing
+	 * @throws SQLException
+	 *             if a database access error occurs, the given SQL query
+	 *             produces a {@link ResultSet} object or if the
+	 *             {@link Statement} used for updating is already closed. See
+	 *             the MySQL specification for detailed information on the error
+	 *             code.
 	 */
 	public int executeUpdateQuery(String query) throws SQLException {
 		// for manipulation , executeQuery couldn't manipulate database
-
-		return statement.executeUpdate(query);
+		return this.statement.executeUpdate(query);
 	}
 
 	/**
@@ -148,13 +231,13 @@ public class Database {
 	public Factory getCreateJooq() {
 		return this.create;
 	}
-	
+
 	public Connection getConnection() {
 		return this.connection;
 	}
 
-	public Properties getProperties() throws SQLException {
-		return properties;
+	public Properties getProperties() {
+		return this.properties;
 	}
 
 	public int getLimit() {
@@ -169,16 +252,42 @@ public class Database {
 		return this.topicCount;
 	}
 
+	/**
+	 * @param table
+	 *            which will be dropped
+	 * @throws SQLException
+	 *             if a database access error occurs, the given SQL query
+	 *             produces a {@link ResultSet} object or if the
+	 *             {@link Statement} used for updating is already closed. See
+	 *             the MySQL specification for detailed information on the error
+	 *             code.
+	 **/
 	public void dropTable(String table) throws SQLException {
 		this.executeUpdateQuery("DROP TABLE IF EXISTS " + table);
 	}
-	
-	public void analyseTable(String table) throws SQLException {
-		this.executeUpdateQuery("ANALYZE TABLE  " + table);
+
+	/**
+	 * @throws SQLException
+	 *             if a database access error occurs, the analyze
+	 *             {@link Statement} produces a {@link ResultSet object or if
+	 *             the {@link Statement} used for updating is already closed.
+	 *             See the MySQL specification for detailed information on the
+	 *             error code.
+	 */
+	public void analyzeTable(String tableName) throws SQLException {
+		this.executeUpdateQuery("ANALYZE TABLE  " + tableName);
 	}
-	
-	public void optimizeTable(String table) throws SQLException {
-		this.executeUpdateQuery("OPTIMIZE TABLE  " + table);
+
+	/**
+	 * @throws SQLException
+	 *             if a database access error occurs, the optimize
+	 *             {@link Statement} produces a {@link ResultSet object or if
+	 *             the {@link Statement} used for updating is already closed.
+	 *             See the MySQL specification for detailed information on the
+	 *             error code.
+	 */
+	public void optimizeTable(String tableName) throws SQLException {
+		this.executeUpdateQuery("OPTIMIZE TABLE  " + tableName);
 	}
 
 }

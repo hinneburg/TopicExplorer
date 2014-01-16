@@ -29,14 +29,14 @@ public class CategoryResolver extends DependencyCommand {
 	private wikiParser.Database db;
 	private Properties prop;
 	public static String categoryFileName = "categories.csv";
-	private HashSet<String> catChilds = new HashSet<String>();
+	private final HashSet<String> catChilds = new HashSet<String>();
 	private wikiParser.SupporterForBothTypes s;
 	private BufferedWriter bw;
-	private LinkedList<String> stack = new LinkedList<String>();
+	private final LinkedList<String> stack = new LinkedList<String>();
 	private static final String CATPARENTTEXT = ""; // "has_no_parent";
 
 	@Override
-	public void specialExecute(Context context) throws Exception {
+	public void specialExecute(Context context) {
 
 		if (logger != null) {
 			logger.info("[ " + getClass() + " ] - " + " resolve categorys from wiki-db");

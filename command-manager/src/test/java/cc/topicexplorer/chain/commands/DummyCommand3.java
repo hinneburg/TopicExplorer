@@ -5,7 +5,7 @@ import org.apache.commons.chain.Context;
 public final class DummyCommand3 extends DependencyCommand {
 
 	@Override
-	public void specialExecute(Context context) throws Exception {
+	public void specialExecute(Context context) {
 		System.err.println("DummyCommand3 was called.");
 	}
 

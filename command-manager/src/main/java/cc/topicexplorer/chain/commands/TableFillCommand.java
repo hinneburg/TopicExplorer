@@ -17,8 +17,8 @@ public abstract class TableFillCommand extends TableCommand{
 		}
 	}
 
-	public void analyseTable() throws SQLException {
-		database.analyseTable(this.tableName);
+	public void analyzeTable() throws SQLException {
+		database.analyzeTable(this.tableName);
 	}
 
 	public void optimizeTable() throws SQLException {

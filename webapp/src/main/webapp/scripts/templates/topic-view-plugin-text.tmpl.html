@@ -2,8 +2,7 @@
 	<button class="showBig" name="showBig" title="details" type="button"></button>
 	<button class="addToCart" name="addToCart" title="add to shortlist" type="button"></button>
 </div>
-
-<div class="topicTitle" data-bind="text: $root.topicexplorer.topic[selectedTopic].TEXT$TOPIC_LABEL"></div>
+<div class="topicTitle"><a href="#" data-bind="text: $root.topicexplorer.topic[selectedTopic].TEXT$TOPIC_LABEL,click:$parent.loadDocumentsForTopic"></a></div>
 
 <div class="topicElementContent">
 	<ul class="wordList" data-bind = "foreach: {data: $root.topicexplorer.topic[selectedTopic].Top_Terms, as: 'topTerm'}">

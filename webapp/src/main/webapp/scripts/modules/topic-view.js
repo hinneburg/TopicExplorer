@@ -8,10 +8,11 @@ function(ko) {
     	this.changeSelectedTopics = function () { this.selectedTopics(["1"]); };
     	this.loadDocumentsForTopic = function (topicId) { 
 			topicexplorer.loadDocuments(
-					{jsonName:"bestDocumentsForTopic_"+topicId+".json"},
-					function(newDocumentIds) {
-						ko.postbox.publish("DocumentView.selectedDocuments", newDocumentIds);
-					}
+				{paramString:"Command=bestDocs&TopicId="+topicId},
+				function(newDocumentIds) {
+					ko.postbox.publish("DocumentView.selectedDocuments", newDocumentIds);
+					resizeDocumentDivs();
+				}
 			);
 		};   
 		

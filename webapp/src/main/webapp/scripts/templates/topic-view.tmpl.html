@@ -9,11 +9,16 @@
 	</div>
 
 <div class="topicList">
-<ul data-bind="foreach: {data: selectedTopics, as: 'selectedTopic'}">
-	<li class="topic" data-bind="attr:{ 'id' : 'topic' + selectedTopic}, style: { backgroundColor: $root.topicexplorer.topic[selectedTopic].COLOR_TOPIC$COLOR}">
-		<div  class="topicElementDiv" data-bind="template: { name: function() {return $parent.selectedPluginTemplate()}}"></div>
-	</li>
-</ul>
+	<ul data-bind="foreach: {data: selectedTopics, as: 'selectedTopic'}">
+		<li class="topic" data-bind="attr:{ 'id' : 'topic' + selectedTopic}, style: { backgroundColor: $root.topicexplorer.topic[selectedTopic].COLOR_TOPIC$COLOR}">
+			<div  class="topicElementDiv" data-bind="template: { name: function() {return $parent.selectedPluginTemplate()}}"></div>
+		</li>
+	</ul>
+</div>
+<div class="pointer">
+	<svg height="10" width="12">
+		<polygon points="6,0 12,10 0,10" fill="black">
+	</svg>
 </div>
 Clicked Topic is: <span data-bind="text: clickedTopic"></span><br/>
 

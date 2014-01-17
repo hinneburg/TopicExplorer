@@ -9,14 +9,6 @@ define(
 				this.selectedDocuments = ko.observableArray(
 						topicexplorerModel.documentSorting).subscribeTo(
 						"DocumentView.selectedDocuments");
-				topicexplorer.loadDocuments({
-					jsonName : "document.json"
-				}, this.selectedDocuments);
-				this.changeSelectedDocuments = function() {
-					topicexplorer.loadDocuments({
-						jsonName : "document_new.json"
-					}, this.selectedDocuments);
-				};
 				
 			};
 		});

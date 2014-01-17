@@ -67,9 +67,11 @@ public class BestDocumentsForGivenTopic {
 
 	public void executeQueriesAndWriteOutBestDocumentsForGivenTopic() {
 		JSONArray topTopic = new JSONArray();
+		JSONArray docSorting = new JSONArray();
 		JSONObject doc = new JSONObject();
 		JSONObject docs = new JSONObject();
 		JSONObject all = new JSONObject();
+		
 
 		ArrayList<String> docColumnList = documentMap.getCleanColumnNames();
 		String docId;
@@ -89,9 +91,11 @@ public class BestDocumentsForGivenTopic {
 				}
 				doc.put("TOP_TOPIC", topTopic);
 				docs.put(docId, doc);
+				docSorting.add(docId);
 				topTopic.clear();
 			}
 			all.put("DOCUMENT", docs);
+			all.put("DOCUMENT_SORTING", docSorting);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

@@ -72,16 +72,14 @@ public class Autocomplete {
 						term.put(fieldList.get(i), autocompleteQueryRS.getString(fieldList.get(i)));
 					}
 					termId = autocompleteQueryRS.getInt("TERM_ID");
-				} else {
-					topicList.add(autocompleteQueryRS.getInt("TOPIC_ID"));
-				}
+				} 
+				topicList.add(autocompleteQueryRS.getInt("TOPIC_ID"));
 			}
 			if (term.size() > 0) {
 				term.put("TOP_TOPIC", topicList);
 				all.put(termId, term);
 			}
 			this.outWriter.print(all.toString());
-
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

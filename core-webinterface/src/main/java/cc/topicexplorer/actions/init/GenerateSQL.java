@@ -73,7 +73,7 @@ public class GenerateSQL extends TableSelectCommand {
 									+ properties.getProperty("malletNumTopics") // ugly!
 									+ " AND DOCUMENT_ID="
 									+ documentRS.getInt("DOCUMENT_ID")
-									+ " ORDER BY PR_TOPIC_GIVEN_DOCUMENT DESC");
+									+ " ORDER BY PR_TOPIC_GIVEN_DOCUMENT DESC LIMIT 4");
 					while (docTopicRS.next()) {
 						topTopic.add(docTopicRS.getInt("TOPIC_ID"));
 					}
@@ -86,7 +86,7 @@ public class GenerateSQL extends TableSelectCommand {
 																				// nice
 									+ " AND DOCUMENT_ID="
 									+ documentRS.getInt("DOCUMENT_ID")
-									+ " ORDER BY PR_DOCUMENT_GIVEN_TOPIC DESC");
+									+ " ORDER BY PR_DOCUMENT_GIVEN_TOPIC DESC LIMIT 4");
 					while (reverseDocTopicRS.next()) {
 						reverseTopTopic.add(reverseDocTopicRS
 								.getInt("TOPIC_ID"));

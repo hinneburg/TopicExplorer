@@ -10,13 +10,13 @@ public class Collect extends TableSelectCommand {
 	@Override
 	public void tableExecute(Context context) {
 		CommunicationContext communicationContext = (CommunicationContext) context;
-
+		
 		Search searchAction = (Search) communicationContext.get("SEARCH_ACTION");
-
+		
 		searchAction.addSearchColumn("DOCUMENT.TEXT$TITLE", "TEXT$TITLE");
 		searchAction
 				.addSearchColumn("CONCAT(SUBSTRING(DOCUMENT.TEXT$FULLTEXT FROM 1 FOR 150), '...')", "TEXT$FULLTEXT");
-		if (properties.getProperty("Plugins").contains("fulltext")) {
+		if (properties.getProperty("plugins").contains("fulltext")) {
 			searchAction.addWhereClause("MATCH(DOCUMENT.FULLTEXT$FULLTEXT) AGAINST ('" + searchAction.getSearchWord()
 					+ "' IN BOOLEAN MODE)");
 		} else {

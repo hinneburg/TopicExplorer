@@ -68,6 +68,7 @@ public class Search {
 
 	public void executeQuery() {
 		JSONArray topTopic = new JSONArray();
+		JSONArray docSorting = new JSONArray();
 		JSONObject doc = new JSONObject();
 		JSONObject docs = new JSONObject();
 		JSONObject all = new JSONObject();
@@ -80,6 +81,7 @@ public class Search {
 			ResultSet mainQueryRS = database.executeQuery(searchMap.getSQLString());
 			while (mainQueryRS.next()) {
 				docId = mainQueryRS.getString("DOCUMENT_ID");
+				docSorting.add(docId);
 				for (int i = 0; i < docColumnList.size(); i++) {
 					doc.put(docColumnList.get(i), mainQueryRS.getString(docColumnList.get(i)));
 				}
@@ -94,6 +96,7 @@ public class Search {
 				topTopic.clear();
 			}
 			all.put("DOCUMENT", docs);
+			all.put("DOCUMENT_SORTING", docSorting);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

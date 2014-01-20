@@ -25,7 +25,7 @@ public class Autocomplete {
 		autocompleteMap.from.add("TERM");
 		autocompleteMap.from.add("TERM_TOPIC");
 		autocompleteMap.where.add("TERM_TOPIC.TERM_ID = TERM.TERM_ID");
-		autocompleteMap.where.add("TERM.TERM_NAME like '" + searchWord + "%'");
+		autocompleteMap.where.add("UPPER(TERM.TERM_NAME) like '" + searchWord.toUpperCase() + "%'");
 		autocompleteMap.where.add("TERM_TOPIC.TOPIC_ID < " + numberOfTopics);
 		autocompleteMap.orderBy.add("TERM.TERM_ID");
 		autocompleteMap.orderBy.add("TERM_TOPIC.PR_TOPIC_GIVEN_TERM DESC");

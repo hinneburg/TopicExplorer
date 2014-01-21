@@ -76,7 +76,7 @@ html, body {
 	float: right;
 	left: 0%;
 }
-.leftBody .leftBodyContent {
+.leftBody {
 	position: relative;		
 }
 .leftBody .documentList ul.browser {

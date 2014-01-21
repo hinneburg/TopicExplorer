@@ -1,14 +1,15 @@
 
-	<img class="menuActivator rotate1" src="images/Black_Settings.png" alt="&gt;" />
+	
+
+<div class="topicList">
+	<img class="menuActivator rotate1" src="images/Black_Settings.png" alt="&gt;"  style="display: none;position: absolute;z-index:3;" />
 	<div id="topicMenu"
-		style="display: none; background-color: #EEEEEE; border: 1px solid #D1D1D1; position: absolute; z-index: 1;">
+		style="display: none; background-color: #EEEEEE; border: 1px solid #D1D1D1; position: absolute; z-index: 1; top:20px;">
 	<!-- 	<strong>
 			TopicView: <span data-bind="text:selectedPluginTemplate"></span>
 		</strong>-->
 		<div  data-bind="template: {name: 'topic-view-menu', afterRender: makeMenu}"></div>
 	</div>
-
-<div class="topicList">
 	<ul data-bind="foreach: {data: selectedTopics, as: 'selectedTopic'}">
 		<li class="topic" data-bind="attr:{ 'id' : 'topic' + selectedTopic}, style: { backgroundColor: $root.topicexplorer.topic[selectedTopic].COLOR_TOPIC$COLOR}">
 			<div  class="topicElementDiv" data-bind="template: { name: function() {return $parent.selectedPluginTemplate()}}"></div>
@@ -20,10 +21,5 @@
 		<polygon points="6,0 12,10 0,10" fill="black">
 	</svg>
 </div>
-<div class="bottom" data-bind="template: 'topic-view-slider'">
-
-
-</div>
-Clicked Topic is: <span data-bind="text: clickedTopic"></span><br/>
-
+<div class="bottom" data-bind="template: 'topic-view-slider'"></div>
 

@@ -32,7 +32,13 @@ require([ "knockout","jquery", "modules/topicexplorer-view-model",
 	}).delegate("#groupG rect", "mouseout",function(){
 		$(this).attr("height", "13");
 		$(this).attr("y", "2");
+	}).delegate("#desktop, .topicList", "mouseover",function(){
+		$(this).children(":first").show();
+	}).delegate("#desktop, .topicList", "mouseout",function(){
+		$(this).children(":first").hide();
+		$(this).children(":first").next().hide();
 	}).delegate(".documentList circle, #groupG rect", "click", moveToTopic);
+	
 
 
 	$(window).resize(function() {
@@ -58,7 +64,7 @@ function resizeDocumentDivs() {
 	
 			var docDeskRatio = Math.floor(desktopWidth/documentWidth);
 			$('#desktop > .documentList > ul > li').outerWidth(desktopWidth/docDeskRatio);
-		}, 300);
+		}, 500);
 };
 
 function resizeTopicDivs() {
@@ -112,6 +118,7 @@ function makeMenu(el) {
 			$(this).parent().parent().prev()
 				.toggleClass("rotate1 rotate2");
 			$(this).parent().parent().toggle('blind');		
+			resizeDocumentDivs();
 		}
 	});
 };

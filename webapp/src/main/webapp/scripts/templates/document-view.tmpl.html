@@ -1,12 +1,14 @@
-<img class="menuActivator rotate1" src="images/Black_Settings.png" alt="&gt;" />
+
+<div id="desktop">	
+	<img id="browserMenuActivator" class="menuActivator rotate1" src="images/Black_Settings.png" alt="&gt;" style="display: none;position: absolute;z-index:3;" />
 	<div id="browserMenu"
-		style="display: none; background-color: #EEEEEE; border: 1px solid #D1D1D1; position: absolute; z-index: 1;">
+		style="display: none; background-color: #EEEEEE; border: 1px solid #D1D1D1; position: absolute; z-index: 1; top: 20px;">
 	<!-- 	<strong>
 			DocumentView: <span data-bind="text:selectedPluginTemplate"></span>
 		</strong>-->
 		<div  data-bind="template: {name: 'document-view-menu', afterRender: makeMenu}"></div>
 	</div>
-<div id="desktop">	
+
 	<div class="documentList">		
 		<ul	class="browser" data-bind="template: { name: function() {return selectedPluginTemplate();}, foreach: selectedDocuments, as: 'selectedDocument'}"></ul>
 	</div>

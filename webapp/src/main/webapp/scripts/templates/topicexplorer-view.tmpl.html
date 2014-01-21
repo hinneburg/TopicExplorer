@@ -1,5 +1,6 @@
 <div class="leftBody">
 	<span data-bind="text: version"></span><br/>
+	<div id="document-view" data-bind="module: {name: 'search-view', data: topicexplorer, template: 'search-view', afterRender: makeAutoComplete}"></div>
 	
 	<div id="document-view" data-bind="module: {name: 'document-view', data: topicexplorer, template: 'document-view', afterRender: resizeDocumentDivs}"></div>
 	

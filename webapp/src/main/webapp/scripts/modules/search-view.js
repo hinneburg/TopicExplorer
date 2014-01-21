@@ -4,19 +4,15 @@ function(ko) {
     	this.topicexplorer = topicexplorer;
     	this.pluginTemplates = topicexplorer.config.topicView.pluginTemplates;
     	this.selectedPluginTemplate = ko.observable(this.pluginTemplates[0]);
-    	this.selectedTopics = ko.observableArray(topicexplorerModel.topicSorting);
-    	this.changeSelectedTopics = function () { this.selectedTopics(["1"]); };
-    	this.loadDocumentsForTopic = function (topicId) { 
+    	this.loadDocumentsForSearch = function () { 
+    		var searchWord = $('#searchField').val();
 			topicexplorer.loadDocuments(
-				{paramString:"Command=bestDocs&TopicId="+topicId},
+				{paramString:"Command=search&SearchWord="+searchWord},
 				function(newDocumentIds) {
 					ko.postbox.publish("DocumentView.selectedDocuments", newDocumentIds);
 					resizeDocumentDivs();
 				}
 			);
-		};   
-
-		this.clickedTopic = ko.observable().subscribeTo("clickedTopic");
+		};  
 	};
 });
-

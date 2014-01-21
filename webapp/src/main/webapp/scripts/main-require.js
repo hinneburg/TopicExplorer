@@ -26,7 +26,15 @@ require([ "knockout","jquery", "modules/topicexplorer-view-model",
 		$(this).attr("r", "7");
 	}).delegate(".documentList circle", "mouseout",function(){
 		$(this).attr("r", "5");
-	});
+	}).delegate("#groupG rect", "mouseover",function(){
+		$(this).attr("height", "17");
+		$(this).attr("y", "0");
+	}).delegate("#groupG rect", "mouseout",function(){
+		$(this).attr("height", "13");
+		$(this).attr("y", "2");
+	}).delegate(".documentList circle, #groupG rect", "click", moveToTopic);
+
+
 	$(window).resize(function() {
 		resizeDocumentDivs();
 		resizeTopicDivs();
@@ -60,11 +68,42 @@ function resizeTopicDivs() {
 		$('.topic').height($('.topicList').height()-14);
 	
 		var topics = $('.topicList > ul > li').size();
-//		$('#groupG').attr('transform', 'scale('+ ($('.topicPrevElCont').width()) / topics+',1)');
+		$('#groupG').attr('transform', 'scale('+ ($('.topicPrevElCont').width()) / topics+',1)');
 //		$('#groupG2').attr('transform', 'scale('+ ($('.topicPrevElCont').width()) / topics+',1)');
 		$('.topicList > ul').width(topics*213);
 //		$('.topicList2 > ul').width(topics*213);
-	}, 0);
+		setTopicSlider();
+	}, 600);
+	
+	
+};
+
+function setTopicSlider() {	
+	var slider = $('.topicPrevSlider');		
+	var maxListWidth = $('.topicList > ul').width();
+	var topicDivWidth = $('.topicList').width();
+	var bottomDivWidth = $('.topicBottomSliderDiv').width();
+	
+	slider.width((topicDivWidth*bottomDivWidth)/ maxListWidth);
+	
+	slider.children('rect').attr('width', (topicDivWidth*bottomDivWidth)/ maxListWidth);
+	slider.children('polygon').attr('points', function(){
+		var p1={},p2={},p3={};
+		p1.x = ~~slider.children('rect').attr('width')/2+~~slider.children('rect').attr('x');
+		p1.y = ~~slider.children('rect').attr('height')-10;
+		p2.x = p1.x-5;
+		p2.y = p1.y+10;
+		p3.x = p1.x+5;
+		p3.y = p2.y;
+		return p1.x+","+p1.y+" "+p2.x+","+p2.y+" "+p3.x+","+p3.y+" ";
+	});		
+	var maxScrollPos = $('.topicBottomSliderDiv').width() - $('.topicPrevSlider').width();	
+	$( ".topicPrevSlider" ).draggable({ axis: "x", containment: [ 0, 0, maxScrollPos, 0 ]});
+	$( ".topicPrevSlider" ).on( "drag", function( event, ui ) {		
+		var maxScroll = $('.topicList > ul').width() - $('.topicList').width();			
+		var scroll = (ui.position.left/maxScrollPos)*maxScroll;
+		$('.topicList').scrollLeft(scroll);		
+	});
 };
 
 function makeMenu(el) {
@@ -77,4 +116,132 @@ function makeMenu(el) {
 	});
 };
 
+function getScrollPositionByValue(val) {	
+	var offset = 3;	
+	var scroll = val;
+	var maxScrollPos = $('.topicBottomSliderDiv').width() - $('.topicPrevSlider').width();
+	var maxScroll = $('.topicList > ul').width() - $('.topicList').width();
+	var position = Math.round(scroll*maxScrollPos/maxScroll)+offset;	
+	if(position < 0)
+		position = 0;
+	if(position > maxScrollPos)
+		position = maxScrollPos;
+	return position;
+};
 
+function moveToTopic(self) {
+	var topic_id;	
+	if(!self.currentTarget)
+		topic_id = self;
+	else if(self.currentTarget.nodeName == 'circle')
+		topic_id = $(self.currentTarget).attr('class').split("_")[1];
+	else if(self.currentTarget.nodeName == 'rect')
+		topic_id = $(self.currentTarget).attr('id').split("_")[1];
+	var offset = $(".topicList").width() / 2 - $("#topic" + topic_id).width() / 2;
+	$(".topicList").animate({
+		scrollLeft : ($("#topic" + topic_id).position().left - offset)
+	}, {
+		duration : 2000,
+		easing : "swing"
+	});
+		$(".topicPrevSlider").animate({
+		left : getScrollPositionByValue(($("#topic" + topic_id).position().left - offset))
+	}, {
+		duration : 2000,
+		easing : "swing"
+	});	
+};
+
+function makeAutoComplete(el) {
+	autocomplete("searchField");
+
+};
+
+function move(e) {
+	moveToTopic(e);
+	e.preventDefault();
+	return false;
+};
+
+function generateCircle(color, itemIdx) {
+	var cx = 10 + itemIdx * 12;
+	var topic = topicexplorerModel.topic[color];
+	if(!topic)
+		return "";
+	var circleString = "<circle class=\"topic_"+color+"\" onmouseover=\"$(this).attr('r','7');\" onmouseout=\"$(this).attr('r','5');\" "
+		+ " r=\"5\" cx=\""+cx+"\" cy=\"14\" fill=\""
+		+ topic.COLOR_TOPIC$COLOR
+		+ "\" title=\""
+		+ topic.TEXT$TOPIC_LABEL
+		+ "\" stroke=\"black\" stroke-width=\"0.5\" style=\"cursor:pointer\"/>";
+
+	return circleString;
+};
+
+
+function autocomplete(boxID) {
+	var itemIdx = 1;
+	$('#' + boxID).bind('keydown', function() {
+		$('#searchItem').val("none");
+	});
+	$('#' + boxID).bind('keyup', function() {
+		autocompleteSearch = $('#' + boxID).val();
+	});
+	$("#" + boxID).autocomplete( {
+		source : function(request, response) {
+			$.ajax( {
+				url : "JsonServlet",
+				dataType : "json",
+				cache : true,
+				data : {
+					Command: 'autocomplete',
+					SearchWord : request.term
+				},
+				type : 'GET',
+				success : function(data) {
+					response($.map(data, function(item) {
+						return {
+							label : item.TERM_NAME,
+							color : item.TOP_TOPIC,
+							value : item.label,
+							item : 'document'
+						};
+					}));
+				}
+			});
+		},
+		select : function(event, ui) {
+			$('#searchField').autocomplete("close");
+			getSearch(ui.item.label, ui.item.item, 20);
+		},
+		minLength : 1,
+		delay : 700
+	}).data("ui-autocomplete")._renderItem = function(ul, item) {
+		var circleString = "<a onmouseover=\"$('#" + boxID + "').val('"
+		+ item.label + "')\"  onmouseout=\"$('#" + boxID
+		+ "').val('')\" onclick=\"$('#" + boxID
+		+ "').parent('form').submit()\"><img src=\"images/" + item.item
+		+ ".png\" title=\"" + item.item + "\" />" + item.label
+		+ "<svg width=\"55px\" height=\"20px\">";
+		for(var i = 0; i < item.color.length; i++) {
+			circleString += generateCircle(item.color[i], i);
+		}
+
+		circleString += "</svg>";
+		ul.find('svg').delegate("circle", "click", move);
+		return $("<li></li>").data("item.autocomplete", item).append(
+				circleString).appendTo(ul);
+	};
+};
+
+
+function getSearch(searchWord, item, limit) {
+	alert(searchWord + ", " + item + ", " + limit);		
+/*	topicexplorer.loadDocuments(
+			{paramString:"Command=search&Searchword="+searchWord},
+			function(newDocumentIds) {
+				ko.postbox.publish("DocumentView.selectedDocuments", newDocumentIds);
+				resizeDocumentDivs();
+			}
+	);*/
+};

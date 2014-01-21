@@ -94,7 +94,7 @@ html, body {
     overflow: hidden;
     padding: 5px;
     width: 257px;
-    box-shadow: 3px 3px 4px;
+/*    box-shadow: 3px 3px 4px;*/
 }
 .leftBody .documentList .docTitle {
 	color: #1122CC;

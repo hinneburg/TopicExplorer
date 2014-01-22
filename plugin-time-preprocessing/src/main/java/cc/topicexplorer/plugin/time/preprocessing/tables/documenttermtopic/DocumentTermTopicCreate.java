@@ -4,10 +4,6 @@ import java.sql.SQLException;
 
 import cc.topicexplorer.chain.commands.TableCreateCommand;
 
-/**
- * @author user
- * 
- */
 public class DocumentTermTopicCreate extends TableCreateCommand {
 
 	/**
@@ -31,11 +27,12 @@ public class DocumentTermTopicCreate extends TableCreateCommand {
 	public void dropTable() {
 		try {
 			this.database.executeUpdateQuery("ALTER TABLE " + this.tableName + " DROP COLUMN TIME$WEEK");
-		} catch (Exception e) {
-			logger.warn(
-					"DocumentTermTopic.dropColumns: Cannot drop column, perhaps it doesn't exists. Doesn't matter ;)",
-					e);
-
+		} catch (SQLException e) {
+			if (e.getErrorCode() != 1091) { // MySQL Error code for 'Can't DROP
+											// ..; check that column/key exists
+				logger.error("DocumentTermTopic.dropColumns: Cannot drop column.");
+				throw new RuntimeException(e);
+			}
 		}
 	}
 

@@ -11,20 +11,27 @@ import cc.topicexplorer.chain.commands.TableCreateCommand;
 public class DocumentCreate extends TableCreateCommand {
 
 	@Override
-	public void createTable() throws SQLException {
-		database.executeUpdateQuery("ALTER IGNORE TABLE `" + this.tableName
-				+ "` ADD COLUMN FULLTEXT$FULLTEXT TEXT COLLATE UTF8_BIN;");
+	public void createTable() {
+		try {
+			database.executeUpdateQuery("ALTER IGNORE TABLE `" + this.tableName
+					+ "` ADD COLUMN FULLTEXT$FULLTEXT TEXT COLLATE UTF8_BIN;");
+		} catch (SQLException e) {
+			logger.error("Column FULLTEXT$FULLTEXT could not be added to table " + this.tableName);
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
-	public void dropTable() throws SQLException {
-		// database.dropTable(this.tableName);
+	public void dropTable() {
 		try {
 			this.database.executeUpdateQuery("ALTER TABLE " + this.tableName
 					+ " DROP COLUMN ADD COLUMN FULLTEXT$FULLTEXT");
-		} catch (Exception e) {
-			logger.warn("Document.dropColumns: Cannot drop column, perhaps it doesn't exists. Doesn't matter ;)");
-
+		} catch (SQLException e) {
+			if (e.getErrorCode() != 1091) { // MySQL Error code for 'Can't DROP
+				// ..; check that column/key exists
+				logger.error("Document.dropColumns: Cannot drop column.");
+				throw new RuntimeException(e);
+			}
 		}
 	}
 
@@ -32,9 +39,9 @@ public class DocumentCreate extends TableCreateCommand {
 	public void setTableName() {
 		tableName = "DOCUMENT";
 	}
-	
+
 	@Override
 	public void addDependencies() {
 		beforeDependencies.add("DocumentCreate");
-	}	
+	}
 }

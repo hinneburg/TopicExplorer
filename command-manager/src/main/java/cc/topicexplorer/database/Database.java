@@ -11,11 +11,6 @@ import org.apache.log4j.Logger;
 import org.jooq.SQLDialect;
 import org.jooq.impl.Factory;
 
-/**
- * @author user
- * 
- */
-
 public class Database {
 	private Connection connection;
 	private Statement statement;
@@ -83,11 +78,6 @@ public class Database {
 
 		String dbUser = this.properties.getProperty("database.DbUser");
 		String dbPassword = this.properties.getProperty("database.DbPassword");
-		try {
-			this.topicCount = Integer.parseInt(this.properties.getProperty("malletNumTopics"));
-		} catch (NumberFormatException e) {
-			this.topicCount = 0;
-		}
 
 		// load Database-Driver
 		try {
@@ -151,6 +141,7 @@ public class Database {
 
 	/**
 	 * @param query
+	 *            SQL query that will be executed
 	 * @return a ResultSet object that contains the data produced by the given
 	 *         query; never null
 	 * @throws SQLException
@@ -179,6 +170,7 @@ public class Database {
 	 * incl statement = connection..
 	 * 
 	 * @param query
+	 *            SQL query that will be executed
 	 * @return either (1) the row count for SQL Data Manipulation Language (DML)
 	 *         statements or (2) 0 for SQL statements that return nothing
 	 * @throws SQLException
@@ -209,7 +201,7 @@ public class Database {
 	 * different to executeUpdateQueryForUpdate()
 	 * 
 	 * @param query
-	 *            SQL statement that is to be executed
+	 *            SQL query that will be executed
 	 * @return row count or 0 for SQL statements that return nothing
 	 * @throws SQLException
 	 *             if a database access error occurs, the given SQL query
@@ -248,13 +240,9 @@ public class Database {
 		this.limit = value;
 	}
 
-	public int getTopicCount() {
-		return this.topicCount;
-	}
-
 	/**
-	 * @param table
-	 *            which will be dropped
+	 * @param tableName
+	 *            name of the table which will be dropped
 	 * @throws SQLException
 	 *             if a database access error occurs, the given SQL query
 	 *             produces a {@link ResultSet} object or if the
@@ -262,8 +250,8 @@ public class Database {
 	 *             the MySQL specification for detailed information on the error
 	 *             code.
 	 **/
-	public void dropTable(String table) throws SQLException {
-		this.executeUpdateQuery("DROP TABLE IF EXISTS " + table);
+	public void dropTable(String tableName) throws SQLException {
+		this.executeUpdateQuery("DROP TABLE IF EXISTS " + tableName);
 	}
 
 	/**

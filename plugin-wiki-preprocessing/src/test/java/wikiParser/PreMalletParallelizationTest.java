@@ -2,6 +2,7 @@ package wikiParser;
 
 import static org.fest.assertions.Assertions.assertThat;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import tools.TestUtil;
@@ -21,6 +22,7 @@ public class PreMalletParallelizationTest {
 	private final String parsedWikiTextReadable = TestUtil.returnFileAsString(this.path + "2_readableText.txt");
 	private final String outputParsed = TestUtil.returnFileAsString(this.path + "2_outputParsed.txt");
 
+	@Ignore
 	@Test
 	public void testCorrectWikitext() {
 
@@ -28,6 +30,7 @@ public class PreMalletParallelizationTest {
 		assertThat(this.pm.doArticleCorrection(articleTextUncorrected, new WikiIDTitlePair(0, ""))).isEqualTo(test);
 	}
 
+	@Ignore
 	@Test
 	public void testParsedTextReadable() {
 
@@ -49,6 +52,7 @@ public class PreMalletParallelizationTest {
 
 	}
 
+	@Ignore
 	@Test
 	public void testParsedTextByLine() {
 

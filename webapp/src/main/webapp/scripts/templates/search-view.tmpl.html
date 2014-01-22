@@ -1,8 +1,12 @@
 <div class="searchBar">
 	<form method="post" action="" id="searchForm" data-bind="submit: loadDocumentsForSearch">
 		<fieldset>						
-			<input id="searchField" type="text" name="search" />
+			<input id="searchField" type="text" name="search" data-bind="autoCompleteHandler: {}"/>
 			<button class="button gradientGray" type="submit"><span>Search</span></button>
 		</fieldset>
 	</form>
 </div>
+<script type="text/html" id="autocomplete">
+
+
+</script>

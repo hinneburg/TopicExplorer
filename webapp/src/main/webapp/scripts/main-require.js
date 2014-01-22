@@ -16,8 +16,13 @@ require([ "knockout","jquery", "modules/topicexplorer-view-model",
 	
 	// global delegates
 	$(document).delegate(".menuActivator", 'click', function(e){
-	    $(this).toggleClass("rotate1 rotate2");
+		if($(this).next().height() + 22 > $(this).parent().height()) {
+	    	$(this).next().css('max-height', $(this).parent().height() - 22);
+	    }
+		
+		$(this).toggleClass("rotate1 rotate2");
 	    $(this).next().toggle('blind');
+	    	    
 	}).delegate(".documentList li", 'mouseover', function(e){
 		$(this).addClass('myHover').children(".docButtons").show();
 	}).delegate(".documentList li", 'mouseout', function(e){
@@ -32,11 +37,15 @@ require([ "knockout","jquery", "modules/topicexplorer-view-model",
 	}).delegate("#groupG rect", "mouseout",function(){
 		$(this).attr("height", "13");
 		$(this).attr("y", "2");
-	}).delegate("#desktop, .topicList", "mouseover",function(){
+	}).delegate("#desktop, .topicList", "mouseenter",function(){
 		$(this).children(":first").show();
-	}).delegate("#desktop, .topicList", "mouseout",function(){
+	}).delegate("#desktop, .topicList", "mouseleave",function(){
 		$(this).children(":first").hide();
 		$(this).children(":first").next().hide();
+		$(this).children(":first").removeClass("rotate2");
+		$(this).children(":first").addClass("rotate1");
+	}).bind("#desktop", "scroll",function(){
+		alert('hallo');
 	}).delegate(".documentList circle, #groupG rect", "click", moveToTopic);
 	
 
@@ -79,6 +88,7 @@ function resizeTopicDivs() {
 		$('.topicList > ul').width(topics*213);
 //		$('.topicList2 > ul').width(topics*213);
 		setTopicSlider();
+		$('.topicList').scrollLeft(0);
 	}, 600);
 	
 	
@@ -108,7 +118,8 @@ function setTopicSlider() {
 	$( ".topicPrevSlider" ).on( "drag", function( event, ui ) {		
 		var maxScroll = $('.topicList > ul').width() - $('.topicList').width();			
 		var scroll = (ui.position.left/maxScrollPos)*maxScroll;
-		$('.topicList').scrollLeft(scroll);		
+		$('.topicList').scrollLeft(scroll);	
+		$('#topicMenu, .topicList > img').css('left', scroll);		
 	});
 };
 
@@ -137,7 +148,8 @@ function getScrollPositionByValue(val) {
 };
 
 function moveToTopic(self) {
-	var topic_id;	
+	
+	var topic_id = 0;	
 	if(!self.currentTarget)
 		topic_id = self;
 	else if(self.currentTarget.nodeName == 'circle')
@@ -145,6 +157,7 @@ function moveToTopic(self) {
 	else if(self.currentTarget.nodeName == 'rect')
 		topic_id = $(self.currentTarget).attr('id').split("_")[1];
 	var offset = $(".topicList").width() / 2 - $("#topic" + topic_id).width() / 2;
+	
 	$(".topicList").animate({
 		scrollLeft : ($("#topic" + topic_id).position().left - offset)
 	}, {
@@ -157,20 +170,12 @@ function moveToTopic(self) {
 		duration : 2000,
 		easing : "swing"
 	});	
+	setTimeout(function() { 
+		$(".topicList > img, #topicMenu").css('left', $(".topicList").scrollLeft());	
+	}, 2100);
 };
 
-function makeAutoComplete(el) {
-	autocomplete("searchField");
-
-};
-
-function move(e) {
-	moveToTopic(e);
-	e.preventDefault();
-	return false;
-};
-
-function generateCircle(color, itemIdx) {
+generateCircle = function (color, itemIdx) {
 	var cx = 10 + itemIdx * 12;
 	var topic = topicexplorerModel.topic[color];
 	if(!topic)
@@ -185,70 +190,9 @@ function generateCircle(color, itemIdx) {
 	return circleString;
 };
 
-
-function autocomplete(boxID) {
-	var itemIdx = 1;
-	$('#' + boxID).bind('keydown', function() {
-		$('#searchItem').val("none");
-	});
-	$('#' + boxID).bind('keyup', function() {
-		autocompleteSearch = $('#' + boxID).val();
-	});
-	$("#" + boxID).autocomplete( {
-		source : function(request, response) {
-			$.ajax( {
-				url : "JsonServlet",
-				dataType : "json",
-				cache : true,
-				data : {
-					Command: 'autocomplete',
-					SearchWord : request.term
-				},
-				type : 'GET',
-				success : function(data) {
-					response($.map(data, function(item) {
-						return {
-							label : item.TERM_NAME,
-							color : item.TOP_TOPIC,
-							value : item.label,
-							item : 'document'
-						};
-					}));
-				}
-			});
-		},
-		select : function(event, ui) {
-			$('#searchField').autocomplete("close");
-			getSearch(ui.item.label, ui.item.item, 20);
-		},
-		minLength : 1,
-		delay : 700
-	}).data("ui-autocomplete")._renderItem = function(ul, item) {
-		var circleString = "<a onmouseover=\"$('#" + boxID + "').val('"
-		+ item.label + "')\"  onmouseout=\"$('#" + boxID
-		+ "').val('')\" onclick=\"$('#" + boxID
-		+ "').parent('form').submit()\"><img src=\"images/" + item.item
-		+ ".png\" title=\"" + item.item + "\" />" + item.label
-		+ "<svg width=\"55px\" height=\"20px\">";
-		for(var i = 0; i < item.color.length; i++) {
-			circleString += generateCircle(item.color[i], i);
-		}
-
-		circleString += "</svg>";
-		ul.find('svg').delegate("circle", "click", move);
-		return $("<li></li>").data("item.autocomplete", item).append(
-				circleString).appendTo(ul);
-	};
+function move(e) {
+	moveToTopic(e);
+	e.preventDefault();
+	return false;
 };
 
-
-function getSearch(searchWord, item, limit) {
-	alert(searchWord + ", " + item + ", " + limit);		
-/*	topicexplorer.loadDocuments(
-			{paramString:"Command=search&Searchword="+searchWord},
-			function(newDocumentIds) {
-				ko.postbox.publish("DocumentView.selectedDocuments", newDocumentIds);
-				resizeDocumentDivs();
-			}
-	);*/
-};

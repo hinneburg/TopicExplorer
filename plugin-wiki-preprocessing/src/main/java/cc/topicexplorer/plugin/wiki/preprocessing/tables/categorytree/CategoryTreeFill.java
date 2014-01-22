@@ -8,10 +8,8 @@ import cc.topicexplorer.plugin.wiki.preprocessing.CategoryResolver;
 public class CategoryTreeFill extends TableFillCommand {
 
 	@Override
-	public void fillTable() throws SQLException {
-
+	public void fillTable() {
 		String inFilePath = this.properties.getProperty("Wiki_outputFolder") + "/" + CategoryResolver.categoryFileName;
-
 		String header = " CAT$CHILD , CAT$PARENT ";
 
 		try {
@@ -20,25 +18,23 @@ public class CategoryTreeFill extends TableFillCommand {
 			database.executeUpdateQuery("LOAD DATA LOCAL INFILE '" + inFilePath + "' IGNORE INTO TABLE " + tableName
 					+ " CHARACTER SET utf8 FIELDS TERMINATED BY ';' ENCLOSED BY '\"'   " + "LINES TERMINATED BY '\n' ("
 					+ header + " );");
-		} catch (Exception e) {
-			logger.warn(e.getMessage());
+		} catch (SQLException e) {
+			logger.error("Table " + this.tableName + " could not be filled properly.");
+			throw new RuntimeException(e);
 		}
 
-		// noch index hinzufügen!
+		// TODO noch index hinzufügen!
 
 	}
 
 	@Override
 	public void setTableName() {
 		tableName = "CATEGORYTREE";
-
 	}
 
 	@Override
 	public void addDependencies() {
-
 		beforeDependencies.add("Wiki_CategoryResolver");
-
 	}
 
 }

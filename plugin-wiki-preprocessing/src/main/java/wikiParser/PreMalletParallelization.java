@@ -408,35 +408,70 @@ public class PreMalletParallelization extends Thread {
 
 		String fileOutputFolder = prop.getProperty("Wiki_fileOutputFolder");
 
-		s.printIntoFile(w.getParsedWikiTextReadable(), fileOutputFolder + fileseparator + w.getOldID().toString()
-				+ "_readableText");
+		try {
+			s.printIntoFile(w.getParsedWikiTextReadable(), fileOutputFolder + fileseparator + w.getOldID().toString()
+					+ "_readableText");
+		} catch (IOException e) {
+			System.err.println("File printing caused a problem.");
+			e.printStackTrace();
+		}
 
-		// get link informations
+		// get link information
 		String fileInput = textTocsv.getLinkInfos();
-
-		s.printIntoFile(fileInput, fileOutputFolder + fileseparator + w.getOldID().toString() + "_linkPositions");
+		try {
+			s.printIntoFile(fileInput, fileOutputFolder + fileseparator + w.getOldID().toString() + "_linkPositions");
+		} catch (IOException e) {
+			System.err.println("Link information printing caused a problem.");
+			e.printStackTrace();
+		}
 
 		// get section positions
 		fileInput = textTocsv.getSectionCaptions();
-		s.printIntoFile(fileInput, fileOutputFolder + fileseparator + w.getOldID().toString() + "_sectionPositions");
+		try {
+			s.printIntoFile(fileInput, fileOutputFolder + fileseparator + w.getOldID().toString() + "_sectionPositions");
+		} catch (IOException e) {
+			System.err.println("Section caption printing caused a problem.");
+			e.printStackTrace();
+		}
 
 		// get picture positions
 		fileInput = textTocsv.getPictures();
-		s.printIntoFile(fileInput, fileOutputFolder + fileseparator + w.getOldID().toString() + "_picturePositions");
+		try {
+			s.printIntoFile(fileInput, fileOutputFolder + fileseparator + w.getOldID().toString() + "_picturePositions");
+		} catch (IOException e) {
+			System.err.println("Picture position printing caused a problem.");
+			e.printStackTrace();
+		}
 
 		// get category infos
 		fileInput = textTocsv.getCategroryInfos();
-		s.printIntoFile(fileInput, fileOutputFolder + fileseparator + w.getOldID().toString() + "_category");
+		try {
+			s.printIntoFile(fileInput, fileOutputFolder + fileseparator + w.getOldID().toString() + "_category");
+		} catch (IOException e) {
+			System.err.println("Category information printing caused a problem.");
+			e.printStackTrace();
+		}
 
 	}
 
 	private void generateSingleFileOutput(SupporterForBothTypes s, WikiArticle w) {
 
-		s.printIntoFile(w.getParsedWikiText(), "outputparsed.txt");
-		s.printIntoFile(w.getWikiOrigText(), "inputorig.txt");
+		try {
+			s.printIntoFile(w.getParsedWikiText(), "outputparsed.txt");
+			s.printIntoFile(w.getWikiOrigText(), "inputorig.txt");
+		} catch (IOException ioEx1) {
+			System.err.println("Generating Single file output caused a problem.");
+			ioEx1.printStackTrace();
+		}
 
 		// alle Wörter einzeln mit Positionsangaben
-		s.printIntoFile(s.tokenizeEveryElementOfTheTextForTestOutput(w.getWikiOrigText()), "tokensInputorigText.txt");
+		try {
+			s.printIntoFile(s.tokenizeEveryElementOfTheTextForTestOutput(w.getWikiOrigText()),
+					"tokensInputorigText.txt");
+		} catch (IOException ioEx2) {
+			System.err.println("Generating Single file output (words with position indication) caused a problem.");
+			ioEx2.printStackTrace();
+		}
 
 	}
 

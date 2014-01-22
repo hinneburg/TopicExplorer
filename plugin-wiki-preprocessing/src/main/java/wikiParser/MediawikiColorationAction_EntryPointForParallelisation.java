@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -26,7 +27,7 @@ import tools.WikiIDTitlePair;
  */
 public class MediawikiColorationAction_EntryPointForParallelisation {
 
-	private Properties prop;
+	private final Properties prop;
 
 	public MediawikiColorationAction_EntryPointForParallelisation(Properties prop) {
 		this.prop = prop;
@@ -70,17 +71,32 @@ public class MediawikiColorationAction_EntryPointForParallelisation {
 	 * 
 	 */
 	private void startThreadpool() throws InterruptedException {
-		SupporterForBothTypes s = new SupporterForBothTypes(prop, true); // target-database,
-																			// different
-																			// from
-																			// other
-																			// db,
-																			// otherwise
-																			// the
-																			// corrected
-																			// articles
-																			// where
-																			// overwritten
+		SupporterForBothTypes s = null;
+		try {
+			s = new SupporterForBothTypes(prop, true);
+		} catch (SQLException e) {
+			System.err.println("Database supporter could not be constructed.");
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			System.err.println("Database supporter could not be constructed.");
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			System.err.println("Database supporter could not be constructed.");
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			System.err.println("Database supporter could not be constructed.");
+			e.printStackTrace();
+		} // target-database,
+			// different
+			// from
+			// other
+			// db,
+			// otherwise
+			// the
+			// corrected
+			// articles
+			// where
+			// overwritten
 
 		Integer multiplicator;
 		Integer numberOfAvailableProcesssors;
@@ -93,7 +109,12 @@ public class MediawikiColorationAction_EntryPointForParallelisation {
 		ArrayList[] splittedWikiIDTitleArray = s.splitIntoArray(numberOfAvailableProcesssors * multiplicator,
 				getAllArticlesInDocumentTermTopicFromPreprocessingDatabase(s));
 
-		s.closeDBConnection();
+		try {
+			s.closeDBConnection();
+		} catch (SQLException e) {
+			System.err.println("Database could not be closed.");
+			e.printStackTrace();
+		}
 
 		// declare threadpool
 		Integer listLenght = splittedWikiIDTitleArray.length;

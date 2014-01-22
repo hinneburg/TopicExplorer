@@ -2,6 +2,7 @@ package wikiParser;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Properties;
 
@@ -9,10 +10,10 @@ import tools.WikiIDTitlePair;
 
 public class MediawikiColorationParallelisation extends Thread {
 
-	private List<WikiIDTitlePair> list;
+	private final List<WikiIDTitlePair> list;
 	private SupporterForBothTypes s;
-	private Database db;
-	private boolean bool_transaction;
+	private final Database db;
+	private final boolean bool_transaction;
 	private Integer positionInArray;
 
 	private final String databasePreprocessing;
@@ -26,11 +27,27 @@ public class MediawikiColorationParallelisation extends Thread {
 			Properties prop) {
 		super(tg, null, threadName);
 
-		this.s = new SupporterForBothTypes(prop, true); // target-database,
-														// different from other
-														// db, otherwise the
-														// corrected articles
-														// were overwritten
+		try {
+			this.s = new SupporterForBothTypes(prop, true); // target-database,
+															// different from
+															// other
+															// db, otherwise the
+															// corrected
+															// articles
+															// were overwritten
+		} catch (SQLException e) {
+			System.err.println("Database supporter could not be constructed.");
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			System.err.println("Database supporter could not be constructed.");
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			System.err.println("Database supporter could not be constructed.");
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			System.err.println("Database supporter could not be constructed.");
+			e.printStackTrace();
+		}
 		this.db = s.getDatabase();
 		this.list = list;
 

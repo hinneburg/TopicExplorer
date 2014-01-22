@@ -5,7 +5,6 @@ import static org.fest.assertions.Assertions.assertThat;
 import java.util.Properties;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class WikiTextToCSVForewardIntegrationTest {
@@ -13,16 +12,16 @@ public class WikiTextToCSVForewardIntegrationTest {
 
 	private WikiTextToCSVForeward wikiTestToCSVForeward;
 
-	private String path = "src/test/resources/";
+	private final String path = "src/test/resources/";
 
-	private String parsedWikiTxt = TestUtil.returnFileAsString(this.path + "outputParsed.txt");
-	private String inputWikiOriginal = TestUtil.returnFileAsString(this.path + "inputOrig.txt");
-	private String parsedWikiTextReadable = TestUtil.returnFileAsString(this.path + "readableText.txt");
+	private final String parsedWikiTxt = TestUtil.returnFileAsString(this.path + "outputParsed.txt");
+	private final String inputWikiOriginal = TestUtil.returnFileAsString(this.path + "inputOrig.txt");
+	private final String parsedWikiTextReadable = TestUtil.returnFileAsString(this.path + "readableText.txt");
 	private Integer old_id;
 	private String wikiTitle;
 	private WikiArticle wikiArticle;
 
-	private Properties prop = new Properties();
+	private final Properties prop = new Properties();
 
 	@Before
 	public void init() {
@@ -38,28 +37,28 @@ public class WikiTextToCSVForewardIntegrationTest {
 		wikiTestToCSVForeward = new WikiTextToCSVForeward(wikiArticle, null, true, false);
 	}
 
-	@Test @Ignore
+	@Test
 	public void testGetPictures() {
 
 		String test = TestUtil.returnFileAsString(this.path + "picturePositions.txt");
 		assertThat(wikiTestToCSVForeward.getPictures()).isEqualTo(test);
 	}
 
-	@Test @Ignore
+	@Test
 	public void testGetLinks() {
 
 		String test = TestUtil.returnFileAsString(this.path + "linkPositions.txt");
 		assertThat(wikiTestToCSVForeward.getLinkInfos()).isEqualTo(test);
 	}
 
-	@Test @Ignore
+	@Test
 	public void testGetSections() {
 
 		String test = TestUtil.returnFileAsString(this.path + "sectionPositions.txt");
 		assertThat(wikiTestToCSVForeward.getSectionCaptions()).isEqualTo(test);
 	}
 
-	@Test @Ignore
+	@Test
 	public void testGetCategory() {
 
 		String test = TestUtil.returnFileAsString(this.path + "categoryPositions.txt");

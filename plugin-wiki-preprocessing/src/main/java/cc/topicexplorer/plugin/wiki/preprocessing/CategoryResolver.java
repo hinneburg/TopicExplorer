@@ -48,10 +48,10 @@ public class CategoryResolver extends DependencyCommand {
 		try {
 			init();
 			start();
-		} catch (Exception e) {
-			logger.warn(e.getMessage());
+		} catch (IOException e) {
+			logger.error("Category resolver caused a problem");
+			throw new RuntimeException(e);
 		}
-
 	}
 
 	@Override
@@ -74,10 +74,18 @@ public class CategoryResolver extends DependencyCommand {
 			bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(new File(outputFolder + "/"
 					+ categoryFileName))));
 
-		} catch (Exception e) {
-			System.err.println(e.getMessage());
-			logger.warn(e.getMessage());
-			e.printStackTrace();
+		} catch (SQLException e) {
+			logger.error("Database for category resolver could not be constructed, due to a database error.");
+			throw new RuntimeException(e);
+		} catch (InstantiationException e) {
+			logger.error("Database for category resolver could not be constructed, due to a programming error.");
+			throw new RuntimeException(e);
+		} catch (IllegalAccessException e) {
+			logger.error("Database for category resolver could not be constructed, due to a programming error.");
+			throw new RuntimeException(e);
+		} catch (ClassNotFoundException e) {
+			logger.error("Database for category resolver could not be constructed, due to a programming error.");
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -98,16 +106,13 @@ public class CategoryResolver extends DependencyCommand {
 
 				// wenn das kind noch nicht untersucht worden ist
 				if (!catChilds.contains(getTitleWithUnderscores(child.getWikiTitle()))) {
-
 					getParentCategoriesOfWikiIdTitle(child);
-
 				}
 
 				emptyingStackAndResolveElements();
-
 			}
 
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			if (logger != null) {
 				logger.warn("[ " + getClass() + " ] - " + e.getMessage());
 			}
@@ -117,7 +122,7 @@ public class CategoryResolver extends DependencyCommand {
 		}
 	}
 
-	private void getParentCategoriesOfWikiIdTitle(WikiIDTitlePair child) throws SQLException, Exception {
+	private void getParentCategoriesOfWikiIdTitle(WikiIDTitlePair child) throws SQLException, IOException {
 
 		String wikiText;
 		List<CategoryElement> listOfLinks;
@@ -142,9 +147,7 @@ public class CategoryResolver extends DependencyCommand {
 	}
 
 	private void addToBW(CategoryElement e) throws IOException {
-
 		this.bw.append(e.getCategroryTreeOutput() + "\n");
-
 	}
 
 	private String getTitleWithUnderscores(String title) {
@@ -154,7 +157,7 @@ public class CategoryResolver extends DependencyCommand {
 		return title;
 	}
 
-	private void emptyingStackAndResolveElements() throws NumberFormatException, SQLException, Exception {
+	private void emptyingStackAndResolveElements() throws SQLException, IOException {
 
 		while (stack.size() > 0) {
 			String e = stack.remove();
@@ -164,8 +167,8 @@ public class CategoryResolver extends DependencyCommand {
 		}
 	}
 
-	private void getParentCategoriesOfString(String category, Boolean trueIfCommesFromSource)
-			throws NumberFormatException, SQLException, Exception {
+	private void getParentCategoriesOfString(String category, Boolean trueIfCommesFromSource) throws SQLException,
+			IOException {
 
 		String sql = "SELECT page_title, page_latest FROM page where page_namespace = 14 and page_title like '"
 				+ category + "' ";

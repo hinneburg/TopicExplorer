@@ -2,7 +2,6 @@ package wikiParser;
 
 import static org.fest.assertions.Assertions.assertThat;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import tools.TestUtil;
@@ -10,26 +9,26 @@ import tools.WikiIDTitlePair;
 
 public class PreMalletParallelizationTest {
 
-	private String path = "src/test/resources/";
-	private PreMalletParallelization pm = new PreMalletParallelization();
+	private final String path = "src/test/resources/";
+	private final PreMalletParallelization pm = new PreMalletParallelization();
 	// private String textReadable = TestUtil.returnFileAsString(this.path +
 	// "readableText.txt");;
 
-	private String articleTextUncorrected = "[[Text]] <!-- [[commentedLink]] --> [[Datei:name.jpg|miniatur|text mit verschachtelten [[link]] bla bla ]]  ";
-	private String articleTextCorrected = "[[Text|Text]]  [[Datei:name.jpg|miniatur|text mit verschachtelten [[link|link]] bla bla ]]  ";
+	private final String articleTextUncorrected = "[[Text]] <!-- [[commentedLink]] --> [[Datei:name.jpg|miniatur|text mit verschachtelten [[link]] bla bla ]]  ";
+	private final String articleTextCorrected = "[[Text|Text]]  [[Datei:name.jpg|miniatur|text mit verschachtelten [[link|link]] bla bla ]]  ";
 
-	private String inputWikiOriginal = TestUtil.returnFileAsString(this.path + "2_inputOrig.txt");
-	private String parsedWikiTextReadable = TestUtil.returnFileAsString(this.path + "2_readableText.txt");
-	private String outputParsed = TestUtil.returnFileAsString(this.path + "2_outputParsed.txt");
+	private final String inputWikiOriginal = TestUtil.returnFileAsString(this.path + "2_inputOrig.txt");
+	private final String parsedWikiTextReadable = TestUtil.returnFileAsString(this.path + "2_readableText.txt");
+	private final String outputParsed = TestUtil.returnFileAsString(this.path + "2_outputParsed.txt");
 
-	@Test @Ignore
+	@Test
 	public void testCorrectWikitext() {
 
 		String test = this.articleTextCorrected;
 		assertThat(this.pm.doArticleCorrection(articleTextUncorrected, new WikiIDTitlePair(0, ""))).isEqualTo(test);
 	}
 
-	@Test @Ignore
+	@Test
 	public void testParsedTextReadable() {
 
 		// FIXME russisch, zeilenende vom buffered reader macht Probleme
@@ -50,7 +49,7 @@ public class PreMalletParallelizationTest {
 
 	}
 
-	@Test @Ignore
+	@Test
 	public void testParsedTextByLine() {
 
 		// FIXME russisch, zeilenende vom buffered reader macht Probleme

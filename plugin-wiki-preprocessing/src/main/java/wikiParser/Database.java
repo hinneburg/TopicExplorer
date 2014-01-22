@@ -1,16 +1,11 @@
 package wikiParser;
 
-
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
-
-
 
 /**
  * @author user
@@ -24,16 +19,18 @@ public class Database {
 
 	private int limit = -1; // limit for select queries
 
-	public Database(Properties prop) throws Exception {
+	public Database(Properties prop) throws SQLException, InstantiationException, IllegalAccessException,
+			ClassNotFoundException {
 		startUp(prop, false);
 	}
 
-	public Database(Properties prop, Boolean otherDatabase) throws Exception {
+	public Database(Properties prop, Boolean otherDatabase) throws SQLException, InstantiationException,
+			IllegalAccessException, ClassNotFoundException {
 		startUp(prop, otherDatabase);
 	}
 
-	private void startUp(Properties prop, Boolean otherDatabase)
-			throws Exception {
+	private void startUp(Properties prop, Boolean otherDatabase) throws SQLException, InstantiationException,
+			IllegalAccessException, ClassNotFoundException {
 		properties = prop;
 
 		String dbLocation = properties.getProperty("database.DbLocation");
@@ -53,8 +50,7 @@ public class Database {
 		try {
 
 			connection = DriverManager.getConnection("jdbc:mysql://" + dbLocation
-					+ "?useUnicode=true&characterEncoding=UTF-8&useCursorFetch=true", dbUser,
-					dbPassword);
+					+ "?useUnicode=true&characterEncoding=UTF-8&useCursorFetch=true", dbUser, dbPassword);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -67,8 +63,9 @@ public class Database {
 	}
 
 	public void shutdownDB() throws SQLException {
-		if (!connection.isClosed())
+		if (!connection.isClosed()) {
 			connection.close();
+		}
 	}
 
 	/**
@@ -78,9 +75,8 @@ public class Database {
 	 */
 	public ResultSet executeQuery(String query) throws SQLException {
 
-//		System.out.println(query);
-		statement = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
-				ResultSet.CONCUR_UPDATABLE);
+		// System.out.println(query);
+		statement = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 		return statement.executeQuery(query);
 	}
 
@@ -97,9 +93,8 @@ public class Database {
 		// damit das RS offen bleibt, sonst funktionierten die alten
 		// keywords_themen2 bzw tables.keytopic2 nicht
 		// da es zur exception gekommen ist (cannot perfom ... rs is closed)
-//		System.out.println(query);
-		statement = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
-				ResultSet.CONCUR_UPDATABLE);
+		// System.out.println(query);
+		statement = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 		return statement.executeUpdate(query);
 	}
 
@@ -133,35 +128,37 @@ public class Database {
 	public void dropTable(String table) throws SQLException {
 		this.executeUpdateQuery("DROP TABLE IF EXISTS " + table);
 	}
-	
+
 	public void analyseTable(String table) throws SQLException {
 		this.executeUpdateQuery("ANALYZE TABLE  " + table);
 	}
-	
+
 	public void optimizeTable(String table) throws SQLException {
 		this.executeUpdateQuery("OPTIMIZE TABLE  " + table);
 	}
-	
-//	/**
-//	 *  for updating blob-data 
-//	 *  wikitext is saved as blob 
-//	 * 
-//	 * @param statementTextWith2Varis
-//	 * @param blobText / first parameter
-//	 * @param vari_id / second parameter
-//	 * @throws SQLException
-//	 */
-//	public void excecutePreparedStatementForUpdatingBlob(String statementTextWith2Varis, String blobText, int vari_id) throws SQLException
-//	{
-//		PreparedStatement stmt = connection.prepareStatement(statementTextWith2Varis);
-//		stmt.setBytes(1, blobText.getBytes());
-//		stmt.setInt(2, vari_id);
-//		stmt.execute();
-//		stmt.close();
-//	}
-	
-	public Connection getConnection()
-	{
+
+	// /**
+	// * for updating blob-data
+	// * wikitext is saved as blob
+	// *
+	// * @param statementTextWith2Varis
+	// * @param blobText / first parameter
+	// * @param vari_id / second parameter
+	// * @throws SQLException
+	// */
+	// public void excecutePreparedStatementForUpdatingBlob(String
+	// statementTextWith2Varis, String blobText, int vari_id) throws
+	// SQLException
+	// {
+	// PreparedStatement stmt =
+	// connection.prepareStatement(statementTextWith2Varis);
+	// stmt.setBytes(1, blobText.getBytes());
+	// stmt.setInt(2, vari_id);
+	// stmt.execute();
+	// stmt.close();
+	// }
+
+	public Connection getConnection() {
 		return connection;
 	}
 

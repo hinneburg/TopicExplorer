@@ -1,6 +1,5 @@
 package cc.topicexplorer.plugin.wiki.preprocessing.tables.orgtable;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.apache.commons.chain.Context;
@@ -27,8 +26,11 @@ public class OrgTableCreateAndFill extends TableCommand {
 		try {
 			this.database.executeUpdateQuery("drop table " + tableName + ";");
 		} catch (SQLException e) {
-			logger.warn("wiki-plug-in." + tableName + " : Cannot drop table " + tableName
-					+ ", perhaps it doesn't exists. Doesn't matter ;)");
+			if (e.getErrorCode() != 1091) { // MySQL Error code for 'Can't DROP
+											// ..; check that column/key exists
+				logger.error("wiki-plug-in." + this.tableName + ": Cannot drop table " + this.tableName);
+				throw new RuntimeException(e);
+			}
 		}
 
 		String sql = "CREATE TABLE `" + tableName + "` (" + "`" + this.properties.getProperty("OrgTableId")
@@ -43,7 +45,7 @@ public class OrgTableCreateAndFill extends TableCommand {
 		try {
 			this.database.executeUpdateQuery(sql);
 		} catch (SQLException e) {
-			logger.fatal("wiki-plug-in." + tableName + ": cannot create table \n. Program will exit.\n");
+			logger.error("wiki-plug-in." + tableName + ": cannot create table \n. Program will exit.\n");
 			throw new RuntimeException(e);
 		}
 
@@ -56,26 +58,11 @@ public class OrgTableCreateAndFill extends TableCommand {
 				+ ", " + this.properties.getProperty("Text_OrgTableTitle") + ","
 				+ this.properties.getProperty("OrgTableTxt") + " ) ; ";
 
-		// System.out.println(sql);
-
 		try {
 			this.database.executeUpdateQuery(sql);
 		} catch (SQLException e) {
-			logger.fatal("wiki-plug-in." + tableName + ": failure in filling the table.\n programm will exit.");
-			// fatal
+			logger.error("wiki-plug-in." + tableName + ": failure in filling the table.\n programm will exit.");
 			throw new RuntimeException(e);
-		}
-
-		// debugging kann eigentlich weg
-		try {
-			ResultSet rs = this.database.executeQuery("SELECT COUNT(" + this.properties.getProperty("OrgTableId")
-					+ ") FROM " + tableName + ";");
-			if (rs.next()) {
-				logger.info("Wiki: " + rs.getString(1) + " articles loaded in " + tableName);
-				System.out.println("Wiki: " + rs.getString(1) + " articles loaded in " + tableName);
-			}
-		} catch (SQLException e) {
-			System.err.println(e.getMessage());
 		}
 
 	}

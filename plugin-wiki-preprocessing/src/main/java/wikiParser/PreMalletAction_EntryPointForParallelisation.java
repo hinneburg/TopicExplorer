@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -25,7 +26,7 @@ import tools.WikiIDTitlePair;
 public class PreMalletAction_EntryPointForParallelisation {
 
 	private Database db;
-	private Properties prop;
+	private final Properties prop;
 	private Stopwatch stopWatch;
 
 	private final String fileSeparator = System.getProperty("file.separator");
@@ -128,8 +129,9 @@ public class PreMalletAction_EntryPointForParallelisation {
 	private void deleteTempOutputFiles(File path) {
 		try {
 			for (File file : path.listFiles()) {
-				if (file.isDirectory())
+				if (file.isDirectory()) {
 					deleteTempOutputFiles(file);
+				}
 				file.delete();
 			}
 			path.delete();
@@ -164,9 +166,29 @@ public class PreMalletAction_EntryPointForParallelisation {
 		ArrayList<WikiIDTitlePair> newList;
 
 		// get all articles from database
-		SupporterForBothTypes s = new SupporterForBothTypes(prop);
+		SupporterForBothTypes s = null;
+		try {
+			s = new SupporterForBothTypes(prop);
+		} catch (SQLException e) {
+			System.err.println("Database supporter could not be constructed.");
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			System.err.println("Database supporter could not be constructed.");
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			System.err.println("Database supporter could not be constructed.");
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			System.err.println("Database supporter could not be constructed.");
+			e.printStackTrace();
+		}
 		List<WikiIDTitlePair> inputList = s.getArticlesLimitOffset(limitOrAll, offset);
-		s.closeDBConnection();
+		try {
+			s.closeDBConnection();
+		} catch (SQLException e) {
+			System.err.println("Connection could not be closed.");
+			e.printStackTrace();
+		}
 
 		ThreadGroup group = new ThreadGroup("wikiParsing");
 

@@ -3,6 +3,7 @@ package wikiParser;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.sql.ResultSet;
@@ -21,19 +22,16 @@ public class SupporterForBothTypes {
 	private Properties prop;
 	private Database db;
 
-	private boolean debug = false;
+	private final boolean debug = false;
 
 	public SupporterForBothTypes() {
 
 	}
 
-	public SupporterForBothTypes(Properties prop) {
+	public SupporterForBothTypes(Properties prop) throws SQLException, InstantiationException, IllegalAccessException,
+			ClassNotFoundException {
 		this.prop = prop;
-		try {
-			init();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		init();
 	}
 
 	public SupporterForBothTypes(Database db) {
@@ -41,49 +39,38 @@ public class SupporterForBothTypes {
 		this.prop = db.getProperties();
 	}
 
-	public SupporterForBothTypes(Properties properties, Boolean otherDBOrAlsoTargetDB) {
+	public SupporterForBothTypes(Properties properties, Boolean otherDBOrAlsoTargetDB) throws SQLException,
+			InstantiationException, IllegalAccessException, ClassNotFoundException {
 		this.prop = properties;
-		try {
-			this.init(otherDBOrAlsoTargetDB);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		this.init(otherDBOrAlsoTargetDB);
 	}
 
 	public Database getDatabase() {
 		return db;
 	}
 
-	public void printIntoFile(String txt, String filename) {
-		try {
-			File file = new File(filename);
-			BufferedWriter bwCSV = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8"));
+	public void printIntoFile(String txt, String filename) throws IOException {
+		File file = new File(filename);
+		BufferedWriter bwCSV = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8"));
 
-			String textnew = new String(txt);
+		String textnew = new String(txt);
 
-			bwCSV.append(textnew);
-			bwCSV.flush();
-			bwCSV.close();
-		} catch (Exception e) {
-			System.err.println("Fehler printIntoFile");
-		}
-
+		bwCSV.append(textnew);
+		bwCSV.flush();
+		bwCSV.close();
 	}
 
-	private void init() throws Exception {
+	private void init() throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException {
 		db = new Database(prop);
 	}
 
-	private void init(Boolean otherDB) throws Exception {
+	private void init(Boolean otherDB) throws SQLException, InstantiationException, IllegalAccessException,
+			ClassNotFoundException {
 		db = new Database(prop, otherDB);
 	}
 
-	public void closeDBConnection() {
-		try {
-			db.shutdownDB();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+	public void closeDBConnection() throws SQLException {
+		db.shutdownDB();
 	}
 
 	// public WikiIDTitlePair
@@ -139,13 +126,11 @@ public class SupporterForBothTypes {
 	// }
 
 	public Integer getNumberOfElementsForGettingCapacity(String fulltxt, String searchElement) {
-
 		Integer counter = 0;
 		Integer pos = 0;
 		Integer savedPos = 0;
 
 		while (true) {
-
 			pos = fulltxt.substring(savedPos).indexOf(searchElement);
 
 			if (pos > -1) {
@@ -154,16 +139,13 @@ public class SupporterForBothTypes {
 			} else {
 				break;
 			}
-
 		}
+
 		counter = (int) Math.ceil(counter / 0.75); // wegen load
-
 		return counter;
-
 	}
 
-	public WikiIDTitlePair getOldIdAndWikiTitleFromWikiPageIdFromDatabase(Integer old_id) throws SQLException,
-			Exception {
+	public WikiIDTitlePair getOldIdAndWikiTitleFromWikiPageIdFromDatabase(Integer old_id) throws SQLException {
 
 		String wikiTitle;
 		Integer rev_page = -1;
@@ -204,7 +186,7 @@ public class SupporterForBothTypes {
 		return title;
 	}
 
-	public String getWikitextFromFromWikiTitleFromDatabase(String wikiTitle) throws SQLException, Exception {
+	public String getWikitextFromFromWikiTitleFromDatabase(String wikiTitle) throws SQLException {
 		// whitespaces in the title must be replaced
 		if (wikiTitle.indexOf(" ") != -1) {
 			wikiTitle = fillSpacesWithUnderscores(wikiTitle);
@@ -264,7 +246,7 @@ public class SupporterForBothTypes {
 					wikitxt = rs2.getString(1);
 
 					if (wikitxt == null) {
-						throw new Exception(
+						throw new IllegalStateException(
 								wikiTitle
 										+ " : "
 										+ rev_text_id_old_id
@@ -273,13 +255,9 @@ public class SupporterForBothTypes {
 					}
 				}
 				rs2.close();
-			} catch (Exception e) {
-				System.err.println(e.getMessage());
-				System.err.println(sql);
-				// e.printStackTrace();
-				return null;
+			} catch (SQLException e) {
+				throw new RuntimeException("Error in Query: " + sql, e);
 			}
-
 		}
 
 		return wikitxt;
@@ -288,7 +266,7 @@ public class SupporterForBothTypes {
 	/**
 	 * NUR KOPIERT ...
 	 */
-	public String getWikiTextOnlyWithID(Integer id) throws SQLException, Exception {
+	public String getWikiTextOnlyWithID(Integer id) throws SQLException {
 		String wikitxt = "";
 
 		// query for the wikitext
@@ -326,8 +304,9 @@ public class SupporterForBothTypes {
 		}
 
 		// immernoch null
-		if (wikitxt == null)
-			throw new Exception(id + " , wikitext == null , " + sql + " " + this.getClass() + "\n");
+		if (wikitxt == null) {
+			throw new IllegalStateException(id + " , wikitext == null , " + sql + " " + this.getClass() + "\n");
+		}
 
 		rs.close();
 
@@ -375,18 +354,19 @@ public class SupporterForBothTypes {
 
 					String sqlAdd = prop.getProperty("Wiki_sqlAddToWhere");
 
-					if (sqlAdd.length() > 0)
+					if (sqlAdd.length() > 0) {
 						sql = sql + sqlAdd;
+					}
 				}
 			} catch (Exception e) {
 				System.err
 						.println("getArticles... cannot add 'sqlAddToWhere' from wiki_properties to sql-string. Proceed without it.");
+				e.printStackTrace();
 			}
 
 			if (intLimit > 0 && offset >= 0) {
 				sql = sql + " ORDER BY page_latest " + " LIMIT " + offset + " , " + intLimit + " ; ";
 			}
-			// System.out.println(sql);
 
 			ResultSet rs = db.executeQuery(sql);
 
@@ -400,7 +380,6 @@ public class SupporterForBothTypes {
 		}
 
 		System.out.println("Wiki_getArticlesLimitOffset: number of all articles is: " + list.size());
-
 		return list;
 	}
 

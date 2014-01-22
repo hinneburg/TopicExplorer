@@ -8,17 +8,22 @@ public abstract class TableCreateCommand extends TableCommand {
 
 	@Override
 	public void tableExecute(Context context) {
-		try {
-			dropTable();
-			createTable();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		dropTable();
+		createTable();
 	}
 
-	public abstract void createTable() throws SQLException;
+	public abstract void createTable();
 
-	public void dropTable() throws SQLException {
-		database.dropTable(this.tableName);
+	public void dropTable() {
+		try {
+			database.dropTable(this.tableName);
+		} catch (SQLException e) {
+			if (e.getErrorCode() != 1091) { // MySQL Error code for: 'Can't
+											// DROP..; check that column/key
+											// exists
+				logger.error("Document.dropTable: Cannot drop table " + this.tableName);
+				throw new RuntimeException(e);
+			}
+		}
 	}
 }

@@ -28,6 +28,10 @@ import cc.topicexplorer.chain.DependencyContext;
  * <p>
  * This means that the actual command needs command A to be executed, and
  * command C needs the actual command to be executed before itself.
+ * <p>
+ * <p>
+ * EXCEPTION HANDLING: In contrast to the {@link Command} api, no checked
+ * exceptions will be thrown by concrete implementations of execute()
  * 
  * @author Sebastian Baer
  * 
@@ -49,21 +53,20 @@ public abstract class DependencyCommand implements Command {
 	 * )
 	 */
 	@Override
-	public boolean execute(Context context) throws Exception {
-
+	public boolean execute(Context context) {
 		logger.info("Current Command : [ " + getClass() + " ]");
-		
+		long startTime = System.currentTimeMillis();
+
 		if (DependencyContext.class.isInstance(context)) {
 			DependencyContext dependencyContext = (DependencyContext) context;
 			addDependencies();
 			dependencyContext.setAfterDependencies(afterDependencies);
 			dependencyContext.setBeforeDependencies(beforeDependencies);
-			dependencyContext
-					.setOptionalAfterDependencies(optionalAfterDependencies);
-			dependencyContext
-					.setOptionalBeforeDependencies(optionalBeforeDependencies);
+			dependencyContext.setOptionalAfterDependencies(optionalAfterDependencies);
+			dependencyContext.setOptionalBeforeDependencies(optionalBeforeDependencies);
 		} else {
 			specialExecute(context);
+			this.logger.info(System.currentTimeMillis() - startTime + " ms");
 		}
 
 		return false;
@@ -72,6 +75,6 @@ public abstract class DependencyCommand implements Command {
 	public void addDependencies() {
 	};
 
-	public abstract void specialExecute(Context context) throws Exception;
+	public abstract void specialExecute(Context context);
 
 }

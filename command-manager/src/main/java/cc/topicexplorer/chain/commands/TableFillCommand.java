@@ -1,29 +1,43 @@
 package cc.topicexplorer.chain.commands;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import org.apache.commons.chain.Context;
 
-public abstract class TableFillCommand extends TableCommand{
+public abstract class TableFillCommand extends TableCommand {
 
 	@Override
 	public void tableExecute(Context context) {
-		try {
-			fillTable();
-		//	analyseTable();
-		//	optimizeTable();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		fillTable();
 	}
 
-	public void analyzeTable() throws SQLException {
-		database.analyzeTable(this.tableName);
+	/**
+	 * Analyzes the table with the corresponding table name, specified in this
+	 * {@link TableFillCommand}
+	 * 
+	 * @throws SQLException
+	 *             if a database access error occurs or the analyze
+	 *             {@link Statement} produces a {@link ResultSet}. See the MySQL
+	 *             specification for detailed information on the error code.
+	 */
+	public void analyzeMainTableOfCommand() throws SQLException {
+		this.database.analyzeTable(this.tableName);
 	}
 
-	public void optimizeTable() throws SQLException {
-		database.optimizeTable(this.tableName);
+	/**
+	 * Optimizes the table with the corresponding table name, specified in this
+	 * {@link TableFillCommand}
+	 * 
+	 * @throws SQLException
+	 *             if a database access error occurs or the analyze
+	 *             {@link Statement} produces a {@link ResultSet}. See the MySQL
+	 *             specification for detailed information on the error code.
+	 */
+	public void optimizeMainTableOfCommand() throws SQLException {
+		this.database.optimizeTable(this.tableName);
 	}
 
-	public abstract void fillTable() throws SQLException;
+	public abstract void fillTable();
 }

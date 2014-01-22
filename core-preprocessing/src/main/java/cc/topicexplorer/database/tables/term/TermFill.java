@@ -1,10 +1,10 @@
 package cc.topicexplorer.database.tables.term;
 
 /** MIT-JOOQ-START 
-import static jooq.generated.Tables.TERM;
-import static jooq.generated.Tables.DOCUMENT_TERM_TOPIC;
-import static jooq.generated.Tables.DOCUMENT; 
- MIT-JOOQ-ENDE */ 
+ import static jooq.generated.Tables.TERM;
+ import static jooq.generated.Tables.DOCUMENT_TERM_TOPIC;
+ import static jooq.generated.Tables.DOCUMENT; 
+ MIT-JOOQ-ENDE */
 import java.sql.SQLException;
 
 import cc.topicexplorer.chain.commands.TableFillCommand;
@@ -12,8 +12,8 @@ import cc.topicexplorer.chain.commands.TableFillCommand;
 public class TermFill extends TableFillCommand {
 
 	@Override
-	public void fillTable() throws SQLException {
-
+	public void fillTable() {
+// @formatter:off
 /** MIT-JOOQ-START 
 		String query = "insert into `"
 				+ TERM.getName()
@@ -51,7 +51,9 @@ public class TermFill extends TableFillCommand {
 				+ TERM.INVERSE_DOCUMENT_FREQUENCY.getName() + "),"
 				+ "	ADD KEY CF_IDF_IDX (" + TERM.CF_IDF.getName() + ")");
  MIT-JOOQ-ENDE */ 
-/** OHNE_JOOQ-START */ 		
+		// @formatter:on
+		/** OHNE_JOOQ-START */
+//		@formatter:off
 		String query = "insert into "
 				+ "TERM"
 				+ " ("
@@ -77,30 +79,38 @@ public class TermFill extends TableFillCommand {
 				+ ") as dfcount from " + "DOCUMENT_TERM_TOPIC"
 				+ " group by " + "DOCUMENT_TERM_TOPIC.TERM"
 				+ ") as nested1";
+//		@formatter:on
 
-		database.executeUpdateQuery(query);
-		database.executeUpdateQuery("ALTER TABLE " + "TERM"
-				+ "	ADD UNIQUE KEY TERM_NAME_IDX ("
-				+ "TERM_NAME" + ")," + "	ADD KEY DF_IDX ("
-				+ "DOCUMENT_FREQUENCY" + "),"
-				+ "	ADD KEY CD_IDX (" + "CORPUS_FREQUENCY" + "),"
-				+ "	ADD KEY IDF_IDX ("
-				+ "INVERSE_DOCUMENT_FREQUENCY" + "),"
-				+ "	ADD KEY CF_IDF_IDX (" + "CF_IDF" + ")");
-/** OHNE_JOOQ-ENDE */ 
+		try {
+			database.executeUpdateQuery(query);
+//		@formatter:off
+			database.executeUpdateQuery("ALTER TABLE " + "TERM"
+					+ "	ADD UNIQUE KEY TERM_NAME_IDX ("
+					+ "TERM_NAME" + ")," + "	ADD KEY DF_IDX ("
+					+ "DOCUMENT_FREQUENCY" + "),"
+					+ "	ADD KEY CD_IDX (" + "CORPUS_FREQUENCY" + "),"
+					+ "	ADD KEY IDF_IDX ("
+					+ "INVERSE_DOCUMENT_FREQUENCY" + "),"
+					+ "	ADD KEY CF_IDF_IDX (" + "CF_IDF" + ")");
+//		@formatter:on
+		} catch (SQLException e) {
+			logger.error("Table " + this.tableName + " could not be filled properly.");
+			throw new RuntimeException(e);
+		}
+		/** OHNE_JOOQ-ENDE */
 	}
 
 	@Override
 	public void setTableName() {
 
-/** MIT-JOOQ-START 
-		this.tableName = TERM.getName();
- MIT-JOOQ-ENDE */ 
-/** OHNE_JOOQ-START */
+		/**
+		 * MIT-JOOQ-START this.tableName = TERM.getName(); MIT-JOOQ-ENDE
+		 */
+		/** OHNE_JOOQ-START */
 		this.tableName = "TERM";
-/** OHNE_JOOQ-ENDE */ 
+		/** OHNE_JOOQ-ENDE */
 	}
-	
+
 	@Override
 	public void addDependencies() {
 		beforeDependencies.add("TermCreate");

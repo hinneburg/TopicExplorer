@@ -46,96 +46,119 @@ public class InFilePreparation extends DependencyCommand {
 	private static Logger logger = Logger.getRootLogger();
 
 	/**
-	 * The funtion checks if the used separator and the static defined names are
-	 * correct
+	 * The function checks if the used separator and the static defined names
+	 * are correct
 	 * 
-	 * @param colEntries
-	 *            are the names we have to check
 	 * @return true if all is correct, else false (with a little information)
+	 * 
+	 * @throws SQLException
+	 *             if a database access error occurs
+	 * @throws IllegalStateException
+	 *             if the CSV headers could not be read successfully
+	 * @throws IOException
+	 *             if reading the CSV file causes a problem
 	 */
-	public static boolean checkHeader(String inFile) throws SQLException {
-		try {
-			inCsv = new CsvReader(new FileInputStream(inFile), ';', Charset.forName("UTF-8"));
-			try {
-				if (inCsv.readHeaders()) {
-					String[] headerEntries = inCsv.getHeaders();
-					List<String> tableColumnList = new ArrayList<String>();
+	public static boolean checkHeader(String inFile) {
 
-					/**
-					 * MIT-JOOQ-START ResultSet rs =
-					 * database.executeQuery("SELECT * FROM " +
-					 * DOCUMENT_TERM_TOPIC.getName()); MIT-JOOQ-ENDE
-					 */
-					/** OHNE_JOOQ-START */
-					ResultSet rs = database.executeQuery("SELECT * FROM " + "DOCUMENT_TERM_TOPIC");
+		inCsv = tryToConstructCsvReader(inFile);
+
+		try {
+			if (inCsv.readHeaders()) {
+				String[] headerEntries = inCsv.getHeaders();
+				List<String> tableColumnList = new ArrayList<String>();
+
+				/**
+				 * MIT-JOOQ-START ResultSet rs =
+				 * database.executeQuery("SELECT * FROM " +
+				 * DOCUMENT_TERM_TOPIC.getName()); MIT-JOOQ-ENDE
+				 */
+				/** OHNE_JOOQ-START */
+
+				String query = "SELECT * FROM DOCUMENT_TERM_TOPIC";
+				try {
+					ResultSet rs = database.executeQuery(query);
 					/** OHNE_JOOQ-ENDE */
 					ResultSetMetaData md = rs.getMetaData();
 					for (int i = 1; i <= md.getColumnCount(); i++) {
 						tableColumnList.add(md.getColumnName(i));
 					}
-
-					for (int j = 0; j < headerEntries.length; j++) {
-						if (!tableColumnList.contains(headerEntries[j])) {
-							logger.warn("The CSV-Column " + headerEntries[j]
-									+ " is not in the DOCUMENT_TERM_TOPIC table");
-							return false;
-						}
-					}
-				} else {
-					logger.fatal("CSV-Header not read");
-					System.exit(1);
+				} catch (SQLException e) {
+					logger.error("Error in Query: " + query);
+					throw new RuntimeException(e);
 				}
-			} catch (IOException e) {
-				logger.fatal("CSV-Header not read" + e);
-				System.exit(2);
+
+				for (int j = 0; j < headerEntries.length; j++) {
+					if (!tableColumnList.contains(headerEntries[j])) {
+						logger.warn("The CSV-Column " + headerEntries[j] + " is not in the DOCUMENT_TERM_TOPIC table");
+						return false;
+					}
+				}
+
+			} else {
+				logger.error("CSV-Header not successfully read.");
+				throw new IllegalStateException();
 			}
-		} catch (FileNotFoundException e) {
-			logger.fatal("Input CSV-File couldn't be read - maybe the path is incorrect" + e);
-			System.exit(3);
+		} catch (IOException e) {
+			logger.error("CSV-File problems occured.");
+			throw new RuntimeException(e);
 		}
+
 		return true;
 	}
 
-	private boolean writeMalletInFile() throws IOException {
-		BufferedWriter malletInFileWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
-				malletPreparedFile), "UTF-8"));
-		int currentDocID = -1;
-		String documentString = "";
-
-		while (inCsv.readRecord()) {
-			if (currentDocID == -1) {
-
-				// first Doc -> Set the currentDocID
-				currentDocID = Integer.parseInt(inCsv.get("DOCUMENT_ID"));
-				// start to set the documentString with ID and LANGUAGE
-				documentString = currentDocID + "\tDE\t" + inCsv.get("TERM");
-
-			} else if (currentDocID != Integer.parseInt(inCsv.get("DOCUMENT_ID"))) {
-
-				// new document, write current down
-				documentString += "\n";
-				malletInFileWriter.write(documentString);
-				// set new DocID
-				currentDocID = Integer.parseInt(inCsv.get("DOCUMENT_ID"));
-				// start to set the new documentString with ID and LANGUAGE
-				documentString = currentDocID + "\tDE\t" + inCsv.get("TERM");
-
-			} else {
-
-				// same Document, but new Token -> append it
-				documentString += " " + inCsv.get("TERM");
-			}
+	private static CsvReader tryToConstructCsvReader(String inFile) {
+		try {
+			return new CsvReader(new FileInputStream(inFile), ';', Charset.forName("UTF-8"));
+		} catch (FileNotFoundException e) {
+			logger.error("Input CSV-File couldn't be read - maybe the path is incorrect");
+			throw new RuntimeException(e);
 		}
-		// We have to set the last document
-		malletInFileWriter.write(documentString);
+	}
 
-		malletInFileWriter.close();
+	private void writeMalletInFile() {
 
-		return true;
+		try {
+			BufferedWriter malletInFileWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
+					malletPreparedFile), "UTF-8"));
+			int currentDocID = -1;
+			String documentString = "";
+
+			while (inCsv.readRecord()) {
+				if (currentDocID == -1) {
+
+					// first Doc -> Set the currentDocID
+					currentDocID = Integer.parseInt(inCsv.get("DOCUMENT_ID"));
+					// start to set the documentString with ID and LANGUAGE
+					documentString = currentDocID + "\tDE\t" + inCsv.get("TERM");
+
+				} else if (currentDocID != Integer.parseInt(inCsv.get("DOCUMENT_ID"))) {
+
+					// new document, write current down
+					documentString += "\n";
+					malletInFileWriter.write(documentString);
+					// set new DocID
+					currentDocID = Integer.parseInt(inCsv.get("DOCUMENT_ID"));
+					// start to set the new documentString with ID and LANGUAGE
+					documentString = currentDocID + "\tDE\t" + inCsv.get("TERM");
+
+				} else {
+
+					// same Document, but new Token -> append it
+					documentString += " " + inCsv.get("TERM");
+				}
+			}
+			// We have to set the last document
+			malletInFileWriter.write(documentString);
+
+			malletInFileWriter.close();
+		} catch (IOException e) {
+			logger.error("IO exception occured while writing mallet in file.");
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
-	public void specialExecute(Context context) throws SQLException, IOException {
+	public void specialExecute(Context context) {
 
 		logger.info("[ " + getClass() + " ] - " + "preparing the in-file for mallet");
 
@@ -146,14 +169,11 @@ public class InFilePreparation extends DependencyCommand {
 		String inFile = properties.getProperty("InCSVFile");
 
 		if (checkHeader(inFile)) {
-			if (writeMalletInFile()) {
-				logger.info("[ " + getClass() + " ] - " + "the in-file for mallet successfully prepared");
-				inCsv.close();
-			} else {
-				System.exit(4);
-			}
+			writeMalletInFile();
+			logger.info("[ " + getClass() + " ] - " + "the in-file for mallet successfully prepared");
+			inCsv.close();
 		} else {
-			System.exit(0);
+			throw new IllegalArgumentException("Missing CSV header in table DOCUMENT_TERM_TOPIC");
 		}
 	}
 

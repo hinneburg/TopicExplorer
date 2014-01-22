@@ -22,26 +22,18 @@ import org.apache.log4j.Logger;
 import cc.topicexplorer.chain.CommunicationContext;
 import cc.topicexplorer.chain.commands.DependencyCommand;
 
-//import tools.tokenTopicAssignment.*;
-
 public class TokenTopicAssociator extends DependencyCommand {
-
 	private static Properties properties;
 	private static Logger logger = Logger.getRootLogger();
-
 	private static List<String> outList = new ArrayList<String>();
-
 	public static String TOKENTOPICASSIGNMENTSQLFILE = "temp/tokenTopicAssignment.sql.csv";
-
 	// Number of Elements readed till output
 	private static Integer blockSize = 5000;
 
 	private static boolean setTokenTopicAssignment() {
-
 		BufferedWriter outListSQLWriter = null;
 
 		try {
-
 			outListSQLWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
 					TOKENTOPICASSIGNMENTSQLFILE, true), "UTF-8"));
 
@@ -71,20 +63,22 @@ public class TokenTopicAssociator extends DependencyCommand {
 	}
 
 	private static void deleteOldTFile() {
-
 		File f = new File(TOKENTOPICASSIGNMENTSQLFILE);
 
 		try {
+
 			if (f.exists()) {
 				f.delete();
 				f.createNewFile();
 			}
+
 		} catch (Exception e) {
 			logger.error(e);
 		}
 	}
 
-	private void readAndWriteBlockwise(String inFile, String stateFile) throws SQLException {
+	private void readAndWriteBlockwise(String inFile, String stateFile) throws SQLException,
+			UnsupportedEncodingException, FileNotFoundException, IOException {
 
 		BufferedReader inListinBufferedReader = null;
 
@@ -95,64 +89,49 @@ public class TokenTopicAssociator extends DependencyCommand {
 
 		BufferedReader stateBufferedReader = null;
 
-		try {
-			stateBufferedReader = new BufferedReader(new InputStreamReader(new GZIPInputStream(new FileInputStream(
-					stateFile)), "UTF-8"));
+		stateBufferedReader = new BufferedReader(new InputStreamReader(new GZIPInputStream(new FileInputStream(
+				stateFile)), "UTF-8"));
 
-			// we have to skip the first 3 lines:
-			stateCurrentLine = stateBufferedReader.readLine();
-			stateCurrentLine = stateBufferedReader.readLine();
-			stateCurrentLine = stateBufferedReader.readLine();
+		// we have to skip the first 3 lines:
+		stateCurrentLine = stateBufferedReader.readLine();
+		stateCurrentLine = stateBufferedReader.readLine();
+		stateCurrentLine = stateBufferedReader.readLine();
 
-			inListinBufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(inFile), "UTF-8"));
-			inListcurrentLine = inListinBufferedReader.readLine();
-			;
-			// checking seperator and names insult a skip of the first column
-			if (InFilePreparation.checkHeader(inFile)) {
+		inListinBufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(inFile), "UTF-8"));
+		inListcurrentLine = inListinBufferedReader.readLine();
+		;
+		// checking seperator and names insult a skip of the first column
+		if (InFilePreparation.checkHeader(inFile)) {
 
-				while ((inListcurrentLine = inListinBufferedReader.readLine()) != null) {
-					// beide Dateien sind gleich lang,
-					// also sollte es keine Probleme beim Einlesen geben
-					stateCurrentLine = stateBufferedReader.readLine();
+			while ((inListcurrentLine = inListinBufferedReader.readLine()) != null) {
+				// beide Dateien sind gleich lang,
+				// also sollte es keine Probleme beim Einlesen geben
+				stateCurrentLine = stateBufferedReader.readLine();
 
-					stateSplittedCurrentLine = stateCurrentLine.split(" ");
+				stateSplittedCurrentLine = stateCurrentLine.split(" ");
 
-					outList.add(inListcurrentLine.replaceAll("\"", "").replaceAll(";", "\t") + "\t"
-							+ stateSplittedCurrentLine[5]);
+				outList.add(inListcurrentLine.replaceAll("\"", "").replaceAll(";", "\t") + "\t"
+						+ stateSplittedCurrentLine[5]);
 
-					// irgendwann zusammenführen und listen leeren
-					// blockweise, vielleicht später direkt an bufferedReader
-					// übergeben
-					if (outList.size() == blockSize) {
-						setTokenTopicAssignment();
-					}
+				// irgendwann zusammenführen und listen leeren
+				// blockweise, vielleicht später direkt an bufferedReader
+				// übergeben
+				if (outList.size() == blockSize) {
+					setTokenTopicAssignment();
 				}
 			}
-
-			// restlichen Daten anfügen
-			setTokenTopicAssignment();
-
-		} catch (UnsupportedEncodingException e) {
-			logger.error(e);
-		} catch (FileNotFoundException e) {
-			logger.error(e);
-		} catch (IOException e) {
-			logger.error(e);
-		} finally {
-			try {
-				inListinBufferedReader.close();
-				stateBufferedReader.close();
-
-			} catch (IOException e) {
-				logger.error(e);
-			}
 		}
+
+		// restlichen Daten anfügen
+		setTokenTopicAssignment();
+
+		inListinBufferedReader.close();
+		stateBufferedReader.close();
 
 	}
 
 	@Override
-	public void specialExecute(Context context) throws SQLException {
-
+	public void specialExecute(Context context) {
 		logger.info("Current Command : [ " + getClass() + " ] ");
 
 		CommunicationContext communicationContext = (CommunicationContext) context;
@@ -163,7 +142,21 @@ public class TokenTopicAssociator extends DependencyCommand {
 
 		deleteOldTFile();
 
-		readAndWriteBlockwise(inFile, stateFile);
+		try {
+			readAndWriteBlockwise(inFile, stateFile);
+		} catch (UnsupportedEncodingException encEx) {
+			logger.error("Charset encoding problems occured while trying to read and write blockwise");
+			throw new RuntimeException(encEx);
+		} catch (FileNotFoundException fnfEx) {
+			logger.error("Required file could not be found for reading and writing blockwise");
+			throw new RuntimeException(fnfEx);
+		} catch (SQLException sqlEx) {
+			logger.error("A database access error occured while trying to read and write blockwise");
+			throw new RuntimeException(sqlEx);
+		} catch (IOException ioEx) {
+			logger.error("File stream problems occured while trying to read and write blockwise");
+			throw new RuntimeException(ioEx);
+		}
 
 		logger.info("TokenTopicAssignment finshed!");
 	}

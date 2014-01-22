@@ -34,15 +34,29 @@ public class Mallet extends DependencyCommand {
 	}
 
 	@Override
-	public void specialExecute(Context context) throws FileNotFoundException, IOException {
+	public void specialExecute(Context context) {
 
 		logger.info("[ " + getClass() + " ] - " + "run mallet");
 
 		CommunicationContext communicationContext = (CommunicationContext) context;
 		properties = (Properties) communicationContext.get("properties");
 
-		this.importFile();
-		this.trainTopics();
+		try {
+			this.importFile();
+		} catch (FileNotFoundException e1) {
+			logger.error("Import file could not be found.");
+			throw new RuntimeException(e1);
+		} catch (IOException e2) {
+			logger.error("During file import a file stream problem occured.");
+			throw new RuntimeException(e2);
+		}
+
+		try {
+			this.trainTopics();
+		} catch (IOException e3) {
+			logger.error("During topic training a file stream problem occured.");
+			throw new RuntimeException(e3);
+		}
 	}
 
 	@Override

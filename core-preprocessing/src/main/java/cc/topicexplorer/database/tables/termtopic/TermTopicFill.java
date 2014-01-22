@@ -1,12 +1,11 @@
 package cc.topicexplorer.database.tables.termtopic;
 
-
 /** MIT-JOOQ-START 
-import static jooq.generated.Tables.TERM;
-import static jooq.generated.Tables.TERM_TOPIC;
-import static jooq.generated.Tables.DOCUMENT_TERM_TOPIC;
-import static jooq.generated.Tables.TOPIC; 
- MIT-JOOQ-ENDE */ 
+ import static jooq.generated.Tables.TERM;
+ import static jooq.generated.Tables.TERM_TOPIC;
+ import static jooq.generated.Tables.DOCUMENT_TERM_TOPIC;
+ import static jooq.generated.Tables.TOPIC; 
+ MIT-JOOQ-ENDE */
 
 import java.sql.SQLException;
 
@@ -15,17 +14,18 @@ import cc.topicexplorer.chain.commands.TableFillCommand;
 public class TermTopicFill extends TableFillCommand {
 	@Override
 	public void setTableName() {
-/** MIT-JOOQ-START 
-		tableName = TERM_TOPIC.getName();
- MIT-JOOQ-ENDE */ 
-/** OHNE_JOOQ-START */ 
+		/**
+		 * MIT-JOOQ-START tableName = TERM_TOPIC.getName(); MIT-JOOQ-ENDE
+		 */
+		/** OHNE_JOOQ-START */
 		tableName = "TERM_TOPIC";
-/** OHNE_JOOQ-ENDE */ 
+		/** OHNE_JOOQ-ENDE */
 	}
+
 	@Override
-	public void fillTable() throws SQLException {
+	public void fillTable() {
 
-
+// @formatter:off
 /** MIT-JOOQ-START 
 		database.executeUpdateQuery("insert into " + TERM_TOPIC.getName() + " ( "
 				+ TERM_TOPIC.TOPIC_ID.getName() + ", "
@@ -63,42 +63,50 @@ public class TermTopicFill extends TableFillCommand {
 				+ " ADD KEY `TOPIC_TERM_IDX` (" + TERM_TOPIC.TOPIC_ID.getName()
 				+ ", " + TERM_TOPIC.TERM_ID.getName() + ")");
  MIT-JOOQ-ENDE */ 	
-/** OHNE_JOOQ-START */ 	
-		database.executeUpdateQuery("insert into " + "TERM_TOPIC" + " ( "
-				+ "TERM_TOPIC.TOPIC_ID" + ", "
-				+ "TERM_TOPIC.TERM_ID" + ", "
-				+ "TERM_TOPIC.NUMBER_OF_TOKEN_TOPIC" + ", "
-				+ "TERM_TOPIC.PR_TOPIC_GIVEN_TERM" + ", "
-				+ "TERM_TOPIC.PR_TERM_GIVEN_TOPIC" + ") " + " select "
-				+ "DOCUMENT_TERM_TOPIC.TOPIC_ID" + ", "
-				+ "TERM.TERM_ID" + ", "
-				+ "count(*) as NUMBER_OF_TOKEN_TOPIC, "
-				+ " cast(count(*) AS DECIMAL(65,30)) / cast("
-				+ "TERM.CORPUS_FREQUENCY"
-				+ " AS DECIMAL(65,30)), "
-				+ " cast(count(*) AS DECIMAL(65,30)) / cast("
-				+ "TOPIC.NUMBER_OF_TOKENS"
-				+ " AS DECIMAL(65,30)) " + " from DOCUMENT_TERM_TOPIC "
-				+ " join " + "TERM" + " on ("
-				+ "DOCUMENT_TERM_TOPIC.TERM" + " = "
-				+ "TERM.TERM_NAME" + " ) " + " join "
-				+ "TOPIC" + " on ( " 
-				+ "DOCUMENT_TERM_TOPIC.TOPIC_ID" + " = "
-				+ "TOPIC.TOPIC_ID" + " ) "
-				+ " group by "
-				+ "DOCUMENT_TERM_TOPIC.TERM" + ", "
-				+ "DOCUMENT_TERM_TOPIC.TOPIC_ID" + ", "
-				+ "TERM.TERM_ID" + ", "
-				+ "TERM.CORPUS_FREQUENCY" + ", "
-				+ "TOPIC.NUMBER_OF_TOKENS");
+//				@formatter:on
+		/** OHNE_JOOQ-START */
+//		@formatter:off
+		try {
+			database.executeUpdateQuery("insert into " + "TERM_TOPIC" + " ( "
+					+ "TERM_TOPIC.TOPIC_ID" + ", "
+					+ "TERM_TOPIC.TERM_ID" + ", "
+					+ "TERM_TOPIC.NUMBER_OF_TOKEN_TOPIC" + ", "
+					+ "TERM_TOPIC.PR_TOPIC_GIVEN_TERM" + ", "
+					+ "TERM_TOPIC.PR_TERM_GIVEN_TOPIC" + ") " + " select "
+					+ "DOCUMENT_TERM_TOPIC.TOPIC_ID" + ", "
+					+ "TERM.TERM_ID" + ", "
+					+ "count(*) as NUMBER_OF_TOKEN_TOPIC, "
+					+ " cast(count(*) AS DECIMAL(65,30)) / cast("
+					+ "TERM.CORPUS_FREQUENCY"
+					+ " AS DECIMAL(65,30)), "
+					+ " cast(count(*) AS DECIMAL(65,30)) / cast("
+					+ "TOPIC.NUMBER_OF_TOKENS"
+					+ " AS DECIMAL(65,30)) " + " from DOCUMENT_TERM_TOPIC "
+					+ " join " + "TERM" + " on ("
+					+ "DOCUMENT_TERM_TOPIC.TERM" + " = "
+					+ "TERM.TERM_NAME" + " ) " + " join "
+					+ "TOPIC" + " on ( " 
+					+ "DOCUMENT_TERM_TOPIC.TOPIC_ID" + " = "
+					+ "TOPIC.TOPIC_ID" + " ) "
+					+ " group by "
+					+ "DOCUMENT_TERM_TOPIC.TERM" + ", "
+					+ "DOCUMENT_TERM_TOPIC.TOPIC_ID" + ", "
+					+ "TERM.TERM_ID" + ", "
+					+ "TERM.CORPUS_FREQUENCY" + ", "
+					+ "TOPIC.NUMBER_OF_TOKENS");
 		database.executeUpdateQuery("ALTER TABLE " + "TERM_TOPIC"
 				+ " ADD KEY PRIMARY_IDX (" + "TERM_ID" + ", "
 				+ "TOPIC_ID" + "), "
 				+ " ADD KEY `TOPIC_TERM_IDX` (" + "TOPIC_ID"
 				+ ", " + "TERM_ID" + ")");
-/** OHNE_JOOQ-ENDE */ 
+//		@formatter:on
+		} catch (SQLException e) {
+			logger.error("Table " + this.tableName + " could not be filled properly.");
+			throw new RuntimeException(e);
+		}
+		/** OHNE_JOOQ-ENDE */
 	}
-	
+
 	@Override
 	public void addDependencies() {
 		beforeDependencies.add("TermTopicCreate");

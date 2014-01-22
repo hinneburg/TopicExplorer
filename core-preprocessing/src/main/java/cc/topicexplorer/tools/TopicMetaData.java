@@ -1,9 +1,9 @@
 package cc.topicexplorer.tools;
 
 /** MIT-JOOQ-START 
-import static jooq.generated.Tables.TOPIC;
-import static jooq.generated.Tables.TERM_TOPIC;
- MIT-JOOQ-ENDE */ 
+ import static jooq.generated.Tables.TOPIC;
+ import static jooq.generated.Tables.TERM_TOPIC;
+ MIT-JOOQ-ENDE */
 
 import java.io.BufferedReader;
 import java.io.FileWriter;
@@ -19,24 +19,27 @@ import org.apache.log4j.Logger;
 import cc.topicexplorer.chain.commands.TableCommand;
 
 /**
- * angefangen von Mattes weiterverarbeitet von Gert Kommaersetzung, Pfadangabe
- * eingefügt, Tabellenname mit Jooq verknüpft
+ * @author angefangen von Mattes weiterverarbeitet von Gert Kommaersetzung,
+ *         Pfadangabe eingefügt, Tabellenname mit Jooq verknüpft
  * 
  */
 public class TopicMetaData extends TableCommand {
-	private Logger logger = Logger.getRootLogger();
+	private final Logger logger = Logger.getRootLogger();
 
 	@Override
 	public void tableExecute(Context context) {
+
 		try {
 			this.prepareRscriptInput();
-			this.processRscript();
-
 		} catch (IOException e) {
-			logger.error(e);
+			logger.error("A file system error occured while preparing the R script.");
+			throw new RuntimeException(e);
 		} catch (SQLException e) {
-			logger.error(e);
+			logger.error("A SQL error occured while preparing the R script.");
+			throw new RuntimeException(e);
 		}
+
+		this.processRscript();
 	}
 
 	private void prepareRscriptInput() throws IOException, SQLException {
@@ -47,36 +50,35 @@ public class TopicMetaData extends TableCommand {
 
 		fos.write("tid\ttid\tsim\n");
 
-		/** MIT-JOOQ-START 
-		String sql = "SELECT kt1." + TERM_TOPIC.TOPIC_ID.getName()
-				+ " AS tid1, kt2." + TERM_TOPIC.TOPIC_ID.getName()
-				+ " AS tid2, sum(kt1."
-				+ TERM_TOPIC.PR_TERM_GIVEN_TOPIC.getName() + "*kt2."
-				+ TERM_TOPIC.PR_TERM_GIVEN_TOPIC.getName()
-				+ ")/sqrt(t1.n1* t2.n2) AS sim " + "FROM "
-				+ TERM_TOPIC.getName() + " kt1, " + TERM_TOPIC.getName()
-				+ " kt2, " + "  ( select " + TERM_TOPIC.TOPIC_ID.getName()
-				+ ", sum(" + TERM_TOPIC.PR_TERM_GIVEN_TOPIC.getName() + "*"
-				+ TERM_TOPIC.PR_TERM_GIVEN_TOPIC.getName() + ") as n1 from "
-				+ TERM_TOPIC.getName() + " group by "
-				+ TERM_TOPIC.TOPIC_ID.getName() + ") t1," + "  ( select "
-				+ TERM_TOPIC.TOPIC_ID.getName() + ", sum("
-				+ TERM_TOPIC.PR_TERM_GIVEN_TOPIC.getName() + "*"
-				+ TERM_TOPIC.PR_TERM_GIVEN_TOPIC.getName() + ") as n2 from "
-				+ TERM_TOPIC.getName() + " group by "
-				+ TERM_TOPIC.TOPIC_ID.getName() + ") t2 WHERE kt1."
-				+ TERM_TOPIC.TERM_ID.getName() + "=kt2."
-				+ TERM_TOPIC.TERM_ID.getName() + " and t1."
-				+ TERM_TOPIC.TOPIC_ID.getName() + "=kt1."
-				+ TERM_TOPIC.TOPIC_ID.getName() + " and  t2."
-				+ TERM_TOPIC.TOPIC_ID.getName() + "=kt2."
-				+ TERM_TOPIC.TOPIC_ID.getName() + " " + "GROUP BY kt1."
-				+ TERM_TOPIC.TOPIC_ID.getName() + ", kt2."
-				+ TERM_TOPIC.TOPIC_ID.getName() + ", t1.n1, t2.n2 "
-				+ "ORDER BY kt1." + TERM_TOPIC.TOPIC_ID.getName() + ", kt2."
-				+ TERM_TOPIC.TOPIC_ID.getName() + " ;";
- MIT-JOOQ-ENDE */
-/** OHNE_JOOQ-START */ 
+		/**
+		 * MIT-JOOQ-START String sql = "SELECT kt1." +
+		 * TERM_TOPIC.TOPIC_ID.getName() + " AS tid1, kt2." +
+		 * TERM_TOPIC.TOPIC_ID.getName() + " AS tid2, sum(kt1." +
+		 * TERM_TOPIC.PR_TERM_GIVEN_TOPIC.getName() + "*kt2." +
+		 * TERM_TOPIC.PR_TERM_GIVEN_TOPIC.getName() +
+		 * ")/sqrt(t1.n1* t2.n2) AS sim " + "FROM " + TERM_TOPIC.getName() +
+		 * " kt1, " + TERM_TOPIC.getName() + " kt2, " + "  ( select " +
+		 * TERM_TOPIC.TOPIC_ID.getName() + ", sum(" +
+		 * TERM_TOPIC.PR_TERM_GIVEN_TOPIC.getName() + "*" +
+		 * TERM_TOPIC.PR_TERM_GIVEN_TOPIC.getName() + ") as n1 from " +
+		 * TERM_TOPIC.getName() + " group by " + TERM_TOPIC.TOPIC_ID.getName() +
+		 * ") t1," + "  ( select " + TERM_TOPIC.TOPIC_ID.getName() + ", sum(" +
+		 * TERM_TOPIC.PR_TERM_GIVEN_TOPIC.getName() + "*" +
+		 * TERM_TOPIC.PR_TERM_GIVEN_TOPIC.getName() + ") as n2 from " +
+		 * TERM_TOPIC.getName() + " group by " + TERM_TOPIC.TOPIC_ID.getName() +
+		 * ") t2 WHERE kt1." + TERM_TOPIC.TERM_ID.getName() + "=kt2." +
+		 * TERM_TOPIC.TERM_ID.getName() + " and t1." +
+		 * TERM_TOPIC.TOPIC_ID.getName() + "=kt1." +
+		 * TERM_TOPIC.TOPIC_ID.getName() + " and  t2." +
+		 * TERM_TOPIC.TOPIC_ID.getName() + "=kt2." +
+		 * TERM_TOPIC.TOPIC_ID.getName() + " " + "GROUP BY kt1." +
+		 * TERM_TOPIC.TOPIC_ID.getName() + ", kt2." +
+		 * TERM_TOPIC.TOPIC_ID.getName() + ", t1.n1, t2.n2 " + "ORDER BY kt1." +
+		 * TERM_TOPIC.TOPIC_ID.getName() + ", kt2." +
+		 * TERM_TOPIC.TOPIC_ID.getName() + " ;"; MIT-JOOQ-ENDE
+		 */
+		/** OHNE_JOOQ-START */
+//		@formatter:off
 		String sql = "SELECT kt1." + "TOPIC_ID"
 				+ " AS tid1, kt2." + "TOPIC_ID"
 				+ " AS tid2, sum(kt1."
@@ -104,13 +106,13 @@ public class TopicMetaData extends TableCommand {
 				+ "TOPIC_ID" + ", t1.n1, t2.n2 "
 				+ "ORDER BY kt1." + "TOPIC_ID" + ", kt2."
 				+ "TOPIC_ID" + " ;";
-		/** OHNE_JOOQ-ENDE */ 
-		
+//		@formatter:on
+		/** OHNE_JOOQ-ENDE */
+
 		rsSim = this.database.executeQuery(sql);
 
 		while (rsSim.next()) {
-			fos.write(rsSim.getObject("tid1") + "\t" + rsSim.getObject("tid2")
-					+ "\t" + rsSim.getObject("sim") + "\n");
+			fos.write(rsSim.getObject("tid1") + "\t" + rsSim.getObject("tid2") + "\t" + rsSim.getObject("sim") + "\n");
 		}
 		fos.close();
 		logger.info("R-Script input successfully generated");
@@ -118,18 +120,20 @@ public class TopicMetaData extends TableCommand {
 
 	private void processRscript() {
 
+//		@formatter:off
 		ProcessBuilder p = new ProcessBuilder("bash", "-c", "Rscript "
 				+ "scripts/topic_order.R "
 				+ "temp/similarities.out "
 				+ properties.getProperty("malletNumTopics") + " "
 				+ "temp/topic_order.csv");
+//		@formatter:on
 
 		Process process = null;
 
 		try {
 			process = p.start();
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (IOException e1) {
+			logger.warn("The shell process caused a file stream problem.", e1);
 		}
 
 		InputStream is = process.getErrorStream();
@@ -142,19 +146,19 @@ public class TopicMetaData extends TableCommand {
 				logger.info("processRscipt " + line);
 			}
 			logger.info("R-Script successfully executed");
-		} catch (IOException e) {
-			logger.error("R-Script execution failed" + e);
+		} catch (IOException e2) {
+			logger.error("R-Script execution failed");
+			throw new RuntimeException(e2);
 		}
-
 	}
 
 	@Override
 	public void setTableName() {
 	}
-	
+
 	@Override
 	public void addDependencies() {
 		beforeDependencies.add("TermTopicFill");
 		beforeDependencies.add("TopicFill");
-	}	
+	}
 }

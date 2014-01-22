@@ -41,19 +41,19 @@ public class TokenTopicAssociator extends DependencyCommand {
 				outListSQLWriter.write(outListElement + "\n");
 			}
 
-		} catch (UnsupportedEncodingException e) {
-			logger.error(e);
-		} catch (FileNotFoundException e) {
-			logger.error(e);
-		} catch (IOException e) {
-			logger.error(e);
+		} catch (UnsupportedEncodingException encEx) {
+			logger.warn("Encoding problems occured", encEx);
+		} catch (FileNotFoundException fnfEx) {
+			logger.warn("A required file was not found.", fnfEx);
+		} catch (IOException ioEx1) {
+			logger.warn("Problems with a file stream occured.", ioEx1);
 		} finally {
 			if (outListSQLWriter != null) {
 				try {
 					outListSQLWriter.flush();
 					outListSQLWriter.close();
-				} catch (IOException e) {
-					logger.error(e);
+				} catch (IOException ioEx2) {
+					logger.warn("Problems occured while releasing a writer resource.", ioEx2);
 				}
 			}
 		}
@@ -66,14 +66,12 @@ public class TokenTopicAssociator extends DependencyCommand {
 		File f = new File(TOKENTOPICASSIGNMENTSQLFILE);
 
 		try {
-
 			if (f.exists()) {
 				f.delete();
 				f.createNewFile();
 			}
-
-		} catch (Exception e) {
-			logger.error(e);
+		} catch (IOException e) {
+			logger.warn("Temporary file could not be deledet.", e);
 		}
 	}
 

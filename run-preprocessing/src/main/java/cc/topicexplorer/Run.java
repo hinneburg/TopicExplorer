@@ -59,23 +59,32 @@ public class Run {
 		// process plugin catalogs
 		for (String plugin : plugins.split(",")) {
 			plugin = plugin.trim().toLowerCase();
+
 			try {
 				doc = getMergedXML(
 						doc,
 						builder.parse(this.getClass().getResourceAsStream(
 								"/cc/topicexplorer/plugin-" + plugin + "-preprocessing/catalog/preJooqConfig.xml")));
-			} catch (Exception e) {
+			} catch (SAXException e) {
 				logger.warn(
 						"/cc/topicexplorer/plugin-" + plugin + "-preprocessing/catalog/preJooqConfig.xml not found", e);
+			} catch (IOException ioEx) {
+				logger.warn(
+						"/cc/topicexplorer/plugin-" + plugin + "-preprocessing/catalog/preJooqConfig.xml not found",
+						ioEx);
 			}
+
 			try {
 				doc = getMergedXML(
 						doc,
 						builder.parse(this.getClass().getResourceAsStream(
 								"/cc/topicexplorer/plugin-" + plugin + "-preprocessing/catalog/postJooqConfig.xml")));
-			} catch (Exception e) {
+			} catch (SAXException e) {
 				logger.warn("/cc/topicexplorer/plugin-" + plugin
 						+ "-preprocessing/catalog/postJooqConfig.xml not found", e);
+			} catch (IOException ioEx) {
+				logger.warn("/cc/topicexplorer/plugin-" + plugin
+						+ "-preprocessing/catalog/postJooqConfig.xml not found", ioEx);
 			}
 		}
 

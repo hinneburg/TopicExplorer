@@ -7,11 +7,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Properties;
 
-/**
- * @author user
- * 
- */
-
 public class Database {
 	private Connection connection;
 	private Statement statement;
@@ -52,7 +47,7 @@ public class Database {
 			connection = DriverManager.getConnection("jdbc:mysql://" + dbLocation
 					+ "?useUnicode=true&characterEncoding=UTF-8&useCursorFetch=true", dbUser, dbPassword);
 
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 			System.err.println("DB-DriverManager error");
 		}

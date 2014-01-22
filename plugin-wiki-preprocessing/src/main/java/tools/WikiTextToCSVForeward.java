@@ -35,11 +35,11 @@ public class WikiTextToCSVForeward {
 	private final String wikiTitle;
 	private final String wikiParsedTextReadable;
 
-	private List<String> tokensParsedText = new ArrayList<String>();
-	private List<Integer> startPositionsWikiText = new ArrayList<Integer>();
+	private final List<String> tokensParsedText = new ArrayList<String>();
+	private final List<Integer> startPositionsWikiText = new ArrayList<Integer>();
 
-	private List<String> tokensParsedReadableText = new ArrayList<String>();
-	private List<Integer> startPositionsReadableTextNew = new ArrayList<Integer>();
+	private final List<String> tokensParsedReadableText = new ArrayList<String>();
+	private final List<Integer> startPositionsReadableTextNew = new ArrayList<Integer>();
 
 	// private List<PointInteger> posBracketsBox;
 	// private Integer intPointerBracketsBox;
@@ -53,8 +53,8 @@ public class WikiTextToCSVForeward {
 	private Integer extraSectionLevel = 0;
 	private boolean isPicture = false;
 
-	private HashMap<Integer, SectionElement> sectionCaptionPosition = new HashMap<Integer, SectionElement>();
-	private TreeMap<Integer, PictureElement> picturePosition = new TreeMap<Integer, PictureElement>();
+	private final HashMap<Integer, SectionElement> sectionCaptionPosition = new HashMap<Integer, SectionElement>();
+	private final TreeMap<Integer, PictureElement> picturePosition = new TreeMap<Integer, PictureElement>();
 
 	private BracketPositions bp;
 	private ArrayList<TokenElement> tokenList;
@@ -91,7 +91,7 @@ public class WikiTextToCSVForeward {
 	private void init() {
 		try {
 			startTokenizing();
-		} catch (Exception e) {
+		} catch (IOException e) {
 			System.err.println("Fehler in " + this.getClass());
 
 			try {
@@ -118,12 +118,14 @@ public class WikiTextToCSVForeward {
 
 		while (startToken < text.length()) {
 			for (startToken = endToken + 1; startToken < text.length(); startToken++) {
-				if (Character.toString(text.charAt(startToken)).matches("\\p{L}"))
+				if (Character.toString(text.charAt(startToken)).matches("\\p{L}")) {
 					break;
+				}
 			}
 			for (endToken = startToken; endToken < text.length(); endToken++) {
-				if (Character.toString(text.charAt(endToken)).matches("\\P{L}"))
+				if (Character.toString(text.charAt(endToken)).matches("\\P{L}")) {
 					break;
+				}
 			}
 			if (startToken < text.length()) {
 
@@ -137,7 +139,7 @@ public class WikiTextToCSVForeward {
 
 	}
 
-	private void tokenize() throws Exception {
+	private void tokenize() throws IOException {
 
 		getBracketsPositionAndPutIntoNavigableSet();
 
@@ -255,7 +257,7 @@ public class WikiTextToCSVForeward {
 									bwlogger.append("test:failling in tokenize " + wikiTitle + " " + old_id + "\n");
 								}
 
-								throw new Exception(
+								throw new IllegalArgumentException(
 										"failure in checkIfPositionOfWordIsWithinBoxBrackets, tokenize() , pos not found , "
 												+ wikiTitle + " " + old_id + " ");
 							}
@@ -274,7 +276,7 @@ public class WikiTextToCSVForeward {
 
 						}
 
-					} catch (Exception e) {
+					} catch (IOException e) {
 
 						// passiert nur bei Kleinigkeiten
 						if (bwlogger != null) {
@@ -529,7 +531,7 @@ public class WikiTextToCSVForeward {
 			for (Integer e : bracketPositionsHashMap.keySet()) {
 				bracketsNavigableSet.add(e);
 			}
-		} catch (Exception e) {
+		} catch (Exception e) {// TODO Specify exception type!
 
 			try {
 				if (bwlogger != null) {
@@ -549,12 +551,14 @@ public class WikiTextToCSVForeward {
 
 		while (startToken < tmpLine.length()) {
 			for (startToken = endToken + 1; startToken < tmpLine.length(); startToken++) {
-				if (Character.toString(tmpLine.charAt(startToken)).matches("\\p{L}"))
+				if (Character.toString(tmpLine.charAt(startToken)).matches("\\p{L}")) {
 					break;
+				}
 			}
 			for (endToken = startToken; endToken < tmpLine.length(); endToken++) {
-				if (Character.toString(tmpLine.charAt(endToken)).matches("\\P{L}"))
+				if (Character.toString(tmpLine.charAt(endToken)).matches("\\P{L}")) {
 					break;
+				}
 			}
 			if (startToken < tmpLine.length()) {
 
@@ -568,7 +572,7 @@ public class WikiTextToCSVForeward {
 		return posOfLineInOriginalText + tmpLine.length();
 	}
 
-	private void startTokenizing() throws Exception {
+	private void startTokenizing() throws IOException {
 
 		tokenize();
 		tokenizeReadableText(wikiParsedTextReadable);

@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.sql.SQLException;
@@ -42,12 +43,18 @@ public class PreMalletAction_EntryPointForParallelisation {
 
 		try {
 			this.init();
-		} catch (Exception e) {
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
 	}
 
-	private void init() throws Exception {
+	private void init() throws SQLException, InstantiationException, IllegalAccessException, ClassNotFoundException {
 		db = new Database(prop);
 
 		String outputFolder = prop.getProperty("Wiki_outputFolder");
@@ -134,15 +141,21 @@ public class PreMalletAction_EntryPointForParallelisation {
 				file.delete();
 			}
 			path.delete();
-		} catch (Exception e) {
+		} catch (Exception e) {// TODO Specify exception type!
 			e.printStackTrace();
 		}
 	}
 
 	/**
 	 * Testfunktion für Ausgabe
+	 * 
+	 * @throws ClassNotFoundException
+	 * @throws IllegalAccessException
+	 * @throws InstantiationException
+	 * @throws SQLException
 	 */
-	private void startOnlyOneParsing(Integer old_id) throws InterruptedException, Exception {
+	private void startOnlyOneParsing(Integer old_id) throws InterruptedException, SQLException, InstantiationException,
+			IllegalAccessException, ClassNotFoundException {
 		System.out.println("Start parsing one article.");
 
 		SupporterForBothTypes t = new SupporterForBothTypes(prop);
@@ -244,8 +257,7 @@ public class PreMalletAction_EntryPointForParallelisation {
 			try {
 				limit = Integer.valueOf(prop.getProperty("Wiki_limit"));
 				// System.out.println("Limit is " + limit);
-			} catch (Exception e1) {
-
+			} catch (NumberFormatException e1) {
 				limit = 0; // bedeutet alles, kein Fehler
 			}
 			try {
@@ -279,15 +291,25 @@ public class PreMalletAction_EntryPointForParallelisation {
 			p.joinTheOutputsAndDeleteTempFilesInTempFolder();
 			p.stopWatch.stopStoppingAndDoOutputToConsole(functionName);
 
-		} catch (Exception e) {
+		} catch (InterruptedException e) {
 			System.err.println("Prehelper:");
-			// logger.error("prehelper " + e.getMessage() + " " +
-			// e.getStackTrace());
+			e.printStackTrace();
+		} catch (SQLException e) {
+			System.err.println("Prehelper:");
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			System.err.println("Prehelper:");
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			System.err.println("Prehelper:");
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			System.err.println("Prehelper:");
 			e.printStackTrace();
 		}
 	}
 
-	private static Properties forLocalExcetution() throws Exception {
+	private static Properties forLocalExcetution() throws IOException {
 
 		Properties prop;
 		String fileName = "src/test/resources/localwikiconfig.ini";
@@ -316,7 +338,7 @@ public class PreMalletAction_EntryPointForParallelisation {
 			PreMalletAction_EntryPointForParallelisation p = new PreMalletAction_EntryPointForParallelisation(
 					forLocalExcetution());
 			p.start();
-		} catch (Exception e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 

@@ -86,7 +86,7 @@ public class Prune_Ram_NotSortedCsv {
 		Boolean result = false;
 		try {
 			result = inCsv.readRecord();
-		} catch (Exception e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 			System.exit(1);
 		}

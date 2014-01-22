@@ -203,7 +203,7 @@ public class CategoryResolver extends DependencyCommand {
 
 	}
 
-	private static Properties forLocalExcetution() throws Exception {
+	private static Properties forLocalExcetution() throws IOException {
 
 		Properties prop;
 		String fileName = "src/test/resources/localwikiconfig.ini";
@@ -237,7 +237,7 @@ public class CategoryResolver extends DependencyCommand {
 			c.setProperties(CategoryResolver.forLocalExcetution());
 			c.init();
 			c.start();
-		} catch (Exception e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 

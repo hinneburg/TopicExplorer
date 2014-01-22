@@ -118,7 +118,7 @@ public class JsonServlet extends HttpServlet {
 					}
 				}
 
-			} catch (Exception e) {
+			} catch (Exception e) { // TODO Specify exception type!
 				logger.info("Property " + pluginArray[i].substring(0, 1).toUpperCase() + pluginArray[i].substring(1)
 						+ "_FrontendViews not found");
 			}

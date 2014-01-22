@@ -18,11 +18,6 @@ public class MediawikiColorationParallelisation extends Thread {
 
 	private final String databasePreprocessing;
 
-	// public JsonoutgetToken(List <WikiIDTitlePair> list )
-	// {
-	// this(list, null, "Thread-" + System.currentTimeMillis());
-	// }
-
 	public MediawikiColorationParallelisation(List<WikiIDTitlePair> list, ThreadGroup tg, String threadName,
 			Properties prop) {
 		super(tg, null, threadName);
@@ -57,7 +52,7 @@ public class MediawikiColorationParallelisation extends Thread {
 
 	// aus UI kopiert und erweitert mit TOPIC_LABEL, padding,
 	// databasepreprocessing, SQL-Strings angepasst
-	public String getTokenTopicAssignment(int documentID, String completeText) throws Exception {
+	public String getTokenTopicAssignment(int documentID, String completeText) throws SQLException {
 		ResultSet rsToken;
 
 		int tempPosition = Integer.MAX_VALUE;
@@ -92,28 +87,6 @@ public class MediawikiColorationParallelisation extends Thread {
 							+ tempColor + "; padding:0 1.5pt 0 1.5pt;\" " + "title = \"" + tempLabel + "\" >"
 							+ tempToken + "</span>"
 							+ completeText.substring(tempPosition + tempToken.length(), completeText.length());
-
-					// // mit titel ohne padding
-					// completeText = completeText.substring(0, tempPosition)
-					// + "<span style=\"background-color:"
-					// + tempColor
-					// + ";\" "
-					// + "title = \"" + tempLabel + "\" >"
-					// + tempToken
-					// + "</span>"
-					// + completeText.substring(tempPosition
-					// + tempToken.length(), completeText.length());
-					//
-
-					// // ohne titel
-					// completeText = completeText.substring(0, tempPosition)
-					// + "<span style=\"background-color:"
-					// + tempColor
-					// + ";\">"
-					// + tempToken
-					// + "</span>"
-					// + completeText.substring(tempPosition
-					// + tempToken.length(), completeText.length());
 				}
 			}
 		}
@@ -127,66 +100,8 @@ public class MediawikiColorationParallelisation extends Thread {
 		return completeText;
 	}
 
-	// private void saveIntoCSVFile(CSVWriter writer, Integer old_id, String
-	// text) throws IOException
-	// {
-	//
-	// String [] entries = new String[2];
-	// entries[0] = old_id.toString();
-	// entries[1] = text;
-	//
-	// writer.writeNext(entries);
-	// // bw.write("\""+ entries[0]+"\";\""+entries[1]+"\"|s|q|l|e|n|d|i|n|g|\n"
-	// );
-	// entries = null;
-	// }
-
 	@Override
 	public void run() {
-
-		// Integer id ;
-		// String text;
-		// byte []textAsByte ;
-		//
-		// try
-		// {
-		//
-		// String fileName = this.getName()+"_einfaerbung.csv";
-		//
-		// CSVWriter writer = new CSVWriter(new FileWriter(fileName), ';');
-		// // BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new
-		// FileOutputStream(fileName), "UTF-8"));
-		//
-		//
-		//
-		// for (Integer i = 0 ; i< list.size(); i++)
-		// {
-		// id = list.get(i).getOld_id();
-		// text = s.getWikiTextOnlyWithID(id);
-		// // textAsByte = getTokenTopicAssignment(id,text).getBytes();
-		//
-		// System.out.println(id + "\t" + this.getName() + "\t"+
-		// System.currentTimeMillis());
-		//
-		// saveIntoCSVFile(writer, id, getTokenTopicAssignment(id, text));
-		//
-		// }
-		//
-		//
-		// writer.close();
-		//
-		// db.executeUpdateQuery("COMMIT;");
-		// db.shutdownDB();
-		// }
-		// catch (Exception e)
-		// {
-		// e.printStackTrace();
-		// System.err.println("Error in run - jsonoutgettoken ");
-		// }
-		//
-		//
-		//
-
 		Integer id;
 		String text;
 		byte[] textAsByte;
@@ -206,17 +121,9 @@ public class MediawikiColorationParallelisation extends Thread {
 				text = s.getWikiTextOnlyWithID(id);
 				textAsByte = getTokenTopicAssignment(id, text).getBytes();
 
-				// System.out.println(id + "\t" + this.getName() + "\t" +
-				// System.currentTimeMillis());
-
 				stmt.setBytes(1, textAsByte);
 				stmt.setInt(2, id);
-
 				stmt.addBatch();
-
-				// --> is now a batch
-				// stmt.executeUpdate();
-				// stmt.clearParameters();
 
 				text = null;
 				textAsByte = null;
@@ -228,10 +135,8 @@ public class MediawikiColorationParallelisation extends Thread {
 				db.executeUpdateQuery("COMMIT;");
 			}
 			db.shutdownDB();
-		} catch (Exception e) {
-			// e.printStackTrace();
+		} catch (SQLException e) {
 			System.err.println("Error in run - jsonoutgettoken " + list.get(positionInArray).getOld_id());
 		}
-
 	}
 }

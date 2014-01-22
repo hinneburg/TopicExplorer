@@ -3,6 +3,7 @@ package wikiParser;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -60,7 +61,7 @@ public class MediawikiColorationAction_EntryPointForParallelisation {
 				list.add(new WikiIDTitlePair(Integer.valueOf(rs.getString(1)), ""));
 			}
 
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return list;
@@ -150,7 +151,7 @@ public class MediawikiColorationAction_EntryPointForParallelisation {
 		h.startThreadpool();
 	}
 
-	private static Properties forLocalExcetution() throws Exception {
+	private static Properties forLocalExcetution() throws IOException {
 
 		Properties prop;
 		String fileName = "src/test/resources/localwikiconfig.ini";
@@ -179,8 +180,10 @@ public class MediawikiColorationAction_EntryPointForParallelisation {
 			MediawikiColorationAction_EntryPointForParallelisation p = new MediawikiColorationAction_EntryPointForParallelisation(
 					forLocalExcetution());
 			p.start();
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (IOException ioEx) {
+			ioEx.printStackTrace();
+		} catch (InterruptedException intEx) {
+			intEx.printStackTrace();
 		}
 
 	}

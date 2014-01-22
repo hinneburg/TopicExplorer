@@ -13,9 +13,9 @@ public final class TestUtil {
 	public static Catalog initializeNewCatalog(String url) {
 		try {
 			CatalogFactoryBase.clear();
-			new ConfigParser().parse(TestUtil.class
-					.getResource(url));
-		} catch (Exception e) {
+			new ConfigParser().parse(TestUtil.class.getResource(url));
+		} catch (Exception e) {// Exception type cannot be more specified, due
+								// to parse()-signature
 			e.printStackTrace();
 		}
 		return CatalogFactoryBase.getInstance().getCatalog();

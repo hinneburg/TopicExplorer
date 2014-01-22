@@ -358,7 +358,7 @@ public class SupporterForBothTypes {
 						sql = sql + sqlAdd;
 					}
 				}
-			} catch (Exception e) {
+			} catch (Exception e) {// Specify exception type!
 				System.err
 						.println("getArticles... cannot add 'sqlAddToWhere' from wiki_properties to sql-string. Proceed without it.");
 				e.printStackTrace();
@@ -374,7 +374,7 @@ public class SupporterForBothTypes {
 				list.add(new WikiIDTitlePair(Integer.valueOf(rs.getString(1)), rs.getString(2)));
 			}
 
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			System.err.println("Supporter.getArticlesLimitOffset failure.");
 			e.printStackTrace();
 		}

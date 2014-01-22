@@ -22,7 +22,7 @@ public class MediawikiColoration extends DependencyCommand {
 			MediawikiColorationAction_EntryPointForParallelisation pj = new MediawikiColorationAction_EntryPointForParallelisation(
 					properties);
 			pj.start();
-		} catch (Exception e) {
+		} catch (InterruptedException e) {
 			logger.warn("Coloration of mediawiki failed", e);
 		}
 	}

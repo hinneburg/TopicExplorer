@@ -4,6 +4,8 @@ import static org.fest.assertions.Assertions.assertThat;
 
 import org.junit.Ignore;
 import org.junit.Test;
+import org.sweble.wikitext.engine.CompilerException;
+import org.sweble.wikitext.parser.parser.LinkTargetException;
 
 import tools.TestUtil;
 import tools.WikiIDTitlePair;
@@ -32,7 +34,7 @@ public class PreMalletParallelizationTest {
 
 	@Ignore
 	@Test
-	public void testParsedTextReadable() {
+	public void testParsedTextReadable() throws CompilerException, LinkTargetException {
 
 		// FIXME russisch, zeilenende vom buffered reader macht Probleme
 		String test = this.parsedWikiTextReadable;
@@ -40,21 +42,14 @@ public class PreMalletParallelizationTest {
 			test = test.substring(0, test.length() - 1);
 		}
 		String test2;
-		try {
+		test2 = this.pm.parse(inputWikiOriginal, new WikiIDTitlePair(0, "test"), false);
 
-			test2 = this.pm.parse(inputWikiOriginal, new WikiIDTitlePair(0, "test"), false);
-
-			assertThat(test2).isEqualTo(test);
-
-		} catch (Exception e) {
-			System.err.println("Failure in test");
-		}
-
+		assertThat(test2).isEqualTo(test);
 	}
 
 	@Ignore
 	@Test
-	public void testParsedTextByLine() {
+	public void testParsedTextByLine() throws CompilerException, LinkTargetException {
 
 		// FIXME russisch, zeilenende vom buffered reader macht Probleme
 		String test = this.outputParsed;
@@ -63,14 +58,8 @@ public class PreMalletParallelizationTest {
 		}
 		String test2;
 
-		try {
-			test2 = this.pm.parse(inputWikiOriginal, new WikiIDTitlePair(0, "test"), true);
+		test2 = this.pm.parse(inputWikiOriginal, new WikiIDTitlePair(0, "test"), true);
 
-			assertThat(test2).isEqualTo(test);
-
-		} catch (Exception e) {
-			System.err.println("Failure in test");
-		}
-
+		assertThat(test2).isEqualTo(test);
 	}
 }

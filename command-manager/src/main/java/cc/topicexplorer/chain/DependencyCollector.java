@@ -159,11 +159,17 @@ public class DependencyCollector {
 			}
 
 			// start
+		} catch (RuntimeException rtmEx) {
+			throw rtmEx;
 		} catch (Exception e) {
-			logger.info("Error 1");
-			logger.error(e.getStackTrace());
+			logger.error("A command caused a non critical error.", e);
 		}
 
+		/*
+		 * TODO Folgender Code enthält zu überarbeitende Abschnitte. Sie wurden
+		 * eingefügt, um die korrekte Arbeitsweise des DependencyCollectors
+		 * hinsichtlich der Ordnung optionaler Dependencies eingefügt.
+		 */
 		logger.info("deps " + dependencies);
 		logger.info("opt deps " + optionalDependencies);
 		try {

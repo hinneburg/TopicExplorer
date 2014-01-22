@@ -50,9 +50,11 @@ public class ChainManagement {
 	 * this class.
 	 * 
 	 * @param catalogLocation
-	 * @throws Exception
+	 * @throws CatalogNotInstantiableException
+	 *             if problems occur while translating the catalog file at the
+	 *             specified location
 	 */
-	public void setCatalog(String catalogLocation) throws CatalogNotInstantiableException {
+	public void setCatalog(String catalogLocation) {
 		ConfigParser configParser = new ConfigParser();
 
 		try {
@@ -61,7 +63,8 @@ public class ChainManagement {
 			configParser.parse(this.getClass().getResource(catalogLocation));
 			this.catalog = CatalogFactoryBase.getInstance().getCatalog();
 
-		} catch (Exception e) {
+		} catch (Exception e) { // Exception type cannot be more specified, due
+								// to parse()-signature
 			logger.error("There is no valid catalog at the given path: " + catalogLocation, e);
 			throw new CatalogNotInstantiableException();
 		}
@@ -88,7 +91,8 @@ public class ChainManagement {
 		} catch (RuntimeException e1) {
 			logger.error("Initialization abborted, due to a critical exception");
 			throw e1;
-		} catch (Exception e2) {
+		} catch (Exception e2) {// Exception type cannot be more specified, due
+								// to Command signature
 			logger.warn("Initialization caused a non critical exception", e2);
 		}
 	}
@@ -162,7 +166,8 @@ public class ChainManagement {
 			} catch (RuntimeException e1) {
 				logger.error(String.format("The current command %s caused a critical exception", commandName));
 				throw e1;
-			} catch (Exception e2) {
+			} catch (Exception e2) {// Exception type cannot be more specified,
+									// due to Command-signature
 				logger.warn(String.format("The current command %s caused a non critical exception.", commandName), e2);
 			}
 		}

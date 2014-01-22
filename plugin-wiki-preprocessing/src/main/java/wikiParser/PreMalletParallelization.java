@@ -29,7 +29,6 @@ import tools.WikiTextToCSVForeward;
 public class PreMalletParallelization extends Thread {
 
 	final int wrapCol = 500; // Breite bis Zeilenumbruch, könnte erhöht werden
-								// aba
 
 	private Properties prop;
 	private Database db;
@@ -104,9 +103,21 @@ public class PreMalletParallelization extends Thread {
 				bool_outputInMetaFiles = true;
 			}
 
-		} catch (Exception e) {
+		} catch (SQLException sqlEx) {
 			System.err.println("init " + this.getName());
-			e.printStackTrace();
+			sqlEx.printStackTrace();
+		} catch (IOException ioEx) {
+			System.err.println("init :" + this.getName());
+			ioEx.printStackTrace();
+		} catch (InstantiationException instEx) {
+			System.err.println("init " + this.getName());
+			instEx.printStackTrace();
+		} catch (IllegalAccessException iaEx) {
+			System.err.println("init " + this.getName());
+			iaEx.printStackTrace();
+		} catch (ClassNotFoundException cnfEx) {
+			System.err.println("init " + this.getName());
+			cnfEx.printStackTrace();
 		}
 
 	}
@@ -119,7 +130,7 @@ public class PreMalletParallelization extends Thread {
 	 * @throws SQLException
 	 * @throws Exception
 	 */
-	private String getWikiTextWithRevID(WikiIDTitlePair id_title) throws SQLException, Exception {
+	private String getWikiTextWithRevID(WikiIDTitlePair id_title) throws SQLException {
 
 		SupporterForBothTypes t = new SupporterForBothTypes(db);
 		String wikitxt = t.getWikiTextOnlyWithID(id_title.getOld_id());
@@ -162,28 +173,6 @@ public class PreMalletParallelization extends Thread {
 
 		return wikitxt;
 	}
-
-	/**
-	 * 
-	 * preparation for coloring the links
-	 */
-	// private String correctLinksWithoutExtraContent(String wikitxt) {
-	// // List<Point> list = getDoubleBracketsPositionsWithoutPipes(wikitxt,
-	// // '[', ']');
-	// List<Point> list = getDoubleBracketsPositionsWithoutPipes(wikitxt);
-	//
-	// for (Integer i = list.size() - 1; i >= 0; i--) {
-	//
-	// Integer x = list.get(i).x;
-	// Integer y = list.get(i).y;
-	//
-	// wikitxt = wikitxt.substring(0, x) + wikitxt.substring(x, y) + "|" +
-	// wikitxt.substring(x, y)
-	// + wikitxt.substring(y, wikitxt.length());
-	// }
-	// list = null;
-	// return wikitxt;
-	// }
 
 	private String correctLinksWithoutPipes(String wikitxt, WikiIDTitlePair idTitle) {
 
@@ -347,14 +336,11 @@ public class PreMalletParallelization extends Thread {
 					+ id_title.getOld_id());
 			return new WikiArticle("Failure in getParsedWikiArticle(): " + e2.getMessage(), id_title.getOld_id(), "",
 					id_title.getWikiTitle(), -3, "");
-		} catch (Exception e) {
-			System.err.println("Failure getParsedWikiText exception " + id_title.getWikiTitle() + " "
+		} catch (SQLException sqlEx) {
+			System.err.println("Failure getParsedWikiText linktarget exception" + id_title.getWikiTitle() + " "
 					+ id_title.getOld_id());
-			// if (debug){
-			// e.printStackTrace();
-			// }
-			return new WikiArticle("Failure in getParsedWikiArticle(): " + e.getMessage(), id_title.getOld_id(), "",
-					id_title.getWikiTitle(), -2, "");
+			return new WikiArticle("Failure in getParsedWikiArticle(): " + sqlEx.getMessage(), id_title.getOld_id(),
+					"", id_title.getWikiTitle(), -3, "");
 		}
 	}
 
@@ -564,34 +550,6 @@ public class PreMalletParallelization extends Thread {
 				e.printStackTrace();
 			}
 		}
-
-		// catch (Exception e) {
-		// System.err.println(this.getClass() + ".run - " + this.getName());
-		//
-		// // for finishing the files
-		// try {
-		//
-		// bwInputSQLParsedText.flush();
-		// bwInputSQLParsedText.close();
-		// bwCSVOrigText.flush();
-		// bwCSVOrigText.close();
-		// bwLogger.flush();
-		// bwLogger.close();
-		//
-		// db.shutdownDB();
-		// } catch (IOException e1) // catchblock von flush & close
-		// {
-		// if (debug)
-		// e1.printStackTrace();
-		// } catch (SQLException e2) {
-		// if (debug)
-		// e2.printStackTrace();
-		// }
-		//
-		// if (debug) {
-		// e.printStackTrace();
-		// }
-		// }
 	}
 
 }

@@ -174,20 +174,25 @@ public class ChainManagement {
 
 	public static void main(String[] args) {
 		ChainManagement chainManager = new ChainManagement();
-		ChainCommandLineParser commandLineParser = new ChainCommandLineParser(args);
+		ChainCommandLineParser commandLineParser;
+
+		try {
+			commandLineParser = new ChainCommandLineParser(args);
+		} catch (RuntimeException e) {
+			logger.error("Problems occured while parsing the command line tokens.");
+			throw e;
+		}
+
 		List<String> orderedCommands;
 		String catalogLocation;
 		chainManager.init();
 
 		catalogLocation = commandLineParser.getCatalogLocation();
-
 		chainManager.setCatalog(catalogLocation);
-
 		orderedCommands = chainManager.getOrderedCommands(commandLineParser.getStartCommands(),
 				commandLineParser.getEndCommands());
 
 		logger.info("ordered commands: " + orderedCommands);
-
 		if (!commandLineParser.getOnlyDrawGraph()) {
 			chainManager.executeCommands(orderedCommands);
 		}

@@ -65,7 +65,8 @@ public class Run {
 						builder.parse(this.getClass().getResourceAsStream(
 								"/cc/topicexplorer/plugin-" + plugin + "-preprocessing/catalog/preJooqConfig.xml")));
 			} catch (Exception e) {
-				logger.warn("/cc/topicexplorer/plugin-" + plugin + "-preprocessing/catalog/preJooqConfig.xml not found");
+				logger.warn(
+						"/cc/topicexplorer/plugin-" + plugin + "-preprocessing/catalog/preJooqConfig.xml not found", e);
 			}
 			try {
 				doc = getMergedXML(
@@ -74,7 +75,7 @@ public class Run {
 								"/cc/topicexplorer/plugin-" + plugin + "-preprocessing/catalog/postJooqConfig.xml")));
 			} catch (Exception e) {
 				logger.warn("/cc/topicexplorer/plugin-" + plugin
-						+ "-preprocessing/catalog/postJooqConfig.xml not found");
+						+ "-preprocessing/catalog/postJooqConfig.xml not found", e);
 			}
 		}
 
@@ -96,8 +97,17 @@ public class Run {
 
 	public static void main(String[] args) throws Exception {
 		Run run = new Run();
+
 		ChainManagement chainManager = new ChainManagement();
-		ChainCommandLineParser commandLineParser = new ChainCommandLineParser(args);
+		ChainCommandLineParser commandLineParser = null;
+
+		try {
+			commandLineParser = new ChainCommandLineParser(args);
+		} catch (RuntimeException e) {
+			logger.error("Problems encountered while parsing the command line tokens.");
+			throw e;
+		}
+
 		Properties properties = new Properties();
 
 		// create directories
@@ -108,16 +118,17 @@ public class Run {
 
 		try {
 			properties.load(run.getClass().getResourceAsStream("/config.global.properties"));
-		} catch (Exception e) {
-			logger.fatal("config.global.properties not found");
-			System.exit(0);
+		} catch (IOException e) {
+			logger.error("config.global.properties not found");
+			throw e;
 		}
 
 		try {
 			properties.load(run.getClass().getResourceAsStream("/config.local.properties"));
-		} catch (Exception e) {
-			logger.warn("config.local.properties not found");
+		} catch (IOException e) {
+			logger.warn("config.local.properties not found", e);
 		}
+
 		logger.info("Activated plugins: " + properties.getProperty("plugins"));
 
 		run.makeCatalog(properties.getProperty("plugins"));

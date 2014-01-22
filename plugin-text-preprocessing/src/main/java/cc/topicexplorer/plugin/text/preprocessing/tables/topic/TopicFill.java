@@ -1,37 +1,40 @@
 package cc.topicexplorer.plugin.text.preprocessing.tables.topic;
 
 /** MIT-JOOQ-START 
-import static jooq.generated.Tables.TOPIC;
-import static jooq.generated.Tables.TERM;
-import static jooq.generated.Tables.TERM_TOPIC; 
+ import static jooq.generated.Tables.TOPIC;
+ import static jooq.generated.Tables.TERM;
+ import static jooq.generated.Tables.TERM_TOPIC; 
  MIT-JOOQ-ENDE */
 
-import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
 import cc.topicexplorer.chain.commands.TableFillCommand;
 
+import com.google.common.base.Preconditions;
+
 /**
- * angefangen von Mattes weiterverarbeitet von Gert Kommaersetzung, Pfadangabe
- * eingefügt, Tabellenname mit Jooq verknüpft
+ * @author angefangen von Mattes weiterverarbeitet von Gert Kommaersetzung,
+ *         Pfadangabe eingefügt, Tabellenname mit Jooq verknüpft
  * 
  */
 public class TopicFill extends TableFillCommand {
 
 	@Override
-	public void fillTable() throws SQLException {
+	public void fillTable() {
 		try {
 			this.prepareMetaDataAndFillTable();
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (SQLException sqlEx) {
+			logger.error("Table " + "TOPIC" + " could not be updated properly.");
+			throw new RuntimeException(sqlEx);
 		}
-	}	
+	}
 
-	private void prepareMetaDataAndFillTable() throws IOException, SQLException {
+	private void prepareMetaDataAndFillTable() throws SQLException {
 		String name;
 
+//		@formatter:off
 		/** MIT-JOOQ-START 
 		Statement stmt = database.getCreateJooq().getConnection()
 				.createStatement();
@@ -87,13 +90,13 @@ public class TopicFill extends TableFillCommand {
 		logger.info("Starting batch execution TopicMetaData update themen.");
 		stmt.executeBatch();
 MIT-JOOQ-ENDE */
-		/** OHNE_JOOQ-START */ 
-		Statement stmt = database.getConnection()
-				.createStatement();
+//		@formatter:on
+		/** OHNE_JOOQ-START */
+		Statement stmt = database.getConnection().createStatement();
 		ResultSet rsNames;
-		for (int i = 0; i < Integer.parseInt(this.properties
-				.getProperty("malletNumTopics")); i++) {
+		for (int i = 0; i < Integer.parseInt(this.properties.getProperty("malletNumTopics")); i++) {
 
+//			@formatter:off
 			String sql = "SELECT CONCAT((select k." + "TERM_NAME"
 					+ " from " + "TERM" + " k, (SELECT "
 					+ "TERM_TOPIC.TOPIC_ID" + ", "
@@ -121,41 +124,41 @@ MIT-JOOQ-ENDE */
 					+ "TERM_TOPIC.PR_TERM_GIVEN_TOPIC"
 					+ " desc limit 2,1) x where k." + "TERM_ID"
 					+ "=x." + "TERM_ID" + "))";
- 
+// 			@formatter:on
+
 			rsNames = database.executeQuery(sql);
 
-			if (rsNames.next()) {
-				name = rsNames.getString(1);
+			Preconditions.checkState(rsNames.next(),
+					"Error fetching name data. rsNames should have had yet another tuple.");
+			name = rsNames.getString(1);
 
-				stmt.addBatch(" UPDATE " + "TOPIC" + " set "
-						+ "TOPIC.TEXT$TOPIC_LABEL" + " = '"
-						+ name + "' " + " WHERE "
-						+ "TOPIC.TOPIC_ID" + " = " + i + "; ");
-			} else {
-				logger.fatal("Error fetching name data");
-				System.exit(0);
-			}
+//			@formatter:off
+			stmt.addBatch(" UPDATE " + "TOPIC" + " set "
+					+ "TOPIC.TEXT$TOPIC_LABEL" + " = '"
+					+ name + "' " + " WHERE "
+					+ "TOPIC.TOPIC_ID" + " = " + i + "; ");
+//			@formatter:on
 		}
 
 		logger.info("Starting batch execution TopicMetaData update themen.");
 		stmt.executeBatch();
 
-		/** OHNE_JOOQ-ENDE */ 
-	
+		/** OHNE_JOOQ-ENDE */
+
 	}
 
 	@Override
 	public void setTableName() {
-/** MIT-JOOQ-START 
-		this.tableName = TOPIC.getName();
-MIT-JOOQ-ENDE */
+		/**
+		 * MIT-JOOQ-START this.tableName = TOPIC.getName(); MIT-JOOQ-ENDE
+		 */
 	}
-	
+
 	@Override
 	public void addDependencies() {
 		beforeDependencies.add("Text_TopicCreate");
 		beforeDependencies.add("TopicFill");
 		beforeDependencies.add("TermTopicFill");
 		beforeDependencies.add("TermFill");
-	}	
+	}
 }

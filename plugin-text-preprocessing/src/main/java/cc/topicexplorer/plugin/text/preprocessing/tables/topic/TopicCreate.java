@@ -4,37 +4,39 @@ import java.sql.SQLException;
 
 import cc.topicexplorer.chain.commands.TableCreateCommand;
 
-/**
+/*
  * angefangen von Mattes weiterverarbeitet von Gert Kommaersetzung, Pfadangabe
  * eingefügt, Tabellenname mit Jooq verknüpft
  * 
  */
 public class TopicCreate extends TableCreateCommand {
-	
+
 	@Override
-	public void createTable() throws SQLException {
-		this.database
-				.executeUpdateQuery("ALTER TABLE "
-						+ this.tableName
-						+ " ADD COLUMN TOPIC.TEXT$TOPIC_LABEL VARCHAR(255) COLLATE utf8_bin DEFAULT ''");
+	public void createTable() {
+		try {
+			this.database.executeUpdateQuery("ALTER TABLE " + this.tableName
+					+ " ADD COLUMN TOPIC.TEXT$TOPIC_LABEL VARCHAR(255) COLLATE utf8_bin DEFAULT ''");
+		} catch (SQLException e) {
+			logger.error("Column TOPIC.TEXT$TOPIC_LABEL could not be added to table " + this.tableName);
+			throw new RuntimeException(e);
+		}
 	}
 
-	private void dropColumns() throws SQLException {
-
+	private void dropColumns() {
 		try {
-			this.database
-					.executeUpdateQuery("ALTER TABLE "
-							+ this.tableName
-							+ " DROP COLUMN TOPIC.TEXT$TOPIC_LABEL");
-		} catch (Exception e) {
-			logger.warn("TopicMetaData.dropColumns: Cannot drop column, perhaps it doesn't exists. Doesn't matter ;)");
-
+			this.database.executeUpdateQuery("ALTER TABLE " + this.tableName + " DROP COLUMN TOPIC.TEXT$TOPIC_LABEL");
+		} catch (SQLException e) {
+			if (e.getErrorCode() != 1091) { // MySQL Error code for 'Can't DROP
+				// ..; check that column/key exists
+				logger.error("TopicMetaData.dropColumns: Cannot drop column.");
+				throw new RuntimeException(e);
+			}
 		}
-	}	
+	}
 
 	@Override
-	public void dropTable() throws SQLException {
-		 this.dropColumns();
+	public void dropTable() {
+		this.dropColumns();
 	}
 
 	@Override
@@ -42,7 +44,7 @@ public class TopicCreate extends TableCreateCommand {
 		this.tableName = "TOPIC";
 
 	}
-	
+
 	@Override
 	public void addDependencies() {
 		beforeDependencies.add("DocumentTermTopicCreate");

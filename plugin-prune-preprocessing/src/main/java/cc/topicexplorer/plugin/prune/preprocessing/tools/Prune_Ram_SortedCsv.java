@@ -32,8 +32,8 @@ public class Prune_Ram_SortedCsv {
 		File destinationFile = new File(destination);
 
 		if (!sourceFile.renameTo(destinationFile)) {
-			logger.fatal("[ " + getClass() + " ] - " + "Fehler beim Umbenennen der Datei: " + source);
-			System.exit(0);
+			logger.error("[ " + getClass() + " ] - " + "Fehler beim Umbenennen der Datei: " + source);
+			throw new IllegalStateException();
 		}
 	}
 
@@ -43,8 +43,9 @@ public class Prune_Ram_SortedCsv {
 		// are the bounds valid?
 		if (upperBoundPercent < 0 || lowerBoundPercent < 0 || upperBoundPercent > 100 || lowerBoundPercent > 100
 				|| upperBoundPercent < lowerBoundPercent) {
-			logger.fatal("Stop: Invalid Pruning Bounds!");
-			System.exit(0);
+			logger.error("Stop: Invalid Pruning Bounds!");
+			throw new IllegalArgumentException(String.format("upperBoundPercent: %f, lowerBoundPercent: %f",
+					upperBoundPercent, lowerBoundPercent));
 		}
 	}
 
@@ -56,10 +57,8 @@ public class Prune_Ram_SortedCsv {
 		try {
 			inCsv = new CsvReader(new FileInputStream(inFilePath), ';', Charset.forName("UTF-8"));
 		} catch (FileNotFoundException e) {
-			logger.fatal("Input CSV-File couldn't be read - maybe the path is incorrect");
-			e.printStackTrace();
-			System.exit(3);
-
+			logger.error("Input CSV-File couldn't be read - maybe the path is incorrect");
+			throw new IllegalStateException();
 		}
 	}
 
@@ -75,9 +74,8 @@ public class Prune_Ram_SortedCsv {
 			// this.headerEntries.add(h[i]);
 			// }
 		} catch (IOException e) {
-			logger.fatal("CSV-Header not read");
-			e.printStackTrace();
-			System.exit(2);
+			logger.error("CSV-Header not read");
+			throw new IllegalStateException();
 		}
 
 	}
@@ -86,9 +84,9 @@ public class Prune_Ram_SortedCsv {
 		Boolean result = false;
 		try {
 			result = inCsv.readRecord();
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.exit(1);
+		} catch (IOException e) {
+			logger.error("Csv record could not be read.");
+			throw new IllegalStateException();
 		}
 		return result;
 	}
@@ -121,14 +119,14 @@ public class Prune_Ram_SortedCsv {
 				documentTerms.clear();
 				documentTerms.add(term);
 			} else {
-				documentTerms.add(term);	
+				documentTerms.add(term);
 			}
-			
+
 		}
 
 		float upperBound = numberOfDocuments * upperBoundPercent / (float) 100.0;
 		float lowerBound = numberOfDocuments * lowerBoundPercent / (float) 100.0;
-		
+
 		HashSet<String> termsToKeep = new HashSet<String>();
 		for (String term : vocabulary.keySet()) {
 			if (vocabulary.get(term) > lowerBound && vocabulary.get(term) < upperBound) {

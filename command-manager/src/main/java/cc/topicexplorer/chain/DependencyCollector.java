@@ -31,7 +31,7 @@ import com.google.common.annotations.VisibleForTesting;
 public class DependencyCollector {
 
 	private Catalog catalog;
-	private Logger logger = Logger.getRootLogger();
+	private final Logger logger = Logger.getRootLogger();
 
 	/**
 	 * Class constructor taking the catalog argument and sets it in this class.
@@ -84,8 +84,7 @@ public class DependencyCollector {
 				dir.mkdir();
 			}
 
-			BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(
-					"etc/graph" + name + ".dot"));
+			BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("etc/graph" + name + ".dot"));
 			bufferedWriter.write(dotContent);
 			bufferedWriter.close();
 		} catch (IOException e) {
@@ -111,8 +110,8 @@ public class DependencyCollector {
 	 * @param beforeDependencies
 	 */
 	@VisibleForTesting
-	void updateDependencies(String name, Map<String, Set<String>> dependencies,
-			Set<String> afterDependencies, Set<String> beforeDependencies) {
+	void updateDependencies(String name, Map<String, Set<String>> dependencies, Set<String> afterDependencies,
+			Set<String> beforeDependencies) {
 
 		if (dependencies.containsKey(name)) {
 			dependencies.get(name).addAll(beforeDependencies);
@@ -125,8 +124,7 @@ public class DependencyCollector {
 				if (dependencies.containsKey(key)) {
 					dependencies.get(key).add(name);
 				} else {
-					dependencies.put(key,
-							new HashSet<String>(Arrays.asList(name)));
+					dependencies.put(key, new HashSet<String>(Arrays.asList(name)));
 				}
 			}
 		}
@@ -154,16 +152,14 @@ public class DependencyCollector {
 				Command command = catalog.getCommand(name);
 				command.execute(dependencyContext);
 
-				updateDependencies(name, dependencies,
-						dependencyContext.getAfterDependencies(),
+				updateDependencies(name, dependencies, dependencyContext.getAfterDependencies(),
 						dependencyContext.getBeforeDependencies());
-				updateDependencies(name, optionalDependencies,
-						dependencyContext.getOptionalAfterDependencies(),
+				updateDependencies(name, optionalDependencies, dependencyContext.getOptionalAfterDependencies(),
 						dependencyContext.getOptionalBeforeDependencies());
 			}
-		
-		// start
-	} catch (Exception e) {
+
+			// start
+		} catch (Exception e) {
 			logger.info("Error 1");
 			logger.error(e.getStackTrace());
 		}
@@ -171,81 +167,77 @@ public class DependencyCollector {
 		logger.info("deps " + dependencies);
 		logger.info("opt deps " + optionalDependencies);
 		try {
-					
+
 			// ende einfügung
 
-			composedDependencies = new HashMap<String, Set<String>>(
-					dependencies);
-		
-		//start
+			composedDependencies = new HashMap<String, Set<String>>(dependencies);
+
+			// start
 		} catch (Exception e) {
 			logger.info("Error 2");
 			logger.error(e.getStackTrace());
 		}
 		try {
-			
-			//ende
+
+			// ende
 
 			for (String key : optionalDependencies.keySet()) {
-				
-				
-				//start
-					logger.info(key);
+
+				// start
+				logger.info(key);
 				try {
-					//ende
-					
+					// ende
+
 					optionalDependencies.get(key);
-				
-				//start
+
+					// start
 				} catch (Exception e) {
 					logger.info("Error 3a");
 					logger.error(e.getStackTrace());
 				}
-				//ende
-				
-				// If anweisung als erster Fix eingefuegt. Bitte pruefen ob das richtig ist. 
+				// ende
+
+				// If anweisung als erster Fix eingefuegt. Bitte pruefen ob das
+				// richtig ist.
 				if (composedDependencies.containsKey(key)) {
 					for (String value : optionalDependencies.get(key)) {
 						if (composedDependencies.containsKey(value)) {
-						//start
+							// start
 							try {
-								//ende
-								
+								// ende
+
 								composedDependencies.get(key).add(value);
-			//start
-								} catch (Exception e) {
+								// start
+							} catch (Exception e) {
 								logger.info("Error 3b");
 								logger.info("key " + key);
 								logger.info("value " + value);
-								logger.info("containsKey "
-										+ composedDependencies
-												.containsKey(value)
-										+ " getKey "
+								logger.info("containsKey " + composedDependencies.containsKey(value) + " getKey "
 										+ composedDependencies.get(key));
 								logger.error(e.getStackTrace());
 							}
-							//ende
+							// ende
 						}
 					}
 				}
 			}
-		//start
+			// start
 		} catch (Exception e) {
 			logger.info("Error 3");
 			logger.error(e.getStackTrace());
 		}
-		
+
 		try {
-//ende
+			// ende
 			makeDotFile(composedDependencies, optionalDependencies, "");
 
 		} catch (Exception e) {
-//			logger.error(e.getMessage());
-			
-			//start
+			// logger.error(e.getMessage());
+
+			// start
 			logger.info("Error 4");
 			logger.error(e.getStackTrace());
-			//ende
+			// ende
 		}
 
 		return composedDependencies;
@@ -256,8 +248,7 @@ public class DependencyCollector {
 	 * variable.
 	 */
 	public List<String> orderCommands(Map<String, Set<String>> dependencies) {
-		Map<String, Set<String>> concurrentDependencies = new ConcurrentHashMap<String, Set<String>>(
-				dependencies);
+		Map<String, Set<String>> concurrentDependencies = new ConcurrentHashMap<String, Set<String>>(dependencies);
 		List<String> orderedCommands = new ArrayList<String>();
 		List<String> helpList = new ArrayList<String>();
 		String node = "";
@@ -302,17 +293,15 @@ public class DependencyCollector {
 		// only if the dependencyMap is empty the graph was correct, otherwise
 		// there was something wrong with it
 		if (!concurrentDependencies.isEmpty()) {
-			logger.fatal("The dependencyMap wasn't empty yet but it should have been: "
-					+ concurrentDependencies);
-			System.exit(1);
+			logger.error("The dependencyMap wasn't empty yet but it should have been: " + concurrentDependencies);
+			throw new IllegalStateException();
 		}
 
 		return orderedCommands;
 	}
 
-	public Map<String, Set<String>> getStrongComponents(
-			Map<String, Set<String>> dependencies, Set<String> startCommands,
-			Set<String> endCommands) {
+	public Map<String, Set<String>> getStrongComponents(Map<String, Set<String>> dependencies,
+			Set<String> startCommands, Set<String> endCommands) {
 
 		Map<String, Set<String>> newDependencies = new HashMap<String, Set<String>>();
 
@@ -326,13 +315,12 @@ public class DependencyCollector {
 				// dazu muss command als key mit leerer value-Menge vorhanden
 				// sein
 				if (!dependencies.get(command).isEmpty()) {
-					logger.fatal("Given command seems not to be a root.");
-					System.exit(1);
+					logger.error("Given command seems not to be a root.");
+					throw new IllegalStateException();
 				} else {
 					// fuege aktuelles Element mit leeren values hinzu
 					newDependencies.put(command, new HashSet<String>());
-					iterateDependenciesDown(dependencies, newDependencies,
-							command);
+					iterateDependenciesDown(dependencies, newDependencies, command);
 				}
 			}
 		}
@@ -341,8 +329,7 @@ public class DependencyCollector {
 			iterateDependenciesUp(command);
 		}
 
-		makeDotFile(newDependencies, new HashMap<String, Set<String>>(),
-				"_strongComponents");
+		makeDotFile(newDependencies, new HashMap<String, Set<String>>(), "_strongComponents");
 
 		return newDependencies;
 	}

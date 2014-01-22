@@ -93,8 +93,7 @@ public class PreMalletAction_EntryPointForParallelisation {
 
 		} catch (Exception e) {
 			System.err.println("Failure in joinTheOutputsAndDeleteTempFilesInTempFolder.");
-			e.printStackTrace();
-			System.exit(0);
+			throw new RuntimeException(e);
 		}
 
 	}

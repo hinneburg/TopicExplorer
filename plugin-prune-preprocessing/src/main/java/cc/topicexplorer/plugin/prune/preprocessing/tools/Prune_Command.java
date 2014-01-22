@@ -15,8 +15,7 @@ public class Prune_Command extends DependencyCommand {
 	private final Prune_Ram_SortedCsv prune = new Prune_Ram_SortedCsv();
 
 	@Override
-	public void specialExecute(Context context) throws NumberFormatException, IOException {
-		// TODO Auto-generated method stub
+	public void specialExecute(Context context) {
 		logger.info("[ " + getClass() + " ] - " + "pruning vocabular");
 
 		CommunicationContext communicationContext = (CommunicationContext) context;
@@ -30,7 +29,13 @@ public class Prune_Command extends DependencyCommand {
 		prune.setLogger(logger);
 		String inFilePath = properties.getProperty("InCSVFile");
 		prune.setInFilePath(inFilePath);
-		prune.prune();
+
+		try {
+			prune.prune();
+		} catch (IOException e) {
+			logger.error("During prune a file stream problem occured.");
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
@@ -38,5 +43,4 @@ public class Prune_Command extends DependencyCommand {
 		beforeDependencies.add("DocumentTermTopicCreate");
 		afterDependencies.add("InFilePreparation");
 	}
-
 }

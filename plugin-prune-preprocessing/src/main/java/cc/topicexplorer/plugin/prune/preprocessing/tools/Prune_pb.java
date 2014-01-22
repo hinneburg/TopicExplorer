@@ -22,7 +22,6 @@ public class Prune_pb extends DependencyCommand {
 	protected cc.topicexplorer.database.Database database;
 
 	private void processPrune() {
-		// TODO Auto-generated method stub
 		ProcessBuilder p = new ProcessBuilder("bash", "-c", "scripts/prune.sh " + properties.getProperty("InCSVFile")
 				+ " " + this.lowerBound + " " + this.upperBound);
 
@@ -31,7 +30,7 @@ public class Prune_pb extends DependencyCommand {
 		try {
 			process = p.start();
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.warn("The shell process caused a file stream problem.", e);
 		}
 
 		InputStream is = process.getInputStream();
@@ -47,9 +46,8 @@ public class Prune_pb extends DependencyCommand {
 			process.destroy();
 			logger.info("Pruning successfully executed");
 		} catch (IOException e) {
-			e.printStackTrace();
-			logger.fatal("Pruning execution failed");
-			System.exit(0);
+			logger.error("Pruning execution failed");
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -58,13 +56,13 @@ public class Prune_pb extends DependencyCommand {
 		File destinationFile = new File(destination);
 
 		if (!sourceFile.renameTo(destinationFile)) {
-			logger.fatal("[ " + getClass() + " ] - " + "Fehler beim Umbenennen der Datei: " + source);
-			System.exit(0);
+			logger.error("File could not be renamed: " + source);
+			throw new IllegalStateException();
 		}
 	}
 
 	@Override
-	public void specialExecute(Context context) throws NumberFormatException, SQLException {
+	public void specialExecute(Context context) {
 		logger.info("[ " + getClass() + " ] - " + "pruning vocabular");
 
 		CommunicationContext communicationContext = (CommunicationContext) context;
@@ -77,18 +75,25 @@ public class Prune_pb extends DependencyCommand {
 		// are the bounds valid?
 		if (upperBoundPercent < 0 || lowerBoundPercent < 0 || upperBoundPercent > 100 || lowerBoundPercent > 100
 				|| upperBoundPercent < lowerBoundPercent) {
-			logger.fatal("Stop Puning: Invalid Pruning Bounds!");
-			System.exit(0);
+			logger.error("Stop: Invalid Pruning Bounds!");
+			throw new IllegalArgumentException(String.format("upperBoundPercent: %f, lowerBoundPercent: %f",
+					upperBoundPercent, lowerBoundPercent));
 		}
 
-		ResultSet rsDocCount = database.executeQuery("SELECT COUNT(*) FROM " + properties.getProperty("OrgTableName"));
-		if (rsDocCount.next()) {
-			int count = rsDocCount.getInt(1);
-			this.upperBound = (float) (count / 100.0) * upperBoundPercent;
-			this.lowerBound = (float) (count / 100.0) * lowerBoundPercent;
-		} else {
-			lowerBound = 0.0f;
-			upperBound = Float.MAX_VALUE;
+		String query = "SELECT COUNT(*) FROM " + properties.getProperty("OrgTableName");
+		try {
+			ResultSet rsDocCount = database.executeQuery(query);
+			if (rsDocCount.next()) {
+				int count = rsDocCount.getInt(1);
+				this.upperBound = (float) (count / 100.0) * upperBoundPercent;
+				this.lowerBound = (float) (count / 100.0) * lowerBoundPercent;
+			} else {
+				lowerBound = 0.0f;
+				upperBound = Float.MAX_VALUE;
+			}
+		} catch (SQLException e) {
+			logger.error("Error in Query: " + query);
+			throw new RuntimeException(e);
 		}
 
 		this.processPrune();

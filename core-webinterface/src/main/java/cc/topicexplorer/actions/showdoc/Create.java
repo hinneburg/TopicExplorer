@@ -7,24 +7,17 @@ import cc.topicexplorer.chain.commands.TableSelectCommand;
 import cc.topicexplorer.database.SelectMap;
 
 public class Create extends TableSelectCommand {
-	
+
 	@Override
 	public void tableExecute(Context context) {
 		CommunicationContext communicationContext = (CommunicationContext) context;
-		
-		SelectMap documentMap = new SelectMap();
-		
-		communicationContext.put("DOCUMENT_QUERY", documentMap);
-
-		SelectMap topicMap = new SelectMap();
-		
-		communicationContext.put("TOPIC_QUERY", topicMap);
+		communicationContext.put("DOCUMENT_QUERY", new SelectMap());
+		communicationContext.put("TOPIC_QUERY", new SelectMap());
 	}
-	
+
 	@Override
 	public void addDependencies() {
-		afterDependencies.add("ShowDocCoreCollect"); 
+		afterDependencies.add("ShowDocCoreCollect");
 	}
-	
 
 }

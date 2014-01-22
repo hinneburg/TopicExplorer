@@ -14,12 +14,11 @@ import org.apache.log4j.Logger;
 import cc.topicexplorer.database.Database;
 import cc.topicexplorer.database.SelectMap;
 
-import com.google.common.util.concurrent.UncheckedExecutionException;
-
 public final class AllTerms {
 	private PrintWriter outWriter;
 	private Database database;
-	private SelectMap databaseQuery;
+	private final SelectMap databaseQuery;
+	private final Logger logger = Logger.getRootLogger();
 
 	public AllTerms(Database db, PrintWriter out) {
 		this.setDatabase(db);
@@ -35,14 +34,16 @@ public final class AllTerms {
 
 	private void setServletWriter(PrintWriter out) {
 		if (out == null) {
-			throw new UncheckedExecutionException(new IllegalStateException("PrintWriter must not be null."));
+			logger.error("ServletWriter could not be set.");
+			throw new IllegalArgumentException("PrintWriter argument must not be null.");
 		}
 		this.outWriter = out;
 	}
 
 	private void setDatabase(Database database) {
 		if (database == null) {
-			throw new UncheckedExecutionException(new IllegalStateException("Database must not be null."));
+			logger.error("Database could not be set.");
+			throw new IllegalArgumentException("Database argument must not be null.");
 		}
 		this.database = database;
 	}
@@ -81,8 +82,8 @@ public final class AllTerms {
 			}
 
 		} catch (SQLException e) {
-			e.printStackTrace();
-			Logger.getRootLogger().info(e);
+			logger.error("Error in Query: " + databaseQuery.getSQLString());
+			throw new RuntimeException(e);
 		}
 
 		this.outWriter.print(rowsWithIndex);

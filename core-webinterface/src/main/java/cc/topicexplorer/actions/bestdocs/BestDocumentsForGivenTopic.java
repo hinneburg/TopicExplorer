@@ -7,14 +7,16 @@ import java.util.ArrayList;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+
+import org.apache.log4j.Logger;
+
 import cc.topicexplorer.database.Database;
 import cc.topicexplorer.database.SelectMap;
 
 public class BestDocumentsForGivenTopic {
 
-	private SelectMap documentMap;
-	private String topicId;
-	private int limit, numberOfTopics;
+	private final SelectMap documentMap;
+	private int numberOfTopics;
 	private PrintWriter outWriter;
 	private Database database;
 
@@ -29,24 +31,13 @@ public class BestDocumentsForGivenTopic {
 		documentMap.orderBy.add("PR_DOCUMENT_GIVEN_TOPIC DESC");
 		documentMap.limit = limit;
 
-		setTopicId(topicId);
-		setLimit(limit);
 		setDatabase(db);
-		setLimit(limit);
 		setServletWriter(out);
 		setNumberOfTopics(numberOfTopics);
 	}
 
 	public void setDatabase(Database database) {
 		this.database = database;
-	}
-
-	public void setTopicId(String topicId) {
-		this.topicId = topicId;
-	}
-
-	public void setLimit(Integer limit) {
-		this.limit = limit;
 	}
 
 	public void setNumberOfTopics(Integer numberOfTopics) {
@@ -71,7 +62,6 @@ public class BestDocumentsForGivenTopic {
 		JSONObject doc = new JSONObject();
 		JSONObject docs = new JSONObject();
 		JSONObject all = new JSONObject();
-		
 
 		ArrayList<String> docColumnList = documentMap.getCleanColumnNames();
 		String docId;
@@ -97,7 +87,8 @@ public class BestDocumentsForGivenTopic {
 			all.put("DOCUMENT", docs);
 			all.put("DOCUMENT_SORTING", docSorting);
 		} catch (SQLException e) {
-			e.printStackTrace();
+			Logger.getRootLogger().error("Error in Query: " + documentMap.getSQLString());
+			throw new RuntimeException(e);
 		}
 		outWriter.print(all.toString());
 

@@ -4,15 +4,12 @@ import java.sql.SQLException;
 
 import cc.topicexplorer.chain.commands.TableCreateCommand;
 
-/**
- * @author user
- * 
- */
 public class DuplicatesCreate extends TableCreateCommand {
 
 	@Override
-	public void createTable() throws SQLException {
-		this.database.executeUpdateQuery(" CREATE TABLE `" + this.tableName + "` (" +
+	public void createTable() {
+//		@formatter:off
+		String query = " CREATE TABLE `" + this.tableName + "` (" +
 				"  `MD5SUM` varchar(255) COLLATE utf8_bin NOT NULL," +
 				"  `DOCUMENT_ID` varchar(255) COLLATE utf8_bin NOT NULL," +
 				"  `START_POSITION` int(11) NOT NULL," +
@@ -22,12 +19,14 @@ public class DuplicatesCreate extends TableCreateCommand {
 				"  PRIMARY KEY (`ID`)," +
 				"  KEY `HELPER_IDX` (`DOCUMENT_ID`,`START_POSITION`)," +
 				"  KEY `GROUP_IDX` (`GROUP_ID`)" +
-				") ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin ;" );
-	}
-	
-	@Override
-	public void dropTable() throws SQLException {
-		this.database.dropTable(this.tableName);
+				") ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin ;";
+//		@formatter:on
+		try {
+			this.database.executeUpdateQuery(query);
+		} catch (SQLException sqlEx) {
+			logger.error("Table " + this.tableName + "could not be created. The problematic query is:\n" + query);
+			throw new RuntimeException(sqlEx);
+		}
 	}
 
 	@Override

@@ -1,5 +1,6 @@
 package cc.topicexplorer.plugin.duplicates.preprocessing.command;
 
+import java.sql.SQLException;
 import java.util.Properties;
 
 import org.apache.commons.chain.Context;
@@ -12,13 +13,11 @@ import cc.topicexplorer.plugin.duplicates.preprocessing.implementation.Duplicate
 public class Duplicates_Command extends DependencyCommand {
 	private Properties properties;
 	protected cc.topicexplorer.database.Database database;
-	
-	private Duplicates duplicates = new Duplicates();
-	
+
+	private final Duplicates duplicates = new Duplicates();
 
 	@Override
-	public void specialExecute(Context context) throws Exception {
-		// TODO Auto-generated method stub
+	public void specialExecute(Context context) {
 		logger.info("[ " + getClass() + " ] - " + "detecting duplicates");
 
 		CommunicationContext communicationContext = (CommunicationContext) context;
@@ -26,16 +25,21 @@ public class Duplicates_Command extends DependencyCommand {
 		database = (Database) communicationContext.get("database");
 
 		duplicates.setLogger(logger);
-		duplicates.setDB( database );
+		duplicates.setDB(database);
 
 		String inFilePath = properties.getProperty("InCSVFile");
 		duplicates.setCsvFilePath(inFilePath);
-		
+
 		int frameSize = Integer.parseInt(properties.getProperty("Duplicates_frameSize"));
 		duplicates.setFrameSize(frameSize);
-		
+
 		duplicates.findDuplicates();
-		duplicates.writeDuplicatesToDB();
+		try {
+			duplicates.writeDuplicatesToDB();
+		} catch (SQLException sqlEx) {
+			logger.error("Could not write duplicates to db.");
+			throw new RuntimeException(sqlEx);
+		}
 	}
 
 	@Override

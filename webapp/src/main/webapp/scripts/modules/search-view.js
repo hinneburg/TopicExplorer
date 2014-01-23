@@ -13,6 +13,13 @@ function(ko, $) {
 				}
 			);
 		};
+		ko.bindingHandlers.searchbarHandler = { init: 
+						function(el) { 		
+							self.searchbarHeight=$('.searchBar').height();
+							console.log("searchbarHeight",self.searchbarHeight);
+							ko.postbox.publish("searchbarHeight",self.searchbarHeight);
+							}
+		};
 		ko.bindingHandlers.autoCompleteHandler = { init: function(el) { self.autocomplete('searchField');}};
 		this.autocomplete = function(boxID) {
 			var itemIdx = 1;
@@ -68,5 +75,6 @@ function(ko, $) {
 						circleString).appendTo(ul);
 			};
 		};
+
 	};
 });

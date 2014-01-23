@@ -12,6 +12,7 @@ require.config({
 require([ "knockout","jquery", "modules/topicexplorer-view-model",
 		"knockout-amd-helpers", "knockout-postbox",
 		"text", "jquery-ui"], function(ko, $, App) {
+	var self=this;
 	ko.bindingHandlers.module.baseDir = "modules";
 	
 	// global delegates
@@ -47,10 +48,16 @@ require([ "knockout","jquery", "modules/topicexplorer-view-model",
 	}).bind("#desktop", "scroll",function(){
 		alert('hallo');
 	}).delegate(".documentList circle, #groupG rect", "click", moveToTopic);
-	
 
+	self.minHeight = 400;
+	
+	ko.postbox.publish("windowWidth",Math.max($(window).width(), /* For opera: */ document.documentElement.clientWidth));
+	ko.postbox.publish("windowHeight",Math.max(self.minHeight, $(window).height(), /* For opera: */ document.documentElement.clientHeight));
 
 	$(window).resize(function() {
+		
+		ko.postbox.publish("windowWidth",Math.max($(window).width(), /* For opera: */ document.documentElement.clientWidth));
+		ko.postbox.publish("windowHeight",Math.max(self.minHeight, $(window).height(), /* For opera: */ document.documentElement.clientHeight));
 		resizeDocumentDivs();
 		resizeTopicDivs();
 	});
@@ -67,7 +74,7 @@ function resizeDocumentDivs() {
 		var width = Math.max($(window).width(), /* For opera: */ document.documentElement.clientWidth);
 		var height = Math.max(minHeight, $(window).height(), /* For opera: */ document.documentElement.clientHeight);
 	
-		$('.leftBody').height(height-$('.searchBar').height()-30);	
+		//$('.leftBody').height(height-$('.searchBar').height()-30);	
 		$('#desktop').height(($('.leftBody').height()-90)*0.7);	
 		
 		var desktopWidth = $('#desktop > .documentList > ul').width()-63;

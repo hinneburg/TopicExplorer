@@ -13,9 +13,9 @@ function(ko,topicexplorerModel) {
 		this.leftBodyHeight = ko.computed(
 					function() {
 						var temp = self.windowHeight()-self.searchbarHeight()-30;
-						console.log("leftbodyHeight"+temp);
-						return self.windowHeight()-self.searchbarHeight()-30;
-					});
+						console.log("leftBodyHeight"+temp);
+						return (self.windowHeight()-self.searchbarHeight()-30);
+					}).publishOn("leftBodyHeight");
 		
 		//ko.bindingHandlers.leftBodyHeightHandler = {update: function() {self.leftBodyHeight(self.windowHeight-searchbarHeight-30);} };
 		//self.leftBodyHeight(self.windowHeight-searchbarHeight-30);

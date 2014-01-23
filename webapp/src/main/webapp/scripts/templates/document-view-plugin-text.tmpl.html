@@ -1,4 +1,3 @@
-<li class="documents" data-bind="attr: { 'id': 'doc_' + $root.topicexplorer.document[selectedDocument].DOCUMENT_ID }">
 	<div class="docButtons">
 		<button class="addButton" name="addToCart" title="add to shortlist" type="button"></button>
 		<button class="chartButton" onclick="" name="showBig" title="show topic mixture" type="button"></button>
@@ -9,9 +8,3 @@
 	<p class="docContent">
 		<span data-bind="text:$root.topicexplorer.document[selectedDocument].TEXT$FULLTEXT"></span>
 	</p>
-	<div class="circles">
-		<svg data-bind="foreach {data: $root.topicexplorer.document[selectedDocument].TOP_TOPIC, as:'topTopic'}" width="100%" height="100%">
-			<circle data-bind="attr:{ 'class' : 'topicCircle t_' + topTopic, 'fill' : $root.topicexplorer.topic[topTopic].COLOR_TOPIC$COLOR, 'title' : $root.topicexplorer.topic[topTopic].TEXT$TOPIC_LABEL, 'cy' : ($index() * 15 + 10)}" r="5" cx="10" stroke-width="0.5" stroke="black" >
-		</svg>
-	</div>
-</li>

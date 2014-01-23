@@ -51,40 +51,44 @@ require([ "knockout","jquery", "modules/topicexplorer-view-model",
 
 	self.minHeight = 400;
 	
-	ko.postbox.publish("windowWidth",Math.max($(window).width(), /* For opera: */ document.documentElement.clientWidth));
-	ko.postbox.publish("windowHeight",Math.max(self.minHeight, $(window).height(), /* For opera: */ document.documentElement.clientHeight));
+//	ko.postbox.publish("windowWidth",Math.max($(window).width(), /* For opera: */ document.documentElement.clientWidth));
+//	ko.postbox.publish("windowHeight",Math.max(self.minHeight, $(window).height(), /* For opera: */ document.documentElement.clientHeight));
 
 	$(window).resize(function() {
 		
 		ko.postbox.publish("windowWidth",Math.max($(window).width(), /* For opera: */ document.documentElement.clientWidth));
 		ko.postbox.publish("windowHeight",Math.max(self.minHeight, $(window).height(), /* For opera: */ document.documentElement.clientHeight));
-		resizeDocumentDivs();
+//		resizeDocumentDivs();
 		resizeTopicDivs();
 	});
 	
 	setTimeout(function() {
 		ko.applyBindings(new App());
+
+		ko.postbox.publish("windowWidth",Math.max($(window).width(), /* For opera: */ document.documentElement.clientWidth));
+		ko.postbox.publish("windowHeight",Math.max(self.minHeight, $(window).height(), /* For opera: */ document.documentElement.clientHeight));
+
 	}, 0);
 });
 
-function resizeDocumentDivs() {
-		
-	setTimeout(function() {
-		var minHeight = 400;
-		var width = Math.max($(window).width(), /* For opera: */ document.documentElement.clientWidth);
-		var height = Math.max(minHeight, $(window).height(), /* For opera: */ document.documentElement.clientHeight);
-	
-		//$('.leftBody').height(height-$('.searchBar').height()-30);	
-		$('#desktop').height(($('.leftBody').height()-90)*0.7);	
-		
-		var desktopWidth = $('#desktop > .documentList > ul').width()-63;
-		var documentWidth = 275;
-	
-		var docDeskRatio = Math.floor(desktopWidth/documentWidth);
-		$('#desktop > .documentList > ul > li').outerWidth(desktopWidth/docDeskRatio);
-	}, 500);
-};
-
+//function resizeDocumentDivs() {
+//		
+//	setTimeout(function() {
+//		var minHeight = 400;
+//		var width = Math.max($(window).width(), /* For opera: */ document.documentElement.clientWidth);
+//		var height = Math.max(minHeight, $(window).height(), /* For opera: */ document.documentElement.clientHeight);
+//	
+//		//$('.leftBody').height(height-$('.searchBar').height()-30);	
+//		//$('#desktop').height(($('.leftBody').height()-90)*0.7);	
+//		
+////		var desktopWidth = $('#desktop > .documentList > ul').width()-63;
+////		var documentWidth = 275;
+////	
+////		var docDeskRatio = Math.floor(desktopWidth/documentWidth);
+////		$('#desktop > .documentList > ul > li').outerWidth(desktopWidth/docDeskRatio);
+//	}, 500);
+//};
+//
 function resizeTopicDivs() {
 	setTimeout(function() {
 		$('.topicList').height(($('.leftBody').height()-90)*0.3);

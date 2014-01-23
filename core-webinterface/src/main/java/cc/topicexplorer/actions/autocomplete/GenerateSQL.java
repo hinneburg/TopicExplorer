@@ -1,5 +1,7 @@
 package cc.topicexplorer.actions.autocomplete;
 
+import java.sql.SQLException;
+
 import org.apache.commons.chain.Context;
 
 import cc.topicexplorer.chain.CommunicationContext;
@@ -10,15 +12,19 @@ public class GenerateSQL extends TableSelectCommand {
 	@Override
 	public void tableExecute(Context context) {
 		CommunicationContext communicationContext = (CommunicationContext) context;
-
 		Autocomplete autocompleteAction = (Autocomplete) communicationContext.get("AUTOCOMPLETE_ACTION");
 
-		autocompleteAction.executeQuery();
+		try {
+			logger.info("QUERY will be executed: " + autocompleteAction.getQueryForExecute());
+			autocompleteAction.executeQuery();
+		} catch (SQLException sqlEx) {
+			logger.error("A problem occured while executing the query.");
+			throw new RuntimeException(sqlEx);
+		}
 	}
 
 	@Override
 	public void addDependencies() {
 		beforeDependencies.add("AutocompleteCoreCreate");
 	}
-
 }

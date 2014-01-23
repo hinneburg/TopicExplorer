@@ -32,7 +32,6 @@ public class Autocomplete {
 
 		setDatabase(db);
 		setServletWriter(out);
-
 	}
 
 	public void setDatabase(Database database) {
@@ -47,7 +46,11 @@ public class Autocomplete {
 		autocompleteMap.select.add(documentColumn + " as " + documentColumnName);
 	}
 
-	public void executeQuery() {
+	public String getQueryForExecute() {
+		return this.autocompleteMap.getSQLString();
+	}
+
+	public void executeQuery() throws SQLException {
 		JSONArray topicList = new JSONArray();
 		JSONObject all = new JSONObject();
 		JSONObject term = new JSONObject();
@@ -56,32 +59,27 @@ public class Autocomplete {
 		fieldList.remove("TOPIC_ID");
 		fieldList.remove("PR_TOPIC_GIVEN_TERM");
 
-		try {
-			ResultSet autocompleteQueryRS = database.executeQuery(autocompleteMap.getSQLString());
-			System.out.println(autocompleteMap.getSQLString());
-			int termId = -1;
-			while (autocompleteQueryRS.next()) {
-				if (termId != autocompleteQueryRS.getInt("TERM_ID")) {
-					if (term.size() > 0) {
-						term.put("TOP_TOPIC", topicList);
-						all.put(termId, term);
-						term.clear();
-						topicList.clear();
-					}
-					for (int i = 0; i < fieldList.size(); i++) {
-						term.put(fieldList.get(i), autocompleteQueryRS.getString(fieldList.get(i)));
-					}
-					termId = autocompleteQueryRS.getInt("TERM_ID");
-				} 
-				topicList.add(autocompleteQueryRS.getInt("TOPIC_ID"));
+		ResultSet autocompleteQueryRS = database.executeQuery(autocompleteMap.getSQLString());
+		int termId = -1;
+		while (autocompleteQueryRS.next()) {
+			if (termId != autocompleteQueryRS.getInt("TERM_ID")) {
+				if (term.size() > 0) {
+					term.put("TOP_TOPIC", topicList);
+					all.put(termId, term);
+					term.clear();
+					topicList.clear();
+				}
+				for (int i = 0; i < fieldList.size(); i++) {
+					term.put(fieldList.get(i), autocompleteQueryRS.getString(fieldList.get(i)));
+				}
+				termId = autocompleteQueryRS.getInt("TERM_ID");
 			}
-			if (term.size() > 0) {
-				term.put("TOP_TOPIC", topicList);
-				all.put(termId, term);
-			}
-			this.outWriter.print(all.toString());
-		} catch (SQLException e) {
-			e.printStackTrace();
+			topicList.add(autocompleteQueryRS.getInt("TOPIC_ID"));
 		}
+		if (term.size() > 0) {
+			term.put("TOP_TOPIC", topicList);
+			all.put(termId, term);
+		}
+		this.outWriter.print(all.toString());
 	}
 }

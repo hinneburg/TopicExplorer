@@ -18,7 +18,7 @@ public class Create extends TableSelectCommand {
 		int limit = Integer.parseInt(properties.getProperty("DocBrowserLimit"));
 		int numberOfTopics = Integer.parseInt(properties.getProperty("malletNumTopics"));
 
-		Search searchAction = new Search(searchWord, database, pw, limit, numberOfTopics);
+		Search searchAction = new Search(searchWord, database, pw, limit, numberOfTopics, logger);
 		communicationContext.put("SEARCH_ACTION", searchAction);
 	}
 

@@ -2,9 +2,9 @@
 	
 
 <div class="topicList">
-	<img class="menuActivator rotate1" src="images/Black_Settings.png" alt="&gt;"  style="display: none;position: absolute;z-index:3;" />
+	<img class="menuActivator rotate1" src="images/Black_Settings.png" alt="&gt;"  style="display: none;position: absolute;z-index:3; margin: 3px 0 0 1px" />
 	<div id="topicMenu"
-		style="display: none; position: absolute; z-index: 1; top:20px; overflow:auto; left: 1px;">
+		style="display: none; position: absolute; z-index: 1; top:20px; overflow:auto; left: 1px;padding: 3px 0 0 1px">
 		<div  data-bind="template: {name: 'topic-view-menu', afterRender: makeMenu}"></div>
 	</div>
 	<ul data-bind="foreach: {data: selectedTopics, as: 'selectedTopic'}">

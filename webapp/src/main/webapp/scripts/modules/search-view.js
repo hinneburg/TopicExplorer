@@ -57,7 +57,7 @@ function(ko, $) {
 				+ "').val('')\" onclick=\"$('#" + boxID
 				+ "').parent('form').submit()\"><img src=\"images/" + item.item
 				+ ".png\" title=\"" + item.item + "\" />" + item.label
-				+ "<svg width=\"55px\" height=\"20px\">";
+				+ "<svg height=\"20px\">";
 				for(var i = 0; i < item.color.length; i++) {
 					circleString += generateCircle(item.color[i], i);
 				}

@@ -16,8 +16,8 @@ require([ "knockout","jquery", "modules/topicexplorer-view-model",
 	
 	// global delegates
 	$(document).delegate(".menuActivator", 'click', function(e){
-		if($(this).next().height() + 22 > $(this).parent().height()) {
-	    	$(this).next().css('max-height', $(this).parent().height() - 22);
+		if($(this).next().height() + 26 > $(this).parent().height()) {
+	    	$(this).next().css('max-height', $(this).parent().height() - 26);
 	    }
 		
 		$(this).toggleClass("rotate1 rotate2");
@@ -61,19 +61,21 @@ require([ "knockout","jquery", "modules/topicexplorer-view-model",
 });
 
 function resizeDocumentDivs() {
+		
+	setTimeout(function() {
 		var minHeight = 400;
 		var width = Math.max($(window).width(), /* For opera: */ document.documentElement.clientWidth);
 		var height = Math.max(minHeight, $(window).height(), /* For opera: */ document.documentElement.clientHeight);
 	
 		$('.leftBody').height(height-$('.searchBar').height()-30);	
 		$('#desktop').height(($('.leftBody').height()-90)*0.7);	
-		setTimeout(function() {
-			var desktopWidth = $('#desktop > .documentList > ul').width()-63;
-			var documentWidth = 275;
+		
+		var desktopWidth = $('#desktop > .documentList > ul').width()-63;
+		var documentWidth = 275;
 	
-			var docDeskRatio = Math.floor(desktopWidth/documentWidth);
-			$('#desktop > .documentList > ul > li').outerWidth(desktopWidth/docDeskRatio);
-		}, 500);
+		var docDeskRatio = Math.floor(desktopWidth/documentWidth);
+		$('#desktop > .documentList > ul > li').outerWidth(desktopWidth/docDeskRatio);
+	}, 500);
 };
 
 function resizeTopicDivs() {

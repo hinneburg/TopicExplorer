@@ -18,6 +18,7 @@
 		<module>plugin-hierarchicaltopic-preprocessing</module>
 		<module>plugin-prune-preprocessing</module>
 		<module>plugin-category-preprocessing</module>
+		<module>plugin-duplicates-preprocessing</module>
 		<module>plugin-frame-preprocessing</module>
 		<module>plugin-fulltext-preprocessing</module>
 		<module>plugin-link-preprocessing</module>
@@ -33,6 +34,7 @@
 		<module>plugin-colortopic-webinterface</module>
 		<module>plugin-hierarchicaltopic-webinterface</module>
 		<module>webapp</module>
+		<!-- <module>plugin-duplicates-webinterface</module> -->
 		<module>plugin-frame-webinterface</module>
 	</modules>
 	<dependencies>

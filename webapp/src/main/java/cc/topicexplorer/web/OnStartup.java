@@ -1,7 +1,6 @@
 package cc.topicexplorer.web;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -45,8 +44,7 @@ public class OnStartup implements ServletContextListener {
 		WebChainManagement.init();
 		if (this.getClass().getResource("/catalog.xml") != null) {
 			String path = servletContext.getRealPath("/");
-			File file = new File(path + "WEB-INF" + File.separator + "classes"
-					+ File.separator + "catalog.xml");
+			File file = new File(path + "WEB-INF" + File.separator + "classes" + File.separator + "catalog.xml");
 			if (file.delete()) {
 				logger.info(file.getName() + " is deleted!");
 			} else {
@@ -68,30 +66,24 @@ public class OnStartup implements ServletContextListener {
 	}
 
 	private Document getMergedXML(Document xmlFile1, Document xmlFile2) {
-		NodeList nodes = xmlFile2.getElementsByTagName("catalog").item(0)
-				.getChildNodes();
+		NodeList nodes = xmlFile2.getElementsByTagName("catalog").item(0).getChildNodes();
 		for (int i = 0; i < nodes.getLength(); i++) {
 			Node importNode = xmlFile1.importNode(nodes.item(i), true);
-			xmlFile1.getElementsByTagName("catalog").item(0)
-					.appendChild(importNode);
+			xmlFile1.getElementsByTagName("catalog").item(0).appendChild(importNode);
 		}
 		return xmlFile1;
 	}
 
-	private void makeCatalog() throws ParserConfigurationException,
-			SAXException, IOException, TransformerException {
+	private void makeCatalog() throws ParserConfigurationException, SAXException, IOException, TransformerException {
 		// to be filled with makeCatalog() of RandomDocs.java
-		CommunicationContext communicationContext = WebChainManagement
-				.getCommunicationContext();
-		Properties properties = (Properties) communicationContext
-				.get("properties");
+		CommunicationContext communicationContext = WebChainManagement.getCommunicationContext();
+		Properties properties = (Properties) communicationContext.get("properties");
 
 		String plugins = properties.getProperty("plugins");
 
 		logger.info("Activated plugins: " + plugins);
 
-		DocumentBuilderFactory domFactory = DocumentBuilderFactory
-				.newInstance();
+		DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
 		domFactory.setIgnoringComments(true);
 		DocumentBuilder builder = null;
 
@@ -104,30 +96,18 @@ public class OnStartup implements ServletContextListener {
 		// process plugin catalogs
 		for (String plugin : plugins.split(",")) {
 			plugin = plugin.trim().toLowerCase();
-			File f = new File("/cc/topicexplorer/plugin-" + plugin
-					+ "-webinterface/catalog/catalog.xml");
-
-			boolean pluginHasCatalogFile = false;
 			try {
-				pluginHasCatalogFile = f.exists() && !f.isDirectory();
-			} catch (SecurityException secEx) {
-				logger.warn("No read access to a required catalog file. PLUGIN: "
-						+ plugin);
-			}
-
-			if (pluginHasCatalogFile) {
-				FileInputStream fs = new FileInputStream(f);
-				try {
-					doc = this.getMergedXML(doc, builder.parse(fs));
-				} catch (SAXException saxEx) {
-					logger.warn("/cc/topicexplorer/plugin-" + plugin
-							+ "-webinterface/catalog/catalog.xml not found",
-							saxEx);
-				} catch (IOException ioEx) {
-					logger.warn("/cc/topicexplorer/plugin-" + plugin
-							+ "-webinterface/catalog/catalog.xml not found",
-							ioEx);
-				}
+				doc = this.getMergedXML(
+						doc,
+						builder.parse(this.getClass().getResourceAsStream(
+								"/cc/topicexplorer/plugin-" + plugin + "-webinterface/catalog/catalog.xml")));
+			} catch (SAXException saxEx) {
+				logger.warn("/cc/topicexplorer/plugin-" + plugin + "-webinterface/catalog/catalog.xml not found", saxEx);
+			} catch (IOException ioEx) {
+				logger.warn("/cc/topicexplorer/plugin-" + plugin + "-webinterface/catalog/catalog.xml not found", ioEx);
+			} 
+			catch (Exception e) {
+				logger.warn(e);
 			}
 		}
 
@@ -141,8 +121,8 @@ public class OnStartup implements ServletContextListener {
 		transformer.transform(source, result);
 
 		String path = servletContext.getRealPath("/");
-		PrintWriter pw = new PrintWriter(new FileWriter(path + "WEB-INF"
-				+ File.separator + "classes" + File.separator + "catalog.xml"));
+		PrintWriter pw = new PrintWriter(new FileWriter(path + "WEB-INF" + File.separator + "classes" + File.separator
+				+ "catalog.xml"));
 
 		String xmlOutput = result.getWriter().toString();
 

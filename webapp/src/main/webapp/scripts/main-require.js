@@ -12,6 +12,7 @@ require.config({
 require([ "knockout","jquery", "modules/topicexplorer-view-model",
 		"knockout-amd-helpers", "knockout-postbox",
 		"text", "jquery-ui"], function(ko, $, App) {
+	var timeoutId = null;
 	var self=this;
 	ko.bindingHandlers.module.baseDir = "modules";
 	
@@ -24,23 +25,38 @@ require([ "knockout","jquery", "modules/topicexplorer-view-model",
 		$(this).toggleClass("rotate1 rotate2");
 	    $(this).next().toggle('blind');
 	    	    
-	}).delegate(".documentList li", 'mouseover', function(e){
+	}).delegate(".documentList li", 'mouseover', function(){
 		$(this).addClass('myHover').children(".docButtons").show();
-	}).delegate(".documentList li", 'mouseout', function(e){
+	}).delegate(".documentList li", 'mouseout', function(){
 		$(this).removeClass('myHover').children(".docButtons").hide();
-	}).delegate(".documentList circle", "mouseover",function(){
+	}).delegate(".documentList circle", "mouseover", function(){
 		$(this).attr("r", "7");
-	}).delegate(".documentList circle", "mouseout",function(){
+	}).delegate(".documentList circle", "mouseout", function(){
 		$(this).attr("r", "5");
-	}).delegate("#groupG rect", "mouseover",function(){
+	}).delegate(".ui-menu-item circle", "mouseover", function(el){
+		
+		if (!timeoutId) {
+	        timeoutId = window.setTimeout(function() {
+	            timeoutId = null; // EDIT: added this line
+	            moveToTopic(el);
+		    }, 1500);
+		}
+		$(this).attr("r", "7");
+	}).delegate(".ui-menu-item circle", "mouseout", function(){
+		if (timeoutId) {
+		    window.clearTimeout(timeoutId);
+		    timeoutId = null;
+		}
+		$(this).attr("r", "5");
+	}).delegate("#groupG rect", "mouseover", function(){
 		$(this).attr("height", "17");
 		$(this).attr("y", "0");
-	}).delegate("#groupG rect", "mouseout",function(){
+	}).delegate("#groupG rect", "mouseout", function(){
 		$(this).attr("height", "13");
 		$(this).attr("y", "2");
-	}).delegate("#desktop, .topicList", "mouseenter",function(){
+	}).delegate("#desktop, .topicList", "mouseenter", function(){
 		$(this).children(":first").show();
-	}).delegate("#desktop, .topicList", "mouseleave",function(){
+	}).delegate("#desktop, .topicList", "mouseleave", function(){
 		$(this).children(":first").hide();
 		$(this).children(":first").next().hide();
 		$(this).children(":first").removeClass("rotate2");
@@ -51,44 +67,25 @@ require([ "knockout","jquery", "modules/topicexplorer-view-model",
 
 	self.minHeight = 400;
 	
-//	ko.postbox.publish("windowWidth",Math.max($(window).width(), /* For opera: */ document.documentElement.clientWidth));
-//	ko.postbox.publish("windowHeight",Math.max(self.minHeight, $(window).height(), /* For opera: */ document.documentElement.clientHeight));
-
 	$(window).resize(function() {
 		
 		ko.postbox.publish("windowWidth",Math.max($(window).width(), /* For opera: */ document.documentElement.clientWidth));
 		ko.postbox.publish("windowHeight",Math.max(self.minHeight, $(window).height(), /* For opera: */ document.documentElement.clientHeight));
-//		resizeDocumentDivs();
 		resizeTopicDivs();
 	});
 	
 	setTimeout(function() {
 		ko.applyBindings(new App());
+	}, 0);
 
+	setTimeout(function() {
 		ko.postbox.publish("windowWidth",Math.max($(window).width(), /* For opera: */ document.documentElement.clientWidth));
 		ko.postbox.publish("windowHeight",Math.max(self.minHeight, $(window).height(), /* For opera: */ document.documentElement.clientHeight));
 
-	}, 0);
+	},100);
 });
 
-//function resizeDocumentDivs() {
-//		
-//	setTimeout(function() {
-//		var minHeight = 400;
-//		var width = Math.max($(window).width(), /* For opera: */ document.documentElement.clientWidth);
-//		var height = Math.max(minHeight, $(window).height(), /* For opera: */ document.documentElement.clientHeight);
-//	
-//		//$('.leftBody').height(height-$('.searchBar').height()-30);	
-//		//$('#desktop').height(($('.leftBody').height()-90)*0.7);	
-//		
-////		var desktopWidth = $('#desktop > .documentList > ul').width()-63;
-////		var documentWidth = 275;
-////	
-////		var docDeskRatio = Math.floor(desktopWidth/documentWidth);
-////		$('#desktop > .documentList > ul > li').outerWidth(desktopWidth/docDeskRatio);
-//	}, 500);
-//};
-//
+
 function resizeTopicDivs() {
 	setTimeout(function() {
 		$('.topicList').height(($('.leftBody').height()-90)*0.3);
@@ -101,7 +98,7 @@ function resizeTopicDivs() {
 		$('.topicList > ul').width(topics*213);
 //		$('.topicList2 > ul').width(topics*213);
 		setTopicSlider();
-		$('.topicList').scrollLeft(0);
+//		$('.topicList').scrollLeft(0);
 	}, 600);
 	
 	
@@ -142,7 +139,7 @@ function makeMenu(el) {
 			$(this).parent().parent().prev()
 				.toggleClass("rotate1 rotate2");
 			$(this).parent().parent().toggle('blind');		
-			resizeDocumentDivs();
+//			resizeDocumentDivs();
 		}
 	});
 };
@@ -163,12 +160,11 @@ function getScrollPositionByValue(val) {
 function moveToTopic(self) {
 	
 	var topic_id = 0;	
-	if(!self.currentTarget)
+	if(!self.currentTarget) {
 		topic_id = self;
-	else if(self.currentTarget.nodeName == 'circle')
-		topic_id = $(self.currentTarget).attr('class').split("_")[1];
-	else if(self.currentTarget.nodeName == 'rect')
+	} else {
 		topic_id = $(self.currentTarget).attr('id').split("_")[1];
+	}
 	var offset = $(".topicList").width() / 2 - $("#topic" + topic_id).width() / 2;
 	
 	$(".topicList").animate({
@@ -177,7 +173,7 @@ function moveToTopic(self) {
 		duration : 2000,
 		easing : "swing"
 	});
-		$(".topicPrevSlider").animate({
+	$(".topicPrevSlider").animate({
 		left : getScrollPositionByValue(($("#topic" + topic_id).position().left - offset))
 	}, {
 		duration : 2000,
@@ -185,27 +181,7 @@ function moveToTopic(self) {
 	});	
 	setTimeout(function() { 
 		$(".topicList > img, #topicMenu").css('left', $(".topicList").scrollLeft());	
-	}, 2100);
+	}, 2000);
 };
 
-generateCircle = function (color, itemIdx) {
-	var cx = 10 + itemIdx * 12;
-	var topic = topicexplorerModel.topic[color];
-	if(!topic)
-		return "";
-	var circleString = "<circle class=\"topic_"+color+"\" onmouseover=\"$(this).attr('r','7');\" onmouseout=\"$(this).attr('r','5');\" "
-		+ " r=\"5\" cx=\""+cx+"\" cy=\"14\" fill=\""
-		+ topic.COLOR_TOPIC$COLOR
-		+ "\" title=\""
-		+ topic.TEXT$TOPIC_LABEL
-		+ "\" stroke=\"black\" stroke-width=\"0.5\" style=\"cursor:pointer\"/>";
-
-	return circleString;
-};
-
-function move(e) {
-	moveToTopic(e);
-	e.preventDefault();
-	return false;
-};
 

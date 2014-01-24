@@ -21,11 +21,9 @@ define(
 				});
 				self.windowWidth = ko.observable(100).subscribeTo("windowWidth");
 				self.documentElementWidth = ko.computed (function() {
-					var documentWidth = 273;
-					var docDeskRatio = Math.floor(self.windowWidth()/documentWidth);
-					console.log("jfklsdjfkljsdl");
-					console.log("windowWidth from documentView:" + self.windowWidth());
-					return (self.windowWidth()/docDeskRatio);
+					var documentWidth = 262;
+					var docDeskRatio = Math.floor((self.windowWidth() - 18)/documentWidth);
+					return (self.windowWidth()/docDeskRatio) - 38;
 				});							
 			};
 		});

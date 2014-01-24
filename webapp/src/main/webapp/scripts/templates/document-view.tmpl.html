@@ -15,7 +15,8 @@
 			<div data-bind="template: { name: function() {return $parent.selectedPluginTemplate();} }"></div>
 			<div class="circles">
 			<svg data-bind="foreach {data: $root.topicexplorer.document[selectedDocument].TOP_TOPIC, as:'topTopic'}" width="100%" height="100%">
-			<circle data-bind="attr:{ 'class' : 'topicCircle t_' + topTopic, 
+			<circle data-bind="attr:{ 'class' : 'topicCircle',
+									  'id': 't_' + topTopic, 
 									  'fill' : $root.topicexplorer.topic[topTopic].COLOR_TOPIC$COLOR, 
 									  'title' : $root.topicexplorer.topic[topTopic].TEXT$TOPIC_LABEL, 
 									  'cy' : ($index() * 15 + 10)}" 

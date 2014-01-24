@@ -9,7 +9,7 @@ function(ko, $) {
 				{paramString:"Command=search&SearchWord="+searchWord},
 				function(newDocumentIds) {
 					ko.postbox.publish("DocumentView.selectedDocuments", newDocumentIds);
-					resizeDocumentDivs();
+				//	resizeDocumentDivs();
 				}
 			);
 		};
@@ -53,8 +53,9 @@ function(ko, $) {
 					});
 				},
 				select : function(event, ui) {
-					$('#searchField').autocomplete("close");
+				//	$('#searchField').autocomplete("close");
 					self.loadDocumentsForSearch();
+				//	return false;
 				},
 				minLength : 1,
 				delay : 700
@@ -62,19 +63,33 @@ function(ko, $) {
 				var circleString = "<a onmouseover=\"$('#" + boxID + "').val('"
 				+ item.label + "')\"  onmouseout=\"$('#" + boxID
 				+ "').val('')\" onclick=\"$('#" + boxID
-				+ "').parent('form').submit()\"><img src=\"images/" + item.item
-				+ ".png\" title=\"" + item.item + "\" />" + item.label
-				+ "<svg height=\"20px\">";
+				+ "').parent('form').submit()\" style=\"width: " 
+				+ ($('#' + boxID).width() + 20) + "px;\">" + item.label
+				+ "<svg height=\"20px\" width=\"100px\">";
 				for(var i = 0; i < item.color.length; i++) {
 					circleString += generateCircle(item.color[i], i);
 				}
 
-				circleString += "</svg>";
-				ul.find('svg').delegate("circle", "click", move);
-				return $("<li></li>").data("item.autocomplete", item).append(
+				circleString += "</svg></a>";
+		//		ul.find('svg').delegate("circle", "click", moveToTopic);
+				return $("<li class=\"autocompleteEntry\"></li>").data("item.autocomplete", item).append(
 						circleString).appendTo(ul);
 			};
 		};
 
+		this.generateCircle = function (color, itemIdx) {
+			var cx = 10 + itemIdx * 12;
+			var topic = topicexplorerModel.topic[color];
+			if(!topic)
+				return "";
+			var circleString = "<circle class=\"topicCircle\" id=\"t_"+color+"\" "
+				+ " r=\"5\" cx=\""+cx+"\" cy=\"14\" fill=\""
+				+ topic.COLOR_TOPIC$COLOR
+				+ "\" title=\""
+				+ topic.TEXT$TOPIC_LABEL
+				+ "\" stroke=\"black\" stroke-width=\"0.5\" style=\"cursor:pointer\"/>";
+
+			return circleString;
+		};
 	};
 });

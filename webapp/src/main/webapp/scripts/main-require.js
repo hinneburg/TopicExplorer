@@ -67,6 +67,7 @@ require([ "knockout","jquery", "modules/topicexplorer-view-model",
 
 	self.minHeight = 400;
 	
+
 	$(window).resize(function() {
 		
 		ko.postbox.publish("windowWidth",Math.max($(window).width(), /* For opera: */ document.documentElement.clientWidth));

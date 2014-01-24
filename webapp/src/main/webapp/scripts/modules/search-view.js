@@ -67,7 +67,7 @@ function(ko, $) {
 				+ ($('#' + boxID).width() + 20) + "px;\">" + item.label
 				+ "<svg height=\"20px\" width=\"100px\">";
 				for(var i = 0; i < item.color.length; i++) {
-					circleString += generateCircle(item.color[i], i);
+					circleString += self.generateCircle(item.color[i], i);
 				}
 
 				circleString += "</svg></a>";
@@ -77,7 +77,7 @@ function(ko, $) {
 			};
 		};
 
-		this.generateCircle = function (color, itemIdx) {
+		self.generateCircle = function (color, itemIdx) {
 			var cx = 10 + itemIdx * 12;
 			var topic = topicexplorerModel.topic[color];
 			if(!topic)

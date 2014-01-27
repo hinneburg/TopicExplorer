@@ -66,13 +66,12 @@ require([ "knockout","jquery", "modules/topicexplorer-view-model",
 	}).delegate(".documentList circle, #groupG rect", "click", moveToTopic);
 
 	self.minHeight = 400;
-	
+	self.minWidth = 800;
 
-	$(window).resize(function() {
-		
-		ko.postbox.publish("windowWidth",Math.max($(window).width(), /* For opera: */ document.documentElement.clientWidth));
+	$(window).resize(function() {	
+		ko.postbox.publish("windowWidth",Math.max(self.minWidth, $(window).width(), /* For opera: */ document.documentElement.clientWidth));
 		ko.postbox.publish("windowHeight",Math.max(self.minHeight, $(window).height(), /* For opera: */ document.documentElement.clientHeight));
-		resizeTopicDivs();
+		setTopicSlider();
 	});
 	
 	setTimeout(function() {
@@ -80,30 +79,12 @@ require([ "knockout","jquery", "modules/topicexplorer-view-model",
 	}, 0);
 
 	setTimeout(function() {
-		ko.postbox.publish("windowWidth",Math.max($(window).width(), /* For opera: */ document.documentElement.clientWidth));
+		ko.postbox.publish("windowWidth",Math.max(self.minWidth, $(window).width(), /* For opera: */ document.documentElement.clientWidth));
 		ko.postbox.publish("windowHeight",Math.max(self.minHeight, $(window).height(), /* For opera: */ document.documentElement.clientHeight));
-
-	},100);
-});
-
-
-function resizeTopicDivs() {
-	setTimeout(function() {
-		$('.topicList').height(($('.leftBody').height()-90)*0.3);
-	//	$('.shoppingCart').height($('.leftBody').height());
-		$('.topic').height($('.topicList').height()-14);
-	
-		var topics = $('.topicList > ul > li').size();
-		$('#groupG').attr('transform', 'scale('+ ($('.topicPrevElCont').width()) / topics+',1)');
-//		$('#groupG2').attr('transform', 'scale('+ ($('.topicPrevElCont').width()) / topics+',1)');
-		$('.topicList > ul').width(topics*213);
-//		$('.topicList2 > ul').width(topics*213);
 		setTopicSlider();
-//		$('.topicList').scrollLeft(0);
-	}, 600);
+	}, 650);
 	
-	
-};
+});
 
 function setTopicSlider() {	
 	var slider = $('.topicPrevSlider');		

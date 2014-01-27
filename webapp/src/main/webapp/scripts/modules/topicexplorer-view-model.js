@@ -16,24 +16,6 @@ function(ko,topicexplorerModel) {
 						console.log("leftBodyHeight"+temp);
 						return (self.windowHeight()-self.searchbarHeight()-30);
 					}).publishOn("leftBodyHeight");
-		
-		//ko.bindingHandlers.leftBodyHeightHandler = {update: function() {self.leftBodyHeight(self.windowHeight-searchbarHeight-30);} };
-		//self.leftBodyHeight(self.windowHeight-searchbarHeight-30);
-
-		
-//		this.windowHeight = 100;
-//		this.searchbarHeight = 100;
-//		
-//		ko.postbox.subscribe("windowHeight",
-//				function (windowHeight) {
-//					self.windowHeight=windowHeight;
-//					self.leftBodyHeight(self.windowHeight-searchbarHeight-30);
-//					});
-//		ko.postbox.subscribe("searchbarHeight",
-//				function(searchbarHeight) {
-//					self.searchbarHeight=searchbarHeight;
-//					self.leftBodyHeight(self.windowHeight-searchbarHeight-30);
-//					});
 		 
     };
 });

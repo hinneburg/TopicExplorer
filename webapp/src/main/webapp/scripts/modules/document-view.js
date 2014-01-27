@@ -2,7 +2,7 @@ define(
 		[ "knockout", "jquery" ],
 		function(ko, $) {
 			return function(topicexplorer) {
-				var self=this;
+				var self  = this;
 				this.pluginTemplates = topicexplorer.config.documentView.pluginTemplates;
 				this.selectedPluginTemplate = ko.observable(this.pluginTemplates[0]);
 
@@ -22,7 +22,7 @@ define(
 				self.windowWidth = ko.observable(100).subscribeTo("windowWidth");
 				self.documentElementWidth = ko.computed (function() {
 					var documentWidth = 262;
-					var docDeskRatio = Math.floor((self.windowWidth() - 10)/documentWidth);
+					var docDeskRatio = Math.floor((self.windowWidth() - 10) / documentWidth);
 					return ((self.windowWidth() - 10) / docDeskRatio) - 32;
 				});							
 			};

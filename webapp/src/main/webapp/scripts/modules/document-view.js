@@ -22,8 +22,8 @@ define(
 				self.windowWidth = ko.observable(100).subscribeTo("windowWidth");
 				self.documentElementWidth = ko.computed (function() {
 					var documentWidth = 262;
-					var docDeskRatio = Math.floor((self.windowWidth() - 18)/documentWidth);
-					return (self.windowWidth()/docDeskRatio) - 38;
+					var docDeskRatio = Math.floor((self.windowWidth() - 10)/documentWidth);
+					return ((self.windowWidth() - 10) / docDeskRatio) - 32;
 				});							
 			};
 		});

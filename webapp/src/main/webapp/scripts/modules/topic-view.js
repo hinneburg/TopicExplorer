@@ -1,7 +1,7 @@
 define(["knockout"],
 function(ko) { 
 	return function(topicexplorer) {
-	//	var self = this;
+		var self = this;
     	this.topicexplorer = topicexplorer;
     	this.pluginTemplates = topicexplorer.config.topicView.pluginTemplates;
     	this.selectedPluginTemplate = ko.observable(this.pluginTemplates[0]);

@@ -8,7 +8,7 @@
 		<div  data-bind="template: {name: 'topic-view-menu', afterRender: makeMenu}"></div>
 	</div>
 	<ul data-bind="foreach: {data: selectedTopics, as: 'selectedTopic'}, style {width: $('.topicList > ul > li').size() * 213 + 'px'}">
-		<li class="topic" data-bind="attr:{ 'id' : 'topic' + selectedTopic}, style: { height: (topicListHeight() - 14) + 'px', backgroundColor: $root.topicexplorer.topic[selectedTopic].COLOR_TOPIC$COLOR}">
+		<li class="topic" data-bind="attr:{ 'id' : 'topic' + selectedTopic}, style: { height: ($parent.topicListHeight() - 14) + 'px', backgroundColor: $root.topicexplorer.topic[selectedTopic].COLOR_TOPIC$COLOR}">
 			<div  class="topicElementDiv" data-bind="template: { name: function() {return $parent.selectedPluginTemplate()}}"></div>
 		</li>
 	</ul>

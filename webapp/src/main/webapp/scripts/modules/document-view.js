@@ -1,5 +1,5 @@
 define(
-		[ "knockout", "jquery" ],
+		[ "knockout", "jquery"],
 		function(ko, $) {
 			return function(topicexplorer) {
 				var self  = this;
@@ -9,14 +9,21 @@ define(
 				this.selectedDocuments = ko.observableArray(
 						topicexplorerModel.documentSorting).subscribeTo(
 						"DocumentView.selectedDocuments");
-				
+			    
 				this.scrollCallback = function(el) {
 					$("#browserMenuActivator, #browserMenu").css('top',$("#desktop").scrollTop());
+					if($("#desktop").scrollTop() +  $("#desktop").height() >= $(".browser")[0].scrollHeight) {
+						topicexplorer.loadDocuments(
+							{paramString: topicexplorer.documentGetParameter + '&offset=' + topicexplorer.documentCount},
+							function(newDocumentIds) {
+								ko.postbox.publish("DocumentView.selectedDocuments", self.selectedDocuments().concat(newDocumentIds));
+							}
+						);
+						topicexplorer.documentCount += topicexplorerModel.documentLimit;
+					}
 				};
 				self.leftBodyHeight = ko.observable(100).subscribeTo("leftBodyHeight");
 				this.desktopHeight = ko.computed(function() {
-					var temp = (self.leftBodyHeight()-90)*0.7;
-					console.log("desktopHeight"+temp);
 					return ((self.leftBodyHeight()-90)*0.7);
 				});
 				self.windowWidth = ko.observable(100).subscribeTo("windowWidth");

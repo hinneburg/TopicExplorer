@@ -5,7 +5,7 @@ require.config({
 		"knockout-postbox" : "lib/knockout-postbox",
 		"text" : "lib/text",
 		"jquery" : "lib/jquery-1.9.1.min",
-		"jquery-ui" : "lib/jquery-ui-1.10.3.custom.min"			
+		"jquery-ui" : "lib/jquery-ui-1.10.3.custom.min",	
 	}
 });
 
@@ -34,10 +34,9 @@ require([ "knockout","jquery", "modules/topicexplorer-view-model",
 	}).delegate(".documentList circle", "mouseout", function(){
 		$(this).attr("r", "5");
 	}).delegate(".ui-menu-item circle", "mouseover", function(el){
-		
 		if (!timeoutId) {
 	        timeoutId = window.setTimeout(function() {
-	            timeoutId = null; // EDIT: added this line
+	            timeoutId = null; 
 	            moveToTopic(el);
 		    }, 1500);
 		}
@@ -61,8 +60,6 @@ require([ "knockout","jquery", "modules/topicexplorer-view-model",
 		$(this).children(":first").next().hide();
 		$(this).children(":first").removeClass("rotate2");
 		$(this).children(":first").addClass("rotate1");
-	}).bind("#desktop", "scroll",function(){
-		alert('hallo');
 	}).delegate(".documentList circle, #groupG rect", "click", moveToTopic);
 
 	self.minHeight = 400;
@@ -82,7 +79,7 @@ require([ "knockout","jquery", "modules/topicexplorer-view-model",
 		ko.postbox.publish("windowWidth",Math.max(self.minWidth, $(window).width(), /* For opera: */ document.documentElement.clientWidth));
 		ko.postbox.publish("windowHeight",Math.max(self.minHeight, $(window).height(), /* For opera: */ document.documentElement.clientHeight));
 		setTopicSlider();
-	}, 650);
+	}, 750);
 	
 });
 
@@ -121,7 +118,6 @@ function makeMenu(el) {
 			$(this).parent().parent().prev()
 				.toggleClass("rotate1 rotate2");
 			$(this).parent().parent().toggle('blind');		
-//			resizeDocumentDivs();
 		}
 	});
 };

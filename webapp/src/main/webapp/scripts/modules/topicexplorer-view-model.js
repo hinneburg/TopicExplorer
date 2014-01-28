@@ -11,11 +11,9 @@ function(ko,topicexplorerModel) {
 		this.windowHeight = ko.observable(100).subscribeTo("windowHeight");  ;
 		this.searchbarHeight = ko.observable(100).subscribeTo("searchbarHeight"); 
 		this.leftBodyHeight = ko.computed(
-					function() {
-						var temp = self.windowHeight()-self.searchbarHeight()-30;
-						console.log("leftBodyHeight"+temp);
-						return (self.windowHeight()-self.searchbarHeight()-30);
-					}).publishOn("leftBodyHeight");
+			function() {
+				return (self.windowHeight()-self.searchbarHeight()-30);
+			}).publishOn("leftBodyHeight");
 		 
     };
 });

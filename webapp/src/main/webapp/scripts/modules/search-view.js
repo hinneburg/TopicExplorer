@@ -9,16 +9,16 @@ function(ko, $) {
 				{paramString:"Command=search&SearchWord="+searchWord},
 				function(newDocumentIds) {
 					ko.postbox.publish("DocumentView.selectedDocuments", newDocumentIds);
-				//	resizeDocumentDivs();
 				}
 			);
+			$("#desktop").scrollTop(0);
+			topicexplorer.documentCount = topicexplorerModel.documentLimit;
 		};
 		ko.bindingHandlers.searchbarHandler = { init: 
-						function(el) { 		
-							self.searchbarHeight=$('.searchBar').height();
-							console.log("searchbarHeight",self.searchbarHeight);
-							ko.postbox.publish("searchbarHeight",self.searchbarHeight);
-							}
+			function(el) { 		
+				self.searchbarHeight=$('.searchBar').height();
+				ko.postbox.publish("searchbarHeight",self.searchbarHeight);
+			}
 		};
 		ko.bindingHandlers.autoCompleteHandler = { init: function(el) { self.autocomplete('searchField');}};
 		this.autocomplete = function(boxID) {

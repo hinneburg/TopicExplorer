@@ -1,5 +1,5 @@
-define(["knockout"],
-function(ko) { 
+define(["knockout", "jquery"],
+function(ko, $) { 
 	return function(topicexplorer) {
 		var self = this;
     	this.topicexplorer = topicexplorer;
@@ -12,9 +12,10 @@ function(ko) {
 				{paramString:"Command=bestDocs&TopicId="+topicId},
 				function(newDocumentIds) {
 					ko.postbox.publish("DocumentView.selectedDocuments", newDocumentIds);
-					resizeDocumentDivs();
 				}
 			);
+			topicexplorer.documentCount = topicexplorerModel.documentLimit;
+			$("#desktop").scrollTop(0);
 		};   
 		self.leftBodyHeight = ko.observable(100).subscribeTo("leftBodyHeight");
 		

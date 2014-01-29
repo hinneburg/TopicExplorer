@@ -105,8 +105,9 @@ public class OnStartup implements ServletContextListener {
 				logger.warn("/cc/topicexplorer/plugin-" + plugin + "-webinterface/catalog/catalog.xml not found", saxEx);
 			} catch (IOException ioEx) {
 				logger.warn("/cc/topicexplorer/plugin-" + plugin + "-webinterface/catalog/catalog.xml not found", ioEx);
-			} 
-			catch (Exception e) {
+			} catch (IllegalStateException e) {
+				logger.warn(e);
+			} catch (IllegalArgumentException e) {
 				logger.warn(e);
 			}
 		}

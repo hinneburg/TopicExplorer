@@ -13,6 +13,8 @@ function(ko, $) {
 			);
 			$("#desktop").scrollTop(0);
 			topicexplorer.documentCount = topicexplorerModel.documentLimit;
+			topicexplorer.documentGetParameter = "Command=search&SearchWord="+searchWord;
+			topicexplorer.documentsFull(false);
 		};
 		ko.bindingHandlers.searchbarHandler = { init: 
 			function(el) { 		
@@ -53,9 +55,7 @@ function(ko, $) {
 					});
 				},
 				select : function(event, ui) {
-				//	$('#searchField').autocomplete("close");
 					self.loadDocumentsForSearch();
-				//	return false;
 				},
 				minLength : 1,
 				delay : 700
@@ -71,7 +71,6 @@ function(ko, $) {
 				}
 
 				circleString += "</svg></a>";
-		//		ul.find('svg').delegate("circle", "click", moveToTopic);
 				return $("<li class=\"autocompleteEntry\"></li>").data("item.autocomplete", item).append(
 						circleString).appendTo(ul);
 			};

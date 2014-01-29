@@ -368,3 +368,19 @@ html, body {
 * html .ui-autocomplete {
 height: 200px;
 }
+
+#jumpToStart {
+	padding: 15px 15px 0; 
+	background-color: #F5F5F5; 
+	border: 1px solid #DCDCDC; 
+	top: -10px; 
+	border-radius: 7px;
+	font-size: x-large; 
+	display: none;
+	position: absolute;
+	z-index:3;
+	color: darkgray;
+}
+#jumpToStart:hover {
+	cursor: pointer;	
+}

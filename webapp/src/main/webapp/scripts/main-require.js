@@ -25,10 +25,10 @@ require([ "knockout","jquery", "modules/topicexplorer-view-model",
 		$(this).toggleClass("rotate1 rotate2");
 	    $(this).next().toggle('blind');
 	    	    
-	}).delegate(".documentList li", 'mouseover', function(){
-		$(this).addClass('myHover').children(".docButtons").show();
-	}).delegate(".documentList li", 'mouseout', function(){
-		$(this).removeClass('myHover').children(".docButtons").hide();
+	}).delegate(".documentList li", 'mouseenter', function(){
+		$(this).addClass('myHover').find(".docButtons").show();
+	}).delegate(".documentList li", 'mouseleave', function(){
+		$(this).removeClass('myHover').find(".docButtons").hide();
 	}).delegate(".documentList circle", "mouseover", function(){
 		$(this).attr("r", "7");
 	}).delegate(".documentList circle", "mouseout", function(){
@@ -53,15 +53,25 @@ require([ "knockout","jquery", "modules/topicexplorer-view-model",
 	}).delegate("#groupG rect", "mouseout", function(){
 		$(this).attr("height", "13");
 		$(this).attr("y", "2");
-	}).delegate("#desktop, .topicList", "mouseenter", function(){
+	}).delegate(".topicList", "mouseenter", function(){
 		$(this).children(":first").show();
+	}).delegate("#desktop", "mouseenter", function(){
+		$(this).children(":first").show();
+		if($("#desktop").scrollTop() > 1000) {
+			$("#jumpToStart").show();
+		}
 	}).delegate("#desktop, .topicList", "mouseleave", function(){
 		$(this).children(":first").hide();
 		$(this).children(":first").next().hide();
 		$(this).children(":first").removeClass("rotate2");
 		$(this).children(":first").addClass("rotate1");
+		$("#jumpToStart").hide();
+	}).delegate("#jumpToStart", "click", function() {
+		$("#desktop").animate({
+			scrollTop: 0
+		});
 	}).delegate(".documentList circle, #groupG rect", "click", moveToTopic);
-
+	
 	self.minHeight = 400;
 	self.minWidth = 800;
 

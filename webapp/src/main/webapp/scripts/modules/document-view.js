@@ -12,14 +12,25 @@ define(
 			    
 				this.scrollCallback = function(el) {
 					$("#browserMenuActivator, #browserMenu").css('top',$("#desktop").scrollTop());
-					if($("#desktop").scrollTop() +  $("#desktop").height() >= $(".browser")[0].scrollHeight) {
+					$("#jumpToStart").css('top',($("#desktop").scrollTop() - 10) + 'px');
+					if($("#desktop").scrollTop() +  $("#desktop").height() + 60 >= $(".browser")[0].scrollHeight && !topicexplorer.documentsLoading && ! topicexplorer.documentsFull()) {
+						topicexplorer.documentsLoading = true;
 						topicexplorer.loadDocuments(
 							{paramString: topicexplorer.documentGetParameter + '&offset=' + topicexplorer.documentCount},
 							function(newDocumentIds) {
+								if(newDocumentIds.length < topicexplorerModel.documentLimit) { 
+									topicexplorer.documentsFull(true);
+									console.log('full');
+								}
 								ko.postbox.publish("DocumentView.selectedDocuments", self.selectedDocuments().concat(newDocumentIds));
 							}
 						);
 						topicexplorer.documentCount += topicexplorerModel.documentLimit;
+					}
+					if($("#desktop").scrollTop() > 1000) {
+						$("#jumpToStart").show();
+					} else {
+						$("#jumpToStart").hide();
 					}
 				};
 				self.leftBodyHeight = ko.observable(100).subscribeTo("leftBodyHeight");

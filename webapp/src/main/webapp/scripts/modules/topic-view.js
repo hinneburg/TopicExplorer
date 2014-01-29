@@ -14,8 +14,10 @@ function(ko, $) {
 					ko.postbox.publish("DocumentView.selectedDocuments", newDocumentIds);
 				}
 			);
-			topicexplorer.documentCount = topicexplorerModel.documentLimit;
 			$("#desktop").scrollTop(0);
+			topicexplorer.documentCount = topicexplorerModel.documentLimit;
+			topicexplorer.documentGetParameter = "Command=bestDocs&TopicId="+topicId;	
+			topicexplorer.documentsFull(false);
 		};   
 		self.leftBodyHeight = ko.observable(100).subscribeTo("leftBodyHeight");
 		

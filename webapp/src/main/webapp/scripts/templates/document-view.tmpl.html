@@ -7,12 +7,16 @@
 		</strong>-->
 		<div  data-bind="template: {name: 'document-view-menu', afterRender: makeMenu}"></div>
 	</div>
+	<div id="jumpToStart" data-bind="style: {left: (windowWidth() / 2 - 14) + 'px'}">^</div>
 	<input type="hidden" name="docParam" data-bind="attr: {'value': $root.topicexplorer.documentGetParameter}"/>
 	<div class="documentList" style="height: 100%;">		
 		<ul	class="browser" style="height: 100%;">
 		<!-- ko foreach: {data:selectedDocuments,  as: 'selectedDocument'} -->
 			<li class="documents" data-bind="attr: { 'id': 'doc_' + $root.topicexplorer.document[selectedDocument].DOCUMENT_ID}, style: {width:$parent.documentElementWidth() + 'px'}">
-				<div data-bind="template: { name: function() {return $parent.selectedPluginTemplate();} }"></div>
+				<span data-bind="text: $index() + 1" style="float:left; font-size: xx-small; color: darkgrey"></span>
+				
+				<div data-bind="template: { name: function() {return $parent.selectedPluginTemplate();} }">
+									</div>
 				<div class="circles">
 					<svg data-bind="foreach {data: $root.topicexplorer.document[selectedDocument].TOP_TOPIC, as:'topTopic'}" width="100%" height="100%">
 						<circle data-bind="attr:{ 'class' : 'topicCircle',
@@ -25,7 +29,8 @@
 				</div>
 			</li>
 		<!-- /ko -->
-			<li data-bind="style: {width: documentElementWidth() + 'px', border: '0', backgroundColor: '#f5f5f5'}">
+
+			<li data-bind="if: !$root.topicexplorer.documentsFull(), style: {width: documentElementWidth() + 'px', border: '0', backgroundColor: '#f5f5f5'}">
 				<img data-bind="style: {marginLeft: (documentElementWidth() / 2 - 16) + 'px', marginTop: '24px'}" src="images/ajax-loader.gif" alt="Loading"/>
 			</li>
 		</ul>

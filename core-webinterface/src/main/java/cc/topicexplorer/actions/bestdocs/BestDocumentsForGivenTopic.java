@@ -20,7 +20,7 @@ public class BestDocumentsForGivenTopic {
 	private PrintWriter outWriter;
 	private Database database;
 
-	public BestDocumentsForGivenTopic(String topicId, Integer limit, Database db, PrintWriter out, int numberOfTopics) {
+	public BestDocumentsForGivenTopic(String topicId, Integer limit, Integer offset, Database db, PrintWriter out, int numberOfTopics) {
 		documentMap = new SelectMap();
 		documentMap.select.add("DOCUMENT.DOCUMENT_ID");
 		documentMap.select.add("DOCUMENT_TOPIC.PR_DOCUMENT_GIVEN_TOPIC");
@@ -30,6 +30,7 @@ public class BestDocumentsForGivenTopic {
 		documentMap.where.add("DOCUMENT_TOPIC.TOPIC_ID=" + topicId);
 		documentMap.orderBy.add("PR_DOCUMENT_GIVEN_TOPIC DESC");
 		documentMap.limit = limit;
+		documentMap.offset = offset;
 
 		setDatabase(db);
 		setServletWriter(out);

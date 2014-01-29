@@ -14,11 +14,13 @@ public class Create extends TableSelectCommand {
 		CommunicationContext communicationContext = (CommunicationContext) context;
 
 		String searchWord = (String) communicationContext.get("SEARCH_WORD");
+		int offset = (Integer) communicationContext.get("OFFSET");
 		PrintWriter pw = (PrintWriter) communicationContext.get("SERVLET_WRITER");
 		int limit = Integer.parseInt(properties.getProperty("DocBrowserLimit"));
 		int numberOfTopics = Integer.parseInt(properties.getProperty("malletNumTopics"));
 
-		Search searchAction = new Search(searchWord, database, pw, limit, numberOfTopics, logger);
+		Search searchAction = new Search(searchWord, database, pw, limit, offset, numberOfTopics, logger);
+
 		communicationContext.put("SEARCH_ACTION", searchAction);
 	}
 

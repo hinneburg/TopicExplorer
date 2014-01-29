@@ -21,11 +21,14 @@ public class Search {
 	int limit, numberOfTopics;
 	Logger logger;
 
-	public Search(String searchWord, Database db, PrintWriter out, int limit, int numberOfTopics, Logger logger) {
+
+	public Search(String searchWord, Database db, PrintWriter out, int limit, int offset, int numberOfTopics, Logger logger) {
 		searchMap = new SelectMap();
 		searchMap.select.add("DOCUMENT.DOCUMENT_ID");
 		searchMap.from.add("DOCUMENT");
 		searchMap.limit = limit;
+		searchMap.offset = offset;
+
 		this.logger = logger;
 
 		setDatabase(db);

@@ -8,7 +8,9 @@ function(ko, $) {
     	this.selectedTopics = ko.observableArray(topicexplorerModel.topicSorting);
     	this.changeSelectedTopics = function () { this.selectedTopics(["1"]); };
     	this.loadDocumentsForTopic = function (topicId) { 
-			topicexplorer.loadDocuments(
+    		topicexplorer.documentsLoading(true);
+			
+    		topicexplorer.loadDocuments(
 				{paramString:"Command=bestDocs&TopicId="+topicId},
 				function(newDocumentIds) {
 					ko.postbox.publish("DocumentView.selectedDocuments", newDocumentIds);

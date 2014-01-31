@@ -6,7 +6,7 @@ define(function() {
 			console.log('da: ' + parameter.paramString);
 			$.extend(self.topicexplorerModel.document, receivedParsedJson.DOCUMENT);
 			callback(receivedParsedJson.DOCUMENT_SORTING);
-			self.topicexplorerModel.documentsLoading = false;
+			self.topicexplorerModel.documentsLoading(false);
 		});
 	};
     return self.topicexplorerModel;

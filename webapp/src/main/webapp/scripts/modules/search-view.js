@@ -5,6 +5,7 @@ function(ko, $) {
     	this.topicexplorer = topicexplorer;
     	this.loadDocumentsForSearch = function () { 
     		var searchWord = $('#searchField').val();
+    		topicexplorer.documentsLoading(true);
 			topicexplorer.loadDocuments(
 				{paramString:"Command=search&SearchWord="+searchWord},
 				function(newDocumentIds) {

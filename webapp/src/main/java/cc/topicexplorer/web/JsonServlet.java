@@ -83,7 +83,7 @@ public class JsonServlet extends HttpServlet {
 				pluginList.add("\"" + pluginArray[i] + "\"");
 			}
 			writer.print(", \"PLUGINS\":" + pluginList.toString());
-
+			writer.print(", \"LIMIT\":" + Integer.parseInt(properties.getProperty("DocBrowserLimit")));
 			writer.print("}");
 		}
 	}

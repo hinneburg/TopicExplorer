@@ -10,6 +10,14 @@ import java.util.TreeMap;
 
 import wikiParser.SupporterForBothTypes;
 
+/*
+ - alle internen Wikipedia-Links (doppelte eckige Klammern) werden anhand ihrer Positionen und ihren Eigenschaften 
+ in unterschiedliche Hashmaps gespeichert und anderen Klassen zur Verfügung gestellt.
+ - ein interner Wikipedia-Link sieht wie folgt aus [[Linkziel|Linkttext]]
+ - die UTF-8 Position eines Linktextes ist relevant, das Linkziel nicht
+
+ */
+
 public class BracketPositions {
 
 	private final String wikiOrigText;

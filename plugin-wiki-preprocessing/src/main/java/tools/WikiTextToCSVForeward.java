@@ -15,18 +15,21 @@ import java.util.TreeSet;
 import wikiParser.PreMalletParallelization;
 import wikiParser.SupporterForBothTypes;
 
-/*
- - pointersache kann auch mit hashmaps oder treemap gemacht werden , wäre glaube besser, damit nicht eventtuell pointerfehler entstehen kann bei checkIfPositionOfWordIsWithinBoxBrackets
- - vllt nochmal assert test
- - !! testen und vergleichen ob es auch wirklich geht, testen mit indem verglichen wird mit der alten implementierung
- */
-
 /**
  * 
- * um für den geparsten Text die Positionen aus dem originalem Text zu bestimmen
- * und dann die Daten für den Malletinput erzeugen
+ * um für den geparsten Text die Positionen aus dem originalem Text zu
+ * bestimmen, und dann die Daten für den Malletinput erzeugen
+ * 
+ * übersetzt bedeutet das: - Eingabedateien sind Wikipedia-Text der zeilenweise
+ * vorliegt, der originale Wikipedia-Text und der geparste Wikipedia-Text - die
+ * unterschiedlichen Texte werden miteinander verbunden, indem die Elemente
+ * (Elemente liegen zeilenweise vor) analysiert und in den übrigen beiden Texte
+ * gesucht und gefunden werden
+ * 
+ * 
  * 
  */
+
 public class WikiTextToCSVForeward {
 
 	private final String wikiOrigText;
@@ -83,11 +86,6 @@ public class WikiTextToCSVForeward {
 
 	}
 
-	// public WikiTextToCSVForeward(WikiArticle w, BufferedWriter bwLogger) {
-	// this(w);
-	// this.bwlogger = bwLogger;
-	// }
-
 	private void init() {
 		try {
 			startTokenizing();
@@ -137,6 +135,33 @@ public class WikiTextToCSVForeward {
 			}
 		}
 
+	}
+
+	private Integer splitForOutputAndReturnNewPosition(String tmpLine, Integer posOfLineInOriginalText) {
+		Integer endToken = -1;
+		Integer startToken = 0;
+
+		while (startToken < tmpLine.length()) {
+			for (startToken = endToken + 1; startToken < tmpLine.length(); startToken++) {
+				if (Character.toString(tmpLine.charAt(startToken)).matches("\\p{L}")) {
+					break;
+				}
+			}
+			for (endToken = startToken; endToken < tmpLine.length(); endToken++) {
+				if (Character.toString(tmpLine.charAt(endToken)).matches("\\P{L}")) {
+					break;
+				}
+			}
+			if (startToken < tmpLine.length()) {
+
+				// only words with length greater than 1 are parsed
+				if (tmpLine.substring(startToken, endToken).length() > 1) {
+					tokensParsedText.add(tmpLine.substring(startToken, endToken));
+					startPositionsWikiText.add(startToken + posOfLineInOriginalText);
+				}
+			}
+		}
+		return posOfLineInOriginalText + tmpLine.length();
 	}
 
 	private void tokenize() throws IOException {
@@ -543,33 +568,6 @@ public class WikiTextToCSVForeward {
 			}
 
 		}
-	}
-
-	private Integer splitForOutputAndReturnNewPosition(String tmpLine, Integer posOfLineInOriginalText) {
-		Integer endToken = -1;
-		Integer startToken = 0;
-
-		while (startToken < tmpLine.length()) {
-			for (startToken = endToken + 1; startToken < tmpLine.length(); startToken++) {
-				if (Character.toString(tmpLine.charAt(startToken)).matches("\\p{L}")) {
-					break;
-				}
-			}
-			for (endToken = startToken; endToken < tmpLine.length(); endToken++) {
-				if (Character.toString(tmpLine.charAt(endToken)).matches("\\P{L}")) {
-					break;
-				}
-			}
-			if (startToken < tmpLine.length()) {
-
-				// only words with length greater than 1 are parsed
-				if (tmpLine.substring(startToken, endToken).length() > 1) {
-					tokensParsedText.add(tmpLine.substring(startToken, endToken));
-					startPositionsWikiText.add(startToken + posOfLineInOriginalText);
-				}
-			}
-		}
-		return posOfLineInOriginalText + tmpLine.length();
 	}
 
 	private void startTokenizing() throws IOException {

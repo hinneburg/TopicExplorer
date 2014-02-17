@@ -29,7 +29,8 @@ public class OrgTableCreateAndFill extends TableCommand {
 			if (e.getErrorCode() != 1091) { // MySQL Error code for 'Can't DROP
 											// ..; check that column/key exists
 				logger.error("wiki-plug-in." + this.tableName + ": Cannot drop table " + this.tableName);
-				throw new RuntimeException(e);
+				// throw new RuntimeException(e);
+				// das ist nicht schlimm bzw RuntimeException ist hier falsch 
 			}
 		}
 

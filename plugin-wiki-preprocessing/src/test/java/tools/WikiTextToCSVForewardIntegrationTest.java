@@ -2,8 +2,6 @@ package tools;
 
 import static org.fest.assertions.Assertions.assertThat;
 
-import java.util.Properties;
-
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -20,14 +18,8 @@ public class WikiTextToCSVForewardIntegrationTest {
 	private String wikiTitle;
 	private WikiArticle wikiArticle;
 
-	private final Properties prop = new Properties();
-
 	@Before
 	public void init() {
-
-		prop.setProperty("Wiki_fileOutput", "true");
-		prop.setProperty("Wiki_debug", "false");
-		prop.setProperty("Wiki_onlyParsedLinks", "true");
 
 		old_id = 38;
 		wikiTitle = "Konrad_Zuse";

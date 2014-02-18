@@ -26,11 +26,12 @@ public class OrgTableCreateAndFill extends TableCommand {
 		try {
 			this.database.executeUpdateQuery("drop table " + tableName + ";");
 		} catch (SQLException e) {
-			if (e.getErrorCode() != 1091) { // MySQL Error code for 'Can't DROP
-											// ..; check that column/key exists
+			if (e.getErrorCode() != 1051) { // MySQL Error code for 'Can't
+				// DROP
+				// ..; check that column/key exists
 				logger.error("wiki-plug-in." + this.tableName + ": Cannot drop table " + this.tableName);
-				// throw new RuntimeException(e);
-				// das ist nicht schlimm bzw RuntimeException ist hier falsch 
+				throw new RuntimeException(e);
+
 			}
 		}
 

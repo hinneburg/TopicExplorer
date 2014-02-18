@@ -24,12 +24,13 @@ public class DocumentTermTopicCreate extends TableCreateCommand {
 	@Override
 	public void dropTable() {
 		try {
-			this.database.executeUpdateQuery("ALTER TABLE " + this.tableName + " DROP COLUMN ADD COLUMN WIKI$POSITION");
+			this.database.executeUpdateQuery("ALTER TABLE " + this.tableName + " DROP COLUMN WIKI$POSITION");
 		} catch (SQLException e) {
-			if (e.getErrorCode() != 1091) { // MySQL Error code for: 'Can't //
-											// DROP..; check that column/key //
-											// exists
-				logger.error("Document.dropColumns: Cannot drop column.");
+			if (e.getErrorCode() != 1091) { // MySQL Error code for: 'Can't
+				//
+				// DROP..; check that column/key //
+				// exists
+				logger.error("WIKI_DocumentTermTopicCreate.dropColumns: Cannot drop column.");
 				throw new RuntimeException(e);
 			}
 		}

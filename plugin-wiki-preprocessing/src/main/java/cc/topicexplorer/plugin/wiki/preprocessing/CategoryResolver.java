@@ -122,28 +122,42 @@ public class CategoryResolver extends DependencyCommand {
 		}
 	}
 
-	private void getParentCategoriesOfWikiIdTitle(WikiIDTitlePair child) throws SQLException, IOException {
+	private void getParentCategoriesOfWikiIdTitle(WikiIDTitlePair child) {
 
-		String wikiText;
-		List<CategoryElement> listOfLinks;
-		BracketPositions bp;
+		try {
+			String wikiText;
+			List<CategoryElement> listOfLinks;
+			BracketPositions bp;
 
-		wikiText = s.getWikiTextOnlyWithID(child.getOld_id());
-		bp = new BracketPositions(wikiText, child.getOld_id(), child.getWikiTitle());
-		listOfLinks = bp.getCategoryLinkList();
+			wikiText = s.getWikiTextOnlyWithID(child.getOld_id());
+			bp = new BracketPositions(wikiText, child.getOld_id(), child.getWikiTitle());
+			listOfLinks = bp.getCategoryLinkList();
 
-		catChilds.add(getTitleWithUnderscores(child.getWikiTitle()));
+			catChilds.add(getTitleWithUnderscores(child.getWikiTitle()));
 
-		for (CategoryElement e : listOfLinks) {
+			for (CategoryElement e : listOfLinks) {
 
-			addToBW(e);
+				addToBW(e);
 
-			// wenn noch nicht in hashset kann es auf den stack
-			if (!catChilds.contains(getTitleWithUnderscores(e.getText()))) {
-				stack.add(getTitleWithUnderscores(ExtraInformations.getTargetWithoutCategoryInformation(e.getText())));
+				// wenn noch nicht in hashset kann es auf den stack
+				if (!catChilds.contains(getTitleWithUnderscores(e.getText()))) {
+					stack.add(getTitleWithUnderscores(ExtraInformations.getTargetWithoutCategoryInformation(e.getText())));
+				}
+			}
+
+			bp = null;
+
+		} catch (SQLException e) {
+			if (logger != null) {
+				logger.warn("[ " + getClass() + ".getParentCategoriesOfWikiIdTitle() ] - " + e.getMessage()
+						+ ", only subfunction");
+			}
+		} catch (IOException e) {
+			if (logger != null) {
+				logger.warn("[ " + getClass() + ".getParentCategoriesOfWikiIdTitle() ] - " + e.getMessage()
+						+ ", only subfunction");
 			}
 		}
-
 	}
 
 	private void addToBW(CategoryElement e) throws IOException {
@@ -157,7 +171,7 @@ public class CategoryResolver extends DependencyCommand {
 		return title;
 	}
 
-	private void emptyingStackAndResolveElements() throws SQLException, IOException {
+	private void emptyingStackAndResolveElements() {
 
 		while (stack.size() > 0) {
 			String e = stack.remove();
@@ -167,37 +181,56 @@ public class CategoryResolver extends DependencyCommand {
 		}
 	}
 
-	private void getParentCategoriesOfString(String category, Boolean trueIfCommesFromSource) throws SQLException,
-			IOException {
+	private void getParentCategoriesOfString(String category, Boolean trueIfCommesFromSource) {
 
-		String sql = "SELECT page_title, page_latest FROM page where page_namespace = 14 and page_title like '"
-				+ category + "' ";
-		ResultSet rs;
-		WikiIDTitlePair id_title;
+		try {
+			String sql = "SELECT page_title, page_latest FROM page where page_namespace = 14 and page_title like '"
+					+ category + "' ";
+			ResultSet rs;
+			WikiIDTitlePair id_title;
 
-		rs = db.executeQuery(sql);
+			rs = db.executeQuery(sql);
 
-		if (rs.next()) {
+			if (rs.next()) {
 
-			id_title = s.getOldIdAndWikiTitleFromWikiPageIdFromDatabase(Integer.valueOf(rs.getString("page_latest")));
+				id_title = s
+						.getOldIdAndWikiTitleFromWikiPageIdFromDatabase(Integer.valueOf(rs.getString("page_latest")));
 
-			getParentCategoriesOfWikiIdTitle(id_title);
+				getParentCategoriesOfWikiIdTitle(id_title);
 
-		} else {
-			// for finding cat-pages who has no parent because of failed
-			// import or something, perhaps it doesn't matter with fully
-			// imported dumps
+			} else {
+				// for finding cat-pages who has no parent because of failed
+				// import or something, perhaps it doesn't matter with fully
+				// imported dumps
 
-			if (!trueIfCommesFromSource) {
-				CategoryElement ce = new CategoryElement();
-				// ce.setOldId(old_id);
-				ce.setTitle(category);
-				ce.setText(CATPARENTTEXT);
+				if (!trueIfCommesFromSource) {
+					CategoryElement ce = new CategoryElement();
+					// ce.setOldId(old_id);
+					ce.setTitle(category);
+					ce.setText(CATPARENTTEXT);
 
-				addToBW(ce);
+					addToBW(ce);
 
-				catChilds.add(category);
+					catChilds.add(category);
 
+				}
+			}
+		} catch (NumberFormatException e) {
+
+			if (logger != null) {
+				logger.warn("[ " + getClass() + ".getParentCategoriesOfString() ] - " + e.getMessage()
+						+ ", only subfunction");
+			}
+
+		} catch (SQLException e) {
+			if (logger != null) {
+				logger.warn("[ " + getClass() + ".getParentCategoriesOfString() ] - " + e.getMessage()
+						+ ", only subfunction");
+			}
+		} catch (IOException e) {
+			if (logger != null) {
+				logger.warn("[ " + getClass() + ".getParentCategoriesOfString() ] - " + e.getMessage()
+						+ ", only subfunction");
 			}
 		}
 

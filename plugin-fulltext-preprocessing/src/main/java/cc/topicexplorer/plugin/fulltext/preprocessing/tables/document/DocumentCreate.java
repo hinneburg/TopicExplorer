@@ -4,10 +4,6 @@ import java.sql.SQLException;
 
 import cc.topicexplorer.chain.commands.TableCreateCommand;
 
-/**
- * @author user
- * 
- */
 public class DocumentCreate extends TableCreateCommand {
 
 	@Override
@@ -24,8 +20,7 @@ public class DocumentCreate extends TableCreateCommand {
 	@Override
 	public void dropTable() {
 		try {
-			this.database.executeUpdateQuery("ALTER TABLE " + this.tableName
-					+ " DROP COLUMN ADD COLUMN FULLTEXT$FULLTEXT");
+			this.database.executeUpdateQuery("ALTER TABLE " + this.tableName + " DROP COLUMN FULLTEXT$FULLTEXT;");
 		} catch (SQLException e) {
 			if (e.getErrorCode() != 1091) { // MySQL Error code for 'Can't DROP
 				// ..; check that column/key exists

@@ -1,5 +1,6 @@
 package cc.topicexplorer.chain;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -9,10 +10,12 @@ import org.apache.commons.chain.Catalog;
 import org.apache.commons.chain.Command;
 import org.apache.commons.chain.config.ConfigParser;
 import org.apache.commons.chain.impl.CatalogFactoryBase;
+import org.apache.log4j.FileAppender;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.apache.log4j.PatternLayout;
 
 import cc.topicexplorer.chain.commands.DbConnectionCommand;
-import cc.topicexplorer.chain.commands.LoggerCommand;
 import cc.topicexplorer.chain.commands.PropertiesCommand;
 import cc.topicexplorer.exceptions.CatalogNotInstantiableException;
 
@@ -70,22 +73,24 @@ public class ChainManagement {
 		}
 	}
 
-	/**
+/**
 	 * Executes the commands, needed for initialization. It contains commands
 	 * that should be executed before other commands or tasks. Information is
 	 * saved in the databaseContext.
 	 * 
 	 * @throws RuntimeException
 	 *             if one of command, needed for initialization, throws a
-	 *             {@link RuntimeException}
+	 *             {@link RuntimeException
+	 * @throws IOException
+	 *             if there are problems handling the file
+	 *             'logs/Preprocessing.log'
 	 */
 	public void init() {
 		try {
-			Command loggerCommand = new LoggerCommand();
+			initializeLogger("logs/Preprocessing.log");
 			Command propertiesCommand = new PropertiesCommand();
 			Command dbConnectionCommand = new DbConnectionCommand();
 
-			loggerCommand.execute(this.communicationContext);
 			propertiesCommand.execute(this.communicationContext);
 			dbConnectionCommand.execute(this.communicationContext);
 		} catch (RuntimeException e1) {
@@ -94,6 +99,17 @@ public class ChainManagement {
 		} catch (Exception e2) {// Exception type cannot be more specified, due
 								// to Command signature
 			logger.warn("Initialization caused a non critical exception", e2);
+		}
+	}
+
+	private void initializeLogger(String logfileName) {
+		try {
+			logger.addAppender(new FileAppender(new PatternLayout("%d-%p-%C-%M-%m%n"), logfileName, false));
+			logger.setLevel(Level.INFO); // ALL | DEBUG | INFO | WARN | ERROR |
+											// FATAL | OFF:
+		} catch (IOException e) {
+			logger.error("FileAppender with log file " + logfileName + " could not be constructed.");
+			throw new RuntimeException(e);
 		}
 	}
 

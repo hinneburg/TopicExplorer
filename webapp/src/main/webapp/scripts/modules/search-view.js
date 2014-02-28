@@ -8,24 +8,32 @@ function(ko, $) {
     		
     		var index = ++topicexplorer.tabsLastIndex;
     		topicexplorer.tab[topicexplorer.activeTab].scrollPosition = $("#desktop").scrollTop();
-    		topicexplorer.activeTab = index;
-			topicexplorer.tabs.push("" + index);
-			$("#desktop").scrollTop(0);
-			topicexplorer.tab[index] = new Array();
-			topicexplorer.tab[index].scrollPosition = 0;
-			topicexplorer.tab[index].tabTitle = "Search: " + searchWord;
-			topicexplorer.tab[index].documentCount = topicexplorerModel.documentLimit;
-			topicexplorer.tab[index].documentGetParameter = "Command=search&SearchWord="+searchWord;	
-			topicexplorer.tab[index].documentsFull = ko.observable(false);
-    		topicexplorer.loadDocuments(
+    		topicexplorer.activeTab = "t" + index;
+			topicexplorer.tabs.push("t" + index);
+			
+			topicexplorer.tab["t" + index] = new Array();
+			topicexplorer.tab["t" + index].scrollPosition = 0;
+			topicexplorer.tab["t" + index].tabTitle = "Search: " + searchWord;
+			topicexplorer.tab["t" + index].documentGetParameter = "Command=search&SearchWord="+searchWord;	
+			topicexplorer.loadDocuments(
 				{paramString:"Command=search&SearchWord="+searchWord},
 				function(newDocumentIds) {
+					if(newDocumentIds.length < topicexplorer.documentLimit) { 
+						topicexplorer.tab["t" + index].documentsFull = ko.observable(true);
+					} else {
+						topicexplorer.tab["t" + index].documentsFull = ko.observable(false);
+					}
+					topicexplorer.tab["t" + index].documentCount = newDocumentIds.length;					
+					topicexplorer.tab["t" + index].documentSorting = newDocumentIds;
+					console.log(topicexplorer.tab["t" + index].documentsFull() + index);
+					ko.postbox.publish("TabView.tabs", topicexplorer.tabs);
 					ko.postbox.publish("DocumentView.selectedDocuments", newDocumentIds);
-					topicexplorer.tab[index].documentSorting = newDocumentIds;
+					$("#desktop").scrollTop(0);
+		    		
 				}
+				
 			);
-    		ko.postbox.publish("TabView.tabs", topicexplorer.tabs);
-			
+    		
    		};
 		ko.bindingHandlers.searchbarHandler = { init: 
 			function(el) { 		

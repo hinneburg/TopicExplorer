@@ -12,20 +12,25 @@ function(ko, $) {
 			
     		var index = ++topicexplorer.tabsLastIndex;
     		topicexplorer.tab[topicexplorer.activeTab].scrollPosition = $("#desktop").scrollTop();
-    		topicexplorer.activeTab = index;
-			topicexplorer.tabs.push("" + index);
+    		topicexplorer.activeTab = "t" + index;
+			topicexplorer.tabs.push("t" + index);
 			
-			topicexplorer.tab[index] = new Array();
-			topicexplorer.tab[index].scrollPosition = 0;
-			topicexplorer.tab[index].tabTitle = "Topic " + topicId;
-			topicexplorer.tab[index].documentCount = topicexplorerModel.documentLimit;
-			topicexplorer.tab[index].documentGetParameter = "Command=bestDocs&TopicId="+topicId;	
-			topicexplorer.tab[index].documentsFull = ko.observable(false);
-    		topicexplorer.loadDocuments(
+			topicexplorer.tab["t" + index] = new Array();
+			topicexplorer.tab["t" + index].scrollPosition = 0;
+			topicexplorer.tab["t" + index].tabTitle = "Topic " + topicId;
+			topicexplorer.tab["t" + index].documentGetParameter = "Command=bestDocs&TopicId="+topicId;	
+			topicexplorer.loadDocuments(
 				{paramString:"Command=bestDocs&TopicId="+topicId},
 				function(newDocumentIds) {
-					ko.postbox.publish("DocumentView.selectedDocuments", newDocumentIds);
-					topicexplorer.tab[index].documentSorting = newDocumentIds;
+					if(newDocumentIds.length < topicexplorerModel.documentLimit) { 
+						topicexplorer.tab["t" + index].documentsFull = ko.observable(true);
+					} else {
+						topicexplorer.tab["t" + index].documentsFull = ko.observable(false);
+					}
+					topicexplorer.tab["t" + index].documentSorting = newDocumentIds;
+					topicexplorer.tab["t" + index].documentCount = newDocumentIds.length;
+					
+					ko.postbox.publish("DocumentView.selectedDocuments", newDocumentIds);	
 				}
 			);
     		ko.postbox.publish("TabView.tabs", topicexplorer.tabs);

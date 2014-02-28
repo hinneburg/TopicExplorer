@@ -8,7 +8,7 @@
 	<input type="hidden" name="docParam" data-bind="attr: {'value': $root.topicexplorer.documentGetParameter}"/>
 	<div class="documentList" style="height: 100%;">		
 		<ul	class="browser" style="height: 100%;">
-		<!-- ko foreach: {data:selectedDocuments,  as: 'selectedDocument'} -->
+		<!-- ko foreach: {data:selectedDocuments,  as: 'selectedDocument', afterRender:checkSize} -->
 			<li class="documents" data-bind="attr: { 'id': 'doc_' + $root.topicexplorer.document[selectedDocument].DOCUMENT_ID}, style: {width:$parent.documentElementWidth() + 'px'}">
 				<span data-bind="text: $index() + 1" style="float:left; font-size: xx-small; color: darkgrey"></span>
 				
@@ -29,6 +29,7 @@
 
 			<li data-bind="if: !$root.topicexplorer.tab[$root.topicexplorer.activeTab].documentsFull(), style: {width: documentElementWidth() + 'px', border: '0', backgroundColor: '#f5f5f5'}">
 				<img data-bind="style: {marginLeft: (documentElementWidth() / 2 - 16) + 'px', marginTop: '24px'}" src="images/ajax-loader.gif" alt="Loading"/>
+				<span data-bind="text: $root.topicexplorer.tab[$root.topicexplorer.activeTab].documentsFull() + ' ' + $root.topicexplorer.activeTab"></span>
 			</li>
 		</ul>
 	</div>

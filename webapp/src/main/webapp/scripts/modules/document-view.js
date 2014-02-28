@@ -23,7 +23,6 @@ define(
 				};
 				
 				this.checkSize = function() {
-					console.log('hhooo');
 					if($(".browser").length > 0 ) {
 						self.loadMoreDocuments();
 					}
@@ -46,14 +45,13 @@ define(
 				self.documentElementWidth.subscribe(self.checkSize);
 				
 				self.loadMoreDocuments = function() {
-					if(!topicexplorer.documentsLoading() && !topicexplorer.tab[topicexplorer.activeTab].documentsFull() && $("#desktop").scrollTop() + self.desktopHeight() + 90 >= $(".browser")[0].scrollHeight) {
+					if(!topicexplorer.documentsLoading() && !topicexplorer.tab[topicexplorer.activeTab].documentsFull() && $("#desktop").scrollTop() + self.desktopHeight() + 90 >= $("#desktop")[0].scrollHeight) {
 						topicexplorer.documentsLoading(true);
 						topicexplorer.loadDocuments(
 							{paramString: topicexplorer.tab[topicexplorer.activeTab].documentGetParameter + '&offset=' + topicexplorer.tab[topicexplorer.activeTab].documentCount},
 							function(newDocumentIds) {
 								if(newDocumentIds.length < topicexplorerModel.documentLimit) { 
 									topicexplorer.tab[topicexplorer.activeTab].documentsFull(true);
-									console.log('full');
 								}
 								topicexplorer.tab[topicexplorer.activeTab].documentSorting = topicexplorer.tab[topicexplorer.activeTab].documentSorting.concat(newDocumentIds);
 								self.selectedDocuments(self.selectedDocuments().concat(newDocumentIds));

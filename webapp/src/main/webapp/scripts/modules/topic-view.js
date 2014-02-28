@@ -10,16 +10,27 @@ function(ko, $) {
     	this.loadDocumentsForTopic = function (topicId) { 
     		topicexplorer.documentsLoading(true);
 			
+    		var index = ++topicexplorer.tabsLastIndex;
+    		topicexplorer.tab[topicexplorer.activeTab].scrollPosition = $("#desktop").scrollTop();
+    		topicexplorer.activeTab = index;
+			topicexplorer.tabs.push("" + index);
+			
+			topicexplorer.tab[index] = new Array();
+			topicexplorer.tab[index].scrollPosition = 0;
+			topicexplorer.tab[index].tabTitle = "Topic " + topicId;
+			topicexplorer.tab[index].documentCount = topicexplorerModel.documentLimit;
+			topicexplorer.tab[index].documentGetParameter = "Command=bestDocs&TopicId="+topicId;	
+			topicexplorer.tab[index].documentsFull = ko.observable(false);
     		topicexplorer.loadDocuments(
 				{paramString:"Command=bestDocs&TopicId="+topicId},
 				function(newDocumentIds) {
 					ko.postbox.publish("DocumentView.selectedDocuments", newDocumentIds);
+					topicexplorer.tab[index].documentSorting = newDocumentIds;
 				}
 			);
+    		ko.postbox.publish("TabView.tabs", topicexplorer.tabs);
 			$("#desktop").scrollTop(0);
-			topicexplorer.documentCount = topicexplorerModel.documentLimit;
-			topicexplorer.documentGetParameter = "Command=bestDocs&TopicId="+topicId;	
-			topicexplorer.documentsFull(false);
+			
 		};   
 		self.leftBodyHeight = ko.observable(100).subscribeTo("leftBodyHeight");
 		

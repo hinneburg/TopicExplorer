@@ -1,4 +1,4 @@
-define(function() {
+define(["jquery"], function($) {
 	self = this;
 	self.topicexplorerModel = new Object();
 	self.topicexplorerModel.loadDocuments = function (parameter, callback) {

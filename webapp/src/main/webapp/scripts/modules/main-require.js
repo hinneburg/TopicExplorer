@@ -6,13 +6,12 @@ require.config({
 		"text" : "lib/text",
 		"jquery" : "lib/jquery-1.9.1.min",
 		"jquery-ui" : "lib/jquery-ui-1.10.3.custom.min",	
-		"knockout-jqueryui" : "lib/knockout-jqueryui.min"
 	}
 });
 
 require([ "knockout","jquery", "modules/topicexplorer-view-model",
 		"knockout-amd-helpers", "knockout-postbox",
-		"text", "jquery-ui", "knockout-jqueryui" ], function(ko, $, App) {
+		"text", "jquery-ui"], function(ko, $, App) {
 	var timeoutId = null;
 	var self=this;
 	ko.bindingHandlers.module.baseDir = "modules";
@@ -90,7 +89,7 @@ require([ "knockout","jquery", "modules/topicexplorer-view-model",
 		ko.postbox.publish("windowWidth",Math.max(self.minWidth, $(window).width(), /* For opera: */ document.documentElement.clientWidth));
 		ko.postbox.publish("windowHeight",Math.max(self.minHeight, $(window).height(), /* For opera: */ document.documentElement.clientHeight));
 		setTopicSlider();
-	}, 1000);
+	}, 2000);
 	
 });
 

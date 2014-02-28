@@ -1,0 +1,7 @@
+<!-- ko foreach: {data:tabs, afterRender: setActive} -->
+<p class="reiter button gradientGray tab" data-bind="attr: { id: 'tab' + $data}, click: $parent.toggleActive">
+	<span data-bind="text: $root.topicexplorer.tab[$index()].tabTitle"></span><img data-bind="click: $parent.deleteTab" style="cursor: pointer; position:absolute; top:5px; right: 5px;" width="12px" height="12px" src="images/delete_24.png" alt="close"/>
+</p>
+<!-- /ko -->
+
+<div id="document-view" data-bind="module: {name: 'document-view', data: $parent.topicexplorer, template: 'document-view'}"></div>

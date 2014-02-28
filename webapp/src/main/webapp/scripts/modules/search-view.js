@@ -5,18 +5,28 @@ function(ko, $) {
     	this.topicexplorer = topicexplorer;
     	this.loadDocumentsForSearch = function () { 
     		var searchWord = $('#searchField').val();
-    		topicexplorer.documentsLoading(true);
-			topicexplorer.loadDocuments(
+    		
+    		var index = ++topicexplorer.tabsLastIndex;
+    		topicexplorer.tab[topicexplorer.activeTab].scrollPosition = $("#desktop").scrollTop();
+    		topicexplorer.activeTab = index;
+			topicexplorer.tabs.push("" + index);
+			$("#desktop").scrollTop(0);
+			topicexplorer.tab[index] = new Array();
+			topicexplorer.tab[index].scrollPosition = 0;
+			topicexplorer.tab[index].tabTitle = "Search: " + searchWord;
+			topicexplorer.tab[index].documentCount = topicexplorerModel.documentLimit;
+			topicexplorer.tab[index].documentGetParameter = "Command=search&SearchWord="+searchWord;	
+			topicexplorer.tab[index].documentsFull = ko.observable(false);
+    		topicexplorer.loadDocuments(
 				{paramString:"Command=search&SearchWord="+searchWord},
 				function(newDocumentIds) {
 					ko.postbox.publish("DocumentView.selectedDocuments", newDocumentIds);
+					topicexplorer.tab[index].documentSorting = newDocumentIds;
 				}
 			);
-			$("#desktop").scrollTop(0);
-			topicexplorer.documentCount = topicexplorerModel.documentLimit;
-			topicexplorer.documentGetParameter = "Command=search&SearchWord="+searchWord;
-			topicexplorer.documentsFull(false);
-		};
+    		ko.postbox.publish("TabView.tabs", topicexplorer.tabs);
+			
+   		};
 		ko.bindingHandlers.searchbarHandler = { init: 
 			function(el) { 		
 				self.searchbarHeight=$('.searchBar').height();

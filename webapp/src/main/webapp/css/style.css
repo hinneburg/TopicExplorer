@@ -235,8 +235,7 @@ html, body {
 	height:20px;
 	border:1px solid silver;
 	float:left;
-	margin:0px;
-	margin-left:4px;
+	margin:0 0 -1px 4px;
 	padding: 0px 5px;
 	border-bottom:0px;
 	border-radius: 12px 12px 0px 0px;
@@ -245,12 +244,25 @@ html, body {
 .leftBody .reiter span {
 	vertical-align: middle;	
 }
-.leftBody .reiter.active {	
-	border-color: #3366EA;
+.leftBody .reiter.active{	
+	border-color: #C0C0C0 #C0C0C0 #F5F5F5 #C0C0C0;
+	z-index: 5;
+	background: #F5F5F5;	
 }
+
+.leftBody .reiter.active:hover{	
+	cursor: default;	
+	background: #F5F5F5;	
+}
+
+
 .leftBody .reiter.active span {	
 	color: #3366EA;
 }
+.active:hover {
+	cursor: default;
+}
+
 
 .content .button:hover {
 	background: #dfdfdf; /* Old browsers */

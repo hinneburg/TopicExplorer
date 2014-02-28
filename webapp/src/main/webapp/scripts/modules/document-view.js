@@ -6,8 +6,11 @@ define(
 				this.pluginTemplates = topicexplorer.config.documentView.pluginTemplates;
 				this.selectedPluginTemplate = ko.observable(this.pluginTemplates[0]);
 
+				this.activeTab = ko.observable(topicexplorer.activeTab).subscribeTo(
+						"TabView.activeTab");
+				
 				this.selectedDocuments = ko.observableArray(
-						topicexplorer.tab[topicexplorerModel.activeTab].documentSorting).subscribeTo(
+						topicexplorer.tab[self.activeTab()].documentSorting).subscribeTo(
 						"DocumentView.selectedDocuments");
 			    
 				this.scrollCallback = function(el) {
@@ -45,19 +48,19 @@ define(
 				self.documentElementWidth.subscribe(self.checkSize);
 				
 				self.loadMoreDocuments = function() {
-					if(!topicexplorer.documentsLoading() && !topicexplorer.tab[topicexplorer.activeTab].documentsFull() && $("#desktop").scrollTop() + self.desktopHeight() + 90 >= $("#desktop")[0].scrollHeight) {
+					if(!topicexplorer.documentsLoading() && !topicexplorer.tab[self.activeTab()].documentsFull() && $("#desktop").scrollTop() + self.desktopHeight() + 90 >= $("#desktop")[0].scrollHeight) {
 						topicexplorer.documentsLoading(true);
 						topicexplorer.loadDocuments(
-							{paramString: topicexplorer.tab[topicexplorer.activeTab].documentGetParameter + '&offset=' + topicexplorer.tab[topicexplorer.activeTab].documentCount},
+							{paramString: topicexplorer.tab[self.activeTab()].documentGetParameter + '&offset=' + topicexplorer.tab[self.activeTab()].documentCount},
 							function(newDocumentIds) {
-								if(newDocumentIds.length < topicexplorerModel.documentLimit) { 
-									topicexplorer.tab[topicexplorer.activeTab].documentsFull(true);
+								if(newDocumentIds.length < topicexplorer.documentLimit) { 
+									topicexplorer.tab[self.activeTab()].documentsFull(true);
 								}
-								topicexplorer.tab[topicexplorer.activeTab].documentSorting = topicexplorer.tab[topicexplorer.activeTab].documentSorting.concat(newDocumentIds);
+								topicexplorer.tab[self.activeTab()].documentSorting = topicexplorer.tab[self.activeTab()].documentSorting.concat(newDocumentIds);
 								self.selectedDocuments(self.selectedDocuments().concat(newDocumentIds));
 							}
 						);
-						topicexplorer.tab[topicexplorer.activeTab].documentCount += topicexplorerModel.documentLimit;
+						topicexplorer.tab[self.activeTab()].documentCount += topicexplorerModel.documentLimit;
 					}
 				};
 			};

@@ -10,11 +10,11 @@ define(
 			self.setActive = function() {
 				$(".tab").removeClass('active');
 				$("#tab" + topicexplorer.activeTab).addClass('active');
-		//		$("#tab" + topicexplorer.activeTab).children('span').css('cursor','default');
 			};
 			self.toggleActive = function(active) {
 				topicexplorer.tab[topicexplorer.activeTab].scrollPosition = $("#desktop").scrollTop();
 				topicexplorer.activeTab = active;
+				ko.postbox.publish("TabView.activeTab", topicexplorer.activeTab);
 				ko.postbox.publish("DocumentView.selectedDocuments", topicexplorer.tab[active].documentSorting);
 				$("#desktop").scrollTop(topicexplorer.tab[topicexplorer.activeTab].scrollPosition);					
 				self.setActive();
@@ -36,6 +36,7 @@ define(
 						tabIndex--;						
 					}
 					topicexplorer.activeTab = topicexplorer.tabs[tabIndex];
+					ko.postbox.publish("TabView.activeTab", topicexplorer.activeTab);
 					ko.postbox.publish("DocumentView.selectedDocuments", topicexplorer.tab[topicexplorer.activeTab].documentSorting);
 					$("#desktop").scrollTop(topicexplorer.tab[topicexplorer.activeTab].scrollPosition);					
 					self.setActive();

@@ -13,6 +13,7 @@ function(ko, $) {
     		var index = ++topicexplorer.tabsLastIndex;
     		topicexplorer.tab[topicexplorer.activeTab].scrollPosition = $("#desktop").scrollTop();
     		topicexplorer.activeTab = "t" + index;
+    		
 			topicexplorer.tabs.push("t" + index);
 			
 			topicexplorer.tab["t" + index] = new Array();
@@ -30,11 +31,13 @@ function(ko, $) {
 					topicexplorer.tab["t" + index].documentSorting = newDocumentIds;
 					topicexplorer.tab["t" + index].documentCount = newDocumentIds.length;
 					
+					ko.postbox.publish("TabView.activeTab", topicexplorer.activeTab);
 					ko.postbox.publish("DocumentView.selectedDocuments", newDocumentIds);	
+					ko.postbox.publish("TabView.tabs", topicexplorer.tabs);
+					$("#desktop").scrollTop(0);
 				}
 			);
-    		ko.postbox.publish("TabView.tabs", topicexplorer.tabs);
-			$("#desktop").scrollTop(0);
+    		
 			
 		};   
 		self.leftBodyHeight = ko.observable(100).subscribeTo("leftBodyHeight");

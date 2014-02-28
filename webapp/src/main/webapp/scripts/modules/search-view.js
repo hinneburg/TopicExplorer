@@ -25,9 +25,10 @@ function(ko, $) {
 					}
 					topicexplorer.tab["t" + index].documentCount = newDocumentIds.length;					
 					topicexplorer.tab["t" + index].documentSorting = newDocumentIds;
-					console.log(topicexplorer.tab["t" + index].documentsFull() + index);
-					ko.postbox.publish("TabView.tabs", topicexplorer.tabs);
+					
+					ko.postbox.publish("TabView.activeTab", topicexplorer.activeTab);
 					ko.postbox.publish("DocumentView.selectedDocuments", newDocumentIds);
+					ko.postbox.publish("TabView.tabs", topicexplorer.tabs);
 					$("#desktop").scrollTop(0);
 		    		
 				}

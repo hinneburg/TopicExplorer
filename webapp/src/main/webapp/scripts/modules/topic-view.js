@@ -8,6 +8,18 @@ function(ko, $) {
     	this.selectedTopics = ko.observableArray(topicexplorerModel.topicSorting);
     	this.changeSelectedTopics = function () { this.selectedTopics(["1"]); };
     	this.loadDocumentsForTopic = function (topicId) { 
+    		for(key in topicexplorer.tab) {
+    			if(topicexplorer.tab[key].documentGetParameter == "Command=bestDocs&TopicId="+topicId) {
+    				topicexplorer.tab[topicexplorer.activeTab].scrollPosition = $("#desktop").scrollTop();
+    				topicexplorer.activeTab = key;
+    				ko.postbox.publish("TabView.activeTab", topicexplorer.activeTab);
+    				ko.postbox.publish("DocumentView.selectedDocuments", topicexplorer.tab[key].documentSorting);
+    				$("#desktop").scrollTop(topicexplorer.tab[topicexplorer.activeTab].scrollPosition);					
+    				$(".tab").removeClass('active');
+    				$("#tab" + topicexplorer.activeTab).addClass('active');	
+    				return;
+    			}
+    		}
     		topicexplorer.documentsLoading(true);
 			
     		var index = ++topicexplorer.tabsLastIndex;

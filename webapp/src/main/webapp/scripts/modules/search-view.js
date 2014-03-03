@@ -5,7 +5,19 @@ function(ko, $) {
     	this.topicexplorer = topicexplorer;
     	this.loadDocumentsForSearch = function () { 
     		var searchWord = $('#searchField').val();
-    		
+    		for(key in topicexplorer.tab) {
+    			if(topicexplorer.tab[key].documentGetParameter == "Command=search&SearchWord="+searchWord) {
+    				topicexplorer.tab[topicexplorer.activeTab].scrollPosition = $("#desktop").scrollTop();
+    				topicexplorer.activeTab = key;
+    				ko.postbox.publish("TabView.activeTab", topicexplorer.activeTab);
+    				ko.postbox.publish("DocumentView.selectedDocuments", topicexplorer.tab[key].documentSorting);
+    				$("#desktop").scrollTop(topicexplorer.tab[topicexplorer.activeTab].scrollPosition);					
+    				$(".tab").removeClass('active');
+    				$("#tab" + topicexplorer.activeTab).addClass('active');	
+    				return;
+    			}
+    		}
+
     		var index = ++topicexplorer.tabsLastIndex;
     		topicexplorer.tab[topicexplorer.activeTab].scrollPosition = $("#desktop").scrollTop();
     		topicexplorer.activeTab = "t" + index;

@@ -1,8 +1,8 @@
 <div class="leftBody" data-bind="style: {height: leftBodyHeight() + 'px'}">
 	<span data-bind="text: version"></span><br/>
-	<div id="search-view" data-bind="module: {name: 'search-view', data: topicexplorer, template: 'search-view'}"></div>
+	<div id="search-view" style="min-width: 800px;" data-bind="module: {name: 'search-view', data: topicexplorer, template: 'search-view'}"></div>
 
-	<div id="tab-view" data-bind="module: {name: 'tab-view', data: topicexplorer, template: 'tab-view'}"></div>
+	<div id="tab-view" style="min-width: 800px;" data-bind="module: {name: 'tab-view', data: topicexplorer, template: 'tab-view'}"></div>
 	
-	<div id="topic-view" data-bind="module: {name: 'topic-view', data: topicexplorer, template: 'topic-view', afterRender: setTopicSlider}"></div>
+	<div id="topic-view" style="min-width: 800px;" data-bind="module: {name: 'topic-view', data: topicexplorer, template: 'topic-view', afterRender: setTopicSlider}"></div>
 </div>

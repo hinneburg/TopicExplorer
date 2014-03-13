@@ -5,7 +5,7 @@ function(ko, $) {
     	self.windowWidth = ko.observable(100).subscribeTo("windowWidth");
 		
     	self.sliderElWidth = ko.computed (function() {
-   			return (self.windowWidth()) / $('.topicList > ul > li').size();
+   			return self.windowWidth() / $('.topicList > ul > li').size();
 		});
 	};
 });

@@ -1,12 +1,8 @@
-<div class="searchBar" data-bind="searchbarHandler: {}">
+<div class="searchBar" data-bind="searchbarHandler: {}, style: {marginLeft: leftPadding()}">
 	<form method="post" action="" id="searchForm" data-bind="submit: loadDocumentsForSearch">
 		<fieldset>						
-			<input id="searchField" type="text" name="search" data-bind="autoCompleteHandler: {}"/>
-			<button class="button gradientGray" type="submit"><span>Search</span></button>
+			<input id="searchField" type="text" name="search" style="float: left;" data-bind="autoCompleteHandler: {}"/>
+			<button class="button gradientGray" style="width: 82px;" type="submit"><span>Search</span></button>
 		</fieldset>
 	</form>
 </div>
-<script type="text/html" id="autocomplete">
-
-
-</script>

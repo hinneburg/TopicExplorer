@@ -5,51 +5,17 @@ function(ko, $) {
     	this.topicexplorer = topicexplorer;
     	this.loadDocumentsForSearch = function () { 
     		var searchWord = $('#searchField').val();
-    		for(key in topicexplorer.tab) {
-    			if(topicexplorer.tab[key].documentGetParameter == "Command=search&SearchWord="+searchWord) {
-    				topicexplorer.tab[topicexplorer.activeTab].scrollPosition = $("#desktop").scrollTop();
-    				topicexplorer.activeTab = key;
-    				ko.postbox.publish("TabView.activeTab", topicexplorer.activeTab);
-    				ko.postbox.publish("DocumentView.selectedDocuments", topicexplorer.tab[key].documentSorting);
-    				$("#desktop").scrollTop(topicexplorer.tab[topicexplorer.activeTab].scrollPosition);					
-    				$(".tab").removeClass('active');
-    				$("#tab" + topicexplorer.activeTab).addClass('active');	
-    				return;
-    			}
-    		}
-
-    		var index = ++topicexplorer.tabsLastIndex;
-    		topicexplorer.tab[topicexplorer.activeTab].scrollPosition = $("#desktop").scrollTop();
-    		topicexplorer.activeTab = "t" + index;
-			topicexplorer.tabs.push("t" + index);
-			
-			topicexplorer.tab["t" + index] = new Array();
-			topicexplorer.tab["t" + index].scrollPosition = 0;
-			topicexplorer.tab["t" + index].tabTitle = "Search: " + searchWord;
-			topicexplorer.tab["t" + index].documentGetParameter = "Command=search&SearchWord="+searchWord;	
-			topicexplorer.loadDocuments(
-				{paramString:"Command=search&SearchWord="+searchWord},
-				function(newDocumentIds) {
-					if(newDocumentIds.length < topicexplorer.documentLimit) { 
-						topicexplorer.tab["t" + index].documentsFull = ko.observable(true);
-					} else {
-						topicexplorer.tab["t" + index].documentsFull = ko.observable(false);
-					}
-					topicexplorer.tab["t" + index].documentCount = newDocumentIds.length;					
-					topicexplorer.tab["t" + index].documentSorting = newDocumentIds;
-					
-					ko.postbox.publish("TabView.activeTab", topicexplorer.activeTab);
-					ko.postbox.publish("DocumentView.selectedDocuments", newDocumentIds);
-					ko.postbox.publish("TabView.tabs", topicexplorer.tabs);
-					$("#desktop").scrollTop(0);
-		    		
-				}
-				
-			);
+    		topicexplorer.loadDocumentsForTab("Command=search&SearchWord="+searchWord, "Search: " + searchWord);
     		
    		};
+   		self.windowWidth = ko.observable(100).subscribeTo("windowWidth");
+   		self.leftPadding = ko.computed(function() {
+   			$('.searchBar').css('margin-left', ((self.windowWidth() - 500) / 2) + 'px'); // Safari fallback
+   			return ((self.windowWidth() - 500) / 2) + 'px';
+		});
 		ko.bindingHandlers.searchbarHandler = { init: 
 			function(el) { 		
+				
 				self.searchbarHeight=$('.searchBar').height();
 				ko.postbox.publish("searchbarHeight",self.searchbarHeight);
 			}

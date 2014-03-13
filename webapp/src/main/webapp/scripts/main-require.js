@@ -26,6 +26,16 @@ require([ "knockout","jquery", "modules/topicexplorer-view-model",
 		$(this).toggleClass("rotate1 rotate2");
 	    $(this).next().toggle('blind');
 	    	    
+	}).delegate("#invisbleTabs > span", 'click', function() {
+		$('#tabMenu').toggle('blind');
+	}).delegate("a.ui-corner-all", 'mouseover', function() {
+		$(this).addClass('ui-state-focus');
+	}).delegate("a.ui-corner-all", 'mouseout', function() {
+		$(this).removeClass('ui-state-focus');
+	}).delegate(".tab", 'mouseover', function() {
+		$(this).children('img').show();
+	}).delegate(".tab", 'mouseout', function() {
+		$(this).children('img').hide();
 	}).delegate(".documentList li", 'mouseenter', function(){
 		$(this).addClass('myHover').find(".docButtons").show();
 	}).delegate(".documentList li", 'mouseleave', function(){
@@ -34,14 +44,15 @@ require([ "knockout","jquery", "modules/topicexplorer-view-model",
 		$(this).attr("r", "7");
 	}).delegate(".documentList circle", "mouseout", function(){
 		$(this).attr("r", "5");
-	}).delegate(".ui-menu-item circle", "mouseover", function(el){
+	}).delegate(".ui-menu-item circle", "mouseover", function(){
+		var self = this;
 		if (!timeoutId) {
 	        timeoutId = window.setTimeout(function() {
 	            timeoutId = null; 
-	            moveToTopic(el);
+	            moveToTopic($(self).attr('id').split('_')[1]);
 		    }, 1500);
 		}
-		$(this).attr("r", "7");
+		$(self).attr("r", "7");
 	}).delegate(".ui-menu-item circle", "mouseout", function(){
 		if (timeoutId) {
 		    window.clearTimeout(timeoutId);
@@ -102,24 +113,17 @@ function setTopicSlider() {
 	
 	slider.width((topicDivWidth*bottomDivWidth)/ maxListWidth);
 	
-	slider.children('rect').attr('width', (topicDivWidth*bottomDivWidth)/ maxListWidth);
-	slider.children('polygon').attr('points', function(){
-		var p1={},p2={},p3={};
-		p1.x = ~~slider.children('rect').attr('width')/2+~~slider.children('rect').attr('x');
-		p1.y = ~~slider.children('rect').attr('height')-10;
-		p2.x = p1.x-5;
-		p2.y = p1.y+10;
-		p3.x = p1.x+5;
-		p3.y = p2.y;
-		return p1.x+","+p1.y+" "+p2.x+","+p2.y+" "+p3.x+","+p3.y+" ";
-	});		
+	$('.topicPrevSlider > span').css('margin-left', (topicDivWidth * bottomDivWidth) / (maxListWidth * 2) - ($('.topicPrevSlider > span').width() / 2));	
 	var maxScrollPos = $('.topicBottomSliderDiv').width() - $('.topicPrevSlider').width();	
-	$( ".topicPrevSlider" ).draggable({ axis: "x", containment: [ 0, 0, maxScrollPos, 0 ]});
-	$( ".topicPrevSlider" ).on( "drag", function( event, ui ) {		
-		var maxScroll = $('.topicList > ul').width() - $('.topicList').width();			
-		var scroll = (ui.position.left/maxScrollPos)*maxScroll;
-		$('.topicList').scrollLeft(scroll);	
-		$('#topicMenu, .topicList > img').css('left', scroll);		
+	$( ".topicPrevSlider" ).draggable({ 
+		axis: "x", 
+		containment: [ 0, 0, maxScrollPos, 0 ],
+		drag: function( event, ui ) {	
+			var maxScroll = (maxListWidth - topicDivWidth);	
+			var scroll = ((ui.position.left + 4) / maxScrollPos) * maxScroll ;
+			$('.topicList').scrollLeft(scroll);	
+			$('#topicMenu, .topicList > img').css('left', scroll);
+		}
 	});
 };
 

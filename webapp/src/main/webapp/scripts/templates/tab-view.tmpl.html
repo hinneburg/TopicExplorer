@@ -1,8 +1,19 @@
+<!-- ko if: invisibleTabs().length -->
+<p class="reiter button gradientGray tab" id="invisbleTabs" style="cursor: default; width: 60px;">
+	<span style="cursor: pointer;" data-bind="text: '...' + invisibleTabs().length"></span>
+	<img data-bind="click: deleteAllHidden" style="cursor: pointer; position:absolute; top:4px; right: 5px;" width="12px" height="12px" src="images/delete_24.png" alt="close"/>
+</p>
+
+<ul id="tabMenu" class="ui-menu ui-widget ui-widget-content ui-corner-all" data-bind="foreach: {data: invisibleTabs}"  style="display: none; position: absolute; z-index: 3; margin: 20px 0 0 5px;">
+	<li class="ui-menu-item" role="presentation"><a class="ui-corner-all" href="#" data-bind="text: $root.topicexplorer.tab[$root.topicexplorer.invisibleTabs[$index()]].tabTitle, click: $parent.toggleActive, event: {"></a></li>
+</ul>
+
+<!-- /ko -->
 <!-- ko foreach: {data:tabs, afterRender: setActive} -->
 
 <p class="reiter button gradientGray tab" data-bind="attr: { id: 'tab' + $data}" style="cursor: default;">
-	<span style="cursor: pointer;" data-bind="text: $root.topicexplorer.tab[$root.topicexplorer.tabs[$index()]].tabTitle, click: $parent.toggleActive"></span>
-	<img data-bind="click: $parent.deleteTab" style="cursor: pointer; position:absolute; top:5px; right: 5px;" width="12px" height="12px" src="images/delete_24.png" alt="close"/>
+	<img data-bind="click: $parent.deleteTab" style="cursor: pointer; position:absolute; top:5px; right: 5px; display: none;" width="12px" height="12px" src="images/delete_24.png" alt="close"/>
+	<span style="cursor: pointer;" data-bind="text: $root.topicexplorer.tab[$root.topicexplorer.tabs[$index()]].tabTitle, click: $parent.toggleActive"></span>	
 </p>
 
 

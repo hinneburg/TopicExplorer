@@ -25,9 +25,9 @@ html, body {
 	height: 64px;
 	overflow: auto;
 }
-.leftBody .searchBar form {
-	padding: 10px 10px 20px 200px;	
-}
+/*.leftBody .searchBar form {
+	padding: 10px 10px 20px 100px;	
+}*/
 .leftBody .searchBar form fieldset {
 	background-color: whitesmoke;
     border: 1px solid silver;
@@ -46,6 +46,7 @@ html, body {
     width: 400px;
 }
 .leftBody #desktop {
+	min-width: 800px;
 	position: relative;
 	background-color: whitesmoke;
     border: 1px solid silver;
@@ -263,7 +264,6 @@ html, body {
 	cursor: default;
 }
 
-
 .content .button:hover {
 	background: #dfdfdf; /* Old browsers */
 	background: -moz-linear-gradient(top,  #dfdfdf 0%, #ededed 100%); /* FF3.6+ */
@@ -297,11 +297,19 @@ html, body {
 	height: 100%;
     position: relative;
     width: 100%;
+  
 }
 .bottom .topicBottomSliderDiv .topicPrevSlider {
-	position: absolute;
+	position: absolute ! important;
     z-index: 5;	
-    top: 1px;
+    top: 0;
+    height: 15px;
+    background-color: white;
+    opacity: 0.5;
+    border: 1px solid black;
+	cursor: col-resize;
+	margin-left: 4px;
+	left: -4px;
 }
 #groupG rect:hover {
 	cursor: pointer;	

@@ -2,7 +2,7 @@ package cc.topicexplorer.plugin.time.preprocessing.tables.documenttermtopic;
 
 import java.sql.SQLException;
 
-import cc.topicexplorer.chain.commands.TableCreateCommand;
+import cc.topicexplorer.commands.TableCreateCommand;
 
 public class DocumentTermTopicCreate extends TableCreateCommand {
 

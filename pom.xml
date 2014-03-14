@@ -10,32 +10,30 @@
 	<packaging>pom</packaging>
 
 	<modules>
-		<module>command-manager</module>
+		<module>core-common</module>
 		<module>core-preprocessing</module>
-		<module>plugin-text-preprocessing</module>
+		<module>core-webinterface</module>
 		<module>distribution</module>
+		<module>plugin-text-preprocessing</module>
 		<module>plugin-colortopic-preprocessing</module>
 		<module>plugin-hierarchicaltopic-preprocessing</module>
 		<module>plugin-prune-preprocessing</module>
 		<module>plugin-category-preprocessing</module>
 		<module>plugin-duplicates-preprocessing</module>
 		<module>plugin-frame-preprocessing</module>
+		<module>plugin-frame-webinterface</module>
 		<module>plugin-fulltext-preprocessing</module>
 		<module>plugin-link-preprocessing</module>
 		<module>plugin-time-preprocessing</module>
 		<module>plugin-wiki-preprocessing</module>
 		<module>plugin-wordtype-preprocessing</module>
-		<module>run-preprocessing</module>
-		<!-- <module>distribution-preprocessing</module>  -->
-		<module>core-webinterface</module>
 		<module>plugin-text-webinterface</module>
 		<module>plugin-link-webinterface</module>
 		<module>plugin-time-webinterface</module>
 		<module>plugin-colortopic-webinterface</module>
 		<module>plugin-hierarchicaltopic-webinterface</module>
+		<module>run-preprocessing</module>
 		<module>webapp</module>
-		<!-- <module>plugin-duplicates-webinterface</module> -->
-		<module>plugin-frame-webinterface</module>
 	</modules>
 	<dependencies>
 		<dependency>
@@ -95,12 +93,19 @@
 				</includes>
 				<targetPath>cc/topicexplorer/${project.artifactId}/catalog</targetPath>
 			</resource>
-<!-- 
-			<resource>
-				<directory>local/main/resources</directory>
-			</resource>
- -->
+			<!-- <resource> <directory>local/main/resources</directory> </resource> -->
 		</resources>
 	</build>
+
+	<repositories>
+		<repository>
+			<id>snapshots</id>
+			<url>https://moon.informatik.uni-halle.de/archiva/repository/snapshots-db</url>
+		</repository>
+	</repositories>
+
+	<!-- <distributionManagement> <snapshotRepository> <id>snapshots</id> <name>archiva 
+		repository on moon</name> <url>https://moon.informatik.uni-halle.de/archiva/repository/snapshots-db</url> 
+		</snapshotRepository> </distributionManagement> -->
 
 </project>

@@ -26,7 +26,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import cc.topicexplorer.chain.CommunicationContext;
+import cc.commandmanager.core.CommunicationContext;
 
 public class OnStartup implements ServletContextListener {
 	private static Logger logger = Logger.getRootLogger();
@@ -34,7 +34,6 @@ public class OnStartup implements ServletContextListener {
 
 	@Override
 	public void contextDestroyed(ServletContextEvent arg0) {
-
 	}
 
 	@Override
@@ -65,22 +64,11 @@ public class OnStartup implements ServletContextListener {
 		WebChainManagement.setCatalog("/catalog.xml");
 	}
 
-	private Document getMergedXML(Document xmlFile1, Document xmlFile2) {
-		NodeList nodes = xmlFile2.getElementsByTagName("catalog").item(0).getChildNodes();
-		for (int i = 0; i < nodes.getLength(); i++) {
-			Node importNode = xmlFile1.importNode(nodes.item(i), true);
-			xmlFile1.getElementsByTagName("catalog").item(0).appendChild(importNode);
-		}
-		return xmlFile1;
-	}
-
 	private void makeCatalog() throws ParserConfigurationException, SAXException, IOException, TransformerException {
 		// to be filled with makeCatalog() of RandomDocs.java
 		CommunicationContext communicationContext = WebChainManagement.getCommunicationContext();
 		Properties properties = (Properties) communicationContext.get("properties");
-
 		String plugins = properties.getProperty("plugins");
-
 		logger.info("Activated plugins: " + plugins);
 
 		DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
@@ -132,4 +120,14 @@ public class OnStartup implements ServletContextListener {
 		pw.close();
 
 	}
+
+	private Document getMergedXML(Document xmlFile1, Document xmlFile2) {
+		NodeList nodes = xmlFile2.getElementsByTagName("catalog").item(0).getChildNodes();
+		for (int i = 0; i < nodes.getLength(); i++) {
+			Node importNode = xmlFile1.importNode(nodes.item(i), true);
+			xmlFile1.getElementsByTagName("catalog").item(0).appendChild(importNode);
+		}
+		return xmlFile1;
+	}
+
 }

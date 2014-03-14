@@ -2,12 +2,8 @@ package cc.topicexplorer.plugin.time.preprocessing.tables.document;
 
 import java.sql.SQLException;
 
-import cc.topicexplorer.chain.commands.TableCreateCommand;
+import cc.topicexplorer.commands.TableCreateCommand;
 
-/**
- * @author user
- * 
- */
 public class DocumentCreate extends TableCreateCommand {
 
 	@Override

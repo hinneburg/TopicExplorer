@@ -2,7 +2,7 @@ package cc.topicexplorer.plugin.time.preprocessing.tables.wordspertopicperweek;
 
 import java.sql.SQLException;
 
-import cc.topicexplorer.chain.commands.TableCreateCommand;
+import cc.topicexplorer.commands.TableCreateCommand;
 
 public class WordsPerTopicPerWeekCreate extends TableCreateCommand {
 

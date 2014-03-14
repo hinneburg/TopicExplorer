@@ -11,7 +11,7 @@
 	<description>plugin-frame-preprocessing</description>
 	<dependencies>
 		<dependency>
-			<groupId>cc.topicexplorer</groupId>
+			<groupId>cc.commandmanager</groupId>
 			<artifactId>command-manager</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>

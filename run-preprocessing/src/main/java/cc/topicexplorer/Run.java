@@ -20,25 +20,97 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.log4j.FileAppender;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.apache.log4j.PatternLayout;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import cc.topicexplorer.chain.ChainCommandLineParser;
-import cc.topicexplorer.chain.ChainManagement;
+import cc.commandmanager.core.ChainManagement;
+import cc.commandmanager.core.CommunicationContext;
+import cc.commandmanager.core.DependencyCommand;
+import cc.topicexplorer.commands.DbConnectionCommand;
+import cc.topicexplorer.commands.PropertiesCommand;
+import cc.topicexplorer.utils.CommandLineParser;
 
 public class Run {
 	private static Logger logger = Logger.getRootLogger();
 
-	private Document getMergedXML(Document xmlFile1, Document xmlFile2) {
-		NodeList nodes = xmlFile2.getElementsByTagName("catalog").item(0).getChildNodes();
-		for (int i = 0; i < nodes.getLength(); i++) {
-			Node importNode = xmlFile1.importNode(nodes.item(i), true);
-			xmlFile1.getElementsByTagName("catalog").item(0).appendChild(importNode);
+	public static void main(String[] args) throws Exception {
+		Run run = new Run();
+
+		run.initializeLogger("logs/Preprocessing.log");
+
+		CommandLineParser commandLineParser = null;
+		try {
+			commandLineParser = new CommandLineParser(args);
+		} catch (RuntimeException e) {
+			logger.error("Problems encountered while parsing the command line tokens.");
+			throw e;
 		}
-		return xmlFile1;
+
+		File temp = new File("temp");
+		temp.mkdir();
+
+		ChainManagement chainManager = new ChainManagement();
+		// chainManager.init();
+		CommunicationContext context = new CommunicationContext();
+		run.executeInitialCommands(context);
+
+		Properties properties = new Properties();
+		try {
+			properties.load(run.getClass().getResourceAsStream("/config.global.properties"));
+		} catch (IOException e) {
+			logger.error("config.global.properties not found");
+			throw e;
+		}
+		try {
+			properties.load(run.getClass().getResourceAsStream("/config.local.properties"));
+		} catch (IOException e) {
+			logger.warn("config.local.properties not found", e);
+		}
+		logger.info("Activated plugins: " + properties.getProperty("plugins"));
+
+		run.makeCatalog(properties.getProperty("plugins"));
+		chainManager.setCatalog("/catalog.xml");
+
+		List<String> orderedCommands = chainManager.getOrderedCommands(commandLineParser.getStartCommands(),
+				commandLineParser.getEndCommands());
+		logger.info("ordered commands: " + orderedCommands);
+
+		if (!commandLineParser.getOnlyDrawGraph()) {
+			chainManager.executeCommands(orderedCommands, context);
+			logger.info("Preprocessing successfully executed!");
+		}
+
+		FileUtils.deleteDirectory(temp);
+	}
+
+	private void executeInitialCommands(CommunicationContext context) {
+		try {
+			DependencyCommand propertiesCommand = new PropertiesCommand();
+			propertiesCommand.execute(context);
+
+			DependencyCommand dbConnectionCommand = new DbConnectionCommand();
+			dbConnectionCommand.execute(context);
+		} catch (RuntimeException rntmEx) {
+			logger.error("Initialization abborted, due to a critical exception");
+			throw rntmEx;
+		}
+	}
+
+	private void initializeLogger(String logfileName) {
+		try {
+			logger.addAppender(new FileAppender(new PatternLayout("%d-%p-%C-%M-%m%n"), logfileName, false));
+			logger.setLevel(Level.INFO); // ALL | DEBUG | INFO | WARN | ERROR |
+			// FATAL | OFF:
+		} catch (IOException e) {
+			logger.error("FileAppender with log file " + logfileName + " could not be constructed.");
+			throw new RuntimeException(e);
+		}
 	}
 
 	private void makeCatalog(String plugins) throws ParserConfigurationException, TransformerException, IOException,
@@ -104,56 +176,12 @@ public class Run {
 
 	}
 
-	public static void main(String[] args) throws Exception {
-		Run run = new Run();
-
-		ChainManagement chainManager = new ChainManagement();
-		ChainCommandLineParser commandLineParser = null;
-
-		try {
-			commandLineParser = new ChainCommandLineParser(args);
-		} catch (RuntimeException e) {
-			logger.error("Problems encountered while parsing the command line tokens.");
-			throw e;
+	private Document getMergedXML(Document xmlFile1, Document xmlFile2) {
+		NodeList nodes = xmlFile2.getElementsByTagName("catalog").item(0).getChildNodes();
+		for (int i = 0; i < nodes.getLength(); i++) {
+			Node importNode = xmlFile1.importNode(nodes.item(i), true);
+			xmlFile1.getElementsByTagName("catalog").item(0).appendChild(importNode);
 		}
-
-		Properties properties = new Properties();
-
-		// create directories
-		File temp = new File("temp");
-		temp.mkdir();
-
-		chainManager.init();
-
-		try {
-			properties.load(run.getClass().getResourceAsStream("/config.global.properties"));
-		} catch (IOException e) {
-			logger.error("config.global.properties not found");
-			throw e;
-		}
-
-		try {
-			properties.load(run.getClass().getResourceAsStream("/config.local.properties"));
-		} catch (IOException e) {
-			logger.warn("config.local.properties not found", e);
-		}
-
-		logger.info("Activated plugins: " + properties.getProperty("plugins"));
-
-		run.makeCatalog(properties.getProperty("plugins"));
-
-		chainManager.setCatalog("/catalog.xml");
-
-		List<String> orderedCommands = chainManager.getOrderedCommands(commandLineParser.getStartCommands(),
-				commandLineParser.getEndCommands());
-
-		logger.info("ordered commands: " + orderedCommands);
-
-		if (!commandLineParser.getOnlyDrawGraph()) {
-			chainManager.executeCommands(orderedCommands);
-			logger.info("Preprocessing successfully executed!");
-		}
-
-		FileUtils.deleteDirectory(temp);
+		return xmlFile1;
 	}
 }

@@ -1,10 +1,11 @@
 package cc.topicexplorer.plugin.category.preprocessing.tables.document;
 
 import java.sql.SQLException;
+
 /** MIT-JOOQ-START 
  import static jooq.generated.Tables.DOCUMENT; 
  MIT-JOOQ-ENDE */
-import cc.topicexplorer.chain.commands.TableFillCommand;
+import cc.topicexplorer.commands.TableFillCommand;
 
 public class DocumentFill extends TableFillCommand {
 

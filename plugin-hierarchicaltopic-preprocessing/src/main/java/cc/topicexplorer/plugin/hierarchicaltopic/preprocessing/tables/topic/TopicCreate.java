@@ -2,7 +2,7 @@ package cc.topicexplorer.plugin.hierarchicaltopic.preprocessing.tables.topic;
 
 import java.sql.SQLException;
 
-import cc.topicexplorer.chain.commands.TableCreateCommand;
+import cc.topicexplorer.commands.TableCreateCommand;
 
 /*
  * angefangen von Mattes weiterverarbeitet von Gert Kommaersetzung, Pfadangabe

@@ -2,8 +2,8 @@ package cc.topicexplorer.plugin.text.actions.init;
 
 import org.apache.commons.chain.Context;
 
-import cc.topicexplorer.chain.CommunicationContext;
-import cc.topicexplorer.chain.commands.TableSelectCommand;
+import cc.commandmanager.core.CommunicationContext;
+import cc.topicexplorer.commands.TableSelectCommand;
 import cc.topicexplorer.database.SelectMap;
 
 public class Collect extends TableSelectCommand {

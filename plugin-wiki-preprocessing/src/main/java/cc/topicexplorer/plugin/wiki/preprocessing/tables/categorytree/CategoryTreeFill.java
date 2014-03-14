@@ -2,7 +2,7 @@ package cc.topicexplorer.plugin.wiki.preprocessing.tables.categorytree;
 
 import java.sql.SQLException;
 
-import cc.topicexplorer.chain.commands.TableFillCommand;
+import cc.topicexplorer.commands.TableFillCommand;
 import cc.topicexplorer.plugin.wiki.preprocessing.CategoryResolver;
 
 public class CategoryTreeFill extends TableFillCommand {

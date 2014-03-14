@@ -2,7 +2,7 @@ package cc.topicexplorer.database.tables.documenttopic;
 
 import java.sql.SQLException;
 
-import cc.topicexplorer.chain.commands.TableCreateCommand;
+import cc.topicexplorer.commands.TableCreateCommand;
 
 public class DocumentTopicCreate extends TableCreateCommand {
 	@Override

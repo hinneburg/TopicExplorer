@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import cc.topicexplorer.chain.CommunicationContext;
+import cc.commandmanager.core.CommunicationContext;
 
 public class UserTest extends HttpServlet {
 

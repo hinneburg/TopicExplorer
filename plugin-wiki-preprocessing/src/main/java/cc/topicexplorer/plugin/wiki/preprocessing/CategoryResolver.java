@@ -21,8 +21,8 @@ import tools.CategoryElement;
 import tools.ExtraInformations;
 import tools.WikiIDTitlePair;
 import wikiParser.SupporterForBothTypes;
-import cc.topicexplorer.chain.CommunicationContext;
-import cc.topicexplorer.chain.commands.DependencyCommand;
+import cc.commandmanager.core.CommunicationContext;
+import cc.commandmanager.core.DependencyCommand;
 
 public class CategoryResolver extends DependencyCommand {
 

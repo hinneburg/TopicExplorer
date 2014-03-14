@@ -19,8 +19,8 @@ import java.util.zip.GZIPInputStream;
 import org.apache.commons.chain.Context;
 import org.apache.log4j.Logger;
 
-import cc.topicexplorer.chain.CommunicationContext;
-import cc.topicexplorer.chain.commands.DependencyCommand;
+import cc.commandmanager.core.CommunicationContext;
+import cc.commandmanager.core.DependencyCommand;
 
 public class TokenTopicAssociator extends DependencyCommand {
 	private static Properties properties;

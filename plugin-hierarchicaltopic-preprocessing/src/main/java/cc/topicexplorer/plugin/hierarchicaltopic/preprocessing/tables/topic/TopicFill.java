@@ -10,7 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import cc.topicexplorer.chain.commands.TableFillCommand;
+import cc.topicexplorer.commands.TableFillCommand;
 
 /**
  * @author angefangen von Mattes weiterverarbeitet von Gert Kommaersetzung,

@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 
-import cc.topicexplorer.chain.CommunicationContext;
+import cc.commandmanager.core.CommunicationContext;
 
 /**
  * Servlet implementation class TestServlet

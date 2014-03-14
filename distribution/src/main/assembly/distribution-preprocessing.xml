@@ -19,7 +19,7 @@
 		<moduleSet>
 			<useAllReactorProjects>true</useAllReactorProjects>
 			<includes>
-				<include>cc.topicexplorer:command-manager</include>
+				<include>cc.topicexplorer:core-common</include>
 				<include>cc.topicexplorer:core-preprocessing</include>
 				<include>cc.topicexplorer:plugin-colortopic-preprocessing</include>
 				<include>cc.topicexplorer:plugin-hierarchicaltopic-preprocessing</include>

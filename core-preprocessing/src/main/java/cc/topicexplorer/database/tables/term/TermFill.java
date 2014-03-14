@@ -7,7 +7,7 @@ package cc.topicexplorer.database.tables.term;
  MIT-JOOQ-ENDE */
 import java.sql.SQLException;
 
-import cc.topicexplorer.chain.commands.TableFillCommand;
+import cc.topicexplorer.commands.TableFillCommand;
 
 public class TermFill extends TableFillCommand {
 

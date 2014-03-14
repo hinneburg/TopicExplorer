@@ -4,7 +4,7 @@ import java.sql.SQLException;
 
 import org.apache.commons.chain.Context;
 
-import cc.topicexplorer.chain.commands.TableCommand;
+import cc.topicexplorer.commands.TableCommand;
 
 public class OrgTableCreateAndFill extends TableCommand {
 

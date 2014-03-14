@@ -6,7 +6,7 @@ package cc.topicexplorer.database.tables.topic;
  MIT-JOOQ-ENDE */
 import java.sql.SQLException;
 
-import cc.topicexplorer.chain.commands.TableFillCommand;
+import cc.topicexplorer.commands.TableFillCommand;
 
 public class TopicFill extends TableFillCommand {
 	@Override

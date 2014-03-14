@@ -3,8 +3,8 @@ package cc.topicexplorer.plugin.text.actions.bestdocs;
 import org.apache.commons.chain.Context;
 
 import cc.topicexplorer.actions.bestdocs.BestDocumentsForGivenTopic;
-import cc.topicexplorer.chain.CommunicationContext;
-import cc.topicexplorer.chain.commands.TableSelectCommand;
+import cc.commandmanager.core.CommunicationContext;
+import cc.topicexplorer.commands.TableSelectCommand;
 
 public class Collect extends TableSelectCommand {
 

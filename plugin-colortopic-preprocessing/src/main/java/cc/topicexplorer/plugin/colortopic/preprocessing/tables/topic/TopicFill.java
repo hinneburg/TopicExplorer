@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import cc.topicexplorer.chain.commands.TableFillCommand;
+import cc.topicexplorer.commands.TableFillCommand;
 
 /**
  * @autor angefangen von Mattes weiterverarbeitet von Gert Kommaersetzung,

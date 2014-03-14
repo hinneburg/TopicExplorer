@@ -17,8 +17,8 @@ import java.util.Properties;
 
 import org.apache.commons.chain.Context;
 
-import cc.topicexplorer.chain.CommunicationContext;
-import cc.topicexplorer.chain.commands.DependencyCommand;
+import cc.commandmanager.core.CommunicationContext;
+import cc.commandmanager.core.DependencyCommand;
 import cc.topicexplorer.database.Database;
 
 import com.csvreader.CsvReader;

@@ -4,8 +4,8 @@ import java.io.PrintWriter;
 
 import org.apache.commons.chain.Context;
 
-import cc.topicexplorer.chain.CommunicationContext;
-import cc.topicexplorer.chain.commands.TableSelectCommand;
+import cc.commandmanager.core.CommunicationContext;
+import cc.topicexplorer.commands.TableSelectCommand;
 
 public class Create extends TableSelectCommand {
 

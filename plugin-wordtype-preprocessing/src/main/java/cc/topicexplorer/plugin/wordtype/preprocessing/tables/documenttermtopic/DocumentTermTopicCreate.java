@@ -2,12 +2,8 @@ package cc.topicexplorer.plugin.wordtype.preprocessing.tables.documenttermtopic;
 
 import java.sql.SQLException;
 
-import cc.topicexplorer.chain.commands.TableCreateCommand;
+import cc.topicexplorer.commands.TableCreateCommand;
 
-/**
- * @author user
- * 
- */
 public class DocumentTermTopicCreate extends TableCreateCommand {
 
 	@Override

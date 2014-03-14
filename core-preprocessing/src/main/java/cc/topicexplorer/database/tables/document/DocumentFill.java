@@ -2,7 +2,7 @@ package cc.topicexplorer.database.tables.document;
 
 import java.sql.SQLException;
 
-import cc.topicexplorer.chain.commands.TableFillCommand;
+import cc.topicexplorer.commands.TableFillCommand;
 
 /**
  * MIT-JOOQ-START import chain.commands.TableFillCommand; import static

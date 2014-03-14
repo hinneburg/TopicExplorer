@@ -12,8 +12,8 @@ import net.sf.json.JSONObject;
 import org.apache.commons.chain.Context;
 import org.apache.commons.lang.StringUtils;
 
-import cc.topicexplorer.chain.CommunicationContext;
-import cc.topicexplorer.chain.commands.TableSelectCommand;
+import cc.commandmanager.core.CommunicationContext;
+import cc.topicexplorer.commands.TableSelectCommand;
 import cc.topicexplorer.database.SelectMap;
 
 public class GenerateSQL extends TableSelectCommand {

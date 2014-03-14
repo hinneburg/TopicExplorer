@@ -7,7 +7,7 @@ import java.sql.SQLException;
  import static jooq.generated.Tables.TIME$WORDS_PER_TOPIC_PER_WEEK;
  import static jooq.generated.Tables.TOPIC;
  MIT-JOOQ-ENDE */
-import cc.topicexplorer.chain.commands.TableFillCommand;
+import cc.topicexplorer.commands.TableFillCommand;
 
 public class WordsPerTopicPerWeekFill extends TableFillCommand {
 

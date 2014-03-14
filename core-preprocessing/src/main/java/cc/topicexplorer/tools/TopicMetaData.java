@@ -16,7 +16,7 @@ import java.sql.SQLException;
 import org.apache.commons.chain.Context;
 import org.apache.log4j.Logger;
 
-import cc.topicexplorer.chain.commands.TableCommand;
+import cc.topicexplorer.commands.TableCommand;
 
 /**
  * @author angefangen von Mattes weiterverarbeitet von Gert Kommaersetzung,

@@ -2,7 +2,7 @@ package cc.topicexplorer.plugin.wiki.preprocessing.tables.categorytree;
 
 import java.sql.SQLException;
 
-import cc.topicexplorer.chain.commands.TableCreateCommand;
+import cc.topicexplorer.commands.TableCreateCommand;
 
 public class CategoryTreeCreate extends TableCreateCommand {
 

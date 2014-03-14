@@ -9,7 +9,7 @@ package cc.topicexplorer.database.tables.termtopic;
 
 import java.sql.SQLException;
 
-import cc.topicexplorer.chain.commands.TableFillCommand;
+import cc.topicexplorer.commands.TableFillCommand;
 
 public class TermTopicFill extends TableFillCommand {
 	@Override

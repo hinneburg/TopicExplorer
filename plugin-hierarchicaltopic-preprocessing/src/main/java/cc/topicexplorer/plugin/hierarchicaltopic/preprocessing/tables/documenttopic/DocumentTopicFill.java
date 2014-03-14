@@ -7,7 +7,7 @@ package cc.topicexplorer.plugin.hierarchicaltopic.preprocessing.tables.documentt
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import cc.topicexplorer.chain.commands.TableFillCommand;
+import cc.topicexplorer.commands.TableFillCommand;
 
 /**
  * @author angefangen von Mattes weiterverarbeitet von Gert Kommaersetzung,

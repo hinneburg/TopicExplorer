@@ -2,7 +2,7 @@ package cc.topicexplorer.database.tables.termtopic;
 
 import java.sql.SQLException;
 
-import cc.topicexplorer.chain.commands.TableCreateCommand;
+import cc.topicexplorer.commands.TableCreateCommand;
 
 public class TermTopicCreate extends TableCreateCommand {
 

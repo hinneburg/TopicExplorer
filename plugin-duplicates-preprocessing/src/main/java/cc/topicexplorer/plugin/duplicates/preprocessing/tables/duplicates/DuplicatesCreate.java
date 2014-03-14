@@ -2,7 +2,7 @@ package cc.topicexplorer.plugin.duplicates.preprocessing.tables.duplicates;
 
 import java.sql.SQLException;
 
-import cc.topicexplorer.chain.commands.TableCreateCommand;
+import cc.topicexplorer.commands.TableCreateCommand;
 
 public class DuplicatesCreate extends TableCreateCommand {
 

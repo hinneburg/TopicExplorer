@@ -5,8 +5,8 @@ import java.util.Properties;
 import org.apache.commons.chain.Context;
 
 import wikiParser.PreMalletAction_EntryPointForParallelisation;
-import cc.topicexplorer.chain.CommunicationContext;
-import cc.topicexplorer.chain.commands.DependencyCommand;
+import cc.commandmanager.core.CommunicationContext;
+import cc.commandmanager.core.DependencyCommand;
 
 public class PreMallet extends DependencyCommand {
 

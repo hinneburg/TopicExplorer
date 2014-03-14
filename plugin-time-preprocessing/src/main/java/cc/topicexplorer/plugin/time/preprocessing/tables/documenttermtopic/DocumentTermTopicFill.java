@@ -2,7 +2,7 @@ package cc.topicexplorer.plugin.time.preprocessing.tables.documenttermtopic;
 
 import java.sql.SQLException;
 
-import cc.topicexplorer.chain.commands.TableFillCommand;
+import cc.topicexplorer.commands.TableFillCommand;
 
 /**
  * MIT-JOOQ-START import static jooq.generated.Tables.DOCUMENT_TERM_TOPIC;

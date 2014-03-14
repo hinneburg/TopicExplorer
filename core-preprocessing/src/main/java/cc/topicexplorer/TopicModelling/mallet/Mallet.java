@@ -9,8 +9,8 @@ import org.apache.log4j.Logger;
 
 import cc.mallet.classify.tui.Csv2Vectors;
 import cc.mallet.topics.tui.Vectors2Topics;
-import cc.topicexplorer.chain.CommunicationContext;
-import cc.topicexplorer.chain.commands.DependencyCommand;
+import cc.commandmanager.core.CommunicationContext;
+import cc.commandmanager.core.DependencyCommand;
 
 public class Mallet extends DependencyCommand {
 	private Properties properties;

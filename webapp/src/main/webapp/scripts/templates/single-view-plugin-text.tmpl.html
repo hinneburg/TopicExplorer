@@ -1,0 +1,8 @@
+<!-- ko foreach: {data:selectedDocuments,  as: 'selectedDocument'} -->
+		<a class="docTitle" style="margin-left: 10px; font-size: x-large;">
+			<nobr data-bind="text: $root.topicexplorer.document[selectedDocument].TEXT$TITLE"></nobr>
+		</a>
+		<p class="docContent">
+			<span data-bind="html: markWords()"></span>
+		</p>
+<!-- /ko -->

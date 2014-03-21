@@ -1,5 +1,8 @@
 define(["modules/topicexplorer-model","text!/../webapp/JsonServlet", "knockout"], function(topicexplorerModel,temp,ko) {
 	var json = JSON.parse(temp);
+	topicexplorerModel.leftBodyHeight = 0;
+	topicexplorerModel.windowWidth = 0;
+	
 	topicexplorerModel.document=json.JSON.DOCUMENT; 
 	topicexplorerModel.documentLimit = json.LIMIT;
 	topicexplorerModel.documentsLoading = ko.observable(false);
@@ -17,15 +20,18 @@ define(["modules/topicexplorer-model","text!/../webapp/JsonServlet", "knockout"]
 	topicexplorerModel.tab["t0"].documentCount = topicexplorerModel.documentLimit;
 	topicexplorerModel.tab["t0"].documentsFull = ko.observable(false);
 	topicexplorerModel.tab["t0"].scrollPosition = 0;
+	topicexplorerModel.tab["t0"].module = 'document-view';
 	
 	topicexplorerModel.term = json.JSON.Term;
 	topicexplorerModel.topic = json.JSON.Topic;
 	topicexplorerModel.topicSorting = json.JSON.TOPIC_SORTING;
 	
-	topicexplorerModel.loadDocumentsForTab = function (param, headLine) { 
+	
+	topicexplorerModel.checkTabExists = function(documentGetParameter) {
+		topicexplorerModel.tab[topicexplorerModel.activeTab].scrollPosition = $("#desktop").scrollTop();
+		
 		for(key in topicexplorerModel.tab) {
-			if(topicexplorerModel.tab[key].documentGetParameter == param) {
-				topicexplorerModel.tab[topicexplorerModel.activeTab].scrollPosition = $("#desktop").scrollTop();
+			if(topicexplorerModel.tab[key].documentGetParameter == documentGetParameter) {
 				var index = $.inArray(key, topicexplorerModel.invisibleTabs);
 				if(index > -1) {
 					topicexplorerModel.invisibleTabs.splice(index, 1);
@@ -33,21 +39,32 @@ define(["modules/topicexplorer-model","text!/../webapp/JsonServlet", "knockout"]
 					topicexplorerModel.invisibleTabs.push(newInvisibleTab);
 					topicexplorerModel.tabs.unshift(key);
 					ko.postbox.publish("TabView.invisibleTabs", topicexplorerModel.invisibleTabs);
-					ko.postbox.publish("TabView.tabs", topicexplorerModel.tabs);
+					
 				}
 				topicexplorerModel.activeTab = key;
+				ko.postbox.publish("TabView.activeModule", topicexplorerModel.tab[topicexplorerModel.activeTab].module);
 				ko.postbox.publish("TabView.activeTab", topicexplorerModel.activeTab);
-				ko.postbox.publish("DocumentView.selectedDocuments", topicexplorerModel.tab[key].documentSorting);
-				$("#desktop").scrollTop(topicexplorerModel.tab[topicexplorerModel.activeTab].scrollPosition);					
 				$(".tab").removeClass('active');
 				$("#tab" + topicexplorerModel.activeTab).addClass('active');	
-				return;
+				ko.postbox.publish("DocumentView.selectedDocuments", topicexplorerModel.tab[topicexplorerModel.activeTab].documentSorting);
+				ko.postbox.publish("TabView.tabs", topicexplorerModel.tabs);
+				$("#desktop").scrollTop(topicexplorerModel.tab[topicexplorerModel.activeTab].scrollPosition);					
+				
+				
+				return true;
 			}
 		}
+		return false;
+	};
+	
+	topicexplorerModel.loadDocumentsForTab = function (param, headLine) { 
+		if(topicexplorerModel.checkTabExists(param)) {
+			return;
+		}
+		
 		topicexplorerModel.documentsLoading(true);
 		
 		var index = ++topicexplorerModel.tabsLastIndex;
-		topicexplorerModel.tab[topicexplorerModel.activeTab].scrollPosition = $("#desktop").scrollTop();
 		topicexplorerModel.activeTab = "t" + index;
 		
 		topicexplorerModel.tabs.push("t" + index);
@@ -55,6 +72,7 @@ define(["modules/topicexplorer-model","text!/../webapp/JsonServlet", "knockout"]
 		topicexplorerModel.tab["t" + index] = new Array();
 		topicexplorerModel.tab["t" + index].scrollPosition = 0;
 		topicexplorerModel.tab["t" + index].tabTitle = headLine;
+		topicexplorerModel.tab["t" + index].module = 'document-view';
 		topicexplorerModel.tab["t" + index].documentGetParameter = param;	
 		topicexplorerModel.loadDocuments(
 			{paramString:param},
@@ -68,12 +86,11 @@ define(["modules/topicexplorer-model","text!/../webapp/JsonServlet", "knockout"]
 				topicexplorerModel.tab["t" + index].documentCount = newDocumentIds.length;
 				
 				if($("#desktop").width() < topicexplorerModel.tabs.length * 200 || topicexplorerModel.invisibleTabs.length) {
-					while($("#desktop").width() < topicexplorerModel.tabs.length * 200 + 60) {
-						var deletedTab = topicexplorerModel.tabs.shift();
-						topicexplorerModel.invisibleTabs.push(deletedTab);
-						ko.postbox.publish("TabView.invisibleTabs", topicexplorerModel.invisibleTabs);
-					}
-					
+					var allTabs = topicexplorerModel.invisibleTabs.concat(topicexplorerModel.tabs);
+					var numVisibleTabs = Math.floor(($("#desktop").width() - 76) / 200);
+					topicexplorerModel.invisibleTabs = allTabs.slice(0, allTabs.length - numVisibleTabs);
+					topicexplorerModel.tabs = allTabs.slice(allTabs.length - numVisibleTabs);					
+					ko.postbox.publish("TabView.invisibleTabs", topicexplorerModel.invisibleTabs);
 				}
 				
 				ko.postbox.publish("TabView.activeTab", topicexplorerModel.activeTab);
@@ -83,6 +100,42 @@ define(["modules/topicexplorer-model","text!/../webapp/JsonServlet", "knockout"]
 			}
 		);
 		
+		
+	};
+	topicexplorerModel.loadDocumentForTab = function(param, headLine) {
+		if(topicexplorerModel.checkTabExists(param)) {
+			return;
+		}
+		
+		var index = ++topicexplorerModel.tabsLastIndex;
+		topicexplorerModel.activeTab = "t" + index;
+		
+		topicexplorerModel.tabs.push("t" + index);
+		
+		topicexplorerModel.tab["t" + index] = new Array();
+		topicexplorerModel.tab["t" + index].tabTitle = headLine;
+		topicexplorerModel.tab["t" + index].module = 'single-view';
+		topicexplorerModel.tab["t" + index].documentsFull = ko.observable(true);
+		topicexplorerModel.tab["t" + index].documentGetParameter = param;
+		topicexplorerModel.loadDocument(
+			{paramString:param},
+			function(newDocumentId) {
+				topicexplorerModel.tab["t" + index].documentSorting = new Array(newDocumentId);
+				
+				if($("#desktop").width() < topicexplorerModel.tabs.length * 200 || topicexplorerModel.invisibleTabs.length) {
+					var allTabs = topicexplorerModel.invisibleTabs.concat(topicexplorerModel.tabs);
+					var numVisibleTabs = Math.floor(($("#desktop").width() - 76) / 200);
+					topicexplorerModel.invisibleTabs = allTabs.slice(0, allTabs.length - numVisibleTabs);
+					topicexplorerModel.tabs = allTabs.slice(allTabs.length - numVisibleTabs);					
+					ko.postbox.publish("TabView.invisibleTabs", topicexplorerModel.invisibleTabs);
+				}
+				
+				ko.postbox.publish("TabView.activeTab", topicexplorerModel.activeTab);
+				ko.postbox.publish("DocumentView.selectedDocuments", topicexplorerModel.tab["t" + index].documentSorting);	
+				ko.postbox.publish("TabView.tabs", topicexplorerModel.tabs);
+				$("#desktop").scrollTop(0);
+			}
+		);
 		
 	};
 });

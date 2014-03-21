@@ -2,55 +2,13 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<title>TopicExplorer</title>	
+	<title>TopicExplorer UI Prototype</title>
 	<link rel="stylesheet" href="css/jquery-ui-1.10.3.custom.min.css" type="text/css">
 	<link rel="stylesheet" href="css/style.css" type="text/css">
-	<script src="scripts/lib/jquery-1.9.1.min.js"></script>
-	<script src="scripts/lib/jquery-ui-1.10.3.custom.min.js"></script>	
-	<script src="scripts/lib/knockout-2.2.1.js" defer="defer"></script>
-	<script src="scripts/lib/knockout.mapping.js" defer="defer"></script>
-	<script src="scripts/app.js" defer="defer"></script>
-	<script src="scripts/browserScript.js" defer="defer"></script>		
 </head>
+
 <body>
-	<div id="ajaxLoader">
-		<img src="images/ajax-loader.gif" alt="" />
-		<p>Loading ...</p>
-	</div>
-	<div class="content">
-		<div class="rightBody">
-			<button class="button gradientGray" type="submit" data-bind="click: function(){getRandom(20)}"><span>Recommend</span></button>
-			<button class="button gradientGray" type="submit"><span>Topic Mixture</span></button>
-			<div class="shoppingCart" data-bind="foreach: $root.documentData">
-				<div data-bind="topicTest: $data"></div>
-			</div>
-		</div>
-		<div class="leftBody">
-			<div class="searchBar">
-				<form method="post" action="" id="searchForm">
-					<fieldset>						
-						<input id="searchField" type="text" name="search" />
-						<button class="button gradientGray" type="submit"><span>Search</span></button>
-					</fieldset>
-			<!-- 	<fieldset style="padding:5px;float:left;margin-left: 10px;margin-top: 4px;">
-						<div style="width:19px;height:19px;float:left;margin-right:5px;border: 1px solid silver;"></div>						
-						<input type="text" maxlength="3" size="6" placeholder="themenId" name="theme"/>
-						<input type="text" maxlength="6" size="9" placeholder="themenFarbe" name="themeColor" />
-						<button id="changeColor"><span>Neue Farbe</span></button>					
-					</fieldset> -->
-				</form>
-			</div>
-			<div class="leftBodyContent" id="test">
-				<div id="tabView"></div>
-				<div id="desktop"></div>
-				<div id="topicModel">
-					<div class="topicList"></div>
-					<div class="pointer"><svg width="12" height="10"><polygon fill="black" points="6,0 12,10 0,10"/></svg></div>
-					<div class="bottom"></div>
-				</div>
-			</div>
-		</div>
-		<div style="clear:both"></div>
-	</div>
+	<div class="content" data-bind="template: 'topicexplorer-view'"></div>
+	<script data-main="scripts/main-require" src="scripts/lib/require.js"></script>
 </body>
 </html>

@@ -5,6 +5,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.sql.Driver;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.Enumeration;
 import java.util.Properties;
 
 import javax.servlet.ServletContext;
@@ -20,6 +24,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -34,6 +39,17 @@ public class OnStartup implements ServletContextListener {
 
 	@Override
 	public void contextDestroyed(ServletContextEvent arg0) {
+		 // This manually deregisters JDBC driver, which prevents Tomcat 7 from complaining about memory leaks wrto this class 
+		Enumeration<Driver> drivers = DriverManager.getDrivers(); 
+		while (drivers.hasMoreElements()) { 
+			Driver driver = drivers.nextElement(); 
+			try { 
+				DriverManager.deregisterDriver(driver); 
+				logger.log(Level.INFO, String.format("deregistering jdbc driver: %s", driver)); 
+			} catch (SQLException e) { 
+				logger.log(Level.ERROR, String.format("Error deregistering driver %s", driver), e); 
+			} 
+		}
 	}
 
 	@Override

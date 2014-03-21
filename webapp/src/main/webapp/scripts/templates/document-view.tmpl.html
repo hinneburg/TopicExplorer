@@ -1,11 +1,11 @@
-<div id="desktop" data-bind="style: {height: desktopHeight() + 'px'}, event: {scroll: scrollCallback}">	
+<div id="desktop" data-bind="style: {height: desktopHeight() + 'px'}, template: { afterRender: scrollFunc }, event: {scroll: scrollCallback}">	
 	<img id="browserMenuActivator" class="menuActivator rotate1" src="images/Black_Settings.png" alt="&gt;" style="display: none;position: absolute;z-index:3; padding: 1px;" />
 	<div id="browserMenu"
 		style="display: none; position: absolute; z-index: 1; padding: 21px 0 0 1px;">
-		<div  data-bind="template: {name: 'document-view-menu', afterRender: makeMenu}"></div>
+		<div  data-bind="template: {name: 'document-menu-view', afterRender: makeMenu}"></div>
 	</div>
 	<div id="jumpToStart" data-bind="style: {left: (windowWidth() / 2 - 14) + 'px'}">^</div>
-	<input type="hidden" name="docParam" data-bind="attr: {'value': $root.topicexplorer.documentGetParameter}"/>
+	
 	<div class="documentList" style="height: 100%;">		
 		<ul	class="browser" style="height: 100%;">
 		<!-- ko foreach: {data:selectedDocuments,  as: 'selectedDocument', afterRender:checkSize} -->

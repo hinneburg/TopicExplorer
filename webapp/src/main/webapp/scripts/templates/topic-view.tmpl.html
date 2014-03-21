@@ -5,7 +5,7 @@
 	<img class="menuActivator rotate1" src="images/Black_Settings.png" alt="&gt;"  style="display: none;position: absolute;z-index:3; margin: 3px 0 0 1px" />
 	<div id="topicMenu"
 		style="display: none; position: absolute; z-index: 1; top:20px; overflow:auto; left: 1px;padding: 3px 0 0 1px">
-		<div  data-bind="template: {name: 'topic-view-menu', afterRender: makeMenu}"></div>
+		<div  data-bind="template: {name: 'topic-menu-view', afterRender: makeMenu}"></div>
 	</div>
 	<ul data-bind="foreach: {data: selectedTopics, as: 'selectedTopic'}, style {width: $('.topicList > ul > li').size() * 213 + 'px'}">
 		<li class="topic" data-bind="attr:{ 'id' : 'topic' + selectedTopic}, style: { height: ($parent.topicListHeight() - 14) + 'px', backgroundColor: $root.topicexplorer.topic[selectedTopic].COLOR_TOPIC$COLOR}">

@@ -1,1 +1,0 @@
-topicColor = "COLOR_TOPIC$COLOR";

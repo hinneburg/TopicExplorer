@@ -3,8 +3,8 @@
 		<button class="chartButton" onclick="" name="showBig" title="show topic mixture" type="button"></button>
 	</div>
 	<div class="docTitle">
-		<nobr data-bind="text: $root.topicexplorer.document[selectedDocument].TEXT$TITLE"></nobr>
+		<a href="#" data-bind="click: $parent.loadDocument, attr: {id: 'doc' + $root.topicexplorer.document[selectedDocument].DOCUMENT_ID}"><nobr data-bind="text: $root.topicexplorer.document[selectedDocument].TEXT$TITLE"></nobr></a>
 	</div>
 	<p class="docContent">
-		<span data-bind="text:$root.topicexplorer.document[selectedDocument].TEXT$FULLTEXT"></span>
+		<span data-bind="text:$root.topicexplorer.document[selectedDocument].TEXT$SNIPPET"></span>
 	</p>

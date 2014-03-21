@@ -6,4 +6,3 @@
 */target/*
 *.local.properties
 .gitignore*
-*/bin/*

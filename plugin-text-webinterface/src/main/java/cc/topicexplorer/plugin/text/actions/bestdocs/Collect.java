@@ -17,7 +17,7 @@ public class Collect extends TableSelectCommand {
 
 		bestDocAction.addDocumentColumn("DOCUMENT.TEXT$TITLE", "TEXT$TITLE");
 		bestDocAction.addDocumentColumn("CONCAT(SUBSTRING(DOCUMENT.TEXT$FULLTEXT FROM 1 FOR 150), '...')",
-				"TEXT$FULLTEXT");
+				"TEXT$SNIPPET");
 		communicationContext.put("BEST_DOC_ACTION", bestDocAction);
 	}
 

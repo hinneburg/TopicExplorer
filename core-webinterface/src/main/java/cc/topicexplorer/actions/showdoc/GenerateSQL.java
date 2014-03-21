@@ -41,7 +41,6 @@ public class GenerateSQL extends TableSelectCommand {
 				}
 			}
 
-			all.put("DOCUMENT", doc);
 			Long time = System.currentTimeMillis() - start;
 			logger.info(" DocQueryTime: " + time + " ms");
 
@@ -53,7 +52,9 @@ public class GenerateSQL extends TableSelectCommand {
 				}
 				topics.add(topic);
 			}
-			all.put("WORD_LIST", topics);
+			doc.put("WORD_LIST", topics);
+			all.put("DOCUMENT", doc);
+			
 		} catch (SQLException e) {
 			logger.error("JSON Object could not be filled properly, due to database problems.");
 			throw new RuntimeException(e);

@@ -16,7 +16,7 @@ public class Collect extends TableSelectCommand {
 		documentMap = (SelectMap) communicationContext.get("DOCUMENT_QUERY");
 
 		documentMap.select.add("DOCUMENT.TEXT$TITLE");
-		documentMap.select.add("CONCAT(SUBSTRING(DOCUMENT.TEXT$FULLTEXT FROM 1 FOR 150), '...') AS TEXT$FULLTEXT");
+		documentMap.select.add("CONCAT(SUBSTRING(DOCUMENT.TEXT$FULLTEXT FROM 1 FOR 150), '...') AS TEXT$SNIPPET");
 
 		communicationContext.put("DOCUMENT_QUERY", documentMap);
 

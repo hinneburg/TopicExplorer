@@ -5,4 +5,5 @@
 *.settings
 */target/*
 *.local.properties
-.gitignore
+.gitignore*
+*/bin/*

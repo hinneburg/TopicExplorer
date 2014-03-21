@@ -4,3 +4,4 @@
 *.class
 *.settings
 */target/*
+*.local.properties

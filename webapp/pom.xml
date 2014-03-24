@@ -117,4 +117,11 @@
 			</resource>
 		</resources>
 	</build>
+	<distributionManagement>
+		<snapshotRepository>
+			<id>snapshots-write</id>
+			<name>Archiva Snapshot Repository on 'moon'</name>
+			<url>https://moon.informatik.uni-halle.de/archiva/repository/snapshots-db</url>
+		</snapshotRepository>
+	</distributionManagement>
 </project>

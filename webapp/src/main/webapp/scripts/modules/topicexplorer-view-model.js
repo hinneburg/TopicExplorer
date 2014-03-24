@@ -1,7 +1,7 @@
 define(["knockout",
-        "modules/topicexplorer-model", 
-        "modules/topicexplorer-model-load", 
-        "modules/topicexplorer-view-config"
+        "scripts/modules/topicexplorer-model", 
+        "scripts/modules/topicexplorer-model-load", 
+        "scripts/modules/topicexplorer-view-config"
        ],
 function(ko,topicexplorerModel) {
     return function() {

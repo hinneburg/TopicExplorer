@@ -1,4 +1,4 @@
-define(["modules/topicexplorer-model","text!/../webapp/JsonServlet", "knockout"], function(topicexplorerModel,temp,ko) {
+define(["scripts/modules/topicexplorer-model","text!/JsonServlet", "knockout"], function(topicexplorerModel,temp,ko) {
 	var json = JSON.parse(temp);
 	topicexplorerModel.leftBodyHeight = 0;
 	topicexplorerModel.windowWidth = 0;

@@ -1,4 +1,4 @@
-define(["modules/topicexplorer-model"], function(topicexplorerModel) {
+define(["scripts/modules/topicexplorer-model"], function(topicexplorerModel) {
     topicexplorerModel.config = {	
 			documentView:	{
 				activePlugin: 0,

@@ -1,22 +1,23 @@
 require.config({
+	baseUrl : "./", 
 	paths : {
-		"knockout" : "lib/knockout-3.0.0",
-		"knockout-amd-helpers" : "lib/knockout-amd-helpers",
-		"knockout-postbox" : "lib/knockout-postbox",
-		"text" : "lib/text",
-		"jquery" : "lib/jquery-1.9.1.min",
-		"jquery-ui" : "lib/jquery-ui-1.10.3.custom.min",	
-		"knockout-jqueryui" : "lib/knockout-jqueryui.min"
+		"knockout" : "scripts/lib/knockout-3.0.0",
+		"knockout-amd-helpers" : "scripts/lib/knockout-amd-helpers",
+		"knockout-postbox" : "scripts/lib/knockout-postbox",
+		"text" : "scripts/lib/text",
+		"jquery" : "scripts/lib/jquery-1.9.1.min",
+		"jquery-ui" : "scripts/lib/jquery-ui-1.10.3.custom.min",	
+		"knockout-jqueryui" : "scripts/lib/knockout-jqueryui.min"
 	}
 });
 
-require([ "knockout","jquery", "modules/topicexplorer-view-model",
+require([ "knockout","jquery", "scripts/modules/topicexplorer-view-model",
 		"knockout-amd-helpers", "knockout-postbox",
 		"text", "jquery-ui", "knockout-jqueryui" ], function(ko, $, App) {
 	var timeoutId = null;
 	var self=this;
-	ko.bindingHandlers.module.baseDir = "modules";
-	
+	ko.bindingHandlers.module.baseDir = "scripts/modules";
+
 	// global delegates
 	$(document).delegate(".menuActivator", 'click', function(e){
 		if($(this).next().height() + 26 > $(this).parent().height()) {

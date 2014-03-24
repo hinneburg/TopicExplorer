@@ -27,7 +27,7 @@ define(
     		return topicexplorerModel.document[self.selectedDocuments()[0]].TEXT_WITH_MARKED_WORDS;
     	};
     	
-    	self.scrollCallback = function(el) {
+    	self.singleScrollCallback = function(el) {
 			$("#singleMenuActivator, #singleMenu").css('top',$("#desktop").scrollTop());
 		};
     	

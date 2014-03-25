@@ -8,7 +8,7 @@ function(ko, $) {
     		topicexplorer.loadDocumentsForTab("Command=search&SearchWord="+searchWord, "Search: " + searchWord);
     		
    		};
-   		self.windowWidth = ko.observable(100).subscribeTo("windowWidth");
+   		self.windowWidth = ko.observable(topicexplorer.view.windowWidth).subscribeTo("windowWidth");
    		self.leftPadding = ko.computed(function() {
    			$('.searchBar').css('margin-left', ((self.windowWidth() - 500) / 2) + 'px'); // Safari fallback
    			return ((self.windowWidth() - 500) / 2) + 'px';

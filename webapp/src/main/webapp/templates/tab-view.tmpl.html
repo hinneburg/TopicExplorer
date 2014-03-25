@@ -5,7 +5,7 @@
 </p>
 
 <ul id="tabMenu" class="ui-menu ui-widget ui-widget-content ui-corner-all" data-bind="foreach: {data: invisibleTabs}"  style="display: none; position: absolute; z-index: 3; margin: 20px 0 0 5px;">
-	<li class="ui-menu-item" role="presentation"><a class="ui-corner-all" href="#" data-bind="text: $root.topicexplorer.tab[$root.topicexplorer.invisibleTabs[$index()]].tabTitle, click: $parent.toggleActive, event: {"></a></li>
+	<li class="ui-menu-item" role="presentation"><a class="ui-corner-all" href="#" data-bind="text: $root.topicexplorer.view.tab[$root.topicexplorer.view.invisibleTabs[$index()]].tabTitle, click: $parent.toggleActive, event: {"></a></li>
 </ul>
 
 <!-- /ko -->
@@ -13,10 +13,10 @@
 
 <p class="reiter button gradientGray tab" data-bind="attr: { id: 'tab' + $data}" style="cursor: default;">
 	<img data-bind="click: $parent.deleteTab" style="cursor: pointer; position:absolute; top:5px; right: 5px; display: none;" width="12px" height="12px" src="images/delete_24.png" alt="close"/>
-	<span style="cursor: pointer;" data-bind="text: $root.topicexplorer.tab[$root.topicexplorer.tabs[$index()]].tabTitle, click: $parent.toggleActive"></span>	
+	<span style="cursor: pointer;" data-bind="text: $root.topicexplorer.view.tab[$root.topicexplorer.view.tabs[$index()]].tabTitle, click: $parent.toggleActive"></span>	
 </p>
 
 
 <!-- /ko -->
-<input type="hidden" name="docParam" data-bind="attr: {'value': $root.topicexplorer.documentGetParameter}"/>
+<input type="hidden" name="docParam" data-bind="attr: {'value': $root.topicexplorer.data.documentGetParameter}"/>
 <div id="document-view" data-bind="module: {name: activeModule, data: $parent.topicexplorer, template: activeModule}"></div>

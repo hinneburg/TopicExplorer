@@ -13,15 +13,15 @@ define(
 					topicexplorerModel.loadDocumentForTab('Command=getDoc&DocId=' + docId, 'Doc ' + docId);
 				};
 				
-				self.activeTab = ko.observable(topicexplorerModel.activeTab).subscribeTo(
+				self.activeTab = ko.observable(topicexplorerModel.view.activeTab).subscribeTo(
 						"TabView.activeTab");
 				
 				self.selectedDocuments = ko.observableArray(
-						topicexplorerModel.tab[self.activeTab()].documentSorting).subscribeTo(
+						topicexplorerModel.view.tab[self.activeTab()].documentSorting).subscribeTo(
 						"DocumentView.selectedDocuments");
 			    
 				self.scrollFunc = function() {
-					$("#desktop").scrollTop(topicexplorerModel.tab[self.activeTab()].scrollPosition);
+					$("#desktop").scrollTop(topicexplorerModel.view.tab[self.activeTab()].scrollPosition);
 				};
 				
 				self.scrollCallback = function(el) {
@@ -41,37 +41,37 @@ define(
 						self.loadMoreDocuments();
 					}
 				};
-				self.leftBodyHeight = ko.observable(topicexplorerModel.leftBodyHeight).subscribeTo("leftBodyHeight");
+				self.leftBodyHeight = ko.observable(topicexplorerModel.view.leftBodyHeight).subscribeTo("leftBodyHeight");
 				
 				self.desktopHeight = ko.computed(function() {
 					return ((self.leftBodyHeight() - 90) * 0.7);
 				});			
 				
-				self.windowWidth = ko.observable(topicexplorerModel.windowWidth).subscribeTo("windowWidth");
+				self.windowWidth = ko.observable(topicexplorerModel.view.windowWidth).subscribeTo("windowWidth");
 				self.documentElementWidth = ko.computed (function() {
 					var documentWidth = 262;
 					var docDeskRatio = Math.floor((self.windowWidth() - 10) / documentWidth);
 					return ((self.windowWidth() - 10) / docDeskRatio) - 32;
 				});		
 				
-				topicexplorerModel.documentsLoading.subscribe(self.checkSize);
+				topicexplorerModel.data.documentsLoading.subscribe(self.checkSize);
 				self.desktopHeight.subscribe(self.checkSize);
 				self.documentElementWidth.subscribe(self.checkSize);						
 						
 				self.loadMoreDocuments = function() {
-					if(!topicexplorerModel.documentsLoading() && !topicexplorerModel.tab[self.activeTab()].documentsFull() && $("#desktop").scrollTop() + self.desktopHeight() + 90 >= $("#desktop")[0].scrollHeight) {
-						topicexplorerModel.documentsLoading(true);
+					if(!topicexplorerModel.data.documentsLoading() && !topicexplorerModel.view.tab[self.activeTab()].documentsFull() && $("#desktop").scrollTop() + self.desktopHeight() + 90 >= $("#desktop")[0].scrollHeight) {
+						topicexplorerModel.data.documentsLoading(true);
 						topicexplorerModel.loadDocuments(
-							{paramString: topicexplorerModel.tab[self.activeTab()].documentGetParameter + '&offset=' + topicexplorerModel.tab[self.activeTab()].documentCount},
+							{paramString: topicexplorerModel.view.tab[self.activeTab()].documentGetParameter + '&offset=' + topicexplorerModel.view.tab[self.activeTab()].documentCount},
 							function(newDocumentIds) {
-								if(newDocumentIds.length < topicexplorerModel.documentLimit) { 
+								if(newDocumentIds.length < topicexplorerModel.data.documentLimit) { 
 									topicexplorerModel.tab[self.activeTab()].documentsFull(true);
 								}
-								topicexplorerModel.tab[self.activeTab()].documentSorting = topicexplorerModel.tab[self.activeTab()].documentSorting.concat(newDocumentIds);
-								self.selectedDocuments(topicexplorerModel.tab[self.activeTab()].documentSorting);
+								topicexplorerModel.view.tab[self.activeTab()].documentSorting = topicexplorerModel.view.tab[self.activeTab()].documentSorting.concat(newDocumentIds);
+								self.selectedDocuments(topicexplorerModel.view.tab[self.activeTab()].documentSorting);
 							}
 						);
-						topicexplorerModel.tab[self.activeTab()].documentCount += topicexplorerModel.documentLimit;
+						topicexplorerModel.view.tab[self.activeTab()].documentCount += topicexplorerModel.data.documentLimit;
 					}
 				};
 				return self;

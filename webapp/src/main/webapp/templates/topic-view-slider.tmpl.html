@@ -2,7 +2,7 @@
 	<div class="topicPrevElCont">
 		<svg style="z-index: 2;">
 			<g id="groupG" data-bind="foreach: {data: $parent.selectedTopics, as: 'selectedTopic'}, attr: {transform: 'scale(' + sliderElWidth() + ', 1)'}">
-				<rect data-bind="attr:{ 'id' : 'topic_' + selectedTopic, 'x': $index, 'index': $index, 'fill': $root.topicexplorer.topic[selectedTopic].COLOR_TOPIC$COLOR}" class="topicRec" height="13" width="1" y="2" title="Topic 0" stroke-width="0.02" stroke="black">
+				<rect data-bind="attr:{ 'id' : 'topic_' + selectedTopic, 'x': $index, 'index': $index, 'fill': $root.topicexplorer.data.topic[selectedTopic].COLOR_TOPIC$COLOR}" class="topicRec" height="13" width="1" y="2" title="Topic 0" stroke-width="0.02" stroke="black">
 			</g>
 		</svg>
 	</div>

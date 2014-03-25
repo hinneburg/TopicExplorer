@@ -3,16 +3,16 @@ define(["jquery"], function($) {
 	self.topicexplorerModel = new Object();
 	self.topicexplorerModel.loadDocuments = function (parameter, callback) {
 		$.getJSON("JsonServlet?" + parameter.paramString).success(function(receivedParsedJson) {
-			$.extend(self.topicexplorerModel.document, receivedParsedJson.DOCUMENT);
+			$.extend(self.topicexplorerModel.data.document, receivedParsedJson.DOCUMENT);
 			callback(receivedParsedJson.DOCUMENT_SORTING);
-			self.topicexplorerModel.documentsLoading(false);
+			self.topicexplorerModel.data.documentsLoading(false);
 		});
 	};
 	self.topicexplorerModel.loadDocument = function (parameter, callback) {
 		$.getJSON("JsonServlet?" + parameter.paramString).success(function(receivedParsedJson) {
-			$.extend(self.topicexplorerModel.document[receivedParsedJson.DOCUMENT.DOCUMENT_ID], receivedParsedJson.DOCUMENT);
+			$.extend(self.topicexplorerModel.data.document[receivedParsedJson.DOCUMENT.DOCUMENT_ID], receivedParsedJson.DOCUMENT);
 			callback(receivedParsedJson.DOCUMENT.DOCUMENT_ID);
-			self.topicexplorerModel.documentsLoading(false);
+			self.topicexplorerModel.data.documentsLoading(false);
 		});
 	};
     return self.topicexplorerModel;

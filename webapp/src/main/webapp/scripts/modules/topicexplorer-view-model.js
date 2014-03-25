@@ -12,8 +12,8 @@ function(ko,topicexplorerModel) {
 		this.searchbarHeight = ko.observable(100).subscribeTo("searchbarHeight"); 
 		this.leftBodyHeight = ko.computed(
 			function() {
-				topicexplorerModel.leftBodyHeight = self.windowHeight()-self.searchbarHeight()-30;
-				return topicexplorerModel.leftBodyHeight;
+				topicexplorerModel.view.leftBodyHeight = self.windowHeight()-self.searchbarHeight()-30;
+				return topicexplorerModel.view.leftBodyHeight;
 			}).publishOn("leftBodyHeight");
 		 
     };

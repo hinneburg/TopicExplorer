@@ -4,102 +4,96 @@ define(
 	//		var self = this;
 	//		self.topicexplorer = topicexplorer;
 			self.activeTab = ko.observable(
-					topicexplorerModel.activeTab).subscribeTo(
+					topicexplorerModel.view.activeTab).subscribeTo(
 					"TabView.activeTab");
 			self.tabs = ko.observableArray(
-				topicexplorerModel.tabs).subscribeTo(
+				topicexplorerModel.view.tabs).subscribeTo(
 				"TabView.tabs");
-			self.invisibleTabs = ko.observableArray().subscribeTo(
+			self.invisibleTabs = ko.observableArray(topicexplorerModel.view.invisbleTabs).subscribeTo(
 				"TabView.invisibleTabs");
-			self.windowWidth = ko.observable(1024).subscribeTo("windowWidth");
+			self.windowWidth = ko.observable(topicexplorerModel.view.windowWidth).subscribeTo("windowWidth");
 			
-			self.activeModule = ko.observable(topicexplorerModel.tab[self.activeTab()].module).subscribeTo(
+			self.activeModule = ko.observable(topicexplorerModel.view.tab[self.activeTab()].module).subscribeTo(
 				"TabView.activeModule");;
-/*			elf.activeTab.subscribe(function() {
-				console.log('ha');
-				if(topicexplorerModel.tab[self.activeTab()].module !=self.activeModule()) {
-					console.log(topicexplorerModel.tab[self.activeTab()].module);
-					self.activeModule(topicexplorerModel.tab[self.activeTab()].module);
-				}
-			});*/
+
 			
 			self.windowWidth.subscribe(function(newValue) {
-				topicexplorerModel.windowWidth = newValue;
-				var allTabs = topicexplorerModel.invisibleTabs.concat(topicexplorerModel.tabs);
+				topicexplorerModel.view.windowWidth = newValue;
+				var allTabs = topicexplorerModel.view.invisibleTabs.concat(topicexplorerModel.view.tabs);
 				if($("#desktop").width() / allTabs.length >= 200) {
-					topicexplorerModel.tabs = allTabs;
-					topicexplorerModel.invisibleTabs = new Array();
+					topicexplorerModel.view.tabs = allTabs;
+					topicexplorerModel.view.invisibleTabs = new Array();
 				} else {
 					var numVisibleTabs = Math.floor(($("#desktop").width() - 76) / 200);
-					topicexplorerModel.invisibleTabs = allTabs.slice(0, allTabs.length - numVisibleTabs);
-					topicexplorerModel.tabs = allTabs.slice(allTabs.length - numVisibleTabs);					
+					topicexplorerModel.view.invisibleTabs = allTabs.slice(0, allTabs.length - numVisibleTabs);
+					topicexplorerModel.view.tabs = allTabs.slice(allTabs.length - numVisibleTabs);					
 				}
-				self.invisibleTabs(topicexplorerModel.invisibleTabs);
-				self.tabs(topicexplorerModel.tabs);
+				self.invisibleTabs(topicexplorerModel.view.invisibleTabs);
+				self.tabs(topicexplorerModel.view.tabs);
 			});
 			
 			self.setActive = function() {
 				$(".tab").removeClass('active');
-				$("#tab" + topicexplorerModel.activeTab).addClass('active');
-				self.activeTab(topicexplorerModel.activeTab);	
-				self.activeModule(topicexplorerModel.tab[topicexplorerModel.activeTab].module);
-				ko.postbox.publish("DocumentView.selectedDocuments", topicexplorerModel.tab[topicexplorerModel.activeTab].documentSorting);
-				$("#desktop").scrollTop(topicexplorerModel.tab[topicexplorerModel.activeTab].scrollPosition);
+				$("#tab" + topicexplorerModel.view.activeTab).addClass('active');
+				self.activeTab(topicexplorerModel.view.activeTab);	
+				self.activeModule(topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].module);
+				ko.postbox.publish("DocumentView.selectedDocuments", topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].documentSorting);
+				$("#desktop").scrollTop(topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].scrollPosition);
 			};
 			self.toggleActive = function(active) {
 				$('#tabMenu').hide();
-				topicexplorerModel.tab[topicexplorerModel.activeTab].scrollPosition = $("#desktop").scrollTop();
-				topicexplorerModel.activeTab = active;
+				topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].scrollPosition = $("#desktop").scrollTop();
+				topicexplorerModel.view.activeTab = active;
 				var index = $.inArray(active, self.invisibleTabs());
 				if(index > -1) {
-					topicexplorerModel.invisibleTabs.splice(index, 1);
-					var newInvisibleTab = topicexplorerModel.tabs.shift();
-					topicexplorerModel.invisibleTabs.push(newInvisibleTab);
-					topicexplorerModel.tabs.unshift(active);
-					self.invisibleTabs(topicexplorerModel.invisibleTabs);
-					self.tabs(topicexplorerModel.tabs);
+					topicexplorerModel.view.invisibleTabs.splice(index, 1);
+					var newInvisibleTab = topicexplorerModel.view.tabs.shift();
+					topicexplorerModel.view.invisibleTabs.push(newInvisibleTab);
+					topicexplorerModel.view.tabs.unshift(active);
+					self.invisibleTabs(topicexplorerModel.view.invisibleTabs);
+					self.tabs(topicexplorerModel.view.tabs);
 				}
 				
-				topicexplorerModel.documentsLoading(true);					
+				topicexplorerModel.data.documentsLoading(true);					
 				self.setActive();
-				topicexplorerModel.documentsLoading(false);
+				topicexplorerModel.data.documentsLoading(false);
 			};
 			self.deleteTab = function(tab) {
-				if(topicexplorerModel.tabs.length < 2) {
+				if(topicexplorerModel.view.tabs.length < 2) {
 					alert("Ein Tab muss bleiben!");
 					return;
 				}
 
-				var tabIndex = $.inArray(tab, topicexplorerModel.tabs);
+				var tabIndex = $.inArray(tab, topicexplorerModel.view.tabs);
 				
-				topicexplorerModel.tabs.splice(tabIndex, 1);
-				delete topicexplorerModel.tab[tab];
+				topicexplorerModel.view.tabs.splice(tabIndex, 1);
+				delete topicexplorerModel.view.tab[tab];
 				
 				if(self.invisibleTabs().length > 0) {
-					var newTabIndex = topicexplorerModel.invisibleTabs.shift();
-					topicexplorerModel.tabs.unshift(newTabIndex);
-					self.invisibleTabs(topicexplorerModel.invisibleTabs);
+					var newTabIndex = topicexplorerModel.view.invisibleTabs.shift();
+					topicexplorerModel.view.tabs.unshift(newTabIndex);
+					self.invisibleTabs(topicexplorerModel.view.invisibleTabs);
 				}
 					 
-				self.tabs(topicexplorerModel.tabs);
+				self.tabs(topicexplorerModel.view.tabs);
 				
-				if(topicexplorerModel.activeTab == tab) {
-					if(tabIndex > topicexplorerModel.tabs.length - 1) {
+				if(topicexplorerModel.view.activeTab == tab) {
+					if(tabIndex > topicexplorerModel.view.tabs.length - 1) {
 						tabIndex--;						
 					}
-					topicexplorerModel.activeTab = topicexplorerModel.tabs[tabIndex];
+					topicexplorerModel.view.activeTab = topicexplorerModel.view.tabs[tabIndex];
 					self.setActive();
 				}					
 			};
 			
 			self.deleteAllHidden = function() {
 				if(confirm("Alle " + self.invisibleTabs().length + " unsichtbaren Tabs loeschen?")) {
-					for(key in topicexplorerModel.invisibleTabs) {
-						delete(topicexplorerModel.tab[topicexplorerModel.invisibleTabs[key]]);
+					for(key in topicexplorerModel.view.invisibleTabs) {
+						delete(topicexplorerModel.view.tab[topicexplorerModel.view.invisibleTabs[key]]);
 					}
 					
-					topicexplorerModel.invisibleTabs = new Array();
-					self.invisibleTabs(topicexplorerModel.invisibleTabs);
+					topicexplorerModel.view.invisibleTabs = new Array();
+					self.invisibleTabs(topicexplorerModel.view.invisibleTabs);
 					
 				}
 			};

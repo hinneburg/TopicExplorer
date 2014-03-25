@@ -5,7 +5,7 @@ function(ko, $) {
     	this.topicexplorer = topicexplorer;
     	this.pluginTemplates = topicexplorer.config.topicView.pluginTemplates;
     	this.selectedPluginTemplate = ko.observable(this.pluginTemplates[0]);
-    	this.selectedTopics = ko.observableArray(topicexplorerModel.topicSorting);
+    	this.selectedTopics = ko.observableArray(topicexplorerModel.data.topicSorting);
     	this.changeSelectedTopics = function () { this.selectedTopics(["1"]); };
     	this.loadDocumentsForTopic = function (topicId) { 
     		topicexplorer.loadDocumentsForTab("Command=bestDocs&TopicId="+topicId, "Topic " + topicId);

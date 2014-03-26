@@ -4,8 +4,9 @@ define(
 			self.activeTab = ko.observable(topicexplorerModel.view.activeTab);
 			self.tabs = ko.observableArray(topicexplorerModel.view.tabs);
 			self.invisibleTabs = ko.observableArray(topicexplorerModel.view.invisbleTabs);
-			self.windowWidth = ko.observable(topicexplorerModel.view.windowWidth).subscribeTo("windowWidth");
 			self.activeModule = ko.observable(topicexplorerModel.view.tab[self.activeTab()].module);
+			
+			self.windowWidth = ko.observable(topicexplorerModel.view.windowWidth).subscribeTo("windowWidth");
 
 			self.windowWidth.subscribe(function(newValue) {
 				topicexplorerModel.view.windowWidth = newValue;
@@ -162,6 +163,7 @@ define(
 				topicexplorerModel.view.tabs.push("t" + index);
 				
 				topicexplorerModel.view.tab["t" + index] = new Array();
+				topicexplorerModel.view.tab["t" + index].scrollPosition = 0;
 				topicexplorerModel.view.tab["t" + index].tabTitle = headLine;
 				topicexplorerModel.view.tab["t" + index].module = 'single-view';
 				topicexplorerModel.view.tab["t" + index].documentsFull = ko.observable(true);

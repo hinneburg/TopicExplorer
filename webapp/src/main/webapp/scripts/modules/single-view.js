@@ -1,7 +1,7 @@
 define(
     [ "knockout", "jquery", "scripts/modules/tab-view"],
     function(ko, $) {
-    	self.leftBodyHeight=ko.observable(Math.max(topicexplorerModel.view.leftBodyHeight)).subscribeTo("leftBodyHeight");
+    	self.leftBodyHeight=ko.observable(topicexplorerModel.view.leftBodyHeight).subscribeTo("leftBodyHeight");
     	
     	self.desktopHeight= ko.computed(function() {
     		return ((self.leftBodyHeight() - 90) * 0.7);
@@ -32,12 +32,6 @@ define(
     	self.singleScrollCallback = function(el) {
 			$("#singleMenuActivator, #singleMenu").css('top', $("#desktop").scrollTop());
 		};
-    	
-		self.singlePluginTemplates = topicexplorerModel.config.singleView.pluginTemplates;
-		self.singlePluginTemplate = ko.observable(self.singlePluginTemplates[topicexplorerModel.config.singleView.activePlugin]);
-		self.singlePluginTemplate.subscribe(function(newValue) {
-			topicexplorerModel.config.singleView.activePlugin = topicexplorerModel.config.singleView.pluginTemplates.indexOf(newValue);
-		});
 		
     	return self;
     }); 

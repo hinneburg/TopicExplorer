@@ -1,7 +1,8 @@
 require.config({
-	baseUrl : "./", 
+	baseUrl : "./",
+	waitSeconds: 15,
 	paths : {
-		"knockout" : "scripts/lib/knockout-3.0.0",
+		"knockout" : "scripts/lib/knockout-3.1.0",
 		"knockout-amd-helpers" : "scripts/lib/knockout-amd-helpers",
 		"knockout-postbox" : "scripts/lib/knockout-postbox",
 		"text" : "scripts/lib/text",

@@ -102,7 +102,7 @@ require([ "knockout","jquery", "scripts/modules/topicexplorer-view-model",
 		ko.postbox.publish("windowWidth",Math.max(self.minWidth, $(window).width(), /* For opera: */ document.documentElement.clientWidth));
 		ko.postbox.publish("windowHeight",Math.max(self.minHeight, $(window).height(), /* For opera: */ document.documentElement.clientHeight));
 		setTopicSlider();
-	}, 1500);
+	}, 2500);
 	
 });
 

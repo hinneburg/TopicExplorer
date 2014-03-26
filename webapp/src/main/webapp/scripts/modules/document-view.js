@@ -1,11 +1,9 @@
 define(
 		[ "knockout", "jquery"],
 		function(ko, $) {
-			
-//				var self  = this;
-				self.pluginTemplates = topicexplorerModel.config.documentView.pluginTemplates;
-				self.selectedPluginTemplate = ko.observable(self.pluginTemplates[topicexplorerModel.config.documentView.activePlugin]);
-				self.selectedPluginTemplate.subscribe(function(newValue) {
+				self.documentPluginTemplates = topicexplorerModel.config.documentView.pluginTemplates;
+				self.documentPluginTemplate = ko.observable(self.documentPluginTemplates[topicexplorerModel.config.documentView.activePlugin]);
+				self.documentPluginTemplate.subscribe(function(newValue) {
 					topicexplorerModel.config.documentView.activePlugin = topicexplorerModel.config.documentView.pluginTemplates.indexOf(newValue);
 				});
 				

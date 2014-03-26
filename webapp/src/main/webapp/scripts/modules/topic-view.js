@@ -3,8 +3,8 @@ function(ko, $) {
 	return function(topicexplorer) {
 		var self = this;
     	this.topicexplorer = topicexplorer;
-    	this.pluginTemplates = topicexplorer.config.topicView.pluginTemplates;
-    	this.selectedPluginTemplate = ko.observable(this.pluginTemplates[0]);
+    	this.topicPluginTemplates = topicexplorer.config.topicView.pluginTemplates;
+    	this.topicPluginTemplate = ko.observable(this.topicPluginTemplates[topicexplorer.config.topicView.activePlugin]);
     	this.selectedTopics = ko.observableArray(topicexplorerModel.data.topicSorting);
     	this.changeSelectedTopics = function () { this.selectedTopics(["1"]); };
     	this.loadDocumentsForTopic = function (topicId) { 

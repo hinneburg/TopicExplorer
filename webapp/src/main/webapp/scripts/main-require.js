@@ -12,7 +12,7 @@ require.config({
 
 require([ "knockout","jquery", "scripts/modules/topicexplorer-view-model",
 		"knockout-amd-helpers", "knockout-postbox",
-		"text", "jquery-ui", "knockout-jqueryui" ], function(ko, $, App) {
+		"text", "jquery-ui" ], function(ko, $, App) {
 	var timeoutId = null;
 	var self=this;
 	ko.bindingHandlers.module.baseDir = "scripts/modules";

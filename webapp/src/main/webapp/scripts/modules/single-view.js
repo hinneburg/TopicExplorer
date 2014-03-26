@@ -1,17 +1,18 @@
 define(
-    [ "knockout", "jquery"],
+    [ "knockout", "jquery", "scripts/modules/tab-view"],
     function(ko, $) {
     	self.leftBodyHeight=ko.observable(Math.max(topicexplorerModel.view.leftBodyHeight)).subscribeTo("leftBodyHeight");
     	
     	self.desktopHeight= ko.computed(function() {
-    		console.log((self.leftBodyHeight() - 90) * 0.7);
     		return ((self.leftBodyHeight() - 90) * 0.7);
     	});
-    	self.activeTab = ko.observable(topicexplorerModel.view.activeTab).subscribeTo(
-			"TabView.activeTab");
-    	self.activeTab.subscribe(function(newValue) {
-    		self.singlePluginTemplate(self.singlePluginTemplates[topicexplorerModel.config.singleView.activePlugin]);
+   		
+   		self.singlePluginTemplates = topicexplorerModel.config.singleView.pluginTemplates;
+		self.singlePluginTemplate = ko.observable(self.singlePluginTemplates[topicexplorerModel.config.singleView.activePlugin]);
+		self.singlePluginTemplate.subscribe(function(newValue) {
+			topicexplorerModel.config.singleView.activePlugin = topicexplorerModel.config.singleView.pluginTemplates.indexOf(newValue);
 		});
+
     	self.selectedDocuments = ko.observable(topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].documentSorting).subscribeTo('DocumentView.selectedDocuments');
     	
     	self.markWords = function() {

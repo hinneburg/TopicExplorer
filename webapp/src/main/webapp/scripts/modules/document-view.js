@@ -12,16 +12,13 @@ define(
 				self.loadDocument = function(docId) {
 					topicexplorerModel.loadDocumentForTab('Command=getDoc&DocId=' + docId, 'Doc ' + docId);
 				};
-				
-				self.activeTab = ko.observable(topicexplorerModel.view.activeTab).subscribeTo(
-						"TabView.activeTab");
-				
+						
 				self.selectedDocuments = ko.observableArray(
-						topicexplorerModel.view.tab[self.activeTab()].documentSorting).subscribeTo(
+						topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].documentSorting).subscribeTo(
 						"DocumentView.selectedDocuments");
 			    
 				self.scrollFunc = function() {
-					$("#desktop").scrollTop(topicexplorerModel.view.tab[self.activeTab()].scrollPosition);
+					$("#desktop").scrollTop(topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].scrollPosition);
 				};
 				
 				self.scrollCallback = function(el) {
@@ -59,19 +56,19 @@ define(
 				self.documentElementWidth.subscribe(self.checkSize);						
 						
 				self.loadMoreDocuments = function() {
-					if(!topicexplorerModel.data.documentsLoading() && !topicexplorerModel.view.tab[self.activeTab()].documentsFull() && $("#desktop").scrollTop() + self.desktopHeight() + 90 >= $("#desktop")[0].scrollHeight) {
+					if(!topicexplorerModel.data.documentsLoading() && !topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].documentsFull() && $("#desktop").scrollTop() + self.desktopHeight() + 90 >= $("#desktop")[0].scrollHeight) {
 						topicexplorerModel.data.documentsLoading(true);
 						topicexplorerModel.loadDocuments(
-							{paramString: topicexplorerModel.view.tab[self.activeTab()].documentGetParameter + '&offset=' + topicexplorerModel.view.tab[self.activeTab()].documentCount},
+							{paramString: topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].documentGetParameter + '&offset=' + topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].documentCount},
 							function(newDocumentIds) {
 								if(newDocumentIds.length < topicexplorerModel.data.documentLimit) { 
-									topicexplorerModel.tab[self.activeTab()].documentsFull(true);
+									topicexplorerModel.tab[topicexplorerModel.view.activeTab].documentsFull(true);
 								}
-								topicexplorerModel.view.tab[self.activeTab()].documentSorting = topicexplorerModel.view.tab[self.activeTab()].documentSorting.concat(newDocumentIds);
-								self.selectedDocuments(topicexplorerModel.view.tab[self.activeTab()].documentSorting);
+								topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].documentSorting = topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].documentSorting.concat(newDocumentIds);
+								self.selectedDocuments(topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].documentSorting);
 							}
 						);
-						topicexplorerModel.view.tab[self.activeTab()].documentCount += topicexplorerModel.data.documentLimit;
+						topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].documentCount += topicexplorerModel.data.documentLimit;
 					}
 				};
 				return self;

@@ -1,4 +1,4 @@
-define(["knockout", "jquery", "jquery-ui"],
+define(["knockout", "jquery", "jquery-ui", "scripts/modules/tab-view"],
 function(ko, $) { 
 	return function(topicexplorer) {
 		var self = this;

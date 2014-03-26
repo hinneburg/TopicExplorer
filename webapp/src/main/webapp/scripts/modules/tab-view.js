@@ -1,22 +1,12 @@
 define(
 	[ "knockout", "jquery", "jquery-ui"],
 	function(ko, $) {
-	//		var self = this;
-	//		self.topicexplorer = topicexplorer;
-			self.activeTab = ko.observable(
-					topicexplorerModel.view.activeTab).subscribeTo(
-					"TabView.activeTab");
-			self.tabs = ko.observableArray(
-				topicexplorerModel.view.tabs).subscribeTo(
-				"TabView.tabs");
-			self.invisibleTabs = ko.observableArray(topicexplorerModel.view.invisbleTabs).subscribeTo(
-				"TabView.invisibleTabs");
+			self.activeTab = ko.observable(topicexplorerModel.view.activeTab);
+			self.tabs = ko.observableArray(topicexplorerModel.view.tabs);
+			self.invisibleTabs = ko.observableArray(topicexplorerModel.view.invisbleTabs);
 			self.windowWidth = ko.observable(topicexplorerModel.view.windowWidth).subscribeTo("windowWidth");
-			
-			self.activeModule = ko.observable(topicexplorerModel.view.tab[self.activeTab()].module).subscribeTo(
-				"TabView.activeModule");;
+			self.activeModule = ko.observable(topicexplorerModel.view.tab[self.activeTab()].module);
 
-			
 			self.windowWidth.subscribe(function(newValue) {
 				topicexplorerModel.view.windowWidth = newValue;
 				var allTabs = topicexplorerModel.view.invisibleTabs.concat(topicexplorerModel.view.tabs);
@@ -96,6 +86,103 @@ define(
 					self.invisibleTabs(topicexplorerModel.view.invisibleTabs);
 					
 				}
+			};
+			topicexplorerModel.checkTabExists = function(documentGetParameter) {
+				topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].scrollPosition = $("#desktop").scrollTop();
+				
+				for(key in topicexplorerModel.view.tab) {
+					if(topicexplorerModel.view.tab[key].documentGetParameter == documentGetParameter) {
+						var index = $.inArray(key, topicexplorerModel.view.invisibleTabs);
+						if(index > -1) {
+							topicexplorerModel.view.invisibleTabs.splice(index, 1);
+							var newInvisibleTab = topicexplorerModel.view.tabs.shift();
+							topicexplorerModel.view.invisibleTabs.push(newInvisibleTab);
+							topicexplorerModel.view.tabs.unshift(key);
+							self.tabs(topicexplorerModel.view.tabs);
+							self.invisibleTabs(topicexplorerModel.view.invisbleTabs);
+							
+						}
+						topicexplorerModel.view.activeTab = key;
+						self.setActive();
+						return true;
+					}
+				}
+				return false;
+			};
+			
+			topicexplorerModel.loadDocumentsForTab = function (param, headLine) { 
+				if(topicexplorerModel.checkTabExists(param)) {
+					return;
+				}
+				
+				topicexplorerModel.data.documentsLoading(true);
+				
+				var index = ++topicexplorerModel.view.tabsLastIndex;
+				topicexplorerModel.view.activeTab = "t" + index;
+				
+				topicexplorerModel.view.tabs.push("t" + index);
+				
+				topicexplorerModel.view.tab["t" + index] = new Array();
+				topicexplorerModel.view.tab["t" + index].scrollPosition = 0;
+				topicexplorerModel.view.tab["t" + index].tabTitle = headLine;
+				topicexplorerModel.view.tab["t" + index].module = 'document-view';
+				topicexplorerModel.view.tab["t" + index].documentGetParameter = param;	
+				topicexplorerModel.loadDocuments(
+					{paramString:param},
+					function(newDocumentIds) {
+						if(newDocumentIds.length < topicexplorerModel.documentLimit) { 
+							topicexplorerModel.view.tab["t" + index].documentsFull = ko.observable(true);
+						} else {
+							topicexplorerModel.view.tab["t" + index].documentsFull = ko.observable(false);
+						}
+						topicexplorerModel.view.tab["t" + index].documentSorting = newDocumentIds;
+						topicexplorerModel.view.tab["t" + index].documentCount = newDocumentIds.length;
+						
+						if($("#desktop").width() < topicexplorerModel.view.tabs.length * 200 || topicexplorerModel.view.invisibleTabs.length) {
+							var allTabs = topicexplorerModel.view.invisibleTabs.concat(topicexplorerModel.view.tabs);
+							var numVisibleTabs = Math.floor(($("#desktop").width() - 76) / 200);
+							topicexplorerModel.view.invisibleTabs = allTabs.slice(0, allTabs.length - numVisibleTabs);
+							topicexplorerModel.view.tabs = allTabs.slice(allTabs.length - numVisibleTabs);	
+							self.invisibleTabs(topicexplorerModel.view.invisibleTabs);
+						}
+						self.tabs(topicexplorerModel.view.tabs);
+						self.setActive();
+					}
+				);
+			};
+			
+			topicexplorerModel.loadDocumentForTab = function(param, headLine) {
+				if(topicexplorerModel.checkTabExists(param)) {
+					return;
+				}
+				
+				var index = ++topicexplorerModel.view.tabsLastIndex;
+				topicexplorerModel.view.activeTab = "t" + index;
+				
+				topicexplorerModel.view.tabs.push("t" + index);
+				
+				topicexplorerModel.view.tab["t" + index] = new Array();
+				topicexplorerModel.view.tab["t" + index].tabTitle = headLine;
+				topicexplorerModel.view.tab["t" + index].module = 'single-view';
+				topicexplorerModel.view.tab["t" + index].documentsFull = ko.observable(true);
+				topicexplorerModel.view.tab["t" + index].documentGetParameter = param;
+				topicexplorerModel.loadDocument(
+					{paramString:param},
+					function(newDocumentId) {
+						topicexplorerModel.view.tab["t" + index].documentSorting = new Array(newDocumentId);
+						
+						if($("#desktop").width() < topicexplorerModel.view.tabs.length * 200 || topicexplorerModel.view.invisibleTabs.length) {
+							var allTabs = topicexplorerModel.view.invisibleTabs.concat(topicexplorerModel.view.tabs);
+							var numVisibleTabs = Math.floor(($("#desktop").width() - 76) / 200);
+							topicexplorerModel.view.invisibleTabs = allTabs.slice(0, allTabs.length - numVisibleTabs);
+							topicexplorerModel.view.tabs = allTabs.slice(allTabs.length - numVisibleTabs);					
+							self.invisibleTabs(topicexplorerModel.view.invisibleTabs);			
+						}
+						self.tabs(topicexplorerModel.view.tabs);
+						self.setActive();
+					}
+				);
+				
 			};
 			return self;
 });

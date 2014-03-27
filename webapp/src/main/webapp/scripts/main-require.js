@@ -91,7 +91,6 @@ require([ "knockout","jquery", "scripts/modules/topicexplorer-view-model",
 	$(window).resize(function() {	
 		ko.postbox.publish("windowWidth",Math.max(self.minWidth, $(window).width(), /* For opera: */ document.documentElement.clientWidth));
 		ko.postbox.publish("windowHeight",Math.max(self.minHeight, $(window).height(), /* For opera: */ document.documentElement.clientHeight));
-		setTopicSlider();
 	});
 	
 	setTimeout(function() {
@@ -101,32 +100,14 @@ require([ "knockout","jquery", "scripts/modules/topicexplorer-view-model",
 	setTimeout(function() {
 		ko.postbox.publish("windowWidth",Math.max(self.minWidth, $(window).width(), /* For opera: */ document.documentElement.clientWidth));
 		ko.postbox.publish("windowHeight",Math.max(self.minHeight, $(window).height(), /* For opera: */ document.documentElement.clientHeight));
-		setTopicSlider();
 	}, 2500);
-	
+
+
 });
 
-function setTopicSlider() {	
-	var slider = $('.topicPrevSlider');		
-	var maxListWidth = $('.topicList > ul').width();
-	var topicDivWidth = $('.topicList').width();
-	var bottomDivWidth = $('.topicBottomSliderDiv').width();
-	
-	slider.width((topicDivWidth*bottomDivWidth)/ maxListWidth);
-	
-	$('.topicPrevSlider > span').css('margin-left', (topicDivWidth * bottomDivWidth) / (maxListWidth * 2) - ($('.topicPrevSlider > span').width() / 2));	
-	var maxScrollPos = $('.topicBottomSliderDiv').width() - $('.topicPrevSlider').width();	
-	$( ".topicPrevSlider" ).draggable({ 
-		axis: "x", 
-		containment: [ 0, 0, maxScrollPos, 0 ],
-		drag: function( event, ui ) {	
-			var maxScroll = (maxListWidth - topicDivWidth);	
-			var scroll = ((ui.position.left + 4) / maxScrollPos) * maxScroll ;
-			$('.topicList').scrollLeft(scroll);	
-			$('#topicMenu, .topicList > img').css('left', scroll);
-		}
-	});
-};
+
+
+
 
 function makeMenu(el) {
 	$(el).menu({

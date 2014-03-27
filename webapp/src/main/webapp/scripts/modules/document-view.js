@@ -60,7 +60,7 @@ define(
 							{paramString: topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].documentGetParameter + '&offset=' + topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].documentCount},
 							function(newDocumentIds) {
 								if(newDocumentIds.length < topicexplorerModel.data.documentLimit) { 
-									topicexplorerModel.tab[topicexplorerModel.view.activeTab].documentsFull(true);
+									topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].documentsFull(true);
 								}
 								topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].documentSorting = topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].documentSorting.concat(newDocumentIds);
 								self.selectedDocuments(topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].documentSorting);

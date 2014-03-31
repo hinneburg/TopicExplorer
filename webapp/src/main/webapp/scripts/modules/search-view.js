@@ -8,7 +8,6 @@ function(ko, $) {
    	self.windowWidth = ko.observable(topicexplorerModel.view.windowWidth).subscribeTo("windowWidth");
    	self.leftPadding = ko.computed(function() {
    		$('.searchBar').css('margin-left', ((self.windowWidth() - 500) / 2) + 'px'); // Safari fallback
-   		console.log(self.windowWidth());
    		return ((self.windowWidth() - 500) / 2) + 'px';
 	});
 	ko.bindingHandlers.searchbarHandler = { init: 

@@ -152,14 +152,15 @@ public class Database {
 	 * @param query
 	 *            SQL query that will be executed
 	 * @return a ResultSet object that contains the data produced by the given
-	 *         query; never null
+	 *         query; The statement might be sent numberOfRetries times to the server
+	 *         if an connection error occurred (SQL-State-Error-Code 08S01).
 	 * @throws SQLException
 	 *             if a database access error occurs,
 	 *             <p>
 	 *             this method is called on a closed statement,
 	 *             <p>
 	 *             the given SQL statement produces anything other than a single
-	 *             ResultSet object,
+	 *             ResultSet object, never null
 	 *             <p>
 	 *             the method is called on a PreparedStatement or
 	 *             CallableStatement or
@@ -168,8 +169,48 @@ public class Database {
 	 *             error code
 	 */
 	public ResultSet executeQuery(String query) throws SQLException {
-		this.statement = this.connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-		return this.statement.executeQuery(query);
+		boolean queryCompleted = false;
+		int retryCount = this.numberOfRetries;
+		ResultSet result = null;
+		do {
+		try {
+			this.statement = this.connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
+			result = this.statement.executeQuery(query);
+			queryCompleted = true;
+		} catch (SQLException e) {
+			//
+            // 'Retry-able' SQL-State is 08S01 for Communication Error
+            // Retry only if error due to stale or dead connection
+            //
+
+            String sqlState = e.getSQLState();
+
+            if ("08S01".equals(sqlState)) {
+                retryCount--;
+                connection.close();
+                this.connect();
+                this.prepareConnection();
+            } else {
+                retryCount = 0;
+                this.logger.error("The statement "+ query +" caused a SQLException exception that is not retryable. SQL-State-Error-Code: " + e.getSQLState());
+//                throw new RuntimeException(e);
+//                throw new SQLException(e);
+                throw e;
+            }
+		}
+		} while(!queryCompleted && (retryCount > 0) );
+		
+		if(!queryCompleted && (retryCount == 0) ) {
+            this.logger.error("The statement  "+ query +" caused an retryable SQL exception and was " + this.numberOfRetries + " times retried. "
+            		+ "Retryable Exceptions are those with SQL State 08S01.");
+            throw new RuntimeException();
+		}
+		
+		if(result == null) {
+            this.logger.error("The statement  "+ query +" caused Result set that is NULL ");
+            throw new RuntimeException();
+		}
+		return result;
 	}
 
 	/**
@@ -196,11 +237,75 @@ public class Database {
 	 *             error code
 	 */
 	public int executeUpdateQueryForUpdate(String query) throws SQLException {
-		// damit das RS offen bleibt, sonst funktionierten die alten
-		// keywords_themen2 bzw tables.keytopic2 nicht
-		// da es zur exception gekommen ist (cannot perfom ... rs is closed)
-		this.statement = this.connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-		return this.statement.executeUpdate(query);
+		boolean queryCompleted = false;
+		int retryCount = this.numberOfRetries;
+		int result = -1;
+		do {
+		try {
+			// damit das RS offen bleibt, sonst funktionierten die alten
+			// keywords_themen2 bzw tables.keytopic2 nicht
+			// da es zur exception gekommen ist (cannot perfom ... rs is closed)
+			this.statement = this.connection.createStatement(
+					ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			result =  this.statement.executeUpdate(query);
+			queryCompleted = true;
+		} catch (SQLException e) {
+			//
+            // 'Retry-able' SQL-State is 08S01 for Communication Error
+            // Retry only if error due to stale or dead connection
+            //
+
+            String sqlState = e.getSQLState();
+
+            if ("08S01".equals(sqlState)) {
+                retryCount--;
+                connection.close();
+                this.connect();
+                this.prepareConnection();
+            } else {
+                retryCount = 0;
+                this.logger.error("The statement "+ query +" caused a SQLException exception that is not retryable. SQL-State-Error-Code: " + e.getSQLState());
+//                throw new RuntimeException(e);
+//                throw new SQLException(e);
+                throw e;
+          }
+		}
+		} while(!queryCompleted && (retryCount > 0) );
+		
+		if(!queryCompleted && (retryCount == 0) ) {
+            this.logger.error("The statement  "+ query +" caused an retryable SQL exception and was " + this.numberOfRetries + " times retried. "
+            		+ "Retryable Exceptions are those with SQL State 08S01.");
+            throw new RuntimeException();
+		}
+		
+		if(result < 0) {
+            this.logger.error("The statement  "+ query +" returned a rowcount that is smaller than zero.");
+            throw new RuntimeException();
+		}
+		return result;
+	}
+
+	private void connect() {
+		// connect database
+		try {
+			this.logger.info("Current Command : [ " + getClass() + " ]"
+					+ " Trying connect to database");
+
+			this.connection = DriverManager
+					.getConnection(
+							"jdbc:mysql://"
+									+ this.dbLocation
+									+ "?useUnicode=true&characterEncoding=UTF-8&useCursorFetch=true",
+									this.dbUser, this.dbPassword);
+			this.logger.info("Current Command : [ " + getClass() + " ]"
+					+ " Database connection established");
+
+		} catch (SQLException e) {
+			this.logger.error("Current Command : [ " + getClass() + " ]"
+					+ " DB-DriverManager error");
+			throw new RuntimeException(e);
+		}
+
 	}
 
 	/**

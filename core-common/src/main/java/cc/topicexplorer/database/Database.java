@@ -8,8 +8,6 @@ import java.sql.Statement;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
-import org.jooq.SQLDialect;
-import org.jooq.impl.Factory;
 
 public class Database {
 	private Connection connection;
@@ -17,9 +15,12 @@ public class Database {
 	private Properties properties;
 
 	private int limit = -1; // limit for select queries
-
-	private Factory create = null;
-
+	private int numberOfRetries = 3; // this number gets overwritten by respective property
+	
+	private String dbUser; 
+	private String dbPassword;
+	private String dbLocation;
+	
 	private final Logger logger = Logger.getRootLogger();
 
 	/**
@@ -67,54 +68,20 @@ public class Database {
 	private void startUp(Properties prop, Boolean otherDatabase) {
 		this.properties = prop;
 
-		String dbLocation = this.properties.getProperty("database.DbLocation");
+		this.setProperties(otherDatabase);
+		this.loadDatabaseDriver();
+		this.connect();
+		this.prepareConnection();
+	}
 
-		if (otherDatabase) {
-			dbLocation = dbLocation + "/" + this.properties.getProperty("database.other");
-		} else {
-			dbLocation = dbLocation + "/" + this.properties.getProperty("database.DB");
-		}
-
-		String dbUser = this.properties.getProperty("database.DbUser");
-		String dbPassword = this.properties.getProperty("database.DbPassword");
-
-		// load Database-Driver
-		try {
-			Class.forName("com.mysql.jdbc.Driver").newInstance();
-		} catch (ClassNotFoundException e1) {
-			this.logger.error("Current Command : [ " + getClass() + " ]" + " Database-Driver class could not be found");
-			throw new RuntimeException(e1);
-		} catch (InstantiationException e2) {
-			this.logger.error("Current Command : [ " + getClass() + " ]"
-					+ " Database-Driver instantiation fails for different possible reasons");
-			throw new RuntimeException(e2);
-		} catch (IllegalAccessException e3) {
-			this.logger.error("Current Command : [ " + getClass() + " ]"
-					+ " Database-Driver database driver or its default constructor is not accessible");
-			throw new RuntimeException(e3);
-		}
-
-		// connect database
-		try {
-			this.logger.info("Current Command : [ " + getClass() + " ]" + " Trying connect to database");
-
-			this.connection = DriverManager.getConnection("jdbc:mysql://" + dbLocation
-					+ "?useUnicode=true&characterEncoding=UTF-8&useCursorFetch=true", dbUser, dbPassword);
-			this.logger.info("Current Command : [ " + getClass() + " ]" + " Database connection established");
-
-		} catch (SQLException e) {
-			this.logger.error("Current Command : [ " + getClass() + " ]" + " DB-DriverManager error");
-			throw new RuntimeException(e);
-		}
-
-		// connect with jooq
-		this.create = new Factory(this.connection, SQLDialect.MYSQL);
-
+	private void prepareConnection() {
 		try {
 			this.statement = this.connection.createStatement();
 			this.statement.setFetchSize(100);
 		} catch (SQLException e) {
-			this.logger.error("The statement caused an exception.");
+			this.logger
+					.error("The statement caused an exception. SQL-State-Error-Code: "
+							+ e.getSQLState());
 			throw new RuntimeException(e);
 		}
 
@@ -123,6 +90,49 @@ public class Database {
 		} catch (SQLException e) {
 			this.logger.error("AutoCommit could not be set.");
 			throw new RuntimeException(e);
+		}
+		
+	}
+
+	private void setProperties(Boolean otherDatabase) {
+		this.dbLocation = this.properties.getProperty("database.DbLocation");
+
+		if (otherDatabase) {
+			dbLocation = dbLocation + "/"
+					+ this.properties.getProperty("database.other");
+		} else {
+			dbLocation = dbLocation + "/"
+					+ this.properties.getProperty("database.DB");
+		}
+
+		this.dbUser = this.properties.getProperty("database.DbUser");
+		this.dbPassword = this.properties.getProperty("database.DbPassword");
+		
+		this.numberOfRetries = Integer.parseInt(this.properties.getProperty("database.NumberOfRetries"));
+	}
+
+	private void loadDatabaseDriver() {
+		// load Database-Driver
+		try {
+			Class.forName("com.mysql.jdbc.Driver").newInstance();
+		} catch (ClassNotFoundException e1) {
+			this.logger.error("Current Command : [ " + getClass() + " ]"
+					+ " Database-Driver class could not be found");
+			throw new RuntimeException(e1);
+		} catch (InstantiationException e2) {
+			this.logger
+					.error("Current Command : [ "
+							+ getClass()
+							+ " ]"
+							+ " Database-Driver instantiation fails for different possible reasons");
+			throw new RuntimeException(e2);
+		} catch (IllegalAccessException e3) {
+			this.logger
+					.error("Current Command : [ "
+							+ getClass()
+							+ " ]"
+							+ " Database-Driver database driver or its default constructor is not accessible");
+			throw new RuntimeException(e3);
 		}
 	}
 
@@ -210,17 +220,50 @@ public class Database {
 	 *             code.
 	 */
 	public int executeUpdateQuery(String query) throws SQLException {
-		// for manipulation , executeQuery couldn't manipulate database
-		return this.statement.executeUpdate(query);
-	}
+	
+		boolean queryCompleted = false;
+		int retryCount = this.numberOfRetries;
+		int result = -1;
+		do {
+		try {
+			// for manipulation , executeQuery couldn't manipulate database
+			result = this.statement.executeUpdate(query);
+			queryCompleted = true;
+		} catch (SQLException e) {
+			//
+            // 'Retry-able' SQL-State is 08S01 for Communication Error
+            // Retry only if error due to stale or dead connection
+            //
 
-	/**
-	 * for the use of jooq
-	 * 
-	 * @return Factory create
-	 */
-	public Factory getCreateJooq() {
-		return this.create;
+            String sqlState = e.getSQLState();
+
+            if ("08S01".equals(sqlState)) {
+                retryCount--;
+                connection.close();
+                this.connect();
+                this.prepareConnection();
+            } else {
+                retryCount = 0;
+                this.logger.error("The statement "+ query +" caused a SQLException exception that is not retryable. "
+                		+ "Error-Code: "+ e.getErrorCode()+ ", SQL-State-Error-Code: " + e.getSQLState());
+//                throw new RuntimeException(e);
+//                throw new SQLException(e);
+                throw e;
+            }
+		}
+		} while(!queryCompleted && (retryCount > 0) );
+		
+		if(!queryCompleted && (retryCount == 0) ) {
+            this.logger.error("The statement  "+ query +" caused an retryable SQL exception and was " + this.numberOfRetries + " times retried. "
+            		+ "Retryable Exceptions are those with SQL State 08S01.");
+            throw new RuntimeException();
+		}
+		
+		if(result < 0) {
+            this.logger.error("The statement  "+ query +" returned a rowcount that is smaller than zero.");
+            throw new RuntimeException();
+		}
+		return result;
 	}
 
 	public Connection getConnection() {

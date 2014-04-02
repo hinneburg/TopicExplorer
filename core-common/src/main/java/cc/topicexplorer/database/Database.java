@@ -21,6 +21,8 @@ public class Database {
 	private String dbPassword;
 	private String dbLocation;
 	
+	private enum ExecutionType {EXECUTE_QUERY, EXECUTE_UPDATE_QUERY, EXECUTE_UPDATE_QUERY_FOR_UPDATE};
+	
 	private final Logger logger = Logger.getRootLogger();
 
 	/**
@@ -148,6 +150,78 @@ public class Database {
 		}
 	}
 
+	private Object executeQueriesWithSilentRetry(String query, ExecutionType execMethod) throws SQLException {
+		boolean queryCompleted = false;
+		int retryCount = this.numberOfRetries;
+		Object result = null;
+		do {
+		try {
+			
+			switch (execMethod) {
+			
+			case EXECUTE_QUERY:{
+				this.statement = this.connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
+				result = this.statement.executeQuery(query);
+
+				queryCompleted = true;
+				break;
+			}
+			case EXECUTE_UPDATE_QUERY:{
+				// for manipulation , executeQuery couldn't manipulate database
+				result = (Integer) this.statement.executeUpdate(query);
+				
+				queryCompleted = true;
+				break;
+			}
+			case EXECUTE_UPDATE_QUERY_FOR_UPDATE:{
+				// useful to keep resultset open, 
+				// else keywords_themen2 or tables.keytopic2 are not working 
+				// exception (cannot perfom ... rs is closed) would be thrown 
+				this.statement = this.connection.createStatement(
+						ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+				result =  (Integer) this.statement.executeUpdate(query);
+
+				queryCompleted = true;
+				break;
+			}
+			}
+			
+		} catch (SQLException e) {
+			//
+            // 'Retry-able' SQL-State is 08S01 for Communication Error
+            // Retry only if error due to stale or dead connection
+            //
+
+            String sqlState = e.getSQLState();
+
+            if ("08S01".equals(sqlState)) {
+                retryCount--;
+                connection.close();
+                this.connect();
+                this.prepareConnection();
+            } else {
+                this.logger.error("The statement "+ query +" caused in (re)try "+ (this.numberOfRetries- retryCount + 1) +" an SQLException exception that is not retryable. "
+                		+ "Error-Code: "+ e.getErrorCode()+ ", SQL-State-Error-Code: " + e.getSQLState());
+                retryCount = 0;
+                throw e;
+            }
+		}
+		} while(!queryCompleted && (retryCount > 0) );
+		
+		if(!queryCompleted && (retryCount == 0) ) {
+            this.logger.error("The statement  "+ query +" caused an retryable SQL exception and was " + this.numberOfRetries + " times retried. "
+            		+ "Retryable Exceptions are those with SQL State 08S01.");
+            throw new RuntimeException();
+		}
+		
+		if(result == null) {
+            this.logger.error("The statement  "+ query +" caused result Object that is NULL ");
+            throw new RuntimeException();
+		}
+		return result;
+	}
+	
+	
 	/**
 	 * @param query
 	 *            SQL query that will be executed
@@ -169,49 +243,9 @@ public class Database {
 	 *             error code
 	 */
 	public ResultSet executeQuery(String query) throws SQLException {
-		boolean queryCompleted = false;
-		int retryCount = this.numberOfRetries;
-		ResultSet result = null;
-		do {
-		try {
-			this.statement = this.connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
-			result = this.statement.executeQuery(query);
-			queryCompleted = true;
-		} catch (SQLException e) {
-			//
-            // 'Retry-able' SQL-State is 08S01 for Communication Error
-            // Retry only if error due to stale or dead connection
-            //
-
-            String sqlState = e.getSQLState();
-
-            if ("08S01".equals(sqlState)) {
-                retryCount--;
-                connection.close();
-                this.connect();
-                this.prepareConnection();
-            } else {
-                retryCount = 0;
-                this.logger.error("The statement "+ query +" caused a SQLException exception that is not retryable. SQL-State-Error-Code: " + e.getSQLState());
-//                throw new RuntimeException(e);
-//                throw new SQLException(e);
-                throw e;
-            }
-		}
-		} while(!queryCompleted && (retryCount > 0) );
-		
-		if(!queryCompleted && (retryCount == 0) ) {
-            this.logger.error("The statement  "+ query +" caused an retryable SQL exception and was " + this.numberOfRetries + " times retried. "
-            		+ "Retryable Exceptions are those with SQL State 08S01.");
-            throw new RuntimeException();
-		}
-		
-		if(result == null) {
-            this.logger.error("The statement  "+ query +" caused Result set that is NULL ");
-            throw new RuntimeException();
-		}
-		return result;
+		return (ResultSet) executeQueriesWithSilentRetry(query, ExecutionType.EXECUTE_QUERY);
 	}
+		
 
 	/**
 	 * for manipulation of database without "closing" the connection/ resultset
@@ -237,52 +271,7 @@ public class Database {
 	 *             error code
 	 */
 	public int executeUpdateQueryForUpdate(String query) throws SQLException {
-		boolean queryCompleted = false;
-		int retryCount = this.numberOfRetries;
-		int result = -1;
-		do {
-		try {
-			// damit das RS offen bleibt, sonst funktionierten die alten
-			// keywords_themen2 bzw tables.keytopic2 nicht
-			// da es zur exception gekommen ist (cannot perfom ... rs is closed)
-			this.statement = this.connection.createStatement(
-					ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-			result =  this.statement.executeUpdate(query);
-			queryCompleted = true;
-		} catch (SQLException e) {
-			//
-            // 'Retry-able' SQL-State is 08S01 for Communication Error
-            // Retry only if error due to stale or dead connection
-            //
-
-            String sqlState = e.getSQLState();
-
-            if ("08S01".equals(sqlState)) {
-                retryCount--;
-                connection.close();
-                this.connect();
-                this.prepareConnection();
-            } else {
-                retryCount = 0;
-                this.logger.error("The statement "+ query +" caused a SQLException exception that is not retryable. SQL-State-Error-Code: " + e.getSQLState());
-//                throw new RuntimeException(e);
-//                throw new SQLException(e);
-                throw e;
-          }
-		}
-		} while(!queryCompleted && (retryCount > 0) );
-		
-		if(!queryCompleted && (retryCount == 0) ) {
-            this.logger.error("The statement  "+ query +" caused an retryable SQL exception and was " + this.numberOfRetries + " times retried. "
-            		+ "Retryable Exceptions are those with SQL State 08S01.");
-            throw new RuntimeException();
-		}
-		
-		if(result < 0) {
-            this.logger.error("The statement  "+ query +" returned a rowcount that is smaller than zero.");
-            throw new RuntimeException();
-		}
-		return result;
+		return (Integer) executeQueriesWithSilentRetry(query, ExecutionType.EXECUTE_UPDATE_QUERY_FOR_UPDATE);
 	}
 
 	private void connect() {
@@ -325,50 +314,7 @@ public class Database {
 	 *             code.
 	 */
 	public int executeUpdateQuery(String query) throws SQLException {
-	
-		boolean queryCompleted = false;
-		int retryCount = this.numberOfRetries;
-		int result = -1;
-		do {
-		try {
-			// for manipulation , executeQuery couldn't manipulate database
-			result = this.statement.executeUpdate(query);
-			queryCompleted = true;
-		} catch (SQLException e) {
-			//
-            // 'Retry-able' SQL-State is 08S01 for Communication Error
-            // Retry only if error due to stale or dead connection
-            //
-
-            String sqlState = e.getSQLState();
-
-            if ("08S01".equals(sqlState)) {
-                retryCount--;
-                connection.close();
-                this.connect();
-                this.prepareConnection();
-            } else {
-                retryCount = 0;
-                this.logger.error("The statement "+ query +" caused a SQLException exception that is not retryable. "
-                		+ "Error-Code: "+ e.getErrorCode()+ ", SQL-State-Error-Code: " + e.getSQLState());
-//                throw new RuntimeException(e);
-//                throw new SQLException(e);
-                throw e;
-            }
-		}
-		} while(!queryCompleted && (retryCount > 0) );
-		
-		if(!queryCompleted && (retryCount == 0) ) {
-            this.logger.error("The statement  "+ query +" caused an retryable SQL exception and was " + this.numberOfRetries + " times retried. "
-            		+ "Retryable Exceptions are those with SQL State 08S01.");
-            throw new RuntimeException();
-		}
-		
-		if(result < 0) {
-            this.logger.error("The statement  "+ query +" returned a rowcount that is smaller than zero.");
-            throw new RuntimeException();
-		}
-		return result;
+		return (Integer) executeQueriesWithSilentRetry(query, ExecutionType.EXECUTE_UPDATE_QUERY);
 	}
 
 	public Connection getConnection() {

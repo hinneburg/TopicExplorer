@@ -29,6 +29,8 @@ public class DocumentCreate extends TableCreateCommand {
 											// exists
 				logger.error("Document.dropColumns: Cannot drop column.");
 				throw new RuntimeException(e);
+			} else {
+				logger.info("dropColumns: ignored SQL-Exception with error code 1091.");
 			}
 		}
 	}

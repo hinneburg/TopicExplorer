@@ -30,6 +30,8 @@ public class TopicCreate extends TableCreateCommand {
 				// ..; check that column/key exists
 				logger.error("TopicMetaData.dropColumns: Cannot drop column.");
 				throw new RuntimeException(e);
+			} else {
+				logger.info("dropColumns: ignored SQL-Exception with error code 1091.");
 			}
 		}
 	}

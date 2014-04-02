@@ -28,6 +28,8 @@ public class DocumentTermTopicCreate extends TableCreateCommand {
 				// exists
 				logger.error("WIKI_DocumentTermTopicCreate.dropColumns: Cannot drop column.");
 				throw new RuntimeException(e);
+			} else {
+				logger.info("dropColumns: ignored SQL-Exception with error code 1091.");
 			}
 		}
 	}

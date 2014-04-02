@@ -32,6 +32,8 @@ public class DocumentTermTopicCreate extends TableCreateCommand {
 											// ..; check that column/key exists
 				logger.error("DocumentTermTopic.dropColumns: Cannot drop column.");
 				throw new RuntimeException(e);
+			} else {
+				logger.info("dropColumns: ignored SQL-Exception with error code 1091.");
 			}
 		}
 	}

@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <catalog>
-	<command name="GetRandomDocsTimeCollect" className="cc.topicexplorer.plugin.time.actions.getrandomdocs.Collect"/>	
+	<command name="GetRandomDocsTimeCollect" className="cc.topicexplorer.plugin.time.actions.getrandomdocs.Collect"/>
+	<command name="GetDatesTimeCreate" className="cc.topicexplorer.plugin.time.actions.getdates.Create"/>
+	<command name="GetDatesTimeGenerateSQL" className="cc.topicexplorer.plugin.time.actions.getdates.GenerateSQL"/>
 </catalog>

@@ -8,7 +8,9 @@ public abstract class TableCreateCommand extends TableCommand {
 	@Override
 	public void tableExecute(Context context) {
 		dropTable();
+		logger.info("Dropped table " + this.tableName);
 		createTable();
+		logger.info("Created table " + this.tableName);
 	}
 
 	public abstract void createTable();

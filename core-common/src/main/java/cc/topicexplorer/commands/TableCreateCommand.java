@@ -18,12 +18,13 @@ public abstract class TableCreateCommand extends TableCommand {
 			database.dropTable(this.tableName);
 		} catch (SQLException e) {
 			if (!exceptionIsTolerated(e.getErrorCode())) {
-				logger.error("Document.dropTable: Cannot drop table " + this.tableName);
+				logger.error("dropTable: Cannot drop table " + this.tableName);
 				throw new RuntimeException(e);
 			}
 		}
 	}
 
+	
 	private boolean exceptionIsTolerated(int errorCode) {
 		return errorCode == 1091;
 	}

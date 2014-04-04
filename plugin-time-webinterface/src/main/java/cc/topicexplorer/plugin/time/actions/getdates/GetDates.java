@@ -57,7 +57,7 @@ public class GetDates {
 				topicId = dateQueryRS.getInt("TOPIC_ID");
 			} 
 			tupel = new JSONArray();
-			tupel.add(Long.valueOf(dateQueryRS.getString("WEEK") + "000").longValue());
+			tupel.add(Long.valueOf(dateQueryRS.getInt("WEEK") + "000").longValue());
 			tupel.add(dateQueryRS.getInt("WORD_COUNT"));
 			dates.add(tupel);
 		}

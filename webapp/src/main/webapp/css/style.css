@@ -205,6 +205,11 @@ html, body {
 	background-position: center center;
     background-size: contain;
 }
+.leftBody .topicList .timeView {
+	background-image: url("../images/date.png");
+	background-position: center center;
+    background-size: contain;
+}
 .leftBody .topicList .topicTitle {
 	background-color: whitesmoke;
     border-bottom: 1px solid silver;

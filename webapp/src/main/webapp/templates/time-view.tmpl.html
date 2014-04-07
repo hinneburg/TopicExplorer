@@ -1,0 +1,8 @@
+<div id="desktop" data-bind="style: {height: desktopHeight() + 'px'}, event: {scroll: timeScrollCallback}">
+	<img id="singleMenuActivator" class="menuActivator rotate1" src="images/Black_Settings.png" alt="&gt;" style="display: none;position: absolute;z-index:3; padding: 1px;" />
+	<div id="singleMenu"
+		style="display: none; position: absolute; z-index: 1; padding: 21px 0 0 1px;">
+		<div  data-bind="template: {name: 'single-menu-view', afterRender: init}"></div>
+	</div>
+		<div id="chart" data-bind="style: {height: desktopHeight() + 'px'}"></div>
+</div>

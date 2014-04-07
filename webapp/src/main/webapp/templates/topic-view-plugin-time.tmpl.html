@@ -1,0 +1,11 @@
+<div class="topicElementMenu">
+	<button class="timeView" name="timeView" title="show time chart" type="button" data-bind="click: $parent.parent.loadTimeViewForTopic"></button>
+	<button class="addToCart" name="addToCart" title="add to shortlist" type="button"></button>
+</div>
+<div class="topicTitle"><a href="#" data-bind="text: $root.topicexplorer.data.topic[selectedTopic].TEXT$TOPIC_LABEL,click:$parent.loadDocumentsForTopic"></a></div>
+
+<div class="topicElementContent">
+	<ul class="wordList" data-bind = "foreach: {data: $root.topicexplorer.data.topic[selectedTopic].Top_Terms, as: 'topTerm'}">
+		<li data-bind="text: $root.topicexplorer.data.term[topTerm.TermId].TERM_NAME, style: {fontSize: 25*topTerm.relevance/$root.topicexplorer.data.topic[selectedTopic].Top_Terms[0].relevance > 9 ? 25*topTerm.relevance/$root.topicexplorer.data.topic[selectedTopic].Top_Terms[0].relevance+'px' : '9px'}" ></li>
+	</ul>
+</div>

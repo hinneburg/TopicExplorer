@@ -7,7 +7,9 @@ require.config({
 		"knockout-postbox" : "scripts/lib/knockout-postbox",
 		"text" : "scripts/lib/text",
 		"jquery" : "scripts/lib/jquery-1.9.1.min",
-		"jquery-ui" : "scripts/lib/jquery-ui-1.10.3.custom.min"
+		"jquery-ui" : "scripts/lib/jquery-ui-1.10.3.custom.min",
+		"highstock" : "scripts/lib/highstock"
+			
 	}
 });
 

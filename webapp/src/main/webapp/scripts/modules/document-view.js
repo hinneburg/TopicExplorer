@@ -8,11 +8,36 @@ define(
 				});
 				
 				self.loadDocument = function(docId) {
-					topicexplorerModel.loadDocumentForTab('Command=getDoc&DocId=' + docId, 'Doc ' + docId);
+					topicexplorerModel.newTab('Command=getDoc&DocId=' + docId, 'Doc ' + docId, 'single-view', docId);
 				};
-						
+				
+				self.activeTab = ko.observable(topicexplorerModel.view.activeTab)
+					.subscribeTo("TabView.activeTab");
+			
+				self.activeTab.subscribe(function(newValue) {
+					topicexplorerModel.view.activeTab = newValue;
+					if(typeof topicexplorerModel.view.tab[newValue].documentCount == 'undefined' && !topicexplorerModel.data.documentsLoading()) {
+						topicexplorerModel.view.tab[newValue].documentsFull = ko.observable(false);
+						self.selectedDocuments(new Array());
+						topicexplorerModel.data.documentsLoading(true);
+						topicexplorerModel.loadDocuments(
+							{paramString: topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].getParameter},
+							function(newDocumentIds) {
+								if(newDocumentIds.length < topicexplorerModel.data.documentLimit) { 
+									topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].documentsFull(true);	
+								}
+								topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].documentCount = newDocumentIds.length;
+								topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].focus = topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].focus.concat(newDocumentIds);
+								self.selectedDocuments(topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].focus);
+							}
+						);				
+					} else {
+						self.selectedDocuments(topicexplorerModel.view.tab[newValue].focus);
+					}
+				});
+				
 				self.selectedDocuments = ko.observableArray(
-						topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].documentSorting).subscribeTo(
+						topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].focus).subscribeTo(
 						"DocumentView.selectedDocuments");
 			    
 				self.scrollFunc = function() {

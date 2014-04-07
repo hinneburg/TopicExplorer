@@ -2,7 +2,7 @@ define(["knockout", "jquery", "jquery-ui", "scripts/modules/tab-view"],
 function(ko, $) {	
 	self.loadDocumentsForSearch = function () { 
     	var searchWord = $('#searchField').val();
-    	topicxxplorerModel.loadDocumentsForTab("Command=search&SearchWord="+searchWord, "Search: " + searchWord);
+    	topicxxplorerModel.newTab("Command=search&SearchWord="+searchWord, "Search: " + searchWord, 'document-view', new Array());
     	
    	};
    	self.windowWidth = ko.observable(topicexplorerModel.view.windowWidth).subscribeTo("windowWidth");

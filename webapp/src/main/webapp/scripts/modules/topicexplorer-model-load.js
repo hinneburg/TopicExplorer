@@ -19,8 +19,8 @@ define(["scripts/modules/topicexplorer-model","text!/JsonServlet", "knockout"], 
 	topicexplorerModel.view.tab = new Array();
 	topicexplorerModel.view.tab["t0"] = new Array();
 	topicexplorerModel.view.tab["t0"].tabTitle = "Topic 1";
-	topicexplorerModel.view.tab["t0"].documentSorting=json.JSON.DOCUMENT_SORTING; 
-	topicexplorerModel.view.tab["t0"].documentGetParameter = 'Command=bestDocs&TopicId=1';
+	topicexplorerModel.view.tab["t0"].focus=json.JSON.DOCUMENT_SORTING; 
+	topicexplorerModel.view.tab["t0"].getParameter = 'Command=bestDocs&TopicId=1';
 	topicexplorerModel.view.tab["t0"].documentCount = topicexplorerModel.data.documentLimit;
 	topicexplorerModel.view.tab["t0"].documentsFull = ko.observable(false);
 	topicexplorerModel.view.tab["t0"].scrollPosition = 0;

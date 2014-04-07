@@ -80,18 +80,20 @@ define(
 						
 				self.loadMoreDocuments = function() {
 					if(!topicexplorerModel.data.documentsLoading() && !topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].documentsFull() && $("#desktop").scrollTop() + self.desktopHeight() + 90 >= $("#desktop")[0].scrollHeight) {
+						console.log($("#desktop").scrollTop() +" " +  $("#desktop")[0].scrollHeight);
 						topicexplorerModel.data.documentsLoading(true);
 						topicexplorerModel.loadDocuments(
-							{paramString: topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].documentGetParameter + '&offset=' + topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].documentCount},
+							{paramString: topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].getParameter + '&offset=' + topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].documentCount},
 							function(newDocumentIds) {
 								if(newDocumentIds.length < topicexplorerModel.data.documentLimit) { 
 									topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].documentsFull(true);
 								}
-								topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].documentSorting = topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].documentSorting.concat(newDocumentIds);
-								self.selectedDocuments(topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].documentSorting);
+								topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].documentCount += newDocumentIds.length;
+								topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].focus = topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].focus.concat(newDocumentIds);
+								self.selectedDocuments(topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].focus);
 							}
 						);
-						topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].documentCount += topicexplorerModel.data.documentLimit;
+						
 					}
 				};
 				return self;

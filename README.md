@@ -127,7 +127,7 @@ Create file `~/.m2/settings.xml`.
  <settings/>
 ```
 ####Build the project
-Mouse right click on TopicExplorer -> Run as -> Maven Build (at first time inpuit goals: clean install)
+Mouse right click on TopicExplorer -> Run as -> Maven Build (at first time input goals: clean install)
 
 ####Start webapp
 Mouse right click on webapp -> Run -> Run on Server . 

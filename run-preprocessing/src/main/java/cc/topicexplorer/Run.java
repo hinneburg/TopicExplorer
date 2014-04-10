@@ -56,7 +56,6 @@ public class Run {
 		temp.mkdir();
 
 		ChainManagement chainManager = new ChainManagement();
-		// chainManager.init();
 		CommunicationContext context = new CommunicationContext();
 		run.executeInitialCommands(context);
 

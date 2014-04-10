@@ -59,21 +59,11 @@ public class Run {
 		CommunicationContext context = new CommunicationContext();
 		run.executeInitialCommands(context);
 
-		Properties properties = new Properties();
-		try {
-			properties.load(run.getClass().getResourceAsStream("/config.global.properties"));
-		} catch (IOException e) {
-			logger.error("config.global.properties not found");
-			throw e;
-		}
-		try {
-			properties.load(run.getClass().getResourceAsStream("/config.local.properties"));
-		} catch (IOException e) {
-			logger.warn("config.local.properties not found", e);
-		}
-		logger.info("Activated plugins: " + properties.getProperty("plugins"));
+		Properties properties = (Properties) context.get("properties");
+		String plugins = properties.getProperty("plugins");
+		logger.info("Activated plugins: " + plugins);
+		run.makeCatalog(plugins);
 
-		run.makeCatalog(properties.getProperty("plugins"));
 		chainManager.setCatalog("/catalog.xml");
 
 		List<String> orderedCommands = chainManager.getOrderedCommands(commandLineParser.getStartCommands(),

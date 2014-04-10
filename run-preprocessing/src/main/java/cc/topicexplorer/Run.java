@@ -20,10 +20,8 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.FileAppender;
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.apache.log4j.PatternLayout;
+import org.apache.log4j.PropertyConfigurator;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -42,7 +40,9 @@ public class Run {
 	public static void main(String[] args) throws Exception {
 		Run run = new Run();
 
-		run.initializeLogger("logs/Preprocessing.log");
+		Properties logProperties = new Properties();
+		logProperties.load(Run.class.getResourceAsStream("/log4j.global.properties"));
+		run.initializeLogger(logProperties);
 
 		CommandLineParser commandLineParser = null;
 		try {
@@ -91,15 +91,8 @@ public class Run {
 		}
 	}
 
-	private void initializeLogger(String logfileName) {
-		try {
-			logger.addAppender(new FileAppender(new PatternLayout("%d-%p-%C-%M-%m%n"), logfileName, false));
-			logger.setLevel(Level.INFO); // ALL | DEBUG | INFO | WARN | ERROR |
-			// FATAL | OFF:
-		} catch (IOException e) {
-			logger.error("FileAppender with log file " + logfileName + " could not be constructed.");
-			throw new RuntimeException(e);
-		}
+	private void initializeLogger(Properties properties) {
+		PropertyConfigurator.configure(properties);
 	}
 
 	private void makeCatalog(String plugins) throws ParserConfigurationException, TransformerException, IOException,

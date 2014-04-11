@@ -43,6 +43,7 @@ public class Run {
 		Properties logProperties = new Properties();
 		logProperties.load(Run.class.getResourceAsStream("/log4j.global.properties"));
 		run.initializeLogger(logProperties);
+		run.logWelcomeMessage();
 
 		CommandLineParser commandLineParser = null;
 		try {
@@ -76,6 +77,12 @@ public class Run {
 		}
 
 		FileUtils.deleteDirectory(temp);
+	}
+
+	private void logWelcomeMessage() {
+		logger.info("#####################################");
+		logger.info("# R U N   P R E P R O C E S S I N G #");
+		logger.info("#####################################");
 	}
 
 	private void executeInitialCommands(CommunicationContext context) {

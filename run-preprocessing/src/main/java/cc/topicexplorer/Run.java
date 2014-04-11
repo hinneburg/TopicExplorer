@@ -21,7 +21,6 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
-import org.apache.log4j.PropertyConfigurator;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -33,6 +32,7 @@ import cc.commandmanager.core.DependencyCommand;
 import cc.topicexplorer.commands.DbConnectionCommand;
 import cc.topicexplorer.commands.PropertiesCommand;
 import cc.topicexplorer.utils.CommandLineParser;
+import cc.topicexplorer.utils.LoggerUtil;
 
 public class Run {
 	private static Logger logger = Logger.getRootLogger();
@@ -40,9 +40,7 @@ public class Run {
 	public static void main(String[] args) throws Exception {
 		Run run = new Run();
 
-		Properties logProperties = new Properties();
-		logProperties.load(Run.class.getResourceAsStream("/log4j.global.properties"));
-		run.initializeLogger(logProperties);
+		LoggerUtil.initializeLogger("log4j.global.properties", "");
 		run.logWelcomeMessage();
 
 		CommandLineParser commandLineParser = null;
@@ -77,10 +75,6 @@ public class Run {
 		}
 
 		FileUtils.deleteDirectory(temp);
-	}
-
-	private void initializeLogger(Properties properties) {
-		PropertyConfigurator.configure(properties);
 	}
 
 	private void logWelcomeMessage() {

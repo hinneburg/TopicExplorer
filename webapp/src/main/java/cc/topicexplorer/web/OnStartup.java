@@ -24,16 +24,15 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.apache.log4j.FileAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.apache.log4j.PatternLayout;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import cc.commandmanager.core.CommunicationContext;
+import cc.topicexplorer.utils.LoggerUtil;
 
 public class OnStartup implements ServletContextListener {
 	private static Logger logger = Logger.getRootLogger();
@@ -60,7 +59,7 @@ public class OnStartup implements ServletContextListener {
 		System.out.println("Do on startup.");
 		servletContext = arg0.getServletContext();
 
-		initializeLogger("logs/webapp.log");
+		LoggerUtil.initializeLogger("log4j.global.properties", "");
 
 		WebChainManagement.init();
 		if (this.getClass().getResource("/catalog.xml") != null) {
@@ -84,17 +83,6 @@ public class OnStartup implements ServletContextListener {
 			e.printStackTrace();
 		}
 		WebChainManagement.setCatalog("/catalog.xml");
-	}
-
-	private void initializeLogger(String logfileName) {
-		try {
-			logger.addAppender(new FileAppender(new PatternLayout("%d-%p-%C-%M-%m%n"), logfileName, false));
-			logger.setLevel(Level.INFO); // ALL | DEBUG | INFO | WARN | ERROR |
-			// FATAL | OFF:
-		} catch (IOException e) {
-			logger.error("FileAppender with log file " + logfileName + " could not be constructed.");
-			throw new RuntimeException(e);
-		}
 	}
 
 	private void makeCatalog() throws ParserConfigurationException, SAXException, IOException, TransformerException {

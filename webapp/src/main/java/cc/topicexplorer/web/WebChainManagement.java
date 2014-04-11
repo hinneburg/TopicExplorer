@@ -1,13 +1,9 @@
 package cc.topicexplorer.web;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.log4j.FileAppender;
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.apache.log4j.PatternLayout;
 
 import cc.commandmanager.core.ChainManagement;
 import cc.commandmanager.core.CommunicationContext;
@@ -28,24 +24,11 @@ public class WebChainManagement {
 
 	public static void init() {
 		if (!isInitialized) {
-			initializeLogger("logs/webapp.log");
-
 			CommunicationContext context = new CommunicationContext();
 			executeInitialCommands(context);
 			chainManagement = new ChainManagement(context);
 
 			isInitialized = true;
-		}
-	}
-
-	private static void initializeLogger(String logfileName) {
-		try {
-			logger.addAppender(new FileAppender(new PatternLayout("%d-%p-%C-%M-%m%n"), logfileName, false));
-			logger.setLevel(Level.INFO); // ALL | DEBUG | INFO | WARN | ERROR |
-			// FATAL | OFF:
-		} catch (IOException e) {
-			logger.error("FileAppender with log file " + logfileName + " could not be constructed.");
-			throw new RuntimeException(e);
 		}
 	}
 

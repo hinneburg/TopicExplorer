@@ -79,6 +79,10 @@ public class Run {
 		FileUtils.deleteDirectory(temp);
 	}
 
+	private void initializeLogger(Properties properties) {
+		PropertyConfigurator.configure(properties);
+	}
+
 	private void logWelcomeMessage() {
 		logger.info("#####################################");
 		logger.info("# R U N   P R E P R O C E S S I N G #");
@@ -96,10 +100,6 @@ public class Run {
 			logger.error("Initialization abborted, due to a critical exception");
 			throw rntmEx;
 		}
-	}
-
-	private void initializeLogger(Properties properties) {
-		PropertyConfigurator.configure(properties);
 	}
 
 	private void makeCatalog(String plugins) throws ParserConfigurationException, TransformerException, IOException,

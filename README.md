@@ -129,6 +129,22 @@ Create file `~/.m2/settings.xml`.
 ####Build the project
 Mouse right click on TopicExplorer -> Run as -> Maven Build (at first time input goals: clean install)
 
+####Run preprocessing
+Open a console and navigate to the workspace. Then go into the distribution module
+```
+cd TopicExplorer/distribution/target/distribution-1.0-SNAPSHOT-preprocessing/
+
+```
+Make sure your local property files are in the right place
+```
+ls resources/
+```
+should show at least `config.local.properties` and `database.local.properties`. 
+When everything is fine, start the preprocessing
+```
+./bin/run-preprocessing.sh
+```
+This should create tables in your database, which are used by the web-based user interface. 
 ####Start webapp
 Mouse right click on webapp -> Run -> Run on Server . 
 In case of errors, do refresh (F5) on TopicExplorer and mouse right click -> Maven -> Update Projects. 

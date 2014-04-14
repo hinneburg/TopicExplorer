@@ -59,7 +59,7 @@ public class OnStartup implements ServletContextListener {
 		System.out.println("Do on startup.");
 		servletContext = arg0.getServletContext();
 
-		LoggerUtil.initializeLogger("log4j.global.properties", "");
+		LoggerUtil.initializeLogger();
 
 		WebChainManagement.init();
 		if (this.getClass().getResource("/catalog.xml") != null) {

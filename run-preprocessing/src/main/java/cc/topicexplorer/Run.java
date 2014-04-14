@@ -40,7 +40,7 @@ public class Run {
 	public static void main(String[] args) throws Exception {
 		Run run = new Run();
 
-		LoggerUtil.initializeLogger("log4j.global.properties", "");
+		LoggerUtil.initializeLogger();
 		run.logWelcomeMessage();
 
 		CommandLineParser commandLineParser = null;

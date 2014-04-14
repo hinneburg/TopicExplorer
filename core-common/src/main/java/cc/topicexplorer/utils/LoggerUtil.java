@@ -6,11 +6,11 @@ import java.util.Properties;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
-import com.google.common.base.Preconditions;
-
 public class LoggerUtil {
 
 	private static Logger logger = Logger.getLogger(LoggerUtil.class);
+	private static final String GLOBAL_PROPERTIES_FILENAME = "log4j.global.properties";
+	private static final String LOCAL_PROPERTIES_FILENAME = "log4j.local.properties";
 
 	private LoggerUtil() {
 		throw new UnsupportedOperationException();
@@ -23,26 +23,13 @@ public class LoggerUtil {
 	 * core-common/local/main/resources if they exist. See Apache manual
 	 * (https://logging.apache.org/log4j/1.2/manual.html) for information on how
 	 * to structure a log4j property file.
-	 * 
-	 * @param globalProperties
-	 *            file name for the global log4j properties. Will be overwritten
-	 *            with local properties, if they are defined. Must neither be
-	 *            null nor an empty String.
-	 * @param localProperties
-	 *            file name for the local log4j properties. Will yet be ignored.
 	 */
-	public static void initializeLogger(String globalProperties, String localProperties) {
-		checkPreconditions(globalProperties);
-		PropertyConfigurator.configure(getProperties(globalProperties, localProperties));
+	public static void initializeLogger() {
+		PropertyConfigurator.configure(loadProperties(GLOBAL_PROPERTIES_FILENAME, LOCAL_PROPERTIES_FILENAME));
 		logger.info("Logger successfully initialized");
 	}
 
-	private static void checkPreconditions(String globalProperties) {
-		Preconditions.checkNotNull(globalProperties);
-		Preconditions.checkArgument(!globalProperties.equals(""), globalProperties);
-	}
-
-	private static Properties getProperties(String globalProperties, String localProperties) {
+	private static Properties loadProperties(String globalProperties, String localProperties) {
 		Properties logProperties = new Properties();
 		try {
 			logProperties.load(LoggerUtil.class.getResourceAsStream("/" + globalProperties));

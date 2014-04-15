@@ -15,6 +15,8 @@ import cc.topicexplorer.database.SelectMap;
 
 public class BestDocumentsForGivenTopic {
 
+	private static final Logger logger = Logger.getLogger(BestDocumentsForGivenTopic.class);
+
 	private final SelectMap documentMap;
 	private int numberOfTopics;
 	private PrintWriter outWriter;
@@ -89,7 +91,7 @@ public class BestDocumentsForGivenTopic {
 			all.put("DOCUMENT", docs);
 			all.put("DOCUMENT_SORTING", docSorting);
 		} catch (SQLException e) {
-			Logger.getRootLogger().error("Error in Query: " + documentMap.getSQLString());
+			logger.error("Error in Query: " + documentMap.getSQLString());
 			throw new RuntimeException(e);
 		}
 		outWriter.print(all.toString());

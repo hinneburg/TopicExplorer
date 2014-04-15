@@ -22,7 +22,7 @@ import cc.commandmanager.core.CommunicationContext;
  */
 public class JsonServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private static Logger logger = Logger.getRootLogger();
+	private static final Logger logger = Logger.getLogger(JsonServlet.class);
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

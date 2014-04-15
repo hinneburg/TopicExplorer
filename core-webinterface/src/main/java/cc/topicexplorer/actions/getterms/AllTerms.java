@@ -18,7 +18,7 @@ public final class AllTerms {
 	private PrintWriter outWriter;
 	private Database database;
 	private final SelectMap databaseQuery;
-	private final Logger logger = Logger.getRootLogger();
+	private static final Logger logger = Logger.getLogger(AllTerms.class);
 
 	public AllTerms(Database db, PrintWriter out) {
 		this.setDatabase(db);

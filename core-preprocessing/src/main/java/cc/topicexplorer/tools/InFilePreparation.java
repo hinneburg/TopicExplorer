@@ -39,11 +39,12 @@ import com.csvreader.CsvReader;
  * 
  */
 public class InFilePreparation extends DependencyCommand {
+	private static final Logger logger = Logger.getLogger(InFilePreparation.class);
+	private static Database database;
+	private static CsvReader inCsv;
+
 	private String malletPreparedFile;
 	private Properties properties;
-	private static cc.topicexplorer.database.Database database;
-	private static CsvReader inCsv;
-	private static Logger logger = Logger.getRootLogger();
 
 	/**
 	 * The function checks if the used separator and the static defined names

@@ -23,11 +23,12 @@ import cc.commandmanager.core.CommunicationContext;
 import cc.commandmanager.core.DependencyCommand;
 
 public class TokenTopicAssociator extends DependencyCommand {
-	private static Properties properties;
-	private static Logger logger = Logger.getRootLogger();
-	private static List<String> outList = new ArrayList<String>();
 	public static String TOKENTOPICASSIGNMENTSQLFILE = "temp/tokenTopicAssignment.sql.csv";
-	// Number of Elements readed till output
+
+	private static final Logger logger = Logger.getLogger(TokenTopicAssociator.class);
+	private static Properties properties;
+	private static List<String> outList = new ArrayList<String>();
+	// Number of Elements read till output
 	private static Integer blockSize = 5000;
 
 	private static boolean setTokenTopicAssignment() {

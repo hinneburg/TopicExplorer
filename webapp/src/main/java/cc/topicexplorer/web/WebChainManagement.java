@@ -15,7 +15,7 @@ import cc.topicexplorer.commands.PropertiesCommand;
 public class WebChainManagement {
 
 	private static ChainManagement chainManagement = null;
-	private static Logger logger = Logger.getRootLogger();
+	private static final Logger logger = Logger.getLogger(WebChainManagement.class);
 	private static boolean isInitialized = false;
 
 	private WebChainManagement() {

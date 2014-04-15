@@ -9,6 +9,7 @@ import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
+import org.apache.log4j.Logger;
 
 public class CommandLineParser {
 	private final Options options;
@@ -24,7 +25,7 @@ public class CommandLineParser {
 
 	private final String[] args;
 
-	private final org.apache.log4j.Logger logger = org.apache.log4j.Logger.getRootLogger();
+	private static final Logger logger = Logger.getLogger(CommandLineParser.class);
 
 	/**
 	 * Adds the possible arguments. Sets global args and executes the parsing of

@@ -26,7 +26,7 @@ public class Database {
 		EXECUTE_QUERY, EXECUTE_UPDATE_QUERY, EXECUTE_UPDATE_QUERY_FOR_UPDATE
 	};
 
-	private final Logger logger = Logger.getRootLogger();
+	private static final Logger logger = Logger.getLogger(Database.class);
 
 	/**
 	 * 

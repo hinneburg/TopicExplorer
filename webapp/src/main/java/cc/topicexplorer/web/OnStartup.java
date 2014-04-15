@@ -35,7 +35,7 @@ import cc.commandmanager.core.CommunicationContext;
 import cc.topicexplorer.utils.LoggerUtil;
 
 public class OnStartup implements ServletContextListener {
-	private static Logger logger = Logger.getRootLogger();
+	private static final Logger logger = Logger.getLogger(OnStartup.class);
 	private ServletContext servletContext;
 
 	@Override

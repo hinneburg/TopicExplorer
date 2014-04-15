@@ -35,7 +35,7 @@ import cc.topicexplorer.utils.CommandLineParser;
 import cc.topicexplorer.utils.LoggerUtil;
 
 public class Run {
-	private static Logger logger = Logger.getRootLogger();
+	private static final Logger logger = Logger.getLogger(Run.class);
 
 	public static void main(String[] args) throws Exception {
 		Run run = new Run();

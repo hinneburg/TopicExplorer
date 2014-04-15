@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.Properties;
 
 import org.apache.commons.chain.Context;
-import org.apache.log4j.Logger;
 
 import cc.commandmanager.core.CommunicationContext;
 import cc.commandmanager.core.DependencyCommand;
@@ -14,7 +13,6 @@ import cc.mallet.topics.tui.Vectors2Topics;
 
 public class Mallet extends DependencyCommand {
 	private Properties properties;
-	private final Logger logger = Logger.getRootLogger();
 
 	public void importFile() throws FileNotFoundException, IOException {
 		String[] malletArgs = { "--keep-sequence", "TRUE", "--input", "temp/malletinput.txt", "--output",

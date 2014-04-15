@@ -14,7 +14,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.apache.commons.chain.Context;
-import org.apache.log4j.Logger;
 
 import cc.topicexplorer.commands.TableCommand;
 
@@ -24,7 +23,6 @@ import cc.topicexplorer.commands.TableCommand;
  * 
  */
 public class TopicMetaData extends TableCommand {
-	private final Logger logger = Logger.getRootLogger();
 
 	@Override
 	public void tableExecute(Context context) {
@@ -78,35 +76,18 @@ public class TopicMetaData extends TableCommand {
 		 * TERM_TOPIC.TOPIC_ID.getName() + " ;"; MIT-JOOQ-ENDE
 		 */
 		/** OHNE_JOOQ-START */
-//		@formatter:off
-		String sql = "SELECT kt1." + "TOPIC_ID"
-				+ " AS tid1, kt2." + "TOPIC_ID"
-				+ " AS tid2, sum(kt1."
-				+ "PR_TERM_GIVEN_TOPIC" + "*kt2."
-				+ "PR_TERM_GIVEN_TOPIC"
-				+ ")/sqrt(t1.n1* t2.n2) AS sim " + "FROM "
-				+ "TERM_TOPIC" + " kt1, " + "TERM_TOPIC"
-				+ " kt2, " + "  ( select " + "TERM_TOPIC.TOPIC_ID"
-				+ ", sum(" + "TERM_TOPIC.PR_TERM_GIVEN_TOPIC" + "*"
-				+ "TERM_TOPIC.PR_TERM_GIVEN_TOPIC" + ") as n1 from "
-				+ "TERM_TOPIC" + " group by "
-				+ "TERM_TOPIC.TOPIC_ID" + ") t1," + "  ( select "
-				+ "TERM_TOPIC.TOPIC_ID" + ", sum("
-				+ "TERM_TOPIC.PR_TERM_GIVEN_TOPIC" + "*"
-				+ "TERM_TOPIC.PR_TERM_GIVEN_TOPIC" + ") as n2 from "
-				+ "TERM_TOPIC" + " group by "
-				+ "TERM_TOPIC.TOPIC_ID" + ") t2 WHERE kt1."
-				+ "TERM_ID" + "=kt2."
-				+ "TERM_ID" + " and t1."
-				+ "TOPIC_ID" + "=kt1."
-				+ "TOPIC_ID" + " and  t2."
-				+ "TOPIC_ID" + "=kt2."
-				+ "TOPIC_ID" + " " + "GROUP BY kt1."
-				+ "TOPIC_ID" + ", kt2."
-				+ "TOPIC_ID" + ", t1.n1, t2.n2 "
-				+ "ORDER BY kt1." + "TOPIC_ID" + ", kt2."
-				+ "TOPIC_ID" + " ;";
-//		@formatter:on
+		// @formatter:off
+		String sql = "SELECT kt1." + "TOPIC_ID" + " AS tid1, kt2." + "TOPIC_ID" + " AS tid2, sum(kt1."
+				+ "PR_TERM_GIVEN_TOPIC" + "*kt2." + "PR_TERM_GIVEN_TOPIC" + ")/sqrt(t1.n1* t2.n2) AS sim " + "FROM "
+				+ "TERM_TOPIC" + " kt1, " + "TERM_TOPIC" + " kt2, " + "  ( select " + "TERM_TOPIC.TOPIC_ID" + ", sum("
+				+ "TERM_TOPIC.PR_TERM_GIVEN_TOPIC" + "*" + "TERM_TOPIC.PR_TERM_GIVEN_TOPIC" + ") as n1 from "
+				+ "TERM_TOPIC" + " group by " + "TERM_TOPIC.TOPIC_ID" + ") t1," + "  ( select " + "TERM_TOPIC.TOPIC_ID"
+				+ ", sum(" + "TERM_TOPIC.PR_TERM_GIVEN_TOPIC" + "*" + "TERM_TOPIC.PR_TERM_GIVEN_TOPIC"
+				+ ") as n2 from " + "TERM_TOPIC" + " group by " + "TERM_TOPIC.TOPIC_ID" + ") t2 WHERE kt1." + "TERM_ID"
+				+ "=kt2." + "TERM_ID" + " and t1." + "TOPIC_ID" + "=kt1." + "TOPIC_ID" + " and  t2." + "TOPIC_ID"
+				+ "=kt2." + "TOPIC_ID" + " " + "GROUP BY kt1." + "TOPIC_ID" + ", kt2." + "TOPIC_ID" + ", t1.n1, t2.n2 "
+				+ "ORDER BY kt1." + "TOPIC_ID" + ", kt2." + "TOPIC_ID" + " ;";
+		// @formatter:on
 		/** OHNE_JOOQ-ENDE */
 
 		rsSim = this.database.executeQuery(sql);
@@ -120,13 +101,10 @@ public class TopicMetaData extends TableCommand {
 
 	private void processRscript() {
 
-//		@formatter:off
-		ProcessBuilder p = new ProcessBuilder("bash", "-c", "Rscript "
-				+ "scripts/topic_order.R "
-				+ "temp/similarities.out "
-				+ properties.getProperty("malletNumTopics") + " "
-				+ "temp/topic_order.csv");
-//		@formatter:on
+		// @formatter:off
+		ProcessBuilder p = new ProcessBuilder("bash", "-c", "Rscript " + "scripts/topic_order.R "
+				+ "temp/similarities.out " + properties.getProperty("malletNumTopics") + " " + "temp/topic_order.csv");
+		// @formatter:on
 
 		Process process = null;
 

@@ -7,14 +7,12 @@ import java.util.MissingResourceException;
 import java.util.Properties;
 
 import org.apache.commons.chain.Context;
-import org.apache.log4j.Logger;
 
 import cc.commandmanager.core.CommunicationContext;
 import cc.commandmanager.core.DependencyCommand;
 
 public class PropertiesCommand extends DependencyCommand {
 	private Properties properties;
-	private final Logger logger = Logger.getRootLogger();
 
 	/**
 	 * @throws MissingResourceException

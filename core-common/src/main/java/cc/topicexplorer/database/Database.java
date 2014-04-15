@@ -84,14 +84,14 @@ public class Database {
 			this.statement = this.connection.createStatement();
 			this.statement.setFetchSize(100);
 		} catch (SQLException e) {
-			this.logger.error("The statement caused an exception. SQL-State-Error-Code: " + e.getSQLState());
+			logger.error("The statement caused an exception. SQL-State-Error-Code: " + e.getSQLState());
 			throw new RuntimeException(e);
 		}
 
 		try {
 			this.connection.setAutoCommit(true);
 		} catch (SQLException e) {
-			this.logger.error("AutoCommit could not be set.");
+			logger.error("AutoCommit could not be set.");
 			throw new RuntimeException(e);
 		}
 
@@ -117,14 +117,14 @@ public class Database {
 		try {
 			Class.forName("com.mysql.jdbc.Driver").newInstance();
 		} catch (ClassNotFoundException e1) {
-			this.logger.error("Current Command : [ " + getClass() + " ]" + " Database-Driver class could not be found");
+			logger.error("Current Command : [ " + getClass() + " ]" + " Database-Driver class could not be found");
 			throw new RuntimeException(e1);
 		} catch (InstantiationException e2) {
-			this.logger.error("Current Command : [ " + getClass() + " ]"
+			logger.error("Current Command : [ " + getClass() + " ]"
 					+ " Database-Driver instantiation fails for different possible reasons");
 			throw new RuntimeException(e2);
 		} catch (IllegalAccessException e3) {
-			this.logger.error("Current Command : [ " + getClass() + " ]"
+			logger.error("Current Command : [ " + getClass() + " ]"
 					+ " Database-Driver database driver or its default constructor is not accessible");
 			throw new RuntimeException(e3);
 		}
@@ -195,7 +195,7 @@ public class Database {
 					this.connect();
 					this.prepareConnection();
 				} else {
-					this.logger.error("The statement " + query + " caused in (re)try "
+					logger.error("The statement " + query + " caused in (re)try "
 							+ (this.numberOfRetries - retryCount + 1)
 							+ " an SQLException exception that is not retryable. " + "Error-Code: " + e.getErrorCode()
 							+ ", SQL-State-Error-Code: " + e.getSQLState());
@@ -206,14 +206,14 @@ public class Database {
 		} while (!queryCompleted && (retryCount > 0));
 
 		if (!queryCompleted && (retryCount == 0)) {
-			this.logger.error("The statement  " + query + " caused an retryable SQL exception and was "
+			logger.error("The statement  " + query + " caused an retryable SQL exception and was "
 					+ this.numberOfRetries + " times retried. "
 					+ "Retryable Exceptions are those with SQL State 08S01.");
 			throw new RuntimeException();
 		}
 
 		if (result == null) {
-			this.logger.error("The statement  " + query + " caused result Object that is NULL ");
+			logger.error("The statement  " + query + " caused result Object that is NULL ");
 			throw new RuntimeException();
 		}
 		return result;
@@ -274,14 +274,14 @@ public class Database {
 	private void connect() {
 		// connect database
 		try {
-			this.logger.info("Current Command : [ " + getClass() + " ]" + " Trying connect to database");
+			logger.info("Current Command : [ " + getClass() + " ]" + " Trying connect to database");
 
 			this.connection = DriverManager.getConnection("jdbc:mysql://" + this.dbLocation
 					+ "?useUnicode=true&characterEncoding=UTF-8&useCursorFetch=true", this.dbUser, this.dbPassword);
-			this.logger.info("Current Command : [ " + getClass() + " ]" + " Database connection established");
+			logger.info("Current Command : [ " + getClass() + " ]" + " Database connection established");
 
 		} catch (SQLException e) {
-			this.logger.error("Current Command : [ " + getClass() + " ]" + " DB-DriverManager error");
+			logger.error("Current Command : [ " + getClass() + " ]" + " DB-DriverManager error");
 			throw new RuntimeException(e);
 		}
 

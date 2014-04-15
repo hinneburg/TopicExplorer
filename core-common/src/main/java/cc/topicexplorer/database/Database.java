@@ -10,6 +10,8 @@ import java.util.Properties;
 import org.apache.log4j.Logger;
 
 public class Database {
+	private static final Logger logger = Logger.getLogger(Database.class);
+
 	private Connection connection;
 	private Statement statement;
 	private Properties properties;
@@ -25,8 +27,6 @@ public class Database {
 	private enum ExecutionType {
 		EXECUTE_QUERY, EXECUTE_UPDATE_QUERY, EXECUTE_UPDATE_QUERY_FOR_UPDATE
 	};
-
-	private static final Logger logger = Logger.getLogger(Database.class);
 
 	/**
 	 * 
@@ -113,7 +113,6 @@ public class Database {
 	}
 
 	private void loadDatabaseDriver() {
-		// load Database-Driver
 		try {
 			Class.forName("com.mysql.jdbc.Driver").newInstance();
 		} catch (ClassNotFoundException e1) {
@@ -150,7 +149,6 @@ public class Database {
 			try {
 
 				switch (execMethod) {
-
 				case EXECUTE_QUERY: {
 					this.statement = this.connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
 							ResultSet.CONCUR_UPDATABLE);
@@ -182,10 +180,8 @@ public class Database {
 				}
 
 			} catch (SQLException e) {
-				//
-				// 'Retry-able' SQL-State is 08S01 for Communication Error
+				// 'Retryable' SQL-State is 08S01 for Communication Error
 				// Retry only if error due to stale or dead connection
-				//
 
 				String sqlState = e.getSQLState();
 

@@ -15,14 +15,17 @@ public class Database {
 	private Properties properties;
 
 	private int limit = -1; // limit for select queries
-	private int numberOfRetries = 3; // this number gets overwritten by respective property
-	
-	private String dbUser; 
+	private int numberOfRetries = 3; // this number gets overwritten by
+										// respective property
+
+	private String dbUser;
 	private String dbPassword;
 	private String dbLocation;
-	
-	private enum ExecutionType {EXECUTE_QUERY, EXECUTE_UPDATE_QUERY, EXECUTE_UPDATE_QUERY_FOR_UPDATE};
-	
+
+	private enum ExecutionType {
+		EXECUTE_QUERY, EXECUTE_UPDATE_QUERY, EXECUTE_UPDATE_QUERY_FOR_UPDATE
+	};
+
 	private final Logger logger = Logger.getRootLogger();
 
 	/**
@@ -81,9 +84,7 @@ public class Database {
 			this.statement = this.connection.createStatement();
 			this.statement.setFetchSize(100);
 		} catch (SQLException e) {
-			this.logger
-					.error("The statement caused an exception. SQL-State-Error-Code: "
-							+ e.getSQLState());
+			this.logger.error("The statement caused an exception. SQL-State-Error-Code: " + e.getSQLState());
 			throw new RuntimeException(e);
 		}
 
@@ -93,23 +94,21 @@ public class Database {
 			this.logger.error("AutoCommit could not be set.");
 			throw new RuntimeException(e);
 		}
-		
+
 	}
 
 	private void setProperties(Boolean otherDatabase) {
 		this.dbLocation = this.properties.getProperty("database.DbLocation");
 
 		if (otherDatabase) {
-			dbLocation = dbLocation + "/"
-					+ this.properties.getProperty("database.other");
+			dbLocation = dbLocation + "/" + this.properties.getProperty("database.other");
 		} else {
-			dbLocation = dbLocation + "/"
-					+ this.properties.getProperty("database.DB");
+			dbLocation = dbLocation + "/" + this.properties.getProperty("database.DB");
 		}
 
 		this.dbUser = this.properties.getProperty("database.DbUser");
 		this.dbPassword = this.properties.getProperty("database.DbPassword");
-		
+
 		this.numberOfRetries = Integer.parseInt(this.properties.getProperty("database.NumberOfRetries"));
 	}
 
@@ -118,22 +117,15 @@ public class Database {
 		try {
 			Class.forName("com.mysql.jdbc.Driver").newInstance();
 		} catch (ClassNotFoundException e1) {
-			this.logger.error("Current Command : [ " + getClass() + " ]"
-					+ " Database-Driver class could not be found");
+			this.logger.error("Current Command : [ " + getClass() + " ]" + " Database-Driver class could not be found");
 			throw new RuntimeException(e1);
 		} catch (InstantiationException e2) {
-			this.logger
-					.error("Current Command : [ "
-							+ getClass()
-							+ " ]"
-							+ " Database-Driver instantiation fails for different possible reasons");
+			this.logger.error("Current Command : [ " + getClass() + " ]"
+					+ " Database-Driver instantiation fails for different possible reasons");
 			throw new RuntimeException(e2);
 		} catch (IllegalAccessException e3) {
-			this.logger
-					.error("Current Command : [ "
-							+ getClass()
-							+ " ]"
-							+ " Database-Driver database driver or its default constructor is not accessible");
+			this.logger.error("Current Command : [ " + getClass() + " ]"
+					+ " Database-Driver database driver or its default constructor is not accessible");
 			throw new RuntimeException(e3);
 		}
 	}
@@ -155,79 +147,85 @@ public class Database {
 		int retryCount = this.numberOfRetries;
 		Object result = null;
 		do {
-		try {
-			
-			switch (execMethod) {
-			
-			case EXECUTE_QUERY:{
-				this.statement = this.connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
-				result = this.statement.executeQuery(query);
+			try {
 
-				queryCompleted = true;
-				break;
-			}
-			case EXECUTE_UPDATE_QUERY:{
-				// for manipulation , executeQuery couldn't manipulate database
-				result = (Integer) this.statement.executeUpdate(query);
-				
-				queryCompleted = true;
-				break;
-			}
-			case EXECUTE_UPDATE_QUERY_FOR_UPDATE:{
-				// useful to keep resultset open, 
-				// else keywords_themen2 or tables.keytopic2 are not working 
-				// exception (cannot perfom ... rs is closed) would be thrown 
-				this.statement = this.connection.createStatement(
-						ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-				result =  (Integer) this.statement.executeUpdate(query);
+				switch (execMethod) {
 
-				queryCompleted = true;
-				break;
-			}
-			}
-			
-		} catch (SQLException e) {
-			//
-            // 'Retry-able' SQL-State is 08S01 for Communication Error
-            // Retry only if error due to stale or dead connection
-            //
+				case EXECUTE_QUERY: {
+					this.statement = this.connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+							ResultSet.CONCUR_UPDATABLE);
+					result = this.statement.executeQuery(query);
 
-            String sqlState = e.getSQLState();
+					queryCompleted = true;
+					break;
+				}
+				case EXECUTE_UPDATE_QUERY: {
+					// for manipulation , executeQuery couldn't manipulate
+					// database
+					result = this.statement.executeUpdate(query);
 
-            if ("08S01".equals(sqlState)) {
-                retryCount--;
-                connection.close();
-                this.connect();
-                this.prepareConnection();
-            } else {
-                this.logger.error("The statement "+ query +" caused in (re)try "+ (this.numberOfRetries- retryCount + 1) +" an SQLException exception that is not retryable. "
-                		+ "Error-Code: "+ e.getErrorCode()+ ", SQL-State-Error-Code: " + e.getSQLState());
-                retryCount = 0;
-                throw e;
-            }
+					queryCompleted = true;
+					break;
+				}
+				case EXECUTE_UPDATE_QUERY_FOR_UPDATE: {
+					// useful to keep resultset open,
+					// else keywords_themen2 or tables.keytopic2 are not working
+					// exception (cannot perfom ... rs is closed) would be
+					// thrown
+					this.statement = this.connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE,
+							ResultSet.CONCUR_UPDATABLE);
+					result = this.statement.executeUpdate(query);
+
+					queryCompleted = true;
+					break;
+				}
+				}
+
+			} catch (SQLException e) {
+				//
+				// 'Retry-able' SQL-State is 08S01 for Communication Error
+				// Retry only if error due to stale or dead connection
+				//
+
+				String sqlState = e.getSQLState();
+
+				if ("08S01".equals(sqlState)) {
+					retryCount--;
+					connection.close();
+					this.connect();
+					this.prepareConnection();
+				} else {
+					this.logger.error("The statement " + query + " caused in (re)try "
+							+ (this.numberOfRetries - retryCount + 1)
+							+ " an SQLException exception that is not retryable. " + "Error-Code: " + e.getErrorCode()
+							+ ", SQL-State-Error-Code: " + e.getSQLState());
+					retryCount = 0;
+					throw e;
+				}
+			}
+		} while (!queryCompleted && (retryCount > 0));
+
+		if (!queryCompleted && (retryCount == 0)) {
+			this.logger.error("The statement  " + query + " caused an retryable SQL exception and was "
+					+ this.numberOfRetries + " times retried. "
+					+ "Retryable Exceptions are those with SQL State 08S01.");
+			throw new RuntimeException();
 		}
-		} while(!queryCompleted && (retryCount > 0) );
-		
-		if(!queryCompleted && (retryCount == 0) ) {
-            this.logger.error("The statement  "+ query +" caused an retryable SQL exception and was " + this.numberOfRetries + " times retried. "
-            		+ "Retryable Exceptions are those with SQL State 08S01.");
-            throw new RuntimeException();
-		}
-		
-		if(result == null) {
-            this.logger.error("The statement  "+ query +" caused result Object that is NULL ");
-            throw new RuntimeException();
+
+		if (result == null) {
+			this.logger.error("The statement  " + query + " caused result Object that is NULL ");
+			throw new RuntimeException();
 		}
 		return result;
 	}
-	
-	
+
 	/**
 	 * @param query
 	 *            SQL query that will be executed
 	 * @return a ResultSet object that contains the data produced by the given
-	 *         query; The statement might be sent numberOfRetries times to the server
-	 *         if an connection error occurred (SQL-State-Error-Code 08S01).
+	 *         query; The statement might be sent numberOfRetries times to the
+	 *         server if an connection error occurred (SQL-State-Error-Code
+	 *         08S01).
 	 * @throws SQLException
 	 *             if a database access error occurs,
 	 *             <p>
@@ -245,7 +243,6 @@ public class Database {
 	public ResultSet executeQuery(String query) throws SQLException {
 		return (ResultSet) executeQueriesWithSilentRetry(query, ExecutionType.EXECUTE_QUERY);
 	}
-		
 
 	/**
 	 * for manipulation of database without "closing" the connection/ resultset
@@ -277,21 +274,14 @@ public class Database {
 	private void connect() {
 		// connect database
 		try {
-			this.logger.info("Current Command : [ " + getClass() + " ]"
-					+ " Trying connect to database");
+			this.logger.info("Current Command : [ " + getClass() + " ]" + " Trying connect to database");
 
-			this.connection = DriverManager
-					.getConnection(
-							"jdbc:mysql://"
-									+ this.dbLocation
-									+ "?useUnicode=true&characterEncoding=UTF-8&useCursorFetch=true",
-									this.dbUser, this.dbPassword);
-			this.logger.info("Current Command : [ " + getClass() + " ]"
-					+ " Database connection established");
+			this.connection = DriverManager.getConnection("jdbc:mysql://" + this.dbLocation
+					+ "?useUnicode=true&characterEncoding=UTF-8&useCursorFetch=true", this.dbUser, this.dbPassword);
+			this.logger.info("Current Command : [ " + getClass() + " ]" + " Database connection established");
 
 		} catch (SQLException e) {
-			this.logger.error("Current Command : [ " + getClass() + " ]"
-					+ " DB-DriverManager error");
+			this.logger.error("Current Command : [ " + getClass() + " ]" + " DB-DriverManager error");
 			throw new RuntimeException(e);
 		}
 

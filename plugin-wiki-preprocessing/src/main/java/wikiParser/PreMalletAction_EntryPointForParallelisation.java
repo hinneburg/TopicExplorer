@@ -20,9 +20,6 @@ import java.util.concurrent.TimeUnit;
 
 import tools.Stopwatch;
 import tools.WikiIDTitlePair;
-//import org.apache.log4j.Appender;
-//import org.apache.log4j.ConsoleAppender;
-//import org.apache.log4j.Logger;
 
 public class PreMalletAction_EntryPointForParallelisation {
 
@@ -35,8 +32,6 @@ public class PreMalletAction_EntryPointForParallelisation {
 	private final String fileNameInputSQLParsed = "inputsql.csv";
 	private final String fileNameInputMallet = "inputmallet.csv";
 	private final String fileNameLogging = "logging.txt";
-
-	// final static Logger logger = Logger.getRootLogger();
 
 	public PreMalletAction_EntryPointForParallelisation(Properties prop) {
 		this.prop = prop;

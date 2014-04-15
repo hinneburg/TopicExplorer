@@ -35,8 +35,8 @@ public class JsonServlet extends HttpServlet {
 		CommunicationContext communicationContext = WebChainManagement.getCommunicationContext();
 		communicationContext.put("SERVLET_WRITER", writer);
 
-		int offset =  (request.getParameter("offset") != null) ? Integer.parseInt(request.getParameter("offset")) : 0;
-		
+		int offset = (request.getParameter("offset") != null) ? Integer.parseInt(request.getParameter("offset")) : 0;
+
 		Set<String> startCommands = new HashSet<String>();
 		Set<String> endCommands = new HashSet<String>();
 
@@ -59,7 +59,7 @@ public class JsonServlet extends HttpServlet {
 			} else if (command.contains("search")) {
 				communicationContext.put("SEARCH_WORD", request.getParameter("SearchWord"));
 				communicationContext.put("OFFSET", offset);
-				
+
 				startCommands.add("SearchCoreCreate");
 			} else if (command.contains("getFrames")) {
 				startCommands.add("FrameCreate");

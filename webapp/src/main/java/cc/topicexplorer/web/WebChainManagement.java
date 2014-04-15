@@ -40,7 +40,7 @@ public class WebChainManagement {
 			DependencyCommand dbConnectionCommand = new DbConnectionCommand();
 			dbConnectionCommand.execute(context);
 		} catch (RuntimeException rntmEx) {
-			logger.error("Initialization abborted, due to a critical exception");
+			logger.error("Initialization abborted, due to a critical exception", rntmEx);
 			throw rntmEx;
 		}
 	}

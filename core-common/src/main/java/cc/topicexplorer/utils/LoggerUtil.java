@@ -1,16 +1,18 @@
 package cc.topicexplorer.utils;
 
-import java.io.IOException;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
+
+import cc.topicexplorer.utils.PropertiesUtil.PropertyKind;
 
 public class LoggerUtil {
 
 	private static Logger logger = Logger.getLogger(LoggerUtil.class);
 	private static final String GLOBAL_PROPERTIES_FILENAME = "log4j.global.properties";
 	private static final String LOCAL_PROPERTIES_FILENAME = "log4j.local.properties";
+	private static final String NO_PREFIX = "";
 
 	private LoggerUtil() {
 		throw new UnsupportedOperationException();
@@ -30,14 +32,10 @@ public class LoggerUtil {
 	}
 
 	private static Properties loadProperties(String globalProperties, String localProperties) {
-		Properties logProperties = new Properties();
-		try {
-			logProperties.load(LoggerUtil.class.getResourceAsStream("/" + globalProperties));
-			return logProperties;
-		} catch (IOException e) {
-			logger.error("resources not found.");
-			throw new RuntimeException(e);
-		}
+		PropertiesUtil propertiesUtil = new PropertiesUtil(new Properties());
+		propertiesUtil.loadPropertyFile(globalProperties, NO_PREFIX, PropertyKind.GLOBAL);
+		propertiesUtil.loadPropertyFile(localProperties, NO_PREFIX, PropertyKind.LOCAL);
+		return propertiesUtil.getHostProperties();
 	}
 
 }

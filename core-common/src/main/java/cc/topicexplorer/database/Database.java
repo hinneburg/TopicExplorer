@@ -116,15 +116,13 @@ public class Database {
 		try {
 			Class.forName("com.mysql.jdbc.Driver").newInstance();
 		} catch (ClassNotFoundException e1) {
-			logger.error("Current Command : [ " + getClass() + " ]" + " Database-Driver class could not be found");
+			logger.error("Database-Driver class could not be found");
 			throw new RuntimeException(e1);
 		} catch (InstantiationException e2) {
-			logger.error("Current Command : [ " + getClass() + " ]"
-					+ " Database-Driver instantiation fails for different possible reasons");
+			logger.error("Database-Driver instantiation fails for different possible reasons");
 			throw new RuntimeException(e2);
 		} catch (IllegalAccessException e3) {
-			logger.error("Current Command : [ " + getClass() + " ]"
-					+ " Database-Driver database driver or its default constructor is not accessible");
+			logger.error("Database-Driver database driver or its default constructor is not accessible");
 			throw new RuntimeException(e3);
 		}
 	}
@@ -270,14 +268,14 @@ public class Database {
 	private void connect() {
 		// connect database
 		try {
-			logger.info("Current Command : [ " + getClass() + " ]" + " Trying connect to database");
+			logger.info("Trying to connect to database");
 
 			this.connection = DriverManager.getConnection("jdbc:mysql://" + this.dbLocation
 					+ "?useUnicode=true&characterEncoding=UTF-8&useCursorFetch=true", this.dbUser, this.dbPassword);
-			logger.info("Current Command : [ " + getClass() + " ]" + " Database connection established");
+			logger.info("Database connection established");
 
 		} catch (SQLException e) {
-			logger.error("Current Command : [ " + getClass() + " ]" + " DB-DriverManager error");
+			logger.error("DB-DriverManager error");
 			throw new RuntimeException(e);
 		}
 

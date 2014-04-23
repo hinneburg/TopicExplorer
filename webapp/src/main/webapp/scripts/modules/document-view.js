@@ -15,24 +15,26 @@ define(
 					.subscribeTo("TabView.activeTab");
 			
 				self.activeTab.subscribe(function(newValue) {
-					topicexplorerModel.view.activeTab = newValue;
-					if(typeof topicexplorerModel.view.tab[newValue].documentCount == 'undefined' && !topicexplorerModel.data.documentsLoading()) {
-						topicexplorerModel.view.tab[newValue].documentsFull = ko.observable(false);
-						self.selectedDocuments(new Array());
-						topicexplorerModel.data.documentsLoading(true);
-						topicexplorerModel.loadDocuments(
-							{paramString: topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].getParameter},
-							function(newDocumentIds) {
-								if(newDocumentIds.length < topicexplorerModel.data.documentLimit) { 
-									topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].documentsFull(true);	
+					if(topicexplorerModel.view.tab[newValue].module == "document-view") {
+						topicexplorerModel.view.activeTab = newValue;
+						if(typeof topicexplorerModel.view.tab[newValue].documentCount == 'undefined' && !topicexplorerModel.data.documentsLoading()) {
+							topicexplorerModel.view.tab[newValue].documentsFull = ko.observable(false);
+							self.selectedDocuments(new Array());
+							topicexplorerModel.data.documentsLoading(true);
+							topicexplorerModel.loadDocuments(
+								{paramString: topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].getParameter},
+								function(newDocumentIds) {
+									if(newDocumentIds.length < topicexplorerModel.data.documentLimit) { 
+										topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].documentsFull(true);	
+									}
+									topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].documentCount = newDocumentIds.length;
+									topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].focus = topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].focus.concat(newDocumentIds);
+									self.selectedDocuments(topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].focus);
 								}
-								topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].documentCount = newDocumentIds.length;
-								topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].focus = topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].focus.concat(newDocumentIds);
-								self.selectedDocuments(topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].focus);
-							}
-						);				
-					} else {
-						self.selectedDocuments(topicexplorerModel.view.tab[newValue].focus);
+							);				
+						} else {
+							self.selectedDocuments(topicexplorerModel.view.tab[newValue].focus);
+						}
 					}
 				});
 				
@@ -80,7 +82,7 @@ define(
 						
 				self.loadMoreDocuments = function() {
 					if(!topicexplorerModel.data.documentsLoading() && !topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].documentsFull() && $("#desktop").scrollTop() + self.desktopHeight() + 90 >= $("#desktop")[0].scrollHeight) {
-						console.log($("#desktop").scrollTop() +" " +  $("#desktop")[0].scrollHeight);
+//						console.log($("#desktop").scrollTop() +" " +  $("#desktop")[0].scrollHeight+" "+ self.desktopHeight());
 						topicexplorerModel.data.documentsLoading(true);
 						topicexplorerModel.loadDocuments(
 							{paramString: topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].getParameter + '&offset=' + topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].documentCount},
@@ -96,6 +98,11 @@ define(
 						
 					}
 				};
+				
+				self.initialize = function() {
+					self.selectedDocuments(topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].focus);
+				};
+				
 				return self;
 		});
 

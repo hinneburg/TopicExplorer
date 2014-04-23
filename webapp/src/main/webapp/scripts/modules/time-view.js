@@ -3,13 +3,20 @@ define(
     function(ko, $) {
     	self.leftBodyHeight=ko.observable(topicexplorerModel.view.leftBodyHeight).subscribeTo("leftBodyHeight");
     	
-    	self.desktopHeight= ko.computed(function() {
+    	
+    	
+    	self.timeDesktopHeight= ko.computed(function() {
     		return ((self.leftBodyHeight() - 90) * 0.7);
     	});
     	
     	self.timeScrollCallback = function(el) {
 			$("#singleMenuActivator, #singleMenu").css('top', $("#desktop").scrollTop());
 		};
+		
+		self.timeDesktopHeight.subscribe(function() {
+			self.makeChart();
+		});
+		
 		
 		self.singlePluginTemplates = topicexplorerModel.config.singleView.pluginTemplates;
 		self.singlePluginTemplate = ko.observable(self.singlePluginTemplates[topicexplorerModel.config.singleView.activePlugin]);
@@ -21,26 +28,28 @@ define(
 			.subscribeTo("TabView.activeTab");
 		
 		self.activeTab.subscribe(function(newValue) {
-			
-			self.topicId(topicexplorerModel.view.tab[newValue].focus);
+			if(topicexplorerModel.view.tab[newValue].module == "time-view") {
+				self.topicId(topicexplorerModel.view.tab[newValue].focus);
+				
+				self.makeChart();
+			}
 		});
 		
     	self.topicId = ko.observable(topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].focus);
     	self.makeChart = function() {
-	 		self.chart = new Highcharts.StockChart({
+    		self.topicId(topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].focus);
+    		self.chart = new Highcharts.StockChart({
 		   	    chart: {
-		    	   renderTo: 'chart'
+		    	   renderTo: 'chart',
+		    	   height: self.timeDesktopHeight()
 		    	},
 		    	series: [{
 		    	   data: topicexplorerModel.data.topic[self.topicId()].TIME$WORDS_PER_WEEK,
 		    	   color: topicexplorerModel.data.topic[self.topicId()].COLOR_TOPIC$COLOR
 		    	}]
 		    });
-	    	self.chart.addSeries({
-	    		data: topicexplorerModel.data.topic[self.topicId() + 1].TIME$WORDS_PER_WEEK,
-	    		color: topicexplorerModel.data.topic[self.topicId() + 1].COLOR_TOPIC$COLOR
-	    	});
     	};
+    	
     	self.init = function() {
     		if(typeof topicexplorerModel.data.timeDataLoaded == 'undefined') {
 				

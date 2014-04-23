@@ -1,7 +1,7 @@
 define(
 	[ "knockout", "jquery", "jquery-ui"],
 	function(ko, $) {
-		self.activeTab = ko.observable(topicexplorerModel.view.activeTab);
+		self.activeTab = ko.observable(topicexplorerModel.view.activeTab).publishOn("TabView.activeTab");
 		self.activeModule = ko.observable(topicexplorerModel.view.tab[self.activeTab()].module);
 //		self.activeTab.subscribe(function(newValue) {
 //			console.log(topicexplorerModel.view.tab[newValue].module);
@@ -29,20 +29,27 @@ define(
 			self.tabs(topicexplorerModel.view.tabs);
 		});
 		
-		self.setActive = function() {
-//			topicexplorerModel.data.documentsLoading(true);	
+		self.setActive = function(allowLoading) {
+//			
+			if(!allowLoading) topicexplorerModel.data.documentsLoading(true);
 			$("#desktop").scrollTop(0);
 			$(".tab").removeClass('active');
 			$("#tab" + topicexplorerModel.view.activeTab).addClass('active');
-			self.activeModule(topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].module);
 			
-			self.activeTab(topicexplorerModel.view.activeTab);	
+			if(self.activeModule() == topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].module) {
+				self.activeTab(topicexplorerModel.view.activeTab);	
+				ko.postbox.publish("TabView.activeTab", topicexplorerModel.view.activeTab);		
+			} else {
+				self.activeModule(topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].module);
+			}
 			
-	//		ko.postbox.publish("TabView.activeTab", topicexplorerModel.view.activeTab);
-			console.log("newTab");
+			
+			
+//			ko.postbox.publish("TabView.activeTab", topicexplorerModel.view.activeTab);
+//			console.log("newTab");
 			
 			$("#desktop").scrollTop(topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].scrollPosition);
-//			topicexplorerModel.data.documentsLoading(false);
+			if(!allowLoading) topicexplorerModel.data.documentsLoading(false);
 		};
 		self.toggleActive = function(active) {
 			$('#tabMenu').hide();
@@ -57,7 +64,7 @@ define(
 				self.invisibleTabs(topicexplorerModel.view.invisibleTabs);
 				self.tabs(topicexplorerModel.view.tabs);
 			}			
-			self.setActive();	
+			self.setActive(false);	
 		};
 		self.deleteTab = function(tab) {
 			if(topicexplorerModel.view.tabs.length < 2) {
@@ -83,7 +90,7 @@ define(
 					tabIndex--;			
 				}
 				topicexplorerModel.view.activeTab = topicexplorerModel.view.tabs[tabIndex];
-				self.setActive();
+				self.setActive(false);
 			}			
 		};
 		
@@ -114,7 +121,7 @@ define(
 				}
 				topicexplorerModel.view.activeTab = key;
 				
-				self.setActive();
+				self.setActive(false);
 				return true;
 				}
 			}
@@ -147,7 +154,7 @@ define(
 				self.invisibleTabs(topicexplorerModel.view.invisibleTabs);		
 			}
 			self.tabs(topicexplorerModel.view.tabs);
-			self.setActive();
+			self.setActive(true);
 			
 		};
 		

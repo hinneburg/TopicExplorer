@@ -17,22 +17,26 @@ define(
 						topicexplorerModel.config.singleView.activePlugin = topicexplorerModel.config.singleView.pluginTemplates
 								.indexOf(newValue);
 					});
+			
+			self.markedText = ko.observable(""); 
 
 			self.activeTab = ko.observable(topicexplorerModel.view.activeTab)
 					.subscribeTo("TabView.activeTab");
 			
 			self.activeTab.subscribe(function(newValue) {
-				self.selectedDocument(topicexplorerModel.view.tab[newValue].focus);
+				if(topicexplorerModel.view.tab[newValue].module == "single-view") {
+					self.selectedSingleDocument(topicexplorerModel.view.tab[newValue].focus);
+				} 
 			});
 			
-			self.selectedDocument = ko.observable(topicexplorerModel.view.tab[self.activeTab()].focus);
+			self.selectedSingleDocument = ko.observable(topicexplorerModel.view.tab[self.activeTab()].focus);
 
 			self.markWords = function() {
-				if (!topicexplorerModel.data.document[self.selectedDocument()].TEXT_WITH_MARKED_WORDS) {
+				if (!topicexplorerModel.data.document[self.selectedSingleDocument()].TEXT_WITH_MARKED_WORDS) {
 					var text = topicexplorerModel.data.document[self
-							.selectedDocument()].TEXT$FULLTEXT;
+							.selectedSingleDocument()].TEXT$FULLTEXT;
 					var words = topicexplorerModel.data.document[self
-							.selectedDocument()].WORD_LIST;
+							.selectedSingleDocument()].WORD_LIST;
 					for (key in words) {
 						text = text.substring(0,
 								words[key].POSITION_OF_TOKEN_IN_DOCUMENT)
@@ -45,27 +49,31 @@ define(
 										.substring(parseInt(words[key].POSITION_OF_TOKEN_IN_DOCUMENT)
 												+ words[key].TOKEN.length);
 					}
-					topicexplorerModel.data.document[self.selectedDocument()].TEXT_WITH_MARKED_WORDS = text;
+					topicexplorerModel.data.document[self.selectedSingleDocument()].TEXT_WITH_MARKED_WORDS = text;
 
-					return text;
+					self.markedText(text);
 
 				} else {
-					return topicexplorerModel.data.document[self
-							.selectedDocument()].TEXT_WITH_MARKED_WORDS;
+					self.markedText(topicexplorerModel.data.document[self
+							.selectedSingleDocument()].TEXT_WITH_MARKED_WORDS);
 				}
 			};
-			self.init = function() {
-				$.getJSON("JsonServlet?" + topicexplorerModel.view.tab[self.activeTab()].getParameter)
+			
+			self.initialize = function() {
+				if(typeof topicexplorerModel.data.document[topicexplorerModel.view.tab[self.activeTab()].focus] != 'undefined')
+	    		if(typeof topicexplorerModel.data.document[topicexplorerModel.view.tab[self.activeTab()].focus].singleDataLoaded == 'undefined') {
+	    			$.getJSON("JsonServlet?" + topicexplorerModel.view.tab[self.activeTab()].getParameter)
 					.success(function(receivedParsedJson) {
 						$.extend(self.topicexplorerModel.data.document[receivedParsedJson.DOCUMENT.DOCUMENT_ID], receivedParsedJson.DOCUMENT);
 						topicexplorerModel.view.tab[self.activeTab()].focus = receivedParsedJson.DOCUMENT.DOCUMENT_ID;
-						self.selectedDocument(receivedParsedJson.DOCUMENT.DOCUMENT_ID);
-					}
-				);
-			};
+						topicexplorerModel.data.document[topicexplorerModel.view.tab[self.activeTab()].focus].singleDataLoaded = 1;
+						self.markWords();
+					});
+				} else {
+					self.markWords();
+				}
+	    	};
 
-			self.init();
-			
 			self.singleScrollCallback = function(el) {
 				$("#singleMenuActivator, #singleMenu").css('top',
 						$("#desktop").scrollTop());

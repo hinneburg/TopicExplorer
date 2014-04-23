@@ -19,4 +19,4 @@
 
 <!-- /ko -->
 <input type="hidden" name="docParam" data-bind="attr: {'value': $root.topicexplorer.data.documentGetParameter}"/>
-<div id="document-view" data-bind="module: {name: activeModule, data: $parent.topicexplorer, template: activeModule}"></div>
+<div id="document-view" data-bind="module: {name: activeModule, data: activeTab(), template: activeModule}"></div>

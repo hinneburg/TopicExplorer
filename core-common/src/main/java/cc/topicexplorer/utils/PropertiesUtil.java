@@ -15,6 +15,11 @@ public final class PropertiesUtil {
 	private static final Logger logger = Logger.getLogger(PropertiesUtil.class);
 	private final Properties _hostProperties;
 
+	/**
+	 * 
+	 * @param hostProperties
+	 *            must not be null.
+	 */
 	public PropertiesUtil(Properties hostProperties) {
 		_hostProperties = Preconditions.checkNotNull(hostProperties);
 	}

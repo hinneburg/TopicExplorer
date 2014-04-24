@@ -2,12 +2,13 @@ package cc.topicexplorer.utils;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
+import org.fest.util.Strings;
 
 import com.google.common.base.Preconditions;
 
@@ -54,7 +55,7 @@ public final class PropertiesUtil {
 	 *         {@resource} parameter, is found. {@code true} otherwise.
 	 */
 	public boolean loadPropertyFile(String resource, String prefix, PropertyKind propertyKind) {
-		Preconditions.checkArgument(!resource.trim().isEmpty());
+		Preconditions.checkArgument(!Strings.isEmpty(resource));
 		Preconditions.checkNotNull(propertyKind);
 
 		InputStream propertyInput = PropertiesUtil.class.getResourceAsStream("/" + resource);
@@ -68,7 +69,7 @@ public final class PropertiesUtil {
 			}
 
 			@SuppressWarnings("unchecked")
-			ArrayList<String> propertyNames = (ArrayList<String>) Collections.list(temporaryProperties.propertyNames());
+			List<String> propertyNames = (List<String>) Collections.list(temporaryProperties.propertyNames());
 
 			if (propertyKind.equals(PropertyKind.LOCAL)) {
 				for (String propertyName : propertyNames) {

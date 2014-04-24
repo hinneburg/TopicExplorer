@@ -43,6 +43,20 @@ public class Run {
 		LoggerUtil.initializeLogger();
 		run.logWelcomeMessage();
 
+		File temp = new File("temp");
+		temp.mkdir();
+
+		ChainManagement chainManager = new ChainManagement();
+		CommunicationContext context = new CommunicationContext();
+		executeInitialCommands(context);
+
+		Properties properties = (Properties) context.get("properties");
+		String plugins = properties.getProperty("plugins");
+		logger.info("Activated plugins: " + plugins);
+		makeCatalog(plugins);
+
+		chainManager.setCatalog("/catalog.xml");
+
 		CommandLineParser commandLineParser = null;
 		try {
 			commandLineParser = new CommandLineParser(args);
@@ -50,20 +64,6 @@ public class Run {
 			logger.error("Problems encountered while parsing the command line tokens.");
 			throw e;
 		}
-
-		File temp = new File("temp");
-		temp.mkdir();
-
-		ChainManagement chainManager = new ChainManagement();
-		CommunicationContext context = new CommunicationContext();
-		run.executeInitialCommands(context);
-
-		Properties properties = (Properties) context.get("properties");
-		String plugins = properties.getProperty("plugins");
-		logger.info("Activated plugins: " + plugins);
-		run.makeCatalog(plugins);
-
-		chainManager.setCatalog("/catalog.xml");
 
 		List<String> orderedCommands = chainManager.getOrderedCommands(commandLineParser.getStartCommands(),
 				commandLineParser.getEndCommands());
@@ -83,7 +83,7 @@ public class Run {
 		logger.info("#####################################");
 	}
 
-	private void executeInitialCommands(CommunicationContext context) {
+	private static void executeInitialCommands(CommunicationContext context) {
 		try {
 			DependencyCommand propertiesCommand = new PropertiesCommand();
 			propertiesCommand.execute(context);
@@ -96,8 +96,8 @@ public class Run {
 		}
 	}
 
-	private void makeCatalog(String plugins) throws ParserConfigurationException, TransformerException, IOException,
-			SAXException {
+	private static void makeCatalog(String plugins) throws ParserConfigurationException, TransformerException,
+			IOException, SAXException {
 		DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
 		domFactory.setIgnoringComments(true);
 		DocumentBuilder builder = null;
@@ -105,11 +105,10 @@ public class Run {
 		builder = domFactory.newDocumentBuilder();
 
 		// init
-		Document doc = getMergedXML(
-				builder.parse(this.getClass().getResourceAsStream(
-						"/cc/topicexplorer/core-preprocessing/catalog/preJooqConfig.xml")),
-				builder.parse(this.getClass().getResourceAsStream(
-						"/cc/topicexplorer/core-preprocessing/catalog/postJooqConfig.xml")));
+		Document doc = getMergedXML(builder.parse(Run.class
+				.getResourceAsStream("/cc/topicexplorer/core-preprocessing/catalog/preJooqConfig.xml")),
+				builder.parse(Run.class
+						.getResourceAsStream("/cc/topicexplorer/core-preprocessing/catalog/postJooqConfig.xml")));
 
 		// process plugin catalogs
 		for (String plugin : plugins.split(",")) {
@@ -118,8 +117,8 @@ public class Run {
 			try {
 				doc = getMergedXML(
 						doc,
-						builder.parse(this.getClass().getResourceAsStream(
-								"/cc/topicexplorer/plugin-" + plugin + "-preprocessing/catalog/preJooqConfig.xml")));
+						builder.parse(Run.class.getResourceAsStream("/cc/topicexplorer/plugin-" + plugin
+								+ "-preprocessing/catalog/preJooqConfig.xml")));
 			} catch (SAXException e) {
 				logger.warn(
 						"/cc/topicexplorer/plugin-" + plugin + "-preprocessing/catalog/preJooqConfig.xml not found", e);
@@ -132,8 +131,8 @@ public class Run {
 			try {
 				doc = getMergedXML(
 						doc,
-						builder.parse(this.getClass().getResourceAsStream(
-								"/cc/topicexplorer/plugin-" + plugin + "-preprocessing/catalog/postJooqConfig.xml")));
+						builder.parse(Run.class.getResourceAsStream("/cc/topicexplorer/plugin-" + plugin
+								+ "-preprocessing/catalog/postJooqConfig.xml")));
 			} catch (SAXException e) {
 				logger.warn("/cc/topicexplorer/plugin-" + plugin
 						+ "-preprocessing/catalog/postJooqConfig.xml not found", e);
@@ -159,7 +158,7 @@ public class Run {
 
 	}
 
-	private Document getMergedXML(Document xmlFile1, Document xmlFile2) {
+	private static Document getMergedXML(Document xmlFile1, Document xmlFile2) {
 		NodeList nodes = xmlFile2.getElementsByTagName("catalog").item(0).getChildNodes();
 		for (int i = 0; i < nodes.getLength(); i++) {
 			Node importNode = xmlFile1.importNode(nodes.item(i), true);

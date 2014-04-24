@@ -1,3 +1,4 @@
+# Ignore everything
 *.project
 *.classpath
 *.jar
@@ -6,3 +7,6 @@
 */target/*
 *.local.properties
 .gitignore*
+
+# But not these files
+!*/src/test/resources/*

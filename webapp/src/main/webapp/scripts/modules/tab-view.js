@@ -87,7 +87,7 @@ define(
 			
 			if(topicexplorerModel.view.activeTab == tab) {
 				if(tabIndex > topicexplorerModel.view.tabs.length - 1) {
-					tabIndex--;			
+					tabIndex = topicexplorerModel.view.tabs.length - 1;			
 				}
 				topicexplorerModel.view.activeTab = topicexplorerModel.view.tabs[tabIndex];
 				self.setActive(false);

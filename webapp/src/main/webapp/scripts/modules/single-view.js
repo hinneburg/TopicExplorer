@@ -60,17 +60,20 @@ define(
 			};
 			
 			self.initialize = function() {
-				if(typeof topicexplorerModel.data.document[topicexplorerModel.view.tab[self.activeTab()].focus] != 'undefined')
-	    		if(typeof topicexplorerModel.data.document[topicexplorerModel.view.tab[self.activeTab()].focus].singleDataLoaded == 'undefined') {
-	    			$.getJSON("JsonServlet?" + topicexplorerModel.view.tab[self.activeTab()].getParameter)
-					.success(function(receivedParsedJson) {
-						$.extend(self.topicexplorerModel.data.document[receivedParsedJson.DOCUMENT.DOCUMENT_ID], receivedParsedJson.DOCUMENT);
-						topicexplorerModel.view.tab[self.activeTab()].focus = receivedParsedJson.DOCUMENT.DOCUMENT_ID;
-						topicexplorerModel.data.document[topicexplorerModel.view.tab[self.activeTab()].focus].singleDataLoaded = 1;
-						self.markWords();
-					});
-				} else {
-					self.markWords();
+				if(typeof topicexplorerModel.view.tab[self.activeTab()] != 'undefined') {
+					if(typeof topicexplorerModel.data.document[topicexplorerModel.view.tab[self.activeTab()].focus] != 'undefined') {
+			    		if(typeof topicexplorerModel.data.document[topicexplorerModel.view.tab[self.activeTab()].focus].singleDataLoaded == 'undefined') {
+			    			$.getJSON("JsonServlet?" + topicexplorerModel.view.tab[self.activeTab()].getParameter)
+							.success(function(receivedParsedJson) {
+								$.extend(self.topicexplorerModel.data.document[receivedParsedJson.DOCUMENT.DOCUMENT_ID], receivedParsedJson.DOCUMENT);
+								topicexplorerModel.view.tab[self.activeTab()].focus = receivedParsedJson.DOCUMENT.DOCUMENT_ID;
+								topicexplorerModel.data.document[topicexplorerModel.view.tab[self.activeTab()].focus].singleDataLoaded = 1;
+								self.markWords();
+							});
+						} else {
+							self.markWords();
+						}
+					}
 				}
 	    	};
 

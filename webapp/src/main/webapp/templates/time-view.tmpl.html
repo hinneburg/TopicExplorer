@@ -4,5 +4,10 @@
 		style="display: none; position: absolute; z-index: 1; padding: 21px 0 0 1px;">
 		<div  data-bind="template: {name: 'single-menu-view', afterRender: init}"></div>
 	</div>
-		<div id="chart"></div>
+	<div style="padding-left: 30px;">
+	<!-- ko foreach: {data:$root.topicexplorer.data.topicSorting,  as: 'selectedTopic', } -->
+		<input type="checkbox" name="timeTopic" data-bind="attr: {value: selectedTopic}, disable: selectedTopic == topicId(), checked: renderedTopics"/><span data-bind="style: {color: $root.topicexplorer.data.topic[selectedTopic].COLOR_TOPIC$COLOR} ">&#9679;</span>
+	<!-- /ko -->
+	</div>
+	<div id="chart"></div>
 </div>

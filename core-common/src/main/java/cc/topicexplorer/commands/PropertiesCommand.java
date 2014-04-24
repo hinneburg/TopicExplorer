@@ -1,8 +1,7 @@
 package cc.topicexplorer.commands;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Enumeration;
+import java.util.List;
 import java.util.MissingResourceException;
 import java.util.Properties;
 
@@ -10,9 +9,26 @@ import org.apache.commons.chain.Context;
 
 import cc.commandmanager.core.CommunicationContext;
 import cc.commandmanager.core.DependencyCommand;
+import cc.topicexplorer.utils.PropertiesUtil;
+import cc.topicexplorer.utils.PropertiesUtil.PropertyKind;
+
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
 
 public class PropertiesCommand extends DependencyCommand {
-	private Properties properties;
+	@VisibleForTesting
+	static final String PROPERTIES = "properties";
+	private static final String CONFIG_GLOBAL_PROPERTIES = "config.global.properties";
+	private static final String CONFIG_LOCAL_PROPERTIES = "config.local.properties";
+	private static final String DATABASE_GLOBAL_PROPERTIES = "database.global.properties";
+	private static final String DATABASE_LOCAL_PROPERTIES = "database.local.properties";
+	private static final String NO_PREFIX = "";
+	private static final String DATABASE_PREFIX = "database.";
+	private static final String PLUGINS = "plugins";
+
+	private final Properties _properties = new Properties();
+	private final PropertiesUtil _propertiesUtil = new PropertiesUtil(_properties);
 
 	/**
 	 * @throws MissingResourceException
@@ -26,105 +42,56 @@ public class PropertiesCommand extends DependencyCommand {
 	 */
 	@Override
 	public void specialExecute(Context context) {
-
 		CommunicationContext communicationContext = (CommunicationContext) context;
 
-		InputStream propertyInput = this.getClass().getResourceAsStream("/config.global.properties");
-		if (propertyInput != null) {
-			// global init
-			this.logger.info("Loading config.global.properties");
-			this.properties = new Properties();
-			try {
-				this.properties.load(propertyInput);
-			} catch (IOException e) {
-				logger.error("An error occured when reading from the input stream /config.global.properties");
-				throw new RuntimeException(e);
-			}
+		loadGlobalAndLocalConfigProperties();
+		loadGlobalAndLocalDbProperties();
+		loadPluginProperties();
 
-			// load local init, global db properties and local db properties
-			if (!loadPropertyFile("config.local.properties", "", PropertyKind.LOCAL)) {
-				throw new IllegalStateException("Essential config.local.properties could not be loaded.");
-			}
-			if (!loadPropertyFile("database.global.properties", "database.", PropertyKind.GLOBAL)) {
-				throw new IllegalStateException("Essential database.global.properties could not be loaded.");
-			}
-			if (!loadPropertyFile("database.local.properties", "database.", PropertyKind.LOCAL)) {
-				throw new IllegalStateException("Essential database.local.properties could not be loaded.");
-			}
+		communicationContext.put(PROPERTIES, _properties);
+	}
 
-			// get enabled plugins
-			String[] plugins = this.properties.getProperty("plugins").split(",");
-
-			// check the plugin array
-			if (plugins.length > 1 || plugins[0].replaceAll("\\s", "").length() > 0) {
-
-				// load plugin property files
-				for (String plugin : plugins) {
-					String clean = plugin.replaceAll("\\s", "").toLowerCase();
-					this.properties.setProperty("plugin_" + clean, "true");
-					String globalPluginName = clean + ".global.properties";
-					String localPluginName = clean + ".local.properties";
-					String prefix = clean.substring(0, 1).toUpperCase() + clean.substring(1) + "_";
-					loadPropertyFile(globalPluginName, prefix, PropertyKind.GLOBAL);
-					loadPropertyFile(localPluginName, prefix, PropertyKind.LOCAL);
-				}
-			}
-
-			communicationContext.put("properties", this.properties);
-
-		} else {
-			this.logger.error("config.global.properties could not be transformed to a stream");
-			throw new MissingResourceException("Resource could not be transformed to a stream",
-					InputStream.class.getSimpleName(), "/config.global.properties");
+	private void loadGlobalAndLocalConfigProperties() {
+		if (!_propertiesUtil.loadPropertyFile(CONFIG_GLOBAL_PROPERTIES, NO_PREFIX, PropertyKind.GLOBAL)) {
+			throw new IllegalStateException("Essential " + CONFIG_GLOBAL_PROPERTIES + " could not be loaded.");
+		}
+		if (!_propertiesUtil.loadPropertyFile(CONFIG_LOCAL_PROPERTIES, NO_PREFIX, PropertyKind.LOCAL)) {
+			throw new IllegalStateException("Essential " + CONFIG_LOCAL_PROPERTIES + " could not be loaded.");
 		}
 	}
 
-	private enum PropertyKind {
-		LOCAL, GLOBAL
-	}
-
-	private boolean loadPropertyFile(String resource, String prefix, PropertyKind kind) {
-
-		InputStream propertyInput = this.getClass().getResourceAsStream("/" + resource);
-
-		if (propertyInput != null) {
-			this.logger.info("Loading " + resource);
-
-			Properties localProp = new Properties();
-
-			try {
-				localProp.load(propertyInput);
-			} catch (IOException e) {
-				logger.warn("An error occured when reading from the input stream /" + resource, e);
-				return false;
-			}
-
-			Enumeration<?> eLocal = localProp.propertyNames();
-
-			while (eLocal.hasMoreElements()) {
-				String key = (String) eLocal.nextElement();
-				if (kind.equals(PropertyKind.LOCAL) && !hasAttr(prefix + key)) {
-					this.logger.warn("Global equivalent for " + prefix + key + " not found in "
-							+ resource.replace("local", "global"));
-				}
-				this.properties.setProperty(prefix + key, localProp.getProperty(key));
-			}
-
-		} else {
-			this.logger.warn(resource + " not found");
-			return false;
+	private void loadGlobalAndLocalDbProperties() {
+		if (!_propertiesUtil.loadPropertyFile(DATABASE_GLOBAL_PROPERTIES, DATABASE_PREFIX, PropertyKind.GLOBAL)) {
+			throw new IllegalStateException("Essential " + DATABASE_GLOBAL_PROPERTIES + " could not be loaded.");
 		}
-
-		return true;
+		if (!_propertiesUtil.loadPropertyFile(DATABASE_LOCAL_PROPERTIES, DATABASE_PREFIX, PropertyKind.LOCAL)) {
+			throw new IllegalStateException("Essential " + DATABASE_LOCAL_PROPERTIES + " could not be loaded.");
+		}
 	}
 
-	private boolean hasAttr(String attribute) {
-		Enumeration<?> eAll = this.properties.propertyNames();
-		while (eAll.hasMoreElements()) {
-			if (attribute.equals(eAll.nextElement())) {
-				return true;
+	private void loadPluginProperties() {
+		List<String> enabledPlugins = getEnabledPlugins();
+		if (enabledPlugins.size() > 1 || !Strings.isNullOrEmpty(enabledPlugins.get(0))) {
+			for (String plugin : enabledPlugins) {
+				plugin = removeWhiteSpacesAndlowerCase(plugin);
+				_properties.setProperty("plugin_" + plugin, "true");
+
+				String globalPluginName = plugin + ".global.properties";
+				String localPluginName = plugin + ".local.properties";
+				String prefix = plugin.substring(0, 1).toUpperCase() + plugin.substring(1) + "_";
+
+				_propertiesUtil.loadPropertyFile(globalPluginName, prefix, PropertyKind.GLOBAL);
+				_propertiesUtil.loadPropertyFile(localPluginName, prefix, PropertyKind.LOCAL);
 			}
 		}
-		return false;
 	}
+
+	private List<String> getEnabledPlugins() {
+		return Lists.newArrayList(_properties.getProperty(PLUGINS).split(","));
+	}
+
+	private static String removeWhiteSpacesAndlowerCase(String plugin) {
+		return plugin.replaceAll("\\s", "").toLowerCase();
+	}
+
 }

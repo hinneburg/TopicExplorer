@@ -18,7 +18,7 @@ import com.google.common.collect.Lists;
 
 public class PropertiesCommand extends DependencyCommand {
 	@VisibleForTesting
-	static final String PROPERTIES = "properties";
+	static final String PROPERTIES_CONTEXT_KEY = "properties";
 	private static final String CONFIG_GLOBAL_PROPERTIES = "config.global.properties";
 	private static final String CONFIG_LOCAL_PROPERTIES = "config.local.properties";
 	private static final String DATABASE_GLOBAL_PROPERTIES = "database.global.properties";

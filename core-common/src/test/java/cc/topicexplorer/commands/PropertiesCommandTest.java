@@ -36,7 +36,7 @@ public class PropertiesCommandTest {
 		CommunicationContext communicationContext = new CommunicationContext();
 		objectUnderTest.execute(communicationContext);
 
-		Properties actualProperties = (Properties) communicationContext.get(PropertiesCommand.PROPERTIES);
+		Properties actualProperties = (Properties) communicationContext.get(PropertiesCommand.PROPERTIES_CONTEXT_KEY);
 		assertThat(actualProperties).isEqualTo(targetProperties);
 	}
 }

@@ -61,6 +61,9 @@ public class GetDates {
 			tupel.add(dateQueryRS.getInt("WORD_COUNT"));
 			dates.add(tupel);
 		}
+		date = new JSONObject();
+		date.put("TIME$WORDS_PER_WEEK", dates);
+		all.put(topicId, date);
 		this.outWriter.print(all.toString());
 	}
 }

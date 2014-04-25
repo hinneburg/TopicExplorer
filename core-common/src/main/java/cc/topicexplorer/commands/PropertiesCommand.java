@@ -25,10 +25,9 @@ public class PropertiesCommand extends DependencyCommand {
 	private static final String DATABASE_LOCAL_PROPERTIES = "database.local.properties";
 	private static final String NO_PREFIX = "";
 	private static final String DATABASE_PREFIX = "database.";
-	private static final String PLUGINS = "plugins";
+	private static final String PLUGINS_CONTEXT_KEY = "plugins";
 
-	private final Properties _properties = new Properties();
-	private final PropertiesUtil _propertiesUtil = new PropertiesUtil(_properties);
+	private Properties _properties;
 
 	/**
 	 * @throws MissingResourceException
@@ -48,25 +47,22 @@ public class PropertiesCommand extends DependencyCommand {
 		loadGlobalAndLocalDbProperties();
 		loadPluginProperties();
 
-		communicationContext.put(PROPERTIES, _properties);
+		communicationContext.put(PROPERTIES_CONTEXT_KEY, _properties);
 	}
 
 	private void loadGlobalAndLocalConfigProperties() {
-		if (!_propertiesUtil.loadPropertyFile(CONFIG_GLOBAL_PROPERTIES, NO_PREFIX, PropertyKind.GLOBAL)) {
-			throw new IllegalStateException("Essential " + CONFIG_GLOBAL_PROPERTIES + " could not be loaded.");
-		}
-		if (!_propertiesUtil.loadPropertyFile(CONFIG_LOCAL_PROPERTIES, NO_PREFIX, PropertyKind.LOCAL)) {
-			throw new IllegalStateException("Essential " + CONFIG_LOCAL_PROPERTIES + " could not be loaded.");
-		}
+		_properties = PropertiesUtil.loadMandatoryProperties(CONFIG_GLOBAL_PROPERTIES, NO_PREFIX, PropertyKind.GLOBAL);
+		_properties = PropertiesUtil.updateMandatoryProperties(_properties, CONFIG_GLOBAL_PROPERTIES, NO_PREFIX,
+				PropertyKind.GLOBAL);
+		_properties = PropertiesUtil.updateMandatoryProperties(_properties, CONFIG_LOCAL_PROPERTIES, NO_PREFIX,
+				PropertyKind.LOCAL);
 	}
 
 	private void loadGlobalAndLocalDbProperties() {
-		if (!_propertiesUtil.loadPropertyFile(DATABASE_GLOBAL_PROPERTIES, DATABASE_PREFIX, PropertyKind.GLOBAL)) {
-			throw new IllegalStateException("Essential " + DATABASE_GLOBAL_PROPERTIES + " could not be loaded.");
-		}
-		if (!_propertiesUtil.loadPropertyFile(DATABASE_LOCAL_PROPERTIES, DATABASE_PREFIX, PropertyKind.LOCAL)) {
-			throw new IllegalStateException("Essential " + DATABASE_LOCAL_PROPERTIES + " could not be loaded.");
-		}
+		_properties = PropertiesUtil.updateMandatoryProperties(_properties, DATABASE_GLOBAL_PROPERTIES,
+				DATABASE_PREFIX, PropertyKind.GLOBAL);
+		_properties = PropertiesUtil.updateMandatoryProperties(_properties, DATABASE_LOCAL_PROPERTIES, DATABASE_PREFIX,
+				PropertyKind.LOCAL);
 	}
 
 	private void loadPluginProperties() {
@@ -80,14 +76,16 @@ public class PropertiesCommand extends DependencyCommand {
 				String localPluginName = plugin + ".local.properties";
 				String prefix = plugin.substring(0, 1).toUpperCase() + plugin.substring(1) + "_";
 
-				_propertiesUtil.loadPropertyFile(globalPluginName, prefix, PropertyKind.GLOBAL);
-				_propertiesUtil.loadPropertyFile(localPluginName, prefix, PropertyKind.LOCAL);
+				_properties = PropertiesUtil.updateOptionalProperties(_properties, globalPluginName, prefix,
+						PropertyKind.GLOBAL);
+				_properties = PropertiesUtil.updateOptionalProperties(_properties, localPluginName, prefix,
+						PropertyKind.LOCAL);
 			}
 		}
 	}
 
 	private List<String> getEnabledPlugins() {
-		return Lists.newArrayList(_properties.getProperty(PLUGINS).split(","));
+		return Lists.newArrayList(_properties.getProperty(PLUGINS_CONTEXT_KEY).split(","));
 	}
 
 	private static String removeWhiteSpacesAndlowerCase(String plugin) {

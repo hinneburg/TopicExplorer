@@ -32,10 +32,11 @@ public class LoggerUtil {
 	}
 
 	private static Properties loadProperties(String globalProperties, String localProperties) {
-		PropertiesUtil propertiesUtil = new PropertiesUtil(new Properties());
-		propertiesUtil.loadPropertyFile(globalProperties, NO_PREFIX, PropertyKind.GLOBAL);
-		propertiesUtil.loadPropertyFile(localProperties, NO_PREFIX, PropertyKind.LOCAL);
-		return propertiesUtil.getHostProperties();
+		Properties properties = PropertiesUtil
+				.loadMandatoryProperties(globalProperties, NO_PREFIX, PropertyKind.GLOBAL);
+		properties = PropertiesUtil.updateMandatoryProperties(properties, localProperties, NO_PREFIX,
+				PropertyKind.LOCAL);
+		return properties;
 	}
 
 }

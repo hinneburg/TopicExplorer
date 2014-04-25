@@ -7,9 +7,8 @@ import java.util.Enumeration;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
-import org.fest.util.Strings;
-
 import com.google.common.base.Preconditions;
+import com.google.common.base.Strings;
 
 public final class PropertiesUtil {
 	private static final Logger logger = Logger.getLogger(PropertiesUtil.class);
@@ -101,7 +100,7 @@ public final class PropertiesUtil {
 	private static Properties updateProperties(Properties properties, String resource, String prefix,
 			PropertyKind propertyKind, boolean mandatory) {
 		Preconditions.checkNotNull(properties);
-		Preconditions.checkArgument(!Strings.isEmpty(resource));
+		Preconditions.checkArgument(!Strings.isNullOrEmpty(resource));
 		Preconditions.checkNotNull(propertyKind);
 		prefix = (prefix == null ? "" : prefix);
 

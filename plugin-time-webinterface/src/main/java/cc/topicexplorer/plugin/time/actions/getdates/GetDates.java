@@ -17,6 +17,7 @@ public class GetDates {
 	public GetDates(Database db, PrintWriter out) {
 		getDatesMap = new SelectMap();
 		getDatesMap.select.add("TOPIC_ID");
+		getDatesMap.select.add("BEST_WORDS");
 		getDatesMap.select.add("WORD_COUNT");
 		getDatesMap.select.add("UNIX_TIMESTAMP(date_add(date_add(date_add(concat(substring(WEEK,1,4),'-01-01'), interval (8 - dayofweek(concat(substring(WEEK,1,4),'-01-01'))) % 7 DAY), interval substring(WEEK, 5) - 1 week), interval 1 day)) AS WEEK");
 		getDatesMap.from.add("TIME$WORDS_PER_TOPIC_PER_WEEK");
@@ -42,7 +43,7 @@ public class GetDates {
 		JSONObject all = new JSONObject();
 		JSONObject date = new JSONObject();
 		JSONArray dates = new JSONArray();
-		JSONArray tupel;
+		JSONObject weekData, tstamp;
 		ResultSet dateQueryRS = database.executeQuery(getDatesMap.getSQLString());
 		
 		int topicId = -1; 
@@ -56,10 +57,13 @@ public class GetDates {
 				} 
 				topicId = dateQueryRS.getInt("TOPIC_ID");
 			} 
-			tupel = new JSONArray();
-			tupel.add(dateQueryRS.getLong("WEEK") * 1000L);
-			tupel.add(dateQueryRS.getInt("WORD_COUNT"));
-			dates.add(tupel);
+			
+			weekData = new JSONObject();
+			tstamp = new JSONObject();
+			weekData.put("WORD_COUNT", dateQueryRS.getInt("WORD_COUNT"));
+			weekData.put("BEST_WORDS", dateQueryRS.getString("BEST_WORDS"));
+			tstamp.put(dateQueryRS.getLong("WEEK") * 1000L, weekData);
+			dates.add(tstamp);
 		}
 		date = new JSONObject();
 		date.put("TIME$WORDS_PER_WEEK", dates);

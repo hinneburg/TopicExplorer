@@ -59,6 +59,28 @@ define(
 		   	    chart: {
 		    	   renderTo: 'chart',
 		    	   height: self.timeDesktopHeight()
+		    	},
+		    	tooltip: {
+		            formatter: function() {
+		            	var timeIndex = -1;
+		            	
+		            	for(key1 in topicexplorerModel.data.topic[0].TIME$WORDS_PER_WEEK) {
+		            		if(topicexplorerModel.data.topic[0].TIME$WORDS_PER_WEEK[key1].hasOwnProperty(this.x)) {
+		            			timeIndex = key1;
+		            			break;
+		            		}
+		            	}
+		            	var html ="";
+		            	
+		            	for(key2 in topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].renderedTopics) {
+		            		var topic_id = topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].renderedTopics[key2];
+		            		html += '<span style="color: ' + topicexplorerModel.data.topic[topic_id].COLOR_TOPIC$COLOR 
+		            			+ '">' + topicexplorerModel.data.topic[topic_id].TIME$WORDS_PER_WEEK[timeIndex][this.x].BEST_WORDS 
+		            			+ '</span>: ' + topicexplorerModel.data.topic[topic_id].TIME$WORDS_PER_WEEK[timeIndex][this.x].WORD_COUNT
+		            			+ '<br/>';
+		            	}
+		            	return html;
+		            }
 		    	}
 		    });
     		for(var i = 0; i < topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].renderedTopics.length; i++ ) {
@@ -69,7 +91,16 @@ define(
     	self.addChart = function(topicId) {
     		self.chart.addSeries({
     			id: 'topicChart' + topicId,
-    			data: topicexplorerModel.data.topic[topicId].TIME$WORDS_PER_WEEK,
+    			name: 'topicChart' + topicId,
+    			data: (function() {
+    				var data = new Array();
+    				for(key in topicexplorerModel.data.topic[topicId].TIME$WORDS_PER_WEEK) {
+    					for(key2 in topicexplorerModel.data.topic[topicId].TIME$WORDS_PER_WEEK[key]) {
+    						data.push(new Array(parseInt(key2), topicexplorerModel.data.topic[topicId].TIME$WORDS_PER_WEEK[key][key2].WORD_COUNT));
+    					}
+    				}
+    				return data;
+    			})(),
 		    	color: topicexplorerModel.data.topic[topicId].COLOR_TOPIC$COLOR
     		});
     	};

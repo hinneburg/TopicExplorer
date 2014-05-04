@@ -118,7 +118,8 @@ and extract it to some path.
 Create a new server Apache TomCat 6. and reference the chosen path
 File -> New -> Others -> Server
 ####Import Projects into Eclipse: 
-Import -> Maven -> Existing Maven Project -> browse : Navigate to TopicExplorer Folder
+Import -> Maven -> Existing Maven Project -> browse : Navigate to TopicExplorer Folder. 
+Further, disable workspace resolution in Eclipse maven plugin: right click project, Maven -> Disable Workspace Resolution. This is important to prevent Eclipse from acidentally using artefacts from projects that are open in your workspace instead of the artefacts specified in dependencies in the `pom.xml`.
 ####Specify server settings
 Create file `~/.m2/settings.xml`.
 

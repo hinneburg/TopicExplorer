@@ -19,12 +19,10 @@ public class LoggerUtil {
 	}
 
 	/**
-	 * Initializes a system wide log4j instance. Will look for
-	 * log4j.global.properties in the core-common's classpath. Global properties
-	 * then will be overwritten with log4j.local.properties located in
+	 * Initializes a system wide log4j instance. Will look for log4j.global.properties in the core-common's classpath.
+	 * Global properties then will be overwritten with log4j.local.properties located in
 	 * core-common/local/main/resources if they exist. See Apache manual
-	 * (https://logging.apache.org/log4j/1.2/manual.html) for information on how
-	 * to structure a log4j property file.
+	 * (https://logging.apache.org/log4j/1.2/manual.html) for information on how to structure a log4j property file.
 	 */
 	public static void initializeLogger() {
 		PropertyConfigurator.configure(loadProperties(GLOBAL_PROPERTIES_FILENAME, LOCAL_PROPERTIES_FILENAME));
@@ -34,8 +32,8 @@ public class LoggerUtil {
 	private static Properties loadProperties(String globalProperties, String localProperties) {
 		Properties properties = PropertiesUtil
 				.loadMandatoryProperties(globalProperties, NO_PREFIX, PropertyKind.GLOBAL);
-		properties = PropertiesUtil.updateMandatoryProperties(properties, localProperties, NO_PREFIX,
-				PropertyKind.LOCAL);
+		properties = PropertiesUtil
+				.updateOptionalProperties(properties, localProperties, NO_PREFIX, PropertyKind.LOCAL);
 		return properties;
 	}
 

@@ -17,15 +17,16 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 
 public class PropertiesCommand extends DependencyCommand {
+
 	@VisibleForTesting
-	static final String PROPERTIES_CONTEXT_KEY = "properties";
+	static final String PROPERTIES_KEY = "properties";
+	private static final String PLUGINS_KEY = "plugins";
 	private static final String CONFIG_GLOBAL_PROPERTIES = "config.global.properties";
 	private static final String CONFIG_LOCAL_PROPERTIES = "config.local.properties";
 	private static final String DATABASE_GLOBAL_PROPERTIES = "database.global.properties";
 	private static final String DATABASE_LOCAL_PROPERTIES = "database.local.properties";
 	private static final String NO_PREFIX = "";
 	private static final String DATABASE_PREFIX = "database.";
-	private static final String PLUGINS_CONTEXT_KEY = "plugins";
 
 	private Properties _properties;
 
@@ -35,9 +36,8 @@ public class PropertiesCommand extends DependencyCommand {
 	 * @throws IOException
 	 *             if an error occured when reading from the input stream
 	 * @throws IllegalStateException
-	 *             if one of the essential properties could not be loaded as
-	 *             they are config.local.properties, database.global.properties,
-	 *             database.local.properties
+	 *             if one of the essential properties could not be loaded as they are config.local.properties,
+	 *             database.global.properties, database.local.properties
 	 */
 	@Override
 	public void specialExecute(Context context) {
@@ -47,7 +47,7 @@ public class PropertiesCommand extends DependencyCommand {
 		loadGlobalAndLocalDbProperties();
 		loadPluginProperties();
 
-		communicationContext.put(PROPERTIES_CONTEXT_KEY, _properties);
+		communicationContext.put(PROPERTIES_KEY, _properties);
 	}
 
 	private void loadGlobalAndLocalConfigProperties() {
@@ -85,7 +85,7 @@ public class PropertiesCommand extends DependencyCommand {
 	}
 
 	private List<String> getEnabledPlugins() {
-		return Lists.newArrayList(_properties.getProperty(PLUGINS_CONTEXT_KEY).split(","));
+		return Lists.newArrayList(_properties.getProperty(PLUGINS_KEY).split(","));
 	}
 
 	private static String removeWhiteSpacesAndlowerCase(String plugin) {

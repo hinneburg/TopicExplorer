@@ -25,15 +25,15 @@ public class LoggerUtil {
 	 * (https://logging.apache.org/log4j/1.2/manual.html) for information on how to structure a log4j property file.
 	 */
 	public static void initializeLogger() {
-		PropertyConfigurator.configure(loadProperties(GLOBAL_PROPERTIES_FILENAME, LOCAL_PROPERTIES_FILENAME));
+		PropertyConfigurator.configure(loadLoggerProperties());
 		logger.info("Logger successfully initialized");
 	}
 
-	private static Properties loadProperties(String globalProperties, String localProperties) {
-		Properties properties = PropertiesUtil
-				.loadMandatoryProperties(globalProperties, NO_PREFIX, PropertyKind.GLOBAL);
-		properties = PropertiesUtil
-				.updateOptionalProperties(properties, localProperties, NO_PREFIX, PropertyKind.LOCAL);
+	private static Properties loadLoggerProperties() {
+		Properties properties = PropertiesUtil.loadMandatoryProperties(GLOBAL_PROPERTIES_FILENAME, NO_PREFIX,
+				PropertyKind.GLOBAL);
+		properties = PropertiesUtil.updateOptionalProperties(properties, LOCAL_PROPERTIES_FILENAME, NO_PREFIX,
+				PropertyKind.LOCAL);
 		return properties;
 	}
 

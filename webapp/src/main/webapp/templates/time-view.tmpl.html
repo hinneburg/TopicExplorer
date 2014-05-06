@@ -8,6 +8,9 @@
 	<!-- ko foreach: {data:$root.topicexplorer.data.topicSorting,  as: 'selectedTopic', } -->
 		<input type="checkbox" name="timeTopic" data-bind="attr: {value: selectedTopic}, disable: selectedTopic == topicId(), checked: renderedTopics"/><span data-bind="style: {color: $root.topicexplorer.data.topic[selectedTopic].COLOR_TOPIC$COLOR} ">&#9679;</span>
 	<!-- /ko -->
+	
+	<input type="checkbox" name="timeTopic" data-bind="checked: renderedTopics" value="average"/><span style:="color: #000000">&#9679;</span>
+	
 	</div>
 	<div id="chart"></div>
 </div>

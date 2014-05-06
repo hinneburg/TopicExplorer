@@ -110,9 +110,29 @@ define(
     			topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].renderedTopics = new Array("" + self.topicId());
 	    		self.renderedTopics(topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].renderedTopics);
 				$.getJSON("JsonServlet?Command=getDates").success(function(receivedParsedJson) {
+					var avg = new Object();
+					
 					for (key in receivedParsedJson) {
 					    $.extend(self.topicexplorerModel.data.topic[key], receivedParsedJson[key]);
+					    $.each(receivedParsedJson[key].TIME$WORDS_PER_WEEK, function(index, value) {
+					    	$.each(value, function(weekStamp, data) {
+					    		if(avg[weekStamp] == null) avg[weekStamp] = 0;
+					    		avg[weekStamp] += data.WORD_COUNT;
+
+					    	});
+					    });
 					}
+					var topicCount = Object.keys(topicexplorerModel.data.topic).length;
+					
+					topicexplorerModel.data.topic.average = new Object();
+					topicexplorerModel.data.topic.average.COLOR_TOPIC$COLOR = "#000000";
+					topicexplorerModel.data.topic.average.TIME$WORDS_PER_WEEK = new Object();
+					var counter = 0;
+					$.each(avg , function(weekStamp, value) {
+						topicexplorerModel.data.topic.average.TIME$WORDS_PER_WEEK[counter] = new Object();
+						topicexplorerModel.data.topic.average.TIME$WORDS_PER_WEEK[counter][weekStamp] = {'WORD_COUNT':value / topicCount, 'BEST_WORDS': 'Average'};
+						counter ++;
+					});
 					topicexplorerModel.data.timeDataLoaded = 1;
 					self.makeChart();
 				});

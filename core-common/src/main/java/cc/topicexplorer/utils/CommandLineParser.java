@@ -12,6 +12,7 @@ import org.apache.commons.cli.Options;
 import org.apache.log4j.Logger;
 
 public class CommandLineParser {
+
 	private final Options options;
 
 	private final org.apache.commons.cli.CommandLineParser commandLineParser;
@@ -28,13 +29,11 @@ public class CommandLineParser {
 	private static final Logger logger = Logger.getLogger(CommandLineParser.class);
 
 	/**
-	 * Adds the possible arguments. Sets global args and executes the parsing of
-	 * the given arguments.
+	 * Adds the possible arguments. Sets global args and executes the parsing of the given arguments.
 	 * 
 	 * @param args
 	 * @throws ParseException
-	 *             if there are any problems encountered while parsing the
-	 *             command line tokens.
+	 *             if there are any problems encountered while parsing the command line tokens.
 	 */
 	public CommandLineParser(String[] args) {
 		options = new Options();
@@ -57,13 +56,11 @@ public class CommandLineParser {
 	}
 
 	/**
-	 * Checks if any of the mentioned options is contained in the arguments and
-	 * then sets it in the class. If the usage of arguments is wrong help is
-	 * printed.
+	 * Checks if any of the mentioned options is contained in the arguments and then sets it in the class. If the usage
+	 * of arguments is wrong help is printed.
 	 * 
 	 * @throws ParseException
-	 *             if there are any problems encountered while parsing the
-	 *             command line tokens.
+	 *             if there are any problems encountered while parsing the command line tokens.
 	 */
 	private void parseArguments() {
 		// if there is something wrong with the input, print help

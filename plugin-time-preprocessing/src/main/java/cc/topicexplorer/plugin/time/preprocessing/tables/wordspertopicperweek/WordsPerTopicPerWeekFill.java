@@ -214,10 +214,15 @@ public class WordsPerTopicPerWeekFill extends TableFillCommand {
 	}
 
 	private void deleteTempTables () {
-		database.executeUpdateQuery("DROP TABLE TIME$WEEK");
-		database.executeUpdateQuery("DROP TABLE TIME$TERM_WEEK");
-		database.executeUpdateQuery("DROP TABLE TIME$TOPIC_WEEK");
-		database.executeUpdateQuery("DROP TABLE TIME$TERM_TOPIC_WEEK");
+		try {
+			database.executeUpdateQuery("DROP TABLE TIME$WEEK");
+			database.executeUpdateQuery("DROP TABLE TIME$TERM_WEEK");
+			database.executeUpdateQuery("DROP TABLE TIME$TOPIC_WEEK");
+			database.executeUpdateQuery("DROP TABLE TIME$TERM_TOPIC_WEEK");
+		} catch (SQLException e) {
+			logger.error("Error deleting temporary tables.");
+			throw new RuntimeException(e);
+		}
 	}
 	
 	@Override

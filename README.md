@@ -50,7 +50,7 @@ load data local infile '<Path to File>grimms_maerchen_without_duplicates.csv'
 ####Create as developer the following two paths
 `<path to your git copy>TopicExplorer/core-common/local/main/resources/` and 
 `<path to your git copy>TopicExplorer/webapp/local/main/resources/`
-and put into both the following three files with their respective contents.
+and put into both the following two files with their respective contents.
 
 Create file `config.local.properties`
 ```
@@ -73,25 +73,6 @@ DbLocation=localhost:3306
 DbUser=<user>
 DbPassword=<password>
 DB=<Maerchen Datenbank>
-```
-and file `log4j.local.properties`
-```
-# Root logger option
-log4j.rootLogger=info, file, stdout
- 
-# Direct log messages to a log file
-log4j.appender.file=org.apache.log4j.RollingFileAppender
-log4j.appender.file.File=logs/<my particular log file>
-log4j.appender.file.MaxFileSize=128MB
-log4j.appender.file.MaxBackupIndex=3
-log4j.appender.file.layout=org.apache.log4j.PatternLayout
-log4j.appender.file.layout.ConversionPattern=%d{yyyy-MM-dd HH:mm:ss} %-5p %c: %m %n
- 
-# Direct log messages to stdout
-log4j.appender.stdout=org.apache.log4j.ConsoleAppender
-log4j.appender.stdout.Target=System.out
-log4j.appender.stdout.layout=org.apache.log4j.PatternLayout
-log4j.appender.stdout.layout.ConversionPattern=%d{yyyy-MM-dd HH:mm:ss} %-5p %c: %m%n
 ```
 ####Install R
 See http://www.r-project.org . For Ubuntu see http://wiki.ubuntuusers.de/R .

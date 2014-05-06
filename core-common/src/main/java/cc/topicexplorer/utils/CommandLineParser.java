@@ -70,7 +70,7 @@ public class CommandLineParser {
 		try {
 			commandLine = commandLineParser.parse(options, args);
 		} catch (org.apache.commons.cli.ParseException parseEx) {
-			this.logger.error("Wrong usage of arguments.");
+			logger.error("Wrong usage of arguments.");
 			printHelp();
 			throw new RuntimeException(parseEx);
 		}
@@ -86,7 +86,7 @@ public class CommandLineParser {
 		if (commandLine.hasOption("c")) {
 			catalogLocation = commandLine.getOptionValue("c");
 		} else {
-			this.logger.info("No catalog location given, taking standard value.");
+			logger.info("No catalog location given, taking standard value.");
 		}
 
 		if (commandLine.hasOption("s")) {

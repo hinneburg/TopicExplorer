@@ -206,12 +206,6 @@ public class WordsPerTopicPerWeekFill extends TableFillCommand {
 			for(String updateQuery: updateQueries) {
 				database.executeUpdateQuery(updateQuery);
 			}
-				
-			database.executeUpdateQuery("DROP TABLE TIME$WEEK");
-			database.executeUpdateQuery("DROP TABLE TIME$TERM_WEEK");
-			database.executeUpdateQuery("DROP TABLE TIME$TOPIC_WEEK");
-			database.executeUpdateQuery("DROP TABLE TIME$TERM_TOPIC_WEEK");
-			
 		} catch (SQLException e) {
 			logger.error("Table " + this.tableName
 						+ " could not be updated properly.");
@@ -219,6 +213,13 @@ public class WordsPerTopicPerWeekFill extends TableFillCommand {
 		}
 	}
 
+	private void deleteTempTables () {
+		database.executeUpdateQuery("DROP TABLE TIME$WEEK");
+		database.executeUpdateQuery("DROP TABLE TIME$TERM_WEEK");
+		database.executeUpdateQuery("DROP TABLE TIME$TOPIC_WEEK");
+		database.executeUpdateQuery("DROP TABLE TIME$TERM_TOPIC_WEEK");
+	}
+	
 	@Override
 	public void fillTable() {
 		if (Boolean.parseBoolean(this.properties.getProperty("plugin_time"))) {
@@ -261,6 +262,7 @@ public class WordsPerTopicPerWeekFill extends TableFillCommand {
 						+ "DOCUMENT_TERM_TOPIC.TOPIC_ID" + ";");
 				
 				updateBestWords();
+				deleteTempTables();	
 				// @formatter:on
 			} catch (SQLException e) {
 				logger.error("Table " + this.tableName

@@ -63,13 +63,15 @@ define(
 		    	tooltip: {
 		            formatter: function() {
 		            	var html ="";
-		            	
-		            	for(key in topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].renderedTopics) {
-		            		var topic_id = topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].renderedTopics[key];
-		            		html += '<span style="color: ' + topicexplorerModel.data.topic[topic_id].COLOR_TOPIC$COLOR 
-		            			+ '">' + topicexplorerModel.data.topic[topic_id].TIME$WORDS_PER_WEEK[this.x].LABEL 
-		            			+ '</span>: ' + topicexplorerModel.data.topic[topic_id].TIME$WORDS_PER_WEEK[this.x].WORD_COUNT
-		            			+ '<br/>';
+		            	var allTopics = $.extend({}, ["average"], topicexplorerModel.data.topicSorting);
+		     
+		            	for(topic_id in allTopics) {
+		            		if(topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].renderedTopics.indexOf(allTopics[topic_id].toString()) != -1) {
+			            		html += '<span style="color: ' + topicexplorerModel.data.topic[allTopics[topic_id]].COLOR_TOPIC$COLOR 
+			            			+ '">' + topicexplorerModel.data.topic[allTopics[topic_id]].TIME$WORDS_PER_WEEK[this.x].LABEL 
+			            			+ '</span>: ' + topicexplorerModel.data.topic[allTopics[topic_id]].TIME$WORDS_PER_WEEK[this.x].WORD_COUNT
+			            			+ '<br/>';
+		            		}
 		            	}
 		            	return html;
 		            }

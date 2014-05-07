@@ -47,7 +47,7 @@ require([ "knockout","jquery", "scripts/modules/topicexplorer-view-model",
 		$(this).attr("r", "7");
 	}).delegate(".documentList circle", "mouseout", function(){
 		$(this).attr("r", "5");
-	}).delegate(".ui-menu-item circle", "mouseover", function(){
+	}).delegate(".ui-menu-item circle, .topicCheckbox", "mouseover", function(){
 		var self = this;
 		if (!timeoutId) {
 	        timeoutId = window.setTimeout(function() {
@@ -56,7 +56,7 @@ require([ "knockout","jquery", "scripts/modules/topicexplorer-view-model",
 		    }, 1500);
 		}
 		$(self).attr("r", "7");
-	}).delegate(".ui-menu-item circle", "mouseout", function(){
+	}).delegate(".ui-menu-item circle, .topicCheckbox", "mouseout", function(){
 		if (timeoutId) {
 		    window.clearTimeout(timeoutId);
 		    timeoutId = null;

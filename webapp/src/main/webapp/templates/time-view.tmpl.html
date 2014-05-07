@@ -6,10 +6,13 @@
 	</div>
 	<div style="padding-left: 30px;">
 	<!-- ko foreach: {data:$root.topicexplorer.data.topicSorting,  as: 'selectedTopic', } -->
+		
+	<label data-bind="attr:{ title: $root.topicexplorer.data.topic[selectedTopic].TEXT$TOPIC_LABEL}">
 		<input type="checkbox" name="timeTopic" data-bind="attr: {value: selectedTopic}, disable: selectedTopic == topicId(), checked: renderedTopics"/><span data-bind="style: {color: $root.topicexplorer.data.topic[selectedTopic].COLOR_TOPIC$COLOR} ">&#9679;</span>
+	</label>	
 	<!-- /ko -->
 	
-	<input type="checkbox" name="timeTopic" data-bind="checked: renderedTopics" value="average"/><span style:="color: #000000">&#9679;</span>
+	<label title="Average"><input type="checkbox" name="timeTopic" data-bind="checked: renderedTopics" value="average"/><span style="color: #000000">&#9679;</span></label>
 	
 	</div>
 	<div id="chart"></div>

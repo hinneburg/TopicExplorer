@@ -62,21 +62,13 @@ define(
 		    	},
 		    	tooltip: {
 		            formatter: function() {
-		            	var timeIndex = -1;
-		            	
-		            	for(key1 in topicexplorerModel.data.topic[0].TIME$WORDS_PER_WEEK) {
-		            		if(topicexplorerModel.data.topic[0].TIME$WORDS_PER_WEEK[key1].hasOwnProperty(this.x)) {
-		            			timeIndex = key1;
-		            			break;
-		            		}
-		            	}
 		            	var html ="";
 		            	
-		            	for(key2 in topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].renderedTopics) {
-		            		var topic_id = topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].renderedTopics[key2];
+		            	for(key in topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].renderedTopics) {
+		            		var topic_id = topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].renderedTopics[key];
 		            		html += '<span style="color: ' + topicexplorerModel.data.topic[topic_id].COLOR_TOPIC$COLOR 
-		            			+ '">' + topicexplorerModel.data.topic[topic_id].TIME$WORDS_PER_WEEK[timeIndex][this.x].BEST_WORDS 
-		            			+ '</span>: ' + topicexplorerModel.data.topic[topic_id].TIME$WORDS_PER_WEEK[timeIndex][this.x].WORD_COUNT
+		            			+ '">' + topicexplorerModel.data.topic[topic_id].TIME$WORDS_PER_WEEK[this.x].LABEL 
+		            			+ '</span>: ' + topicexplorerModel.data.topic[topic_id].TIME$WORDS_PER_WEEK[this.x].WORD_COUNT
 		            			+ '<br/>';
 		            	}
 		            	return html;
@@ -95,9 +87,7 @@ define(
     			data: (function() {
     				var data = new Array();
     				for(key in topicexplorerModel.data.topic[topicId].TIME$WORDS_PER_WEEK) {
-    					for(key2 in topicexplorerModel.data.topic[topicId].TIME$WORDS_PER_WEEK[key]) {
-    						data.push(new Array(parseInt(key2), topicexplorerModel.data.topic[topicId].TIME$WORDS_PER_WEEK[key][key2].WORD_COUNT));
-    					}
+    					data.push(new Array(parseInt(key), topicexplorerModel.data.topic[topicId].TIME$WORDS_PER_WEEK[key].WORD_COUNT));
     				}
     				return data;
     			})(),
@@ -113,13 +103,11 @@ define(
 					var avg = new Object();
 					
 					for (key in receivedParsedJson) {
-					    $.extend(self.topicexplorerModel.data.topic[key], receivedParsedJson[key]);
+						$.extend(self.topicexplorerModel.data.topic[key], receivedParsedJson[key]);
 					    $.each(receivedParsedJson[key].TIME$WORDS_PER_WEEK, function(index, value) {
-					    	$.each(value, function(weekStamp, data) {
-					    		if(avg[weekStamp] == null) avg[weekStamp] = 0;
-					    		avg[weekStamp] += data.WORD_COUNT;
+				    		if(avg[index] == null) avg[index] = 0;
+				    		avg[index] += value.WORD_COUNT;
 
-					    	});
 					    });
 					}
 					var topicCount = Object.keys(topicexplorerModel.data.topic).length;
@@ -127,11 +115,8 @@ define(
 					topicexplorerModel.data.topic.average = new Object();
 					topicexplorerModel.data.topic.average.COLOR_TOPIC$COLOR = "#000000";
 					topicexplorerModel.data.topic.average.TIME$WORDS_PER_WEEK = new Object();
-					var counter = 0;
 					$.each(avg , function(weekStamp, value) {
-						topicexplorerModel.data.topic.average.TIME$WORDS_PER_WEEK[counter] = new Object();
-						topicexplorerModel.data.topic.average.TIME$WORDS_PER_WEEK[counter][weekStamp] = {'WORD_COUNT':value / topicCount, 'BEST_WORDS': 'Average'};
-						counter ++;
+						topicexplorerModel.data.topic.average.TIME$WORDS_PER_WEEK[weekStamp] = {'WORD_COUNT':value / topicCount, 'LABEL': 'Average'};
 					});
 					topicexplorerModel.data.timeDataLoaded = 1;
 					self.makeChart();

@@ -4,7 +4,6 @@ import java.io.PrintWriter;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import cc.topicexplorer.database.Database;
 import cc.topicexplorer.database.SelectMap;
@@ -41,33 +40,32 @@ public class GetDates {
 
 	public void executeQuery() throws SQLException {
 		JSONObject all = new JSONObject();
-		JSONObject date = new JSONObject();
-		JSONArray dates = new JSONArray();
-		JSONObject weekData, tstamp;
+		JSONObject clipboard = new JSONObject();
+		JSONObject topicData = new JSONObject();
+		JSONObject weekData;
 		ResultSet dateQueryRS = database.executeQuery(getDatesMap.getSQLString());
 		
 		int topicId = -1; 
 		while (dateQueryRS.next()) {
 			if (topicId != dateQueryRS.getInt("TOPIC_ID")) {
-				if (dates.size() > 0) {
-					date = new JSONObject();
-					date.put("TIME$WORDS_PER_WEEK", dates);
-					all.put(topicId, date);
-					dates = new JSONArray();
+				if (topicData.size() > 0) {
+					clipboard = new JSONObject();
+					clipboard.put("TIME$WORDS_PER_WEEK", topicData);
+					all.put(topicId, clipboard);
+					topicData = new JSONObject();
 				} 
 				topicId = dateQueryRS.getInt("TOPIC_ID");
 			} 
 			
 			weekData = new JSONObject();
-			tstamp = new JSONObject();
 			weekData.put("WORD_COUNT", dateQueryRS.getInt("WORD_COUNT"));
-			weekData.put("BEST_WORDS", dateQueryRS.getString("BEST_WORDS"));
-			tstamp.put(dateQueryRS.getLong("WEEK") * 1000L, weekData);
-			dates.add(tstamp);
+			weekData.put("LABEL", dateQueryRS.getString("BEST_WORDS"));
+			topicData.put(dateQueryRS.getLong("WEEK") * 1000L, weekData);
+
 		}
-		date = new JSONObject();
-		date.put("TIME$WORDS_PER_WEEK", dates);
-		all.put(topicId, date);
+		clipboard = new JSONObject();
+		clipboard.put("TIME$WORDS_PER_WEEK", topicData);
+		all.put(topicId, clipboard);
 		this.outWriter.print(all.toString());
 	}
 }

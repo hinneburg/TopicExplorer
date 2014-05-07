@@ -201,11 +201,13 @@ public class WordsPerTopicPerWeekFill extends TableFillCommand {
 				
 				}
 			}
+			logger.info("updates for WORDS_PER_TOPIC_PER_WEEK created");
 			updateQueries.add("UPDATE TIME$WORDS_PER_TOPIC_PER_WEEK SET BEST_WORDS='"
 					+ bestWord + "' WHERE TOPIC_ID=" + topicId + " AND WEEK=" + week);
 			for(String updateQuery: updateQueries) {
 				database.executeUpdateQuery(updateQuery);
 			}
+			logger.info("updates for WORDS_PER_TOPIC_PER_WEEK done");
 		} catch (SQLException e) {
 			logger.error("Table " + this.tableName
 						+ " could not be updated properly.");
@@ -248,10 +250,15 @@ public class WordsPerTopicPerWeekFill extends TableFillCommand {
 			/** OHNE_JOOQ-START */
 			// @formatter:off
 			try {
+				logger.info("starting");
 				timeWeek();
+				logger.info("TIME_WEEK done");
 				timeTermWeek();
+				logger.info("TIME_TERM_WEEK done");
 				timeTopicWeek();
+				logger.info("TIME_TOPIC_WEEK done");
 				timeTermTopicWeek();
+				logger.info("TIME_TERM_TOPIC_WEEK done");
 				
 				database.executeUpdateQuery("INSERT INTO "
 						+ "TIME$WORDS_PER_TOPIC_PER_WEEK" + "("
@@ -266,8 +273,11 @@ public class WordsPerTopicPerWeekFill extends TableFillCommand {
 						+ "DOCUMENT_TERM_TOPIC.TIME$WEEK" + ", "
 						+ "DOCUMENT_TERM_TOPIC.TOPIC_ID" + ";");
 				
+				logger.info("WORDS_PER_TOPIC_PER_WEEK done");
+				
 				updateBestWords();
 				deleteTempTables();	
+				logger.info("deleteing temps done");
 				// @formatter:on
 			} catch (SQLException e) {
 				logger.error("Table " + this.tableName
@@ -292,6 +302,7 @@ public class WordsPerTopicPerWeekFill extends TableFillCommand {
 
 	@Override
 	public void addDependencies() {
+		beforeDependencies.add("TermFill");
 		beforeDependencies.add("TopicFill");
 		beforeDependencies.add("Time_DocumentTermTopicFill");
 		beforeDependencies.add("Time_WordsPerTopicPerWeekCreate");

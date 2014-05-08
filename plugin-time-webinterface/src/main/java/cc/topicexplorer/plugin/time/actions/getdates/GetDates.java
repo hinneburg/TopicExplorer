@@ -40,9 +40,8 @@ public class GetDates {
 
 	public void executeQuery() throws SQLException {
 		JSONObject all = new JSONObject();
-		JSONObject clipboard = new JSONObject();
 		JSONObject topicData = new JSONObject();
-		JSONObject weekData;
+		JSONObject weekData, clipboard;
 		ResultSet dateQueryRS = database.executeQuery(getDatesMap.getSQLString());
 		
 		int topicId = -1; 

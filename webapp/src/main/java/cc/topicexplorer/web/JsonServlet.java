@@ -3,6 +3,7 @@ package cc.topicexplorer.web;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
@@ -48,7 +49,12 @@ public class JsonServlet extends HttpServlet {
 			} else if (command.contains("bestDocs")) {
 				communicationContext.put("TOPIC_ID", request.getParameter("TopicId"));
 				communicationContext.put("OFFSET", offset);
-
+				@SuppressWarnings("unchecked")
+				Enumeration<String> parameterNames = request.getParameterNames();
+				while (parameterNames.hasMoreElements()) {
+					String paramName = parameterNames.nextElement();
+					communicationContext.put(paramName, request.getParameter(paramName));
+				}
 				startCommands.add("BestDocsCoreCreate");
 			} else if (command.contains("allTerms")) {
 				startCommands.add("AllTermsCoreCreate");

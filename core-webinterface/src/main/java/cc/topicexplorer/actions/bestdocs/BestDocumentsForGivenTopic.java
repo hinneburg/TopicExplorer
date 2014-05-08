@@ -30,7 +30,7 @@ public class BestDocumentsForGivenTopic {
 		documentMap.from.add("DOCUMENT");
 		documentMap.from.add("DOCUMENT_TOPIC");
 		documentMap.where.add("DOCUMENT.DOCUMENT_ID=DOCUMENT_TOPIC.DOCUMENT_ID");
-		documentMap.where.add("DOCUMENT_TOPIC.TOPIC_ID=" + topicId);
+		documentMap.where.add("DOCUMENT_TOPIC.TOPIC_ID IN (" + topicId + ")");
 		documentMap.orderBy.add("PR_DOCUMENT_GIVEN_TOPIC DESC");
 		documentMap.limit = limit;
 		documentMap.offset = offset;
@@ -58,6 +58,10 @@ public class BestDocumentsForGivenTopic {
 
 	public void addDocumentColumn(String documentColumn, String documentColumnName) {
 		documentMap.select.add(documentColumn + " as " + documentColumnName);
+	}
+	
+	public void addWhereClause(String where) {
+		documentMap.where.add(where);
 	}
 
 	public void executeQueriesAndWriteOutBestDocumentsForGivenTopic() {

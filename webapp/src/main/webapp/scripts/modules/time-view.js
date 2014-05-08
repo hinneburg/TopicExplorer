@@ -63,8 +63,7 @@ define(
 		    	tooltip: {
 		            formatter: function() {
 		            	var html ="";
-		            	var allTopics = $.extend({}, ["average"], topicexplorerModel.data.topicSorting);
-		     
+		            	var allTopics = $.extend({}, topicexplorerModel.data.topicSorting, ["average"]);
 		            	for(topic_id in allTopics) {
 		            		if(topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].renderedTopics.indexOf(allTopics[topic_id].toString()) != -1) {
 			            		html += '<span style="color: ' + topicexplorerModel.data.topic[allTopics[topic_id]].COLOR_TOPIC$COLOR 

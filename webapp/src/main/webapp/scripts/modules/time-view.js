@@ -76,8 +76,10 @@ define(
 		            }
 		    	}
 		    });
-    		for(var i = 0; i < topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].renderedTopics.length; i++ ) {
-    			self.addChart(topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].renderedTopics[i]);
+    		if(typeof topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].renderedTopics != 'undefined') {
+	    		for(var i = 0; i < topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].renderedTopics.length; i++ ) {
+	    			self.addChart(topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].renderedTopics[i]);
+	    		}
     		}
     	};
     	

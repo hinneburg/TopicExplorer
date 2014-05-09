@@ -10,7 +10,17 @@ import cc.topicexplorer.commands.TableFillCommand;
  */
 
 public class DocumentTermTopicFill extends TableFillCommand {
-
+	private void createIndex() {
+		try {
+			database.executeUpdateQuery("create index TIME$DOCUMENT_TERM_TOPIC$TOPIC_WEEK_IDX "
+				+ "ON DOCUMENT_TERM_TOPIC(TOPIC_ID,TIME$WEEK) USING BTREE");	
+		} catch (SQLException e) {
+			logger.error("Time-Topic-Index for Table " + this.tableName + " could not be created properly.");
+			throw new RuntimeException(e);
+		}
+	}
+	
+	
 	@Override
 	public void fillTable() {
 
@@ -37,6 +47,7 @@ public class DocumentTermTopicFill extends TableFillCommand {
 				throw new RuntimeException(e);
 			}
 			/** OHNE_JOOQ-ENDE */
+			createIndex();
 		}
 	}
 

@@ -52,8 +52,6 @@ public class PropertiesCommand extends DependencyCommand {
 
 	private void loadGlobalAndLocalConfigProperties() {
 		_properties = PropertiesUtil.loadMandatoryProperties(CONFIG_GLOBAL_PROPERTIES, NO_PREFIX, PropertyKind.GLOBAL);
-		_properties = PropertiesUtil.updateMandatoryProperties(_properties, CONFIG_GLOBAL_PROPERTIES, NO_PREFIX,
-				PropertyKind.GLOBAL);
 		_properties = PropertiesUtil.updateMandatoryProperties(_properties, CONFIG_LOCAL_PROPERTIES, NO_PREFIX,
 				PropertyKind.LOCAL);
 	}

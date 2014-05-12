@@ -8,6 +8,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -40,43 +41,62 @@ public class Run {
 	private static final Logger logger = Logger.getLogger(Run.class);
 
 	public static void main(String[] args) throws Exception {
-		Run run = new Run();
-
 		LoggerUtil.initializeLogger();
+
+		Run run = new Run();
 		run.logWelcomeMessage();
 
 		File temp = new File("temp");
 		temp.mkdir();
 
-		ChainManagement chainManager = new ChainManagement();
+		CommandLineParser commandLineParser = initializeCommandLineParser(args);
+		runPreprocessing(commandLineParser.getStartCommands(), commandLineParser.getEndCommands(),
+				!commandLineParser.getOnlyDrawGraph());
+
+		FileUtils.deleteDirectory(temp);
+	}
+
+	private static CommandLineParser initializeCommandLineParser(String[] args) {
+		CommandLineParser commandLineParser = null;
+		try {
+			commandLineParser = new CommandLineParser(args);
+		} catch (RuntimeException exception) {
+			logger.error("Problems encountered while parsing the command line tokens.");
+			throw exception;
+		}
+		return commandLineParser;
+	}
+
+	/**
+	 * Execute initial commands, collect plugin names from local and global config properties, create catalog, let
+	 * chainManager order all commands, execute ordered commands.Users can specify from which command to start the
+	 * execution and which command should be the last one to execute. Specification can be made via start- and end
+	 * command parameter respectively.
+	 * 
+	 * @throws RuntimeException
+	 *             commands can throw multiple RuntimeExceptions. This would signalize a corrupt preprocessing result.
+	 */
+	private static void runPreprocessing(Set<String> startCommands, Set<String> endCommands,
+			boolean commandsShouldGetExecuted) throws ParserConfigurationException, TransformerException, IOException,
+			SAXException {
 		CommunicationContext context = new CommunicationContext();
 		executeInitialCommands(context);
 
 		Properties properties = (Properties) context.get("properties");
 		String plugins = properties.getProperty("plugins");
 		logger.info("Activated plugins: " + plugins);
-		makeCatalog(plugins);
 
+		makeCatalog(plugins);
+		ChainManagement chainManager = new ChainManagement();
 		chainManager.setCatalog("/" + CATALOG_FILENAME);
 
-		CommandLineParser commandLineParser = null;
-		try {
-			commandLineParser = new CommandLineParser(args);
-		} catch (RuntimeException e) {
-			logger.error("Problems encountered while parsing the command line tokens.");
-			throw e;
-		}
-
-		List<String> orderedCommands = chainManager.getOrderedCommands(commandLineParser.getStartCommands(),
-				commandLineParser.getEndCommands());
+		List<String> orderedCommands = chainManager.getOrderedCommands(startCommands, endCommands);
 		logger.info("ordered commands: " + orderedCommands);
 
-		if (!commandLineParser.getOnlyDrawGraph()) {
+		if (commandsShouldGetExecuted) {
 			chainManager.executeCommands(orderedCommands, context);
 			logger.info("Preprocessing successfully executed!");
 		}
-
-		FileUtils.deleteDirectory(temp);
 	}
 
 	private void logWelcomeMessage() {
@@ -123,7 +143,8 @@ public class Run {
 								+ "-preprocessing/catalog/preJooqConfig.xml")));
 			} catch (SAXException saxException) {
 				logger.warn(
-						"/cc/topicexplorer/plugin-" + plugin + "-preprocessing/catalog/preJooqConfig.xml not found", saxException);
+						"/cc/topicexplorer/plugin-" + plugin + "-preprocessing/catalog/preJooqConfig.xml not found",
+						saxException);
 			} catch (IOException ioException) {
 				logger.warn(
 						"/cc/topicexplorer/plugin-" + plugin + "-preprocessing/catalog/preJooqConfig.xml not found",

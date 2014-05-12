@@ -35,6 +35,8 @@ import cc.topicexplorer.utils.CommandLineParser;
 import cc.topicexplorer.utils.LoggerUtil;
 
 public class Run {
+
+	private static final String CATALOG_FILENAME = "catalog.xml";
 	private static final Logger logger = Logger.getLogger(Run.class);
 
 	public static void main(String[] args) throws Exception {
@@ -55,7 +57,7 @@ public class Run {
 		logger.info("Activated plugins: " + plugins);
 		makeCatalog(plugins);
 
-		chainManager.setCatalog("/catalog.xml");
+		chainManager.setCatalog("/" + CATALOG_FILENAME);
 
 		CommandLineParser commandLineParser = null;
 		try {
@@ -151,7 +153,7 @@ public class Run {
 		StreamResult result = new StreamResult(new StringWriter());
 		transformer.transform(source, result);
 
-		Writer output = new BufferedWriter(new FileWriter("catalog.xml"));
+		Writer output = new BufferedWriter(new FileWriter(CATALOG_FILENAME));
 		String xmlOutput = result.getWriter().toString();
 		output.write(xmlOutput);
 		output.close();

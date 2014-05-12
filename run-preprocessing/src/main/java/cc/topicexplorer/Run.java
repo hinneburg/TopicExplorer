@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
@@ -79,6 +80,7 @@ public class Run {
 	private static void runPreprocessing(Set<String> startCommands, Set<String> endCommands,
 			boolean commandsShouldGetExecuted) throws ParserConfigurationException, TransformerException, IOException,
 			SAXException {
+		Date start = new Date();
 		CommunicationContext context = new CommunicationContext();
 		executeInitialCommands(context);
 
@@ -97,6 +99,8 @@ public class Run {
 			chainManager.executeCommands(orderedCommands, context);
 			logger.info("Preprocessing successfully executed!");
 		}
+		Date end = new Date();
+		logger.info("Execution time: " + (end.getTime() - start.getTime()) / 1000 + " seconds.");
 	}
 
 	private void logWelcomeMessage() {

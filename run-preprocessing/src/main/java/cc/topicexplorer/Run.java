@@ -92,9 +92,9 @@ public class Run {
 
 			DependencyCommand dbConnectionCommand = new DbConnectionCommand();
 			dbConnectionCommand.execute(context);
-		} catch (RuntimeException rntmEx) {
+		} catch (RuntimeException exception) {
 			logger.error("Initialization abborted, due to a critical exception");
-			throw rntmEx;
+			throw exception;
 		}
 	}
 
@@ -121,13 +121,13 @@ public class Run {
 						doc,
 						builder.parse(Run.class.getResourceAsStream("/cc/topicexplorer/plugin-" + plugin
 								+ "-preprocessing/catalog/preJooqConfig.xml")));
-			} catch (SAXException e) {
+			} catch (SAXException saxException) {
 				logger.warn(
-						"/cc/topicexplorer/plugin-" + plugin + "-preprocessing/catalog/preJooqConfig.xml not found", e);
-			} catch (IOException ioEx) {
+						"/cc/topicexplorer/plugin-" + plugin + "-preprocessing/catalog/preJooqConfig.xml not found", saxException);
+			} catch (IOException ioException) {
 				logger.warn(
 						"/cc/topicexplorer/plugin-" + plugin + "-preprocessing/catalog/preJooqConfig.xml not found",
-						ioEx);
+						ioException);
 			}
 
 			try {
@@ -135,12 +135,12 @@ public class Run {
 						doc,
 						builder.parse(Run.class.getResourceAsStream("/cc/topicexplorer/plugin-" + plugin
 								+ "-preprocessing/catalog/postJooqConfig.xml")));
-			} catch (SAXException e) {
+			} catch (SAXException saxException) {
 				logger.warn("/cc/topicexplorer/plugin-" + plugin
-						+ "-preprocessing/catalog/postJooqConfig.xml not found", e);
-			} catch (IOException ioEx) {
+						+ "-preprocessing/catalog/postJooqConfig.xml not found", saxException);
+			} catch (IOException ioException) {
 				logger.warn("/cc/topicexplorer/plugin-" + plugin
-						+ "-preprocessing/catalog/postJooqConfig.xml not found", ioEx);
+						+ "-preprocessing/catalog/postJooqConfig.xml not found", ioException);
 			}
 		}
 

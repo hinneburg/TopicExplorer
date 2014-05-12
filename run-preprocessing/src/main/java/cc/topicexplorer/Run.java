@@ -50,11 +50,15 @@ public class Run {
 		File temp = new File("temp");
 		temp.mkdir();
 
-		CommandLineParser commandLineParser = initializeCommandLineParser(args);
-		runPreprocessing(commandLineParser.getStartCommands(), commandLineParser.getEndCommands(),
-				!commandLineParser.getOnlyDrawGraph());
-
-		FileUtils.deleteDirectory(temp);
+		try {
+			CommandLineParser commandLineParser = initializeCommandLineParser(args);
+			runPreprocessing(commandLineParser.getStartCommands(), commandLineParser.getEndCommands(),
+					!commandLineParser.getOnlyDrawGraph());
+		} catch (Exception exception) {
+			logger.error("Preprocessing could not be completed.", exception);
+		} finally {
+			FileUtils.deleteDirectory(temp);
+		}
 	}
 
 	private static CommandLineParser initializeCommandLineParser(String[] args) {

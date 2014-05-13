@@ -13,8 +13,11 @@ public class Create extends TableSelectCommand {
 	public void tableExecute(Context context) {
 		CommunicationContext communicationContext = (CommunicationContext) context;
 		PrintWriter pw = (PrintWriter) communicationContext.get("SERVLET_WRITER");
+		String topicId = (String) communicationContext.get("TOPIC_ID");
+		int offset = (Integer) communicationContext.get("OFFSET");
+		
 
-		communicationContext.put("FRAME_ACTION", new Frames(this.database, pw, this.logger));
+		communicationContext.put("FRAME_ACTION", new Frames(this.database, pw, this.logger, topicId, offset));
 	}
 
 	@Override

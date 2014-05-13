@@ -67,7 +67,12 @@ public class JsonServlet extends HttpServlet {
 				communicationContext.put("OFFSET", offset);
 
 				startCommands.add("SearchCoreCreate");
+			} else if (command.contains("getBestFrames")) {
+				startCommands.add("BestFrameCreate");
 			} else if (command.contains("getFrames")) {
+				communicationContext.put("TOPIC_ID", request.getParameter("topicId"));
+				communicationContext.put("OFFSET", offset);
+				
 				startCommands.add("FrameCreate");
 			} else if (command.contains("getDates")) {
 				startCommands.add("GetDatesTimeCreate");

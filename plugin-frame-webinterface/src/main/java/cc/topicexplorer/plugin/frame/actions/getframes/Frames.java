@@ -17,22 +17,22 @@ public class Frames {
 	private final SelectMap frameMap;
 	private PrintWriter outWriter;
 	private Database database;
-	private final Logger logger;
 
-	public Frames(Database database, PrintWriter pw, Logger logger) {
+	public Frames(Database database, PrintWriter pw, Logger logger, String topicId, int offset) {
 		frameMap = new SelectMap();
 		frameMap.select.add("FRAME");
 		frameMap.select.add("COUNT( DISTINCT DOCUMENT_ID ) AS FRAME_COUNT");
 		frameMap.select.add("FRAMES.FRAME_ID");
+		frameMap.select.add("FRAMES.TOPIC_ID");
 		frameMap.from.add("FRAMES");
+		frameMap.where.add("TOPIC_ID=" + topicId);
 		frameMap.groupBy.add("FRAMES.FRAME");
-		frameMap.orderBy.add("FRAMES.TOPIC_ID");
 		frameMap.orderBy.add("FRAME_COUNT DESC");
-		frameMap.limit = 20;
+		frameMap.limit = 10;
+		frameMap.offset = offset;
 
 		this.setDatabase(database);
 		this.setServletWriter(pw);
-		this.logger = logger;
 	}
 
 	public SelectMap getFrameMap() {
@@ -53,43 +53,41 @@ public class Frames {
 
 	public void getFrames() throws SQLException {
 		ArrayList<String> frameColumnList = frameMap.getCleanColumnNames();
-		JSONArray topFrames = new JSONArray();
-
-		JSONObject topic = new JSONObject();
-		JSONObject topics = new JSONObject();
-		JSONObject topFrame = new JSONObject();
-		JSONObject frame = new JSONObject();
+		
+		frameColumnList.remove("TOPIC_ID");
+		frameColumnList.remove("FRAME_ID");
+		
+		JSONObject topicData = new JSONObject();
+		JSONObject frameData = new JSONObject();
 		JSONObject frames = new JSONObject();
 		JSONObject all = new JSONObject();
+		JSONArray sorting = new JSONArray();
 
-		String firstQuery = "SELECT TOPIC_ID,HIERARCHICAL_TOPIC$START FROM TOPIC WHERE HIERARCHICAL_TOPIC$START=HIERARCHICAL_TOPIC$END";
-		logger.info("QUERY will be executed: " + firstQuery);
-		ResultSet topicQueryRS = database.executeQuery(firstQuery);
-
-		while (topicQueryRS.next()) {
-			SelectMap tempMap = frameMap.clone();
-			tempMap.where.add("FRAMES.TOPIC_ID=" + topicQueryRS.getInt("TOPIC_ID"));
-
-			logger.info("QUERY will be executed: " + tempMap.getSQLString());
-			ResultSet frameQueryRS = database.executeQuery(tempMap.getSQLString());
-			while (frameQueryRS.next()) {
-				topFrame.put("FrameId", frameQueryRS.getString("FRAME_ID"));
-				topFrame.put("FrameCount", frameQueryRS.getString("FRAME_COUNT"));
-				topFrames.add(topFrame);
-				topic.clear();
-				for (int i = 0; i < frameColumnList.size(); i++) {
-					frame.put(frameColumnList.get(i), frameQueryRS.getString(frameColumnList.get(i)));
-				}
-				frames.put(frameQueryRS.getString("FRAME_ID"), frame);
-				frame.clear();
+		ResultSet frameQueryRS = database.executeQuery(frameMap.getSQLString());
+		int topicId = -1;
+		while (frameQueryRS.next()) {
+			if (topicId != frameQueryRS.getInt("TOPIC_ID")) {
+				if (topicData.size() > 0) {
+					frames.put("FRAMES", topicData);
+					frames.put("SORTING", sorting);
+					all.put(topicId, frames);
+					topicData = new JSONObject();
+					sorting = new JSONArray();
+				} 
+				topicId = frameQueryRS.getInt("TOPIC_ID");
+			} 
+			
+			frameData = new JSONObject();
+			for (int i = 0; i < frameColumnList.size(); i++) {
+				frameData.put(frameColumnList.get(i), frameQueryRS.getString(frameColumnList.get(i)));
 			}
-
-			topic.put("TopFrames", topFrames);
-			topics.put(topicQueryRS.getString("HIERARCHICAL_TOPIC$START"), topic);
+			topicData.put(frameQueryRS.getString("FRAME_ID"), frameData);
+			sorting.add(frameQueryRS.getString("FRAME_ID"));
 		}
-
-		all.put("TOPIC", topics);
-		all.put("FRAME", frames);
+		frames = new JSONObject();
+		frames.put("FRAMES", topicData);
+		frames.put("SORTING", sorting);
+		all.put(topicId, frames);
 
 		outWriter.print(all.toString());
 	}

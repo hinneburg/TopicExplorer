@@ -3,10 +3,10 @@
 	<button class="addToCart" name="addToCart" title="add to shortlist" type="button"></button>
 </div>
 
-<div class="topicTitle" data-bind="text: $root.topicexplorer.data.topic[selectedTopic].TOPIC_ID"></div>
+<div class="topicTitle"><a href="#" data-bind="text: $root.topicexplorer.data.topic[selectedTopic].TEXT$TOPIC_LABEL,click:$parent.loadDocumentsForTopic"></a></div>
 
-<div class="topicElementContent">
-	<ul class="wordList" data-bind = "foreach: {data: $root.topicexplorer.data.topic[selectedTopic].Top_Terms, as: 'topTerm'}">
-		<li data-bind="text: $root.topicexplorer.data.term[topTerm.TermId].TERM_ID, style: {fontSize: 25*topTerm.relevance/$root.topicexplorer.data.topic[selectedTopic].Top_Terms[0].relevance > 9 ? 25*topTerm.relevance/$root.topicexplorer.data.topic[selectedTopic].Top_Terms[0].relevance+'px' : '9px'}"></li>
+<div class="topicElementContent" data-bind="event: {scroll: $parent.frameScrollCallback}">
+	<ul class="wordList" data-bind = "foreach: {data: $root.topicexplorer.data.topic[selectedTopic].frameSorting, as: 'frame'}">
+		<li data-bind="text: $root.topicexplorer.data.topic[selectedTopic].FRAMES[frame].FRAME + ' (' + $root.topicexplorer.data.topic[selectedTopic].FRAMES[frame].FRAME_COUNT + ')'"></li>
 	</ul>
 </div>

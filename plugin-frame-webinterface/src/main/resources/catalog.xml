@@ -2,4 +2,7 @@
 <catalog>
 	<command name="FrameCreate" className="cc.topicexplorer.plugin.frame.actions.getframes.Create"/>
 	<command name="FrameGenerateSQL" className="cc.topicexplorer.plugin.frame.actions.getframes.GenerateSQL"/>
+	<command name="BestFrameCreate" className="cc.topicexplorer.plugin.frame.actions.getbestframes.Create"/>
+	<command name="BestFrameGenerateSQL" className="cc.topicexplorer.plugin.frame.actions.getbestframes.GenerateSQL"/>
+	<command name="BestDocsFrameCollect" className="cc.topicexplorer.plugin.frame.actions.bestdocs.Collect"/>
 </catalog>

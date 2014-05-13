@@ -12,90 +12,77 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 
 public final class PropertiesUtil {
+
 	private static final Logger logger = Logger.getLogger(PropertiesUtil.class);
+	private static final String GLOBAL_PROPERTIES = ".global.properties";
+	private static final String LOCAL_PROPERTIES = ".local.properties";
+	private static final boolean MANDATORY = true;
 
 	/**
-	 * Create a new properties object. Throw exceptions rigorously.
+	 * Create a new properties object and load global and local properties to the given property name into this object.
+	 * Throw exceptions rigorously.
 	 * 
-	 * @param resource
-	 *            file name of properties file. Must not be null. A
-	 *            {@link RuntimeException} will be thrown if the resource cannot
-	 *            be found. A {@link IOException} will be thrown if there is an
-	 *            error with the properties file, e. g. with the properties
-	 *            format.
+	 * @param propertyName
+	 *            property name of required properties. Must not be null. Will be extended with ".global.properties" or
+	 *            ".local.properties", respectively. A {@link RuntimeException} will be thrown if the resource cannot be
+	 *            found. A {@link IOException} will be thrown if there is an error with the properties file, e. g. with
+	 *            the properties format.
 	 * @param prefix
-	 *            Every key of the returned properties will be led by this
-	 *            prefix. May be null or empty.
-	 * @param propertyKind
-	 *            {@code LOCAL} or {@code GLOBAL}. If {@code LOCAL} then a
-	 *            warning will be logged every time there is no {@code GLOBAL}
-	 *            equivalent to a specific property. Must not be null.
-	 * @return a new {@link Properties} object representing the resource
-	 *         properties file.
+	 *            every key of the returned properties will be led by this prefix. May be null or empty.
+	 * @return a new {@link Properties} object representing where the given properties have been updated.
 	 */
-	public static Properties loadMandatoryProperties(String resource, String prefix, PropertyKind propertyKind) {
-		return updateMandatoryProperties(new Properties(), resource, prefix, propertyKind);
+	public static Properties loadMandatoryProperties(String propertyName, String prefix) {
+		Properties properties = updateProperties(new Properties(), propertyName + GLOBAL_PROPERTIES, prefix,
+				PropertyKind.GLOBAL, MANDATORY);
+		properties = updateProperties(properties, propertyName + LOCAL_PROPERTIES, prefix, PropertyKind.LOCAL,
+				MANDATORY);
+		return properties;
 	}
 
 	/**
-	 * Update existing properties with new ones. Throw exceptions rigorously.
+	 * Update existing properties with new ones. Global and local properties to the given property name are required for
+	 * this update. Throw exceptions rigorously.
 	 * 
 	 * @param properties
-	 *            will be updated with properties in {@link resource} file if it
-	 *            exists. If any property in the {@link resource} file already
-	 *            exists in this properties object the latter will be
-	 *            overwritten.
-	 * @param resource
-	 *            file name of properties file. Must not be null. A
-	 *            {@link RuntimeException} will be thrown if the resource cannot
-	 *            be found. A {@link IOException} will be thrown if there is an
-	 *            error with the properties file, e. g. with the properties
-	 *            format.
+	 *            will be updated with properties in {@link propertyName} file. If any property in the
+	 *            {@link propertyName} file already exists in this properties object the latter will be overwritten.
+	 * @param propertyName
+	 *            property name of required properties. Must not be null. Will be extended with ".global.properties" or
+	 *            ".local.properties", respectively. A {@link RuntimeException} will be thrown if the resource cannot be
+	 *            found. A {@link IOException} will be thrown if there is an error with the properties file, e. g. with
+	 *            the properties format.
 	 * @param prefix
-	 *            Every key of the returned properties will be led by this
-	 *            prefix. May be null or empty.
-	 * @param propertyKind
-	 *            {@code LOCAL} or {@code GLOBAL}. If {@code LOCAL} then a
-	 *            warning will be logged every time there is no {@code GLOBAL}
-	 *            equivalent to a specific property. Must not be null.
-	 * @return a new {@link Properties} object representing the resource
-	 *         properties file if it exists. If not a copy of {@link properties}
-	 *         will be returned.
+	 *            every key of the returned properties will be led by this prefix. May be null or empty.
+	 * @return a new {@link Properties} object where the given properties have been updated.
 	 */
-	public static Properties updateMandatoryProperties(Properties properties, String resource, String prefix,
-			PropertyKind propertyKind) {
-		return updateProperties(properties, resource, prefix, propertyKind, true);
+	public static Properties updateMandatoryProperties(Properties properties, String propertyName, String prefix) {
+		Properties updatedProperties = updateProperties(properties, propertyName + GLOBAL_PROPERTIES, prefix,
+				PropertyKind.GLOBAL, MANDATORY);
+		return updateProperties(updatedProperties, propertyName + LOCAL_PROPERTIES, prefix, PropertyKind.LOCAL,
+				MANDATORY);
 	}
 
 	/**
-	 * Update existing properties with new ones. Missing {@link resource} will
-	 * be of no consequence.
+	 * Update existing properties with new ones. Global and local properties to the given property name are required for
+	 * this update. Missing {@link propertyName} will be of no consequence.
 	 * 
 	 * @param properties
-	 *            will be updated with properties in {@link resource} file if it
-	 *            exists. If any property in the {@link resource} file already
-	 *            exists in this properties object the latter will be
-	 *            overwritten.
-	 * @param resource
-	 *            file name of properties file. Must not be null. If the
-	 *            resource cannot be found a copy of {@link properties} will be
-	 *            returned. A {@link IOException} will be thrown if there is an
-	 *            error with the properties file, e. g. with the properties
-	 *            format.
+	 *            will be updated with properties in {@link propertyName} file if it exists. If any property in the
+	 *            {@link propertyName} file already exists in this properties object the latter will be overwritten.
+	 * @param propertyName
+	 *            file name of properties file. Must not be null. If the resource cannot be found a copy of
+	 *            {@link properties} will be returned. A {@link IOException} will be thrown if there is an error with
+	 *            the properties file, e. g. with the properties format.
 	 * @param prefix
-	 *            Every key of the returned properties will be led by this
-	 *            prefix. May be null or empty.
-	 * @param propertyKind
-	 *            {@code LOCAL} or {@code GLOBAL}. If {@code LOCAL} then a
-	 *            warning will be logged every time there is no {@code GLOBAL}
-	 *            equivalent to a specific property. Must not be null.
-	 * @return a new {@link Properties} object representing the resource
-	 *         properties file if it exists. If not a copy of {@link properties}
-	 *         will be returned.
+	 *            Every key of the returned properties will be led by this prefix. May be null or empty.
+	 * @return a new {@link Properties} object representing the resource properties file if it exists. If not a copy of
+	 *         {@link properties} will be returned.
 	 */
-	public static Properties updateOptionalProperties(Properties properties, String resource, String prefix,
-			PropertyKind propertyKind) {
-		return updateProperties(properties, resource, prefix, propertyKind, false);
+	public static Properties updateOptionalProperties(Properties properties, String propertyName, String prefix) {
+		Properties updatedProperties = updateProperties(properties, propertyName + GLOBAL_PROPERTIES, prefix,
+				PropertyKind.GLOBAL, !MANDATORY);
+		return updateProperties(updatedProperties, propertyName + LOCAL_PROPERTIES, prefix, PropertyKind.LOCAL,
+				!MANDATORY);
 	}
 
 	private static Properties updateProperties(Properties properties, String resource, String prefix,
@@ -148,7 +135,7 @@ public final class PropertiesUtil {
 		return updatedProperties;
 	}
 
-	public static enum PropertyKind {
+	private static enum PropertyKind {
 		LOCAL, GLOBAL
 	}
 

@@ -1,34 +1,29 @@
 package cc.topicexplorer.commands;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.Arrays;
 import java.util.MissingResourceException;
 import java.util.Properties;
 
 import org.apache.commons.chain.Context;
+import org.apache.log4j.Logger;
 
 import cc.commandmanager.core.CommunicationContext;
 import cc.commandmanager.core.DependencyCommand;
 import cc.topicexplorer.utils.PropertiesUtil;
-import cc.topicexplorer.utils.PropertiesUtil.PropertyKind;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
 
 public class PropertiesCommand extends DependencyCommand {
+
+	private static final Logger logger = Logger.getLogger(PropertiesCommand.class);
 
 	@VisibleForTesting
 	static final String PROPERTIES_KEY = "properties";
 	private static final String PLUGINS_KEY = "plugins";
-	private static final String CONFIG_GLOBAL_PROPERTIES = "config.global.properties";
-	private static final String CONFIG_LOCAL_PROPERTIES = "config.local.properties";
-	private static final String DATABASE_GLOBAL_PROPERTIES = "database.global.properties";
-	private static final String DATABASE_LOCAL_PROPERTIES = "database.local.properties";
 	private static final String NO_PREFIX = "";
 	private static final String DATABASE_PREFIX = "database.";
-
-	private Properties _properties;
 
 	/**
 	 * @throws MissingResourceException
@@ -43,50 +38,37 @@ public class PropertiesCommand extends DependencyCommand {
 	public void specialExecute(Context context) {
 		CommunicationContext communicationContext = (CommunicationContext) context;
 
-		loadGlobalAndLocalConfigProperties();
-		loadGlobalAndLocalDbProperties();
-		loadPluginProperties();
+		Properties properties = PropertiesUtil.loadMandatoryProperties("config", NO_PREFIX);
+		properties = PropertiesUtil.updateMandatoryProperties(properties, "database", DATABASE_PREFIX);
+		properties = loadPluginProperties(properties);
 
-		communicationContext.put(PROPERTIES_KEY, _properties);
+		communicationContext.put(PROPERTIES_KEY, properties);
 	}
 
-	private void loadGlobalAndLocalConfigProperties() {
-		_properties = PropertiesUtil.loadMandatoryProperties(CONFIG_GLOBAL_PROPERTIES, NO_PREFIX, PropertyKind.GLOBAL);
-		_properties = PropertiesUtil.updateMandatoryProperties(_properties, CONFIG_LOCAL_PROPERTIES, NO_PREFIX,
-				PropertyKind.LOCAL);
-	}
+	private static Properties loadPluginProperties(Properties properties) {
+		Properties pluginProperties = new Properties();
+		pluginProperties.putAll(properties);
 
-	private void loadGlobalAndLocalDbProperties() {
-		_properties = PropertiesUtil.updateMandatoryProperties(_properties, DATABASE_GLOBAL_PROPERTIES,
-				DATABASE_PREFIX, PropertyKind.GLOBAL);
-		_properties = PropertiesUtil.updateMandatoryProperties(_properties, DATABASE_LOCAL_PROPERTIES, DATABASE_PREFIX,
-				PropertyKind.LOCAL);
-	}
-
-	private void loadPluginProperties() {
-		List<String> enabledPlugins = getEnabledPlugins();
-		if (enabledPlugins.size() > 1 || !Strings.isNullOrEmpty(enabledPlugins.get(0))) {
-			for (String plugin : enabledPlugins) {
-				plugin = removeWhiteSpacesAndlowerCase(plugin);
-				_properties.setProperty("plugin_" + plugin, "true");
-
-				String globalPluginName = plugin + ".global.properties";
-				String localPluginName = plugin + ".local.properties";
+		Iterable<String> enabledPlugins = getEnabledPlugins(pluginProperties);
+		for (String plugin : enabledPlugins) {
+			if (Strings.isNullOrEmpty(plugin)) {
+				logger.warn("Empty plugin detected in config properties.");
+			} else {
+				plugin = removeWhiteSpacesAndLowerCase(plugin);
+				pluginProperties.setProperty("plugin_" + plugin, "true");
 				String prefix = plugin.substring(0, 1).toUpperCase() + plugin.substring(1) + "_";
-
-				_properties = PropertiesUtil.updateOptionalProperties(_properties, globalPluginName, prefix,
-						PropertyKind.GLOBAL);
-				_properties = PropertiesUtil.updateOptionalProperties(_properties, localPluginName, prefix,
-						PropertyKind.LOCAL);
+				pluginProperties = PropertiesUtil.updateOptionalProperties(pluginProperties, plugin, prefix);
 			}
 		}
+
+		return pluginProperties;
 	}
 
-	private List<String> getEnabledPlugins() {
-		return Lists.newArrayList(_properties.getProperty(PLUGINS_KEY).split(","));
+	private static Iterable<String> getEnabledPlugins(Properties properties) {
+		return Arrays.asList(properties.getProperty(PLUGINS_KEY).split(","));
 	}
 
-	private static String removeWhiteSpacesAndlowerCase(String plugin) {
+	private static String removeWhiteSpacesAndLowerCase(String plugin) {
 		return plugin.replaceAll("\\s", "").toLowerCase();
 	}
 

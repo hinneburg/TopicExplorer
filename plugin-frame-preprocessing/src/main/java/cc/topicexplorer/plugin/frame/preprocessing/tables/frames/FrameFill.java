@@ -119,6 +119,7 @@ public final class FrameFill extends TableFillCommand {
 			this.logger.error("Table could not be filled properly.");
 			throw new RuntimeException(e);
 		}
+		bestFrames();
 	}
 
 	private void appendFramesOfRemainingResultSet(ResultSet rs, Collection<Frame> frames, int posSubs) {
@@ -145,6 +146,24 @@ public final class FrameFill extends TableFillCommand {
 			}
 		} catch (SQLException e) {
 			this.logger.error("Exception in handling the current resultset.");
+			throw new RuntimeException(e);
+		}
+	}
+	
+	private void bestFrames() {
+		int numTopics = (Integer) properties.get("malletNumTopics");
+		try {
+			for(int i = 0; i < numTopics; i++) {
+				if(i == 0) {
+					this.database.executeUpdateQueryForUpdate("CREATE TABLE BEST_FRAMES AS SELECT FRAME_ID, TOPIC_ID, COUNT(*) AS FRAME_COUNT FROM FRAMES WHERE TOPIC_ID=" 
+							+ i + " GROUP BY FRAME ORDER BY FRAME_COUNT DESC LIMIT 10");
+				} else {
+					this.database.executeUpdateQueryForUpdate("INSERT INTO BEST_FRAMES SELECT FRAME_ID, TOPIC_ID, COUNT(*) AS FRAME_COUNT FROM FRAMES WHERE TOPIC_ID=" 
+							+ i + " GROUP BY FRAME ORDER BY FRAME_COUNT DESC LIMIT 10");
+				}
+			}
+		} catch (SQLException e) {
+			this.logger.error("Exception while creating bestFrames table.");
 			throw new RuntimeException(e);
 		}
 	}

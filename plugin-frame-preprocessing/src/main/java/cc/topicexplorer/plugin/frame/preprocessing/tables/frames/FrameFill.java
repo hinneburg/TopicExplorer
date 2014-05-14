@@ -8,7 +8,34 @@ import cc.topicexplorer.commands.TableFillCommand;
 
 import com.google.common.collect.Lists;
 
+/**
+ * <b>Needed database tables</b>: {@code TERM}, {@code TERM_TOPIC},
+ * {@code DOCUMENT_TERM_TOPIC}.
+ * <p>
+ * <b>{@link #fillTable()} method</b> will arrange the content of the table
+ * {@code TopTermsDocSameTopic} and search for frames (noun-verb combinations)
+ * in that table. Every so found frame will be written to the table
+ * {@code FRAMES}. For every topic only the 20 best fitting nouns and 20 best
+ * fitting verbs are used.
+ * <p>
+ * <b>Frames will be identified</b> if the distance between a noun and a
+ * succeeding verb is less or equal 150 characters. Further both, noun and verb,
+ * must be consistent with their {@code TOPIC_ID} and {@code DOCUMENT_ID}.
+ * Accepted values in the column {@code $WORDTYPE} are {@code SUBS} and
+ * {@code VERB}.
+ * <p>
+ * Within any frame there will be <b>only one noun and one verb</b>. No second
+ * verb to a specific noun and no second noun to a specific verb, unless one
+ * occurs a second time in the text corpus.
+ * 
+ * @author Benjamin Schandera (4.23@gmx.de)
+ * 
+ */
 public final class FrameFill extends TableFillCommand {
+	private static final int NUMBER_OF_TOP_TOPICS = 20;
+	private static final int MAX_DISTANCE_NOUN_TO_VERB = 150;
+	private static final String VERB = "VERB";
+	private static final String NOUN = "SUBS";
 
 	@Override
 	public void setTableName() {
@@ -25,69 +52,63 @@ public final class FrameFill extends TableFillCommand {
 
 	@Override
 	public void fillTable() {
-		alterAndFillTableTerm();
+		fillWordtypeColumnOfTableTerm();
 		createAndFillTableTopTerms();
 		createAndFillTableTopTermsDocSameTopic();
 		fillTableFrames();
 		dropTemporaryTablesAndColumns();
-		this.logger.info(String.format("Table %s is filled.", this.tableName));
+		logger.info(String.format("Table %s is filled.", this.tableName));
 	}
 
-	private void alterAndFillTableTerm() {
+	private void fillWordtypeColumnOfTableTerm() {
 		try {
-			// add wordtype column to TERM table
-			// and fetch values from another table
-			this.database
-					.executeUpdateQueryForUpdate("alter table TERM add column WORDTYPE VARCHAR(255) COLLATE utf8_bin");
-			this.database
-					.executeUpdateQueryForUpdate("update TERM, DOCUMENT_TERM_TOPIC "
-							+ "SET TERM.WORDTYPE=DOCUMENT_TERM_TOPIC.WORDTYPE$WORDTYPE WHERE DOCUMENT_TERM_TOPIC.TERM=TERM.TERM_NAME");
+			database.executeUpdateQueryForUpdate("alter table TERM add column WORDTYPE VARCHAR(255) COLLATE utf8_bin");
+			database.executeUpdateQueryForUpdate("update TERM, DOCUMENT_TERM_TOPIC "
+					+ "SET TERM.WORDTYPE=DOCUMENT_TERM_TOPIC.WORDTYPE$WORDTYPE WHERE DOCUMENT_TERM_TOPIC.TERM=TERM.TERM_NAME");
 		} catch (SQLException e) {
-			this.logger.error("Table TERM could not be altered.");
+			logger.error("Table TERM could not be altered.");
 			throw new RuntimeException(e);
 		}
 	}
 
 	private void createAndFillTableTopTerms() {
 		try {
-			this.database
-					.executeUpdateQuery("create table TopTerms ENGINE = MEMORY DEFAULT CHARSET=utf8 COLLATE=utf8_bin "
-							+ "select TERM_NAME, TOPIC_ID, PR_TERM_GIVEN_TOPIC from TERM_TOPIC join TERM using (TERM_ID) "
-							+ "where TOPIC_ID=0 AND WORDTYPE='SUBS'	order by PR_TERM_GIVEN_TOPIC desc limit 20;");
-			this.database.executeUpdateQuery("alter table TopTerms add index (TOPIC_ID,TERM_NAME)");
-			this.database.executeUpdateQuery("alter table TopTerms add index (TERM_NAME)");
+			database.executeUpdateQuery("create table TopTerms ENGINE = MEMORY DEFAULT CHARSET=utf8 COLLATE=utf8_bin "
+					+ "select TERM_NAME, TOPIC_ID, PR_TERM_GIVEN_TOPIC from TERM_TOPIC join TERM using (TERM_ID) "
+					+ "where TOPIC_ID=0 AND WORDTYPE='SUBS'	order by PR_TERM_GIVEN_TOPIC desc limit 20;");
+			database.executeUpdateQuery("alter table TopTerms add index (TOPIC_ID,TERM_NAME)");
+			database.executeUpdateQuery("alter table TopTerms add index (TERM_NAME)");
 
 			// best 20 nouns of best 20 topics
-			for (int i = 1; i < 20; i++) {
-				this.database.executeUpdateQueryForUpdate("insert into TopTerms "
+			for (int i = 0; i < NUMBER_OF_TOP_TOPICS; i++) {
+				database.executeUpdateQueryForUpdate("insert into TopTerms "
 						+ "select TERM_NAME, TOPIC_ID, PR_TERM_GIVEN_TOPIC from TERM_TOPIC join TERM "
 						+ "using (TERM_ID) where TOPIC_ID=" + i
 						+ " AND WORDTYPE='SUBS' order by PR_TERM_GIVEN_TOPIC desc limit 20;");
 			}
 
 			// best 20 verbs of best 20 topics
-			for (int i = 0; i < 20; i++) {
-				this.database.executeUpdateQueryForUpdate("insert into TopTerms "
+			for (int i = 0; i < NUMBER_OF_TOP_TOPICS; i++) {
+				database.executeUpdateQueryForUpdate("insert into TopTerms "
 						+ "select TERM_NAME, TOPIC_ID, PR_TERM_GIVEN_TOPIC from TERM_TOPIC join TERM "
 						+ "using (TERM_ID) where TOPIC_ID=" + i
 						+ " AND WORDTYPE='VERB' order by PR_TERM_GIVEN_TOPIC desc limit 20;");
 			}
 		} catch (SQLException e) {
-			this.logger.error("Exception while handling temporary table TopTerms.");
+			logger.error("Exception while handling temporary table TopTerms.");
 			throw new RuntimeException(e);
 		}
 	}
 
 	private void createAndFillTableTopTermsDocSameTopic() {
 		try {
-			this.database
-					.executeUpdateQuery("create table TOP_TERMS_DOC_SAME_TOPIC ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin "
-							+ "select DOCUMENT_TERM_TOPIC.DOCUMENT_ID, TopTerms.TOPIC_ID, "
-							+ "DOCUMENT_TERM_TOPIC.POSITION_OF_TOKEN_IN_DOCUMENT, DOCUMENT_TERM_TOPIC.TERM, DOCUMENT_TERM_TOPIC.WORDTYPE$WORDTYPE "
-							+ "from DOCUMENT_TERM_TOPIC join TopTerms on (DOCUMENT_TERM_TOPIC.TERM=TopTerms.TERM_NAME and DOCUMENT_TERM_TOPIC.TOPIC_ID=TopTerms.TOPIC_ID) "
-							+ "order by DOCUMENT_TERM_TOPIC.DOCUMENT_ID asc, TopTerms.TOPIC_ID asc,	DOCUMENT_TERM_TOPIC.POSITION_OF_TOKEN_IN_DOCUMENT asc");
+			database.executeUpdateQuery("create table TOP_TERMS_DOC_SAME_TOPIC ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin "
+					+ "select DOCUMENT_TERM_TOPIC.DOCUMENT_ID, TopTerms.TOPIC_ID, "
+					+ "DOCUMENT_TERM_TOPIC.POSITION_OF_TOKEN_IN_DOCUMENT, DOCUMENT_TERM_TOPIC.TERM, DOCUMENT_TERM_TOPIC.WORDTYPE$WORDTYPE "
+					+ "from DOCUMENT_TERM_TOPIC join TopTerms on (DOCUMENT_TERM_TOPIC.TERM=TopTerms.TERM_NAME and DOCUMENT_TERM_TOPIC.TOPIC_ID=TopTerms.TOPIC_ID) "
+					+ "order by DOCUMENT_TERM_TOPIC.DOCUMENT_ID asc, TopTerms.TOPIC_ID asc,	DOCUMENT_TERM_TOPIC.POSITION_OF_TOKEN_IN_DOCUMENT asc");
 		} catch (SQLException e) {
-			this.logger.error("Exception while handling temporary table TOP_TERMS_DOC_SAME_TOPIC.");
+			logger.error("Exception while handling temporary table TOP_TERMS_DOC_SAME_TOPIC.");
 			throw new RuntimeException(e);
 		}
 	}
@@ -96,56 +117,47 @@ public final class FrameFill extends TableFillCommand {
 		Collection<Frame> frames = Lists.newArrayList();
 
 		try {
-			ResultSet rs = this.database
+			ResultSet topTerms = database
 					.executeQuery("SELECT * FROM TOP_TERMS_DOC_SAME_TOPIC order by DOCUMENT_ID asc, TOPIC_ID asc, POSITION_OF_TOKEN_IN_DOCUMENT asc");
 
-			while (rs.next()) { // look for the first SUBS
-				if (rs.getString("WORDTYPE$WORDTYPE").equals("SUBS")) {
-					appendFramesOfRemainingResultSet(rs, frames, rs.getInt("POSITION_OF_TOKEN_IN_DOCUMENT"));
+			while (topTerms.next()) { // look for the first noun
+				if (topTerms.getString("WORDTYPE$WORDTYPE").equals(NOUN)) {
+					lookForFramesInRemainingWords(topTerms, frames, topTerms.getInt("POSITION_OF_TOKEN_IN_DOCUMENT"));
 				}
 			}
 
-			// AUSGABE START
 			for (Frame frame : frames) {
-				this.database
-						.executeUpdateQueryForUpdate(String
-								.format("INSERT INTO %s (DOCUMENT_ID, TOPIC_ID, FRAME, START_POSITION, END_POSITION) VALUES (%d, %d, \"%s, %s\", %d, %d)",
-										this.tableName, frame.getDocId(), frame.getTopicId(), frame.getTermSubs(),
-										frame.getTermVerb(), frame.getPosSubs(), frame.getPosVerb()));
+				database.executeUpdateQueryForUpdate(String
+						.format("INSERT INTO %s (DOCUMENT_ID, TOPIC_ID, FRAME, START_POSITION, END_POSITION) VALUES (%d, %d, \"%s, %s\", %d, %d)",
+								tableName, frame.getDocumentId(), frame.getTopicId(), frame.getTermSubs(),
+								frame.getTermVerb(), frame.getPosSubs(), frame.getPosVerb()));
 			}
-			// AUSGABE ENDE
 
 		} catch (SQLException e) {
-			this.logger.error("Table could not be filled properly.");
+			logger.error("Table could not be filled properly.");
 			throw new RuntimeException(e);
 		}
 		bestFrames();
 	}
 
-	private void appendFramesOfRemainingResultSet(ResultSet rs, Collection<Frame> frames, int posSubs) {
+	private void lookForFramesInRemainingWords(ResultSet words, Collection<Frame> frames, int positionOfNounInDocument) {
 
 		try {
-			int docIdSubs = rs.getInt("DOCUMENT_ID");
-			int topicIdSubs = rs.getInt("TOPIC_ID");
-			String termSubs = rs.getString("TERM");
+			Word noun = Word.createNounWithExplicitPosition(words, positionOfNounInDocument);
 			boolean frameFound = false;
 
-			while (rs.next()) {
-
-				String wordTypeTmp = rs.getString("WORDTYPE$WORDTYPE");
-				int posTmp = rs.getInt("POSITION_OF_TOKEN_IN_DOCUMENT");
-
-				if (wordTypeTmp.equals("SUBS")) {
-					appendFramesOfRemainingResultSet(rs, frames, posTmp);
-				} else if (!frameFound && wordTypeTmp.equals("VERB") && rs.getInt("DOCUMENT_ID") == docIdSubs
-						&& rs.getInt("TOPIC_ID") == topicIdSubs && posTmp - posSubs <= 150) {
+			while (words.next()) {
+				Word currentWord = Word.createWord(words);
+				if (currentWord.isNoun()) {
+					lookForFramesInRemainingWords(words, frames, currentWord.getPositionOfWordInDocument());
+				} else if (!frameFound && isFrame(noun, currentWord)) {
 					frameFound = true;
-					frames.add(new Frame(docIdSubs, topicIdSubs, termSubs, rs.getString("TERM"), posSubs, posTmp));
+					frames.add(new Frame(noun, currentWord.getTerm(), currentWord.getPositionOfWordInDocument()));
 				}
 
 			}
 		} catch (SQLException e) {
-			this.logger.error("Exception in handling the current resultset.");
+			logger.error("Exception in handling the current resultset.");
 			throw new RuntimeException(e);
 		}
 	}
@@ -168,25 +180,95 @@ public final class FrameFill extends TableFillCommand {
 		}
 	}
 
-	private class Frame {
-		private final int docId;
-		private final int topicId;
-		private final String termSubs;
-		private final String termVerb;
-		private final int posSubs;
-		private final int posVerb;
+	private boolean isFrame(Word noun, Word currentWord) {
+		return (currentWord.isVerb() && currentWord.getDocumentId() == noun.getDocumentId()
+				&& currentWord.getTopicId() == noun.getTopicId() && currentWord.getPositionOfWordInDocument()
+				- noun.getPositionOfWordInDocument() <= MAX_DISTANCE_NOUN_TO_VERB);
+	}
 
-		public Frame(int docId, int topicId, String termSubs, String termVerb, int posSubs, int posVerb) {
-			this.docId = docId;
-			this.topicId = topicId;
-			this.termSubs = termSubs;
-			this.termVerb = termVerb;
-			this.posSubs = posSubs;
-			this.posVerb = posVerb;
+	private void dropTemporaryTablesAndColumns() {
+		try {
+			database.executeUpdateQuery("alter table TERM drop column WORDTYPE");
+			database.dropTable("TopTerms");
+			database.dropTable("TOP_TERMS_DOC_SAME_TOPIC");
+		} catch (SQLException e) {
+			logger.warn("At least one temporarely created table or column could not be dropped.", e);
+		}
+	}
+
+	private static class Word {
+		private final String wordtype;
+		private final int documentId;
+		private final int topicId;
+		private final String term;
+		private final int positionOfWordInDocument;
+
+		private Word(ResultSet currentWord, String wordtype, int positionOfWordInDocument) throws SQLException {
+			this.wordtype = wordtype;
+			documentId = currentWord.getInt("DOCUMENT_ID");
+			topicId = currentWord.getInt("TOPIC_ID");
+			term = currentWord.getString("TERM");
+			this.positionOfWordInDocument = positionOfWordInDocument;
 		}
 
-		public int getDocId() {
-			return this.docId;
+		public boolean isVerb() {
+			return getWordtype().equals(VERB);
+		}
+
+		public boolean isNoun() {
+			return getWordtype().equals(NOUN);
+		}
+
+		public static Word createNounWithExplicitPosition(ResultSet noun, int positionOfnounInDocument)
+				throws SQLException {
+			return new Word(noun, NOUN, positionOfnounInDocument);
+		}
+
+		public static Word createWord(ResultSet word) throws SQLException {
+			return new Word(word, word.getString("WORDTYPE$WORDTYPE"), word.getInt("POSITION_OF_TOKEN_IN_DOCUMENT"));
+		}
+
+		public String getWordtype() {
+			return wordtype;
+		}
+
+		public int getDocumentId() {
+			return documentId;
+		}
+
+		public int getTopicId() {
+			return topicId;
+		}
+
+		public String getTerm() {
+			return term;
+		}
+
+		public int getPositionOfWordInDocument() {
+			return positionOfWordInDocument;
+		}
+
+	}
+
+	private static class Frame {
+		private final int documentId;
+		private final int topicId;
+		private final String termNoun;
+		private final String termVerb;
+		private final int positionOfNounInDocument;
+		private final int positionOfVerbInDocument;
+
+		public Frame(Word noun, String term, int positionOfWordInDocument) {
+			documentId = noun.getDocumentId();
+			topicId = noun.getTopicId();
+			termNoun = noun.getTerm();
+			termVerb = term;
+			positionOfNounInDocument = noun.getPositionOfWordInDocument();
+			positionOfVerbInDocument = positionOfWordInDocument;
+		}
+
+		public int getDocumentId() {
+			return this.documentId;
 		}
 
 		public int getTopicId() {
@@ -194,7 +276,7 @@ public final class FrameFill extends TableFillCommand {
 		}
 
 		public String getTermSubs() {
-			return this.termSubs;
+			return this.termNoun;
 		}
 
 		public String getTermVerb() {
@@ -202,21 +284,12 @@ public final class FrameFill extends TableFillCommand {
 		}
 
 		public int getPosSubs() {
-			return this.posSubs;
+			return this.positionOfNounInDocument;
 		}
 
 		public int getPosVerb() {
-			return this.posVerb;
+			return this.positionOfVerbInDocument;
 		}
 	}
 
-	private void dropTemporaryTablesAndColumns() {
-		try {
-			this.database.executeUpdateQuery("alter table TERM drop column WORDTYPE");
-			this.database.dropTable("TopTerms");
-			this.database.dropTable("TOP_TERMS_DOC_SAME_TOPIC");
-		} catch (SQLException e) {
-			this.logger.warn("At least one temporarely created table or column could not be dropped.", e);
-		}
-	}
 }

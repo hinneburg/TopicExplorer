@@ -63,6 +63,10 @@ public class BestDocumentsForGivenTopic {
 	public void addWhereClause(String where) {
 		documentMap.where.add(where);
 	}
+	
+	public void addFrom(String from) {
+		documentMap.from.add(from);
+	}
 
 	public void executeQueriesAndWriteOutBestDocumentsForGivenTopic() {
 		JSONArray topTopic = new JSONArray();

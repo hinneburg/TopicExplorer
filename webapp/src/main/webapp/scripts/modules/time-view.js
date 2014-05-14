@@ -141,7 +141,7 @@ define(
     			if(self.renderedTopics()[topic] != "average") 
     				topics.push(self.renderedTopics()[topic]);
     		}
-    		topicexplorerModel.newTab("Command=bestDocs&TopicId="+ topics + "&week=" + week.toString().substr(0,10), date.getDate() + "." + date.getMonth() + "." + date.getFullYear().toString().substr(2,2) + " (" + topics + ")", 'document-view', new Array());	
+    		topicexplorerModel.newTab("Command=bestDocs&TopicId="+ topics + "&week=" + week.toString().substr(0,10), date.getDate() + "." + (date.getMonth() + 1) + "." + date.getFullYear().toString().substr(2,2) + " (" + topics + ")", 'document-view', new Array());	
     	};
     	
     	return self;

@@ -167,10 +167,10 @@ public final class FrameFill extends TableFillCommand {
 		try {
 			for(int i = 0; i < numTopics; i++) {
 				if(i == 0) {
-					this.database.executeUpdateQueryForUpdate("CREATE TABLE BEST_FRAMES AS SELECT FRAME_ID, TOPIC_ID, COUNT(*) AS FRAME_COUNT FROM FRAMES WHERE TOPIC_ID=" 
+					this.database.executeUpdateQueryForUpdate("CREATE TABLE BEST_FRAMES AS SELECT FRAME, TOPIC_ID, COUNT(DISTINCT DOCUMENT_ID) AS FRAME_COUNT FROM FRAMES WHERE TOPIC_ID=" 
 							+ i + " GROUP BY FRAME ORDER BY FRAME_COUNT DESC LIMIT 10");
 				} else {
-					this.database.executeUpdateQueryForUpdate("INSERT INTO BEST_FRAMES SELECT FRAME_ID, TOPIC_ID, COUNT(*) AS FRAME_COUNT FROM FRAMES WHERE TOPIC_ID=" 
+					this.database.executeUpdateQueryForUpdate("INSERT INTO BEST_FRAMES SELECT FRAME, TOPIC_ID, COUNT(DISTINCT DOCUMENT_ID) AS FRAME_COUNT FROM FRAMES WHERE TOPIC_ID=" 
 							+ i + " GROUP BY FRAME ORDER BY FRAME_COUNT DESC LIMIT 10");
 				}
 			}

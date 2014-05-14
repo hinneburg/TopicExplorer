@@ -22,7 +22,6 @@ public class Frames {
 		frameMap = new SelectMap();
 		frameMap.select.add("FRAME");
 		frameMap.select.add("COUNT( DISTINCT DOCUMENT_ID ) AS FRAME_COUNT");
-		frameMap.select.add("FRAMES.FRAME_ID");
 		frameMap.select.add("FRAMES.TOPIC_ID");
 		frameMap.from.add("FRAMES");
 		frameMap.where.add("TOPIC_ID=" + topicId);
@@ -55,7 +54,6 @@ public class Frames {
 		ArrayList<String> frameColumnList = frameMap.getCleanColumnNames();
 		
 		frameColumnList.remove("TOPIC_ID");
-		frameColumnList.remove("FRAME_ID");
 		
 		JSONObject topicData = new JSONObject();
 		JSONObject frameData = new JSONObject();
@@ -65,6 +63,7 @@ public class Frames {
 
 		ResultSet frameQueryRS = database.executeQuery(frameMap.getSQLString());
 		int topicId = -1;
+		int counter = 0;
 		while (frameQueryRS.next()) {
 			if (topicId != frameQueryRS.getInt("TOPIC_ID")) {
 				if (topicData.size() > 0) {
@@ -73,6 +72,7 @@ public class Frames {
 					all.put(topicId, frames);
 					topicData = new JSONObject();
 					sorting = new JSONArray();
+					counter = 0;
 				} 
 				topicId = frameQueryRS.getInt("TOPIC_ID");
 			} 
@@ -81,8 +81,9 @@ public class Frames {
 			for (int i = 0; i < frameColumnList.size(); i++) {
 				frameData.put(frameColumnList.get(i), frameQueryRS.getString(frameColumnList.get(i)));
 			}
-			topicData.put(frameQueryRS.getString("FRAME_ID"), frameData);
-			sorting.add(frameQueryRS.getString("FRAME_ID"));
+			topicData.put(counter, frameData);
+			sorting.add(counter);
+			counter++;
 		}
 		frames = new JSONObject();
 		frames.put("FRAMES", topicData);

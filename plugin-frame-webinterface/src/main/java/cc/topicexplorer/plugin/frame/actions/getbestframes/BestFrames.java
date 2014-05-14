@@ -20,14 +20,11 @@ public class BestFrames {
 
 	public BestFrames(Database database, PrintWriter pw, Logger logger) {
 		frameMap = new SelectMap();
-		frameMap.select.add("FRAMES.FRAME");
+		frameMap.select.add("FRAME");
 		frameMap.select.add("FRAME_COUNT");
-		frameMap.select.add("FRAMES.FRAME_ID");
-		frameMap.select.add("FRAMES.TOPIC_ID");
-		frameMap.from.add("FRAMES");
+		frameMap.select.add("TOPIC_ID");
 		frameMap.from.add("BEST_FRAMES");
-		frameMap.where.add("FRAMES.FRAME_ID = BEST_FRAMES.FRAME_ID");
-		frameMap.orderBy.add("FRAMES.TOPIC_ID");
+		frameMap.orderBy.add("TOPIC_ID");
 		frameMap.orderBy.add("FRAME_COUNT DESC");
 
 		this.setDatabase(database);
@@ -54,7 +51,6 @@ public class BestFrames {
 		ArrayList<String> frameColumnList = frameMap.getCleanColumnNames();
 		
 		frameColumnList.remove("TOPIC_ID");
-		frameColumnList.remove("FRAME_ID");
 		
 		JSONObject topicData = new JSONObject();
 		JSONObject frameData = new JSONObject();
@@ -64,6 +60,7 @@ public class BestFrames {
 
 		ResultSet frameQueryRS = database.executeQuery(frameMap.getSQLString());
 		int topicId = -1;
+		int counter = 0;
 		while (frameQueryRS.next()) {
 			if (topicId != frameQueryRS.getInt("TOPIC_ID")) {
 				if (topicData.size() > 0) {
@@ -72,6 +69,7 @@ public class BestFrames {
 					all.put(topicId, frames);
 					topicData = new JSONObject();
 					sorting = new JSONArray();
+					counter = 0;
 				} 
 				topicId = frameQueryRS.getInt("TOPIC_ID");
 			} 
@@ -80,8 +78,9 @@ public class BestFrames {
 			for (int i = 0; i < frameColumnList.size(); i++) {
 				frameData.put(frameColumnList.get(i), frameQueryRS.getString(frameColumnList.get(i)));
 			}
-			topicData.put(frameQueryRS.getString("FRAME_ID"), frameData);
-			sorting.add(frameQueryRS.getString("FRAME_ID"));
+			topicData.put(counter, frameData);
+			sorting.add(counter);
+			counter ++;
 		}
 		frames = new JSONObject();
 		frames.put("FRAMES", topicData);

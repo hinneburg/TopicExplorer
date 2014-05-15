@@ -116,12 +116,38 @@ public final class FrameFill extends TableFillCommand {
 			ResultSet topTerms = database
 					.executeQuery("SELECT * FROM TOP_TERMS_DOC_SAME_TOPIC order by DOCUMENT_ID asc, TOPIC_ID asc, POSITION_OF_TOKEN_IN_DOCUMENT asc");
 
-			while (topTerms.next()) { // look for the first noun
-				if (topTerms.getString("WORDTYPE$WORDTYPE").equals(NOUN)) {
-					lookForFramesInRemainingTerms(topTerms, frames, topTerms.getInt("POSITION_OF_TOKEN_IN_DOCUMENT"));
+//			while (topTerms.next()) { // look for the first noun
+//				if (topTerms.getString("WORDTYPE$WORDTYPE").equals(NOUN)) {
+//					lookForFramesInRemainingTerms(topTerms, frames, topTerms.getInt("POSITION_OF_TOKEN_IN_DOCUMENT"));
+//				}
+//			}
+			int documentId = 0;
+			int position = 0;
+			int topicId = 0;
+			String term = null, wordType = null;
+			int endPos;
+			while (topTerms.next()) { 
+				if(documentId != topTerms.getInt("DOCUMENT_ID") || 
+						topicId != topTerms.getInt("TOPIC_ID") || 
+								topTerms.getInt("POSITION_OF_TOKEN_IN_DOCUMENT") - position > 150 || 
+										topTerms.getString("WORDTYPE$WORDTYPE").equals("SUBS")) {
+					documentId = topTerms.getInt("DOCUMENT_ID");
+					topicId = topTerms.getInt("TOPIC_ID");
+					position = topTerms.getInt("POSITION_OF_TOKEN_IN_DOCUMENT");
+					term = topTerms.getString("TERM");
+					wordType = topTerms.getString("WORDTYPE$WORDTYPE");
+				} else {
+					if(wordType.equals("SUBS")) {
+						endPos = topTerms.getInt("POSITION_OF_TOKEN_IN_DOCUMENT") + topTerms.getString("TERM").length();
+						//int docId, int topic, String noun, String term, int startPos, int endPos
+						frames.add(new Frame(documentId, topicId, term, topTerms.getString("TERM"), position, endPos));
+						//	echo "INSERT INTO FRAMES (DOCUMENT_ID, TOPIC_ID, FRAME, START_POSITION, END_POSITION) VALUES ($doc, $topic, '$term, " . $row['TERM'] . "', $pos, $endPos)\n";		
+					}	
+					position = -150;
+					
 				}
 			}
-
+			
 			for (Frame frame : frames) {
 				database.executeUpdateQueryForUpdate(String
 						.format("INSERT INTO %s (DOCUMENT_ID, TOPIC_ID, FRAME, START_POSITION, END_POSITION) VALUES (%d, %d, \"%s, %s\", %d, %d)",
@@ -167,14 +193,15 @@ public final class FrameFill extends TableFillCommand {
 	}
 
 	private void bestFrames() {
-		int numTopics = (Integer) properties.get("malletNumTopics");
+		int numTopics = Integer.parseInt( (String) properties.get("malletNumTopics") );
 		try {
+			database.executeUpdateQuery("DROP TABLE IF EXISTS BEST_FRAMES");
 			for (int i = 0; i < numTopics; i++) {
 				if (i == 0) {
-					database.executeUpdateQueryForUpdate("CREATE TABLE BEST_FRAMES AS SELECT FRAME_ID, TOPIC_ID, COUNT(*) AS FRAME_COUNT FROM FRAMES WHERE TOPIC_ID="
+					database.executeUpdateQueryForUpdate("CREATE TABLE BEST_FRAMES AS SELECT FRAME, TOPIC_ID, COUNT(*) AS FRAME_COUNT FROM FRAMES WHERE TOPIC_ID="
 							+ i + " GROUP BY FRAME ORDER BY FRAME_COUNT DESC LIMIT 10");
 				} else {
-					database.executeUpdateQueryForUpdate("INSERT INTO BEST_FRAMES SELECT FRAME_ID, TOPIC_ID, COUNT(*) AS FRAME_COUNT FROM FRAMES WHERE TOPIC_ID="
+					database.executeUpdateQueryForUpdate("INSERT INTO BEST_FRAMES SELECT FRAME, TOPIC_ID, COUNT(*) AS FRAME_COUNT FROM FRAMES WHERE TOPIC_ID="
 							+ i + " GROUP BY FRAME ORDER BY FRAME_COUNT DESC LIMIT 10");
 				}
 			}
@@ -271,6 +298,15 @@ public final class FrameFill extends TableFillCommand {
 			termVerb = term;
 			positionOfNounInDocument = noun.getPositionOfTermInDocument();
 			positionOfVerbInDocument = positionOfTermInDocument;
+		}
+		
+		public Frame(int docId, int topic, String noun, String term, int startPos, int endPos) {
+			documentId = docId;
+			topicId = topic;
+			termNoun = noun;
+			termVerb = term;
+			positionOfNounInDocument = startPos;
+			positionOfVerbInDocument = endPos;
 		}
 
 		public int getDocumentId() {

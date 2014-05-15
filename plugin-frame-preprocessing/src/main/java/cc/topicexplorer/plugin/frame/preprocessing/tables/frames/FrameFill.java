@@ -31,6 +31,7 @@ public final class FrameFill extends TableFillCommand {
 	private static final int MAX_DISTANCE_NOUN_TO_VERB = 150;
 	private static final String VERB = "VERB";
 	private static final String NOUN = "SUBS";
+	private static final int MAX_NUMBER_OF_RECURSIONS = 1000;
 
 	@Override
 	public void setTableName() {
@@ -135,9 +136,17 @@ public final class FrameFill extends TableFillCommand {
 		bestFrames();
 	}
 
+	private static int numberOfMethodCalls = 0;
+
 	private void lookForFramesInRemainingTerms(ResultSet terms, Collection<Frame> frames, int positionOfNounInDocument) {
 
 		try {
+			numberOfMethodCalls++;
+			if (numberOfMethodCalls == MAX_NUMBER_OF_RECURSIONS) {
+				terms.previous();
+				return;
+			}
+
 			Term noun = Term.createNounWithExplicitPosition(terms, positionOfNounInDocument);
 			boolean frameFound = false;
 

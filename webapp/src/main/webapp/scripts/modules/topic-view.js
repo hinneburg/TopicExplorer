@@ -29,11 +29,9 @@ function(ko, $) {
 					delete receivedParsedJson[key].SORTING;
 					$.extend(self.topicexplorerModel.data.topic[key], receivedParsedJson[key]);
 					self.topicexplorerModel.data.topic[key].frameCount = 0;
-				//	var frames = new Array();
 					for(var i in receivedParsedJson[key].FRAMES) {
 						if(receivedParsedJson[key].FRAMES.hasOwnProperty(i)) {
 							self.topicexplorerModel.data.topic[key].frameCount++;
-				//			frames.push(i);
 						}
 					}
 					self.topicexplorerModel.data.topic[key].frameSorting = ko.observableArray(frames);
@@ -48,6 +46,20 @@ function(ko, $) {
 				
 			});
 		}
+	};
+	
+	self.loadDocumentsForFrames = function(frameId, event) {
+		var target = 0;
+        
+		if (event.target) target = event.target;
+		else if (event.srcElement) target = event.srcElement;
+	        
+		if (target.nodeType == 3) // defeat Safari bug
+			target = target.parentNode;
+
+		var topicId = target.parentNode.parentNode.parentNode.parentNode.parentNode.getAttribute('id').substr(5);
+		var frame = topicexplorerModel.data.topic[topicId].FRAMES[frameId].FRAME;
+		topicexplorerModel.newTab("Command=bestDocs&TopicId=" + topicId + "&frame=" + frame, "Topic " + topicId + " Frame " + frame, 'document-view', new Array());	
 	};
 	
 	self.frameScrollCallback = function(el) {

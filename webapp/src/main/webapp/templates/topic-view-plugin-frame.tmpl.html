@@ -3,10 +3,10 @@
 	<button class="addToCart" name="addToCart" title="add to shortlist" type="button"></button>
 </div>
 
-<div class="topicTitle"><a href="#" data-bind="text: $root.topicexplorer.data.topic[selectedTopic].TEXT$TOPIC_LABEL,click:$parent.loadDocumentsForTopic"></a></div>
+<div class="topicTitle"><a href="#" data-bind="text: $root.topicexplorer.data.topic[selectedTopic].TEXT$TOPIC_LABEL,click:loadDocumentsForTopic"></a></div>
 
 <div class="topicElementContent" data-bind="event: {scroll: $parent.frameScrollCallback}">
 	<ul class="wordList" data-bind = "foreach: {data: $root.topicexplorer.data.topic[selectedTopic].frameSorting, as: 'frame'}">
-		<li data-bind="text: $root.topicexplorer.data.topic[selectedTopic].FRAMES[frame].FRAME + ' (' + $root.topicexplorer.data.topic[selectedTopic].FRAMES[frame].FRAME_COUNT + ')'"></li>
+		<li><a href="#" data-bind="text: $root.topicexplorer.data.topic[selectedTopic].FRAMES[frame].FRAME + ' (' + $root.topicexplorer.data.topic[selectedTopic].FRAMES[frame].FRAME_COUNT + ')', click: loadDocumentsForFrames"></a></li>
 	</ul>
 </div>

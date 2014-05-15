@@ -9,29 +9,24 @@ import cc.topicexplorer.commands.TableFillCommand;
 import com.google.common.collect.Lists;
 
 /**
- * <b>Needed database tables</b>: {@code TERM}, {@code TERM_TOPIC},
- * {@code DOCUMENT_TERM_TOPIC}.
+ * <b>Needed database tables</b>: {@code TERM}, {@code TERM_TOPIC}, {@code DOCUMENT_TERM_TOPIC}.
  * <p>
- * <b>{@link #fillTable()} method</b> will arrange the content of the table
- * {@code TopTermsDocSameTopic} and search for frames (noun-verb combinations)
- * in that table. Every so found frame will be written to the table
- * {@code FRAMES}. For every topic only the 20 best fitting nouns and 20 best
- * fitting verbs are used.
+ * <b>{@link #fillTable()} method</b> will arrange the content of the table {@code TopTermsDocSameTopic} and search for
+ * frames (noun-verb combinations) in that table. Every so found frame will be written to the table {@code FRAMES}. For
+ * every topic only the 20 best fitting nouns and 20 best fitting verbs are used.
  * <p>
- * <b>Frames will be identified</b> if the distance between a noun and a
- * succeeding verb is less or equal 150 characters. Further both, noun and verb,
- * must be consistent with their {@code TOPIC_ID} and {@code DOCUMENT_ID}.
- * Accepted values in the column {@code $WORDTYPE} are {@code SUBS} and
- * {@code VERB}.
+ * <b>Frames will be identified</b> if the distance between a noun and a succeeding verb is less or equal 150
+ * characters. Further both, noun and verb, must be consistent with their {@code TOPIC_ID} and {@code DOCUMENT_ID}.
+ * Accepted values in the column {@code $WORDTYPE} are {@code SUBS} and {@code VERB}.
  * <p>
- * Within any frame there will be <b>only one noun and one verb</b>. No second
- * verb to a specific noun and no second noun to a specific verb, unless one
- * occurs a second time in the text corpus.
+ * Within any frame there will be <b>only one noun and one verb</b>. No second verb to a specific noun and no second
+ * noun to a specific verb, unless one occurs a second time in the text corpus.
  * 
  * @author Benjamin Schandera (4.23@gmx.de)
  * 
  */
 public final class FrameFill extends TableFillCommand {
+
 	private static final int NUMBER_OF_TOP_TOPICS = 20;
 	private static final int MAX_DISTANCE_NOUN_TO_VERB = 150;
 	private static final String VERB = "VERB";
@@ -122,15 +117,15 @@ public final class FrameFill extends TableFillCommand {
 
 			while (topTerms.next()) { // look for the first noun
 				if (topTerms.getString("WORDTYPE$WORDTYPE").equals(NOUN)) {
-					lookForFramesInRemainingWords(topTerms, frames, topTerms.getInt("POSITION_OF_TOKEN_IN_DOCUMENT"));
+					lookForFramesInRemainingTerms(topTerms, frames, topTerms.getInt("POSITION_OF_TOKEN_IN_DOCUMENT"));
 				}
 			}
 
 			for (Frame frame : frames) {
 				database.executeUpdateQueryForUpdate(String
 						.format("INSERT INTO %s (DOCUMENT_ID, TOPIC_ID, FRAME, START_POSITION, END_POSITION) VALUES (%d, %d, \"%s, %s\", %d, %d)",
-								tableName, frame.getDocumentId(), frame.getTopicId(), frame.getTermSubs(),
-								frame.getTermVerb(), frame.getPosSubs(), frame.getPosVerb()));
+								tableName, frame.getDocumentId(), frame.getTopicId(), frame.getTermNoun(),
+								frame.getTermVerb(), frame.getPosNoun(), frame.getPosVerb()));
 			}
 
 		} catch (SQLException e) {
@@ -140,19 +135,19 @@ public final class FrameFill extends TableFillCommand {
 		bestFrames();
 	}
 
-	private void lookForFramesInRemainingWords(ResultSet words, Collection<Frame> frames, int positionOfNounInDocument) {
+	private void lookForFramesInRemainingTerms(ResultSet terms, Collection<Frame> frames, int positionOfNounInDocument) {
 
 		try {
-			Word noun = Word.createNounWithExplicitPosition(words, positionOfNounInDocument);
+			Term noun = Term.createNounWithExplicitPosition(terms, positionOfNounInDocument);
 			boolean frameFound = false;
 
-			while (words.next()) {
-				Word currentWord = Word.createWord(words);
-				if (currentWord.isNoun()) {
-					lookForFramesInRemainingWords(words, frames, currentWord.getPositionOfWordInDocument());
-				} else if (!frameFound && isFrame(noun, currentWord)) {
+			while (terms.next()) {
+				Term currentTerm = Term.createTerm(terms);
+				if (currentTerm.isNoun()) {
+					lookForFramesInRemainingTerms(terms, frames, currentTerm.getPositionOfTermInDocument());
+				} else if (!frameFound && isFrame(noun, currentTerm)) {
 					frameFound = true;
-					frames.add(new Frame(noun, currentWord.getTerm(), currentWord.getPositionOfWordInDocument()));
+					frames.add(new Frame(noun, currentTerm.getTerm(), currentTerm.getPositionOfTermInDocument()));
 				}
 
 			}
@@ -161,16 +156,16 @@ public final class FrameFill extends TableFillCommand {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
 	private void bestFrames() {
 		int numTopics = (Integer) properties.get("malletNumTopics");
 		try {
-			for(int i = 0; i < numTopics; i++) {
-				if(i == 0) {
-					this.database.executeUpdateQueryForUpdate("CREATE TABLE BEST_FRAMES AS SELECT FRAME, TOPIC_ID, COUNT(DISTINCT DOCUMENT_ID) AS FRAME_COUNT FROM FRAMES WHERE TOPIC_ID=" 
+			for (int i = 0; i < numTopics; i++) {
+				if (i == 0) {
+					database.executeUpdateQueryForUpdate("CREATE TABLE BEST_FRAMES AS SELECT FRAME_ID, TOPIC_ID, COUNT(*) AS FRAME_COUNT FROM FRAMES WHERE TOPIC_ID="
 							+ i + " GROUP BY FRAME ORDER BY FRAME_COUNT DESC LIMIT 10");
 				} else {
-					this.database.executeUpdateQueryForUpdate("INSERT INTO BEST_FRAMES SELECT FRAME, TOPIC_ID, COUNT(DISTINCT DOCUMENT_ID) AS FRAME_COUNT FROM FRAMES WHERE TOPIC_ID=" 
+					database.executeUpdateQueryForUpdate("INSERT INTO BEST_FRAMES SELECT FRAME_ID, TOPIC_ID, COUNT(*) AS FRAME_COUNT FROM FRAMES WHERE TOPIC_ID="
 							+ i + " GROUP BY FRAME ORDER BY FRAME_COUNT DESC LIMIT 10");
 				}
 			}
@@ -180,10 +175,10 @@ public final class FrameFill extends TableFillCommand {
 		}
 	}
 
-	private boolean isFrame(Word noun, Word currentWord) {
+	private boolean isFrame(Term noun, Term currentWord) {
 		return (currentWord.isVerb() && currentWord.getDocumentId() == noun.getDocumentId()
-				&& currentWord.getTopicId() == noun.getTopicId() && currentWord.getPositionOfWordInDocument()
-				- noun.getPositionOfWordInDocument() <= MAX_DISTANCE_NOUN_TO_VERB);
+				&& currentWord.getTopicId() == noun.getTopicId() && currentWord.getPositionOfTermInDocument()
+				- noun.getPositionOfTermInDocument() <= MAX_DISTANCE_NOUN_TO_VERB);
 	}
 
 	private void dropTemporaryTablesAndColumns() {
@@ -196,14 +191,15 @@ public final class FrameFill extends TableFillCommand {
 		}
 	}
 
-	private static class Word {
+	private static class Term {
+
 		private final String wordtype;
 		private final int documentId;
 		private final int topicId;
 		private final String term;
 		private final int positionOfWordInDocument;
 
-		private Word(ResultSet currentWord, String wordtype, int positionOfWordInDocument) throws SQLException {
+		private Term(ResultSet currentWord, String wordtype, int positionOfWordInDocument) throws SQLException {
 			this.wordtype = wordtype;
 			documentId = currentWord.getInt("DOCUMENT_ID");
 			topicId = currentWord.getInt("TOPIC_ID");
@@ -219,13 +215,13 @@ public final class FrameFill extends TableFillCommand {
 			return getWordtype().equals(NOUN);
 		}
 
-		public static Word createNounWithExplicitPosition(ResultSet noun, int positionOfnounInDocument)
+		public static Term createNounWithExplicitPosition(ResultSet noun, int positionOfnounInDocument)
 				throws SQLException {
-			return new Word(noun, NOUN, positionOfnounInDocument);
+			return new Term(noun, NOUN, positionOfnounInDocument);
 		}
 
-		public static Word createWord(ResultSet word) throws SQLException {
-			return new Word(word, word.getString("WORDTYPE$WORDTYPE"), word.getInt("POSITION_OF_TOKEN_IN_DOCUMENT"));
+		public static Term createTerm(ResultSet term) throws SQLException {
+			return new Term(term, term.getString("WORDTYPE$WORDTYPE"), term.getInt("POSITION_OF_TOKEN_IN_DOCUMENT"));
 		}
 
 		public String getWordtype() {
@@ -244,13 +240,14 @@ public final class FrameFill extends TableFillCommand {
 			return term;
 		}
 
-		public int getPositionOfWordInDocument() {
+		public int getPositionOfTermInDocument() {
 			return positionOfWordInDocument;
 		}
 
 	}
 
 	private static class Frame {
+
 		private final int documentId;
 		private final int topicId;
 		private final String termNoun;
@@ -258,13 +255,13 @@ public final class FrameFill extends TableFillCommand {
 		private final int positionOfNounInDocument;
 		private final int positionOfVerbInDocument;
 
-		public Frame(Word noun, String term, int positionOfWordInDocument) {
+		public Frame(Term noun, String term, int positionOfTermInDocument) {
 			documentId = noun.getDocumentId();
 			topicId = noun.getTopicId();
 			termNoun = noun.getTerm();
 			termVerb = term;
-			positionOfNounInDocument = noun.getPositionOfWordInDocument();
-			positionOfVerbInDocument = positionOfWordInDocument;
+			positionOfNounInDocument = noun.getPositionOfTermInDocument();
+			positionOfVerbInDocument = positionOfTermInDocument;
 		}
 
 		public int getDocumentId() {
@@ -275,7 +272,7 @@ public final class FrameFill extends TableFillCommand {
 			return this.topicId;
 		}
 
-		public String getTermSubs() {
+		public String getTermNoun() {
 			return this.termNoun;
 		}
 
@@ -283,7 +280,7 @@ public final class FrameFill extends TableFillCommand {
 			return this.termVerb;
 		}
 
-		public int getPosSubs() {
+		public int getPosNoun() {
 			return this.positionOfNounInDocument;
 		}
 

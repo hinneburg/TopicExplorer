@@ -32,7 +32,7 @@ public class FrameCreateTest {
 		this.frameCreate.createTable();
 		verify(this.dbMock)
 				.executeUpdateQuery(
-						eq("CREATE TABLE FRAMES (FRAME_ID INT NOT NULL AUTO_INCREMENT, DOCUMENT_ID INT, TOPIC_ID INT, FRAME VARCHAR(255), START_POSITION INT, END_POSITION INT,PRIMARY KEY (FRAME_ID)) DEFAULT CHARSET=utf8 COLLATE=utf8_bin"));
+						eq("CREATE TABLE FRAMES (DOCUMENT_ID INT, TOPIC_ID INT, FRAME VARCHAR(255), START_POSITION INT, END_POSITION INT) DEFAULT CHARSET=utf8 COLLATE=utf8_bin"));
 	}
 
 	@Test(expected = IllegalStateException.class)

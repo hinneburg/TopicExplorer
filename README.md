@@ -125,7 +125,7 @@ Create file `~/.m2/settings.xml`.
                         <directoryPermissions>744</directoryPermissions>
                 </server>
  	</servers>
- <settings/>
+ </settings>
 ```
 ####Build the project
 Mouse right click on TopicExplorer -> Run as -> Maven Build (at first time input goals: clean install)

@@ -15,7 +15,7 @@ public class Collect extends TableSelectCommand {
 
 		searchAction.addSearchColumn("DOCUMENT.TEXT$TITLE", "TEXT$TITLE");
 		searchAction
-				.addSearchColumn("CONCAT(SUBSTRING(DOCUMENT.TEXT$FULLTEXT FROM 1 FOR 150), '...')", "TEXT$FULLTEXT");
+				.addSearchColumn("CONCAT(SUBSTRING(DOCUMENT.TEXT$FULLTEXT FROM 1 FOR 150), '...')", "TEXT$SNIPPET");
 		if (properties.getProperty("plugins").contains("fulltext")) {
 			searchAction.addWhereClause("MATCH(DOCUMENT.FULLTEXT$FULLTEXT) AGAINST ('" + searchAction.getSearchWord()
 					+ "' IN BOOLEAN MODE)");

@@ -13,9 +13,8 @@ define(["scripts/modules/topicexplorer-model"], function(topicexplorerModel) {
 								 ]   
 			},
 			topicView:	{
-				activePlugin: 2,
+				activePlugin: 1,
 				pluginTemplates: [ "topic-view-id", 
-					               "topic-view-plugin-text", 
 								   "topic-view-plugin-time",
 								   "topic-view-plugin-frame"
 								 ]   

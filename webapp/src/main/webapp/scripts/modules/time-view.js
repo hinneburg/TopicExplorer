@@ -136,12 +136,12 @@ define(
     	
     	self.loadDocumentsForTopicsAndWeek = function (week) { 
     		date = new Date(week);
-    		topics = new Array();
-    		for(topic in self.renderedTopics()) {
-    			if(self.renderedTopics()[topic] != "average") 
-    				topics.push(self.renderedTopics()[topic]);
-    		}
-    		topicexplorerModel.newTab("Command=bestDocs&TopicId="+ topics + "&week=" + week.toString().substr(0,10), date.getDate() + "." + (date.getMonth() + 1) + "." + date.getFullYear().toString().substr(2,2) + " (" + topics + ")", 'document-view', new Array());	
+//    		topics = new Array();
+//    		for(topic in self.renderedTopics()) {
+//    			if(self.renderedTopics()[topic] != "average") 
+//    				topics.push(self.renderedTopics()[topic]);
+//    		}
+    		topicexplorerModel.newTab("Command=bestDocs&TopicId="+ self.renderedTopics()[0] + "&week=" + week.toString().substr(0,10), date.getDate() + "." + (date.getMonth() + 1) + "." + date.getFullYear().toString().substr(2,2) + " (" + self.renderedTopics()[0] + ")", 'document-view', new Array());	
     	};
     	
     	return self;

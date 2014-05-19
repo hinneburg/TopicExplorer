@@ -17,7 +17,6 @@ public class Collect extends TableSelectCommand {
 		documentMap.select.add("DOCUMENT_ID");
 		documentMap.from.add("DOCUMENT");
 		documentMap.limit = Integer.parseInt(properties.getProperty("DocBrowserLimit"));
-		;
 
 		communicationContext.put("DOCUMENT_QUERY", documentMap);
 

@@ -104,6 +104,16 @@ public class Search {
 			while (bestTopicsRS.next()) {
 				topTopic.add(bestTopicsRS.getInt("TOPIC_ID"));
 			}
+			
+			ResultSet reverseDocTopicRS = database
+					.executeQuery("SELECT TOPIC_ID FROM DOCUMENT_TOPIC WHERE TOPIC_ID < "
+							+ getNumberOfTopics().toString()
+							+ " AND DOCUMENT_ID="
+							+ mainQueryRS.getInt("DOCUMENT_ID")
+							+ " ORDER BY PR_DOCUMENT_GIVEN_TOPIC DESC LIMIT 1");
+			if (reverseDocTopicRS.next()) {
+				doc.put("TOPIC_ID", reverseDocTopicRS.getInt("TOPIC_ID"));
+			}
 
 			doc.put("TOP_TOPIC", topTopic);
 			docs.put(docId, doc);

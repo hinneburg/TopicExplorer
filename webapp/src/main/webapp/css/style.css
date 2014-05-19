@@ -88,7 +88,7 @@ html, body {
 .leftBody .documentList ul.browser li {
 	position: relative;
 	background-color: #FFFFFF;
-    border: 1px solid gainsboro;
+    border: 2px solid gainsboro;
     float: left;
     height: 80px;
     margin: 5px;

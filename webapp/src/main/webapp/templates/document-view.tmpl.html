@@ -9,7 +9,7 @@
 	<div class="documentList" style="height: 100%;">		
 		<ul	class="browser" style="height: 100%;">
 		<!-- ko foreach: {data:selectedDocuments,  as: 'selectedDocument', afterRender:checkSize} -->
-			<li class="documents" data-bind="attr: { 'id': 'doc_' + $root.topicexplorer.data.document[selectedDocument].DOCUMENT_ID}, style: {width:$parent.documentElementWidth() + 'px'}">
+			<li class="documents" data-bind="attr: { 'id': 'doc_' + $root.topicexplorer.data.document[selectedDocument].DOCUMENT_ID}, style: {width:$parent.documentElementWidth() + 'px', borderColor: $root.topicexplorer.data.topic[$root.topicexplorer.data.document[selectedDocument].TOPIC_ID].COLOR_TOPIC$COLOR}">
 				<span data-bind="text: $index() + 1" style="float:left; font-size: xx-small; color: darkgrey"></span>
 				
 				<div data-bind="template: { name: function() {return $parent.documentPluginTemplate();} }">

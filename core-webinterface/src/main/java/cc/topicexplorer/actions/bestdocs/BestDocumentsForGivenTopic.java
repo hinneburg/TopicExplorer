@@ -27,6 +27,7 @@ public class BestDocumentsForGivenTopic {
 		documentMap = new SelectMap();
 		documentMap.select.add("DISTINCT DOCUMENT.DOCUMENT_ID");
 		documentMap.select.add("DOCUMENT_TOPIC.PR_DOCUMENT_GIVEN_TOPIC");
+		documentMap.select.add("DOCUMENT_TOPIC.TOPIC_ID");
 		documentMap.from.add("DOCUMENT");
 		documentMap.from.add("DOCUMENT_TOPIC");
 		documentMap.where.add("DOCUMENT.DOCUMENT_ID=DOCUMENT_TOPIC.DOCUMENT_ID");

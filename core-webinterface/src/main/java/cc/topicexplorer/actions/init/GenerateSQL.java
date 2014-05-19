@@ -50,6 +50,8 @@ public class GenerateSQL extends TableSelectCommand {
 		JSONObject all = new JSONObject();
 		ResultSet preQueryRS;
 		long start = System.currentTimeMillis();
+		
+		boolean firstTopic;
 		try {
 			preQueryRS = database.executeQuery("SELECT COUNT(*) AS COUNT FROM DOCUMENT");
 			if (preQueryRS.next()) {
@@ -83,8 +85,13 @@ public class GenerateSQL extends TableSelectCommand {
 									+ " AND DOCUMENT_ID="
 									+ documentRS.getInt("DOCUMENT_ID")
 									+ " ORDER BY PR_DOCUMENT_GIVEN_TOPIC DESC LIMIT 4");
+					firstTopic = true;
 //					@formatter:on
 					while (reverseDocTopicRS.next()) {
+						if(firstTopic) {
+							doc.put("TOPIC_ID", reverseDocTopicRS.getInt("TOPIC_ID"));
+							firstTopic = false;
+						}
 						reverseTopTopic.add(reverseDocTopicRS.getInt("TOPIC_ID"));
 					}
 					doc.put("REVERSE_TOP_TOPIC", reverseTopTopic);

@@ -7,7 +7,7 @@ function(ko, $) {
 	self.changeSelectedTopics = function () { self.selectedTopics(["1"]); };
 	
 	self.loadDocumentsForTopic = function (topicId) { 
-		topicexplorerModel.newTab("Command=bestDocs&TopicId="+topicId, "Topic " + topicId, 'document-view', new Array());	
+		topicexplorerModel.newTab("Command=bestDocs&TopicId="+topicId, "Topic " + topicId, 'document-view', [{"topic": topicId}]);	
 	};   
 	
 	self.loadTimeViewForTopic = function (topicId) { 
@@ -59,7 +59,7 @@ function(ko, $) {
 
 		var topicId = target.parentNode.parentNode.parentNode.parentNode.parentNode.getAttribute('id').substr(5);
 		var frame = topicexplorerModel.data.topic[topicId].FRAMES[frameId].FRAME;
-		topicexplorerModel.newTab("Command=bestDocs&TopicId=" + topicId + "&frame=" + frame, "Topic " + topicId + " Frame " + frame, 'document-view', new Array());	
+		topicexplorerModel.newTab("Command=bestDocs&TopicId=" + topicId + "&frame=" + frame, "Topic " + topicId + " Frame " + frame, 'document-view', [{"frame": frame, "topic": topicId}]);	
 	};
 	
 	self.frameScrollCallback = function(el) {

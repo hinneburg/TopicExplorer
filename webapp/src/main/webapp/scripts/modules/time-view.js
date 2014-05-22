@@ -33,7 +33,7 @@ define(
 				if(typeof topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].renderedTopics == 'undefined')
 	    			topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].renderedTopics = new Array("" + self.topicId());
 	    		self.renderedTopics(topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].renderedTopics);
-	    		
+	    		if($("#chart").size())
 				self.makeChart();
 			}
 		});
@@ -141,7 +141,7 @@ define(
 //    			if(self.renderedTopics()[topic] != "average") 
 //    				topics.push(self.renderedTopics()[topic]);
 //    		}
-    		topicexplorerModel.newTab("Command=bestDocs&TopicId="+ self.renderedTopics()[0] + "&week=" + week.toString().substr(0,10), date.getDate() + "." + (date.getMonth() + 1) + "." + date.getFullYear().toString().substr(2,2) + " (" + self.renderedTopics()[0] + ")", 'document-view', new Array());	
+    		topicexplorerModel.newTab("Command=bestDocs&TopicId="+ self.renderedTopics()[0] + "&week=" + week.toString().substr(0,10), date.getDate() + "." + (date.getMonth() + 1) + "." + date.getFullYear().toString().substr(2,2) + " (" + self.renderedTopics()[0] + ")", 'document-view', [{"topic": self.topicId()}]);	
     	};
     	
     	return self;

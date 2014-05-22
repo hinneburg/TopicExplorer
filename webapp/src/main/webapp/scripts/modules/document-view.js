@@ -8,7 +8,15 @@ define(
 				});
 				
 				self.loadDocument = function(docId) {
-					topicexplorerModel.newTab('Command=getDoc&DocId=' + docId, 'Doc ' + docId, 'single-view', docId);
+					var focus = [docId];
+					if(typeof topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].topicId!= 'undefined') {
+						if(typeof topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].frame != 'undefined') {
+							focus.push({"frame" : topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].frame, "topic": topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].topicId});
+						} else {
+							focus.push({"topic": topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].topicId});
+						}
+					}
+					topicexplorerModel.newTab('Command=getDoc&DocId=' + docId, 'Doc ' + docId, 'single-view', focus);
 				};
 				
 				self.activeTab = ko.observable(topicexplorerModel.view.activeTab)
@@ -16,6 +24,16 @@ define(
 			
 				self.activeTab.subscribe(function(newValue) {
 					if(topicexplorerModel.view.tab[newValue].module == "document-view") {
+						if(topicexplorerModel.view.tab[newValue].focus.length > 0) {
+							if(topicexplorerModel.view.tab[newValue].focus[0].hasOwnProperty("topic")) {
+								topicexplorerModel.view.tab[newValue].topicId = topicexplorerModel.view.tab[newValue].focus[0].topic;
+								if(topicexplorerModel.view.tab[newValue].focus[0].hasOwnProperty("frame")) {
+									topicexplorerModel.view.tab[newValue].frame = topicexplorerModel.view.tab[newValue].focus[0].frame;	
+								}
+								topicexplorerModel.view.tab[newValue].focus.shift();
+							}
+						}
+
 						topicexplorerModel.view.activeTab = newValue;
 						if(typeof topicexplorerModel.view.tab[newValue].documentCount == 'undefined' && !topicexplorerModel.data.documentsLoading()) {
 							topicexplorerModel.view.tab[newValue].documentsFull = ko.observable(false);

@@ -36,14 +36,13 @@ define(
 			$(".tab").removeClass('active');
 			$("#tab" + topicexplorerModel.view.activeTab).addClass('active');
 			
-			if(self.activeModule() == topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].module) {
-				self.activeTab(topicexplorerModel.view.activeTab);	
-				ko.postbox.publish("TabView.activeTab", topicexplorerModel.view.activeTab);		
-			} else {
+			self.activeTab(topicexplorerModel.view.activeTab);	
+						
+			if(self.activeModule() != topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].module) {
 				self.activeModule(topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].module);
 			}
 			
-			
+			ko.postbox.publish("TabView.activeTab", topicexplorerModel.view.activeTab);	
 			
 //			ko.postbox.publish("TabView.activeTab", topicexplorerModel.view.activeTab);
 //			console.log("newTab");

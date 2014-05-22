@@ -26,16 +26,16 @@
 				</div>
 			</li>
 		<!-- /ko -->
-		<!--  ko if: selectedDocuments().length -->
-			<li data-bind="if: !$root.topicexplorer.view.tab[$root.topicexplorer.view.activeTab].documentsFull() , style: {width: documentElementWidth() + 'px', border: '0', backgroundColor: '#f5f5f5'}">
+		<!--  ko if: $root.topicexplorer.view.tab[activeTab()] != 'undefined' -->
+			<li data-bind="if: !$root.topicexplorer.view.tab[activeTab()].documentsFull() && $root.topicexplorer.data.documentsLoading() , style: {width: documentElementWidth() + 'px', border: '0', backgroundColor: '#f5f5f5'}">
 				<img data-bind="style: {marginLeft: (documentElementWidth() / 2 - 16) + 'px', marginTop: '24px'}" src="images/ajax-loader.gif" alt="Loading"/>
 			</li>
-		<!--  /ko -->
-		<!--  ko if: !selectedDocuments().length -->
+		<!-- /ko -->
+		<!--  ko if: !selectedDocuments().length && !$root.topicexplorer.data.documentsLoading() -->
 			<li style="border: 0; background-color: #f5f5f5"><span>no results</span></li>
 		<!--  /ko -->
-		</ul>
 		
+		</ul>
 		
 	</div>
 </div>

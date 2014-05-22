@@ -2,8 +2,10 @@ package cc.topicexplorer.actions.showdoc;
 
 import java.io.PrintWriter;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -32,6 +34,7 @@ public class GenerateSQL extends TableSelectCommand {
 		JSONArray topics = new JSONArray();
 		JSONObject all = new JSONObject();
 
+		int docId = 0;
 		long start = System.currentTimeMillis();
 		try {
 			ResultSet documentRS = database.executeQuery(documentMap.getSQLString());
@@ -39,6 +42,7 @@ public class GenerateSQL extends TableSelectCommand {
 				for (int i = 0; i < docColumnList.size(); i++) {
 					doc.put(docColumnList.get(i), documentRS.getString(docColumnList.get(i)));
 				}
+				docId = documentRS.getInt("DOCUMENT_ID");
 			}
 
 			Long time = System.currentTimeMillis() - start;
@@ -52,6 +56,27 @@ public class GenerateSQL extends TableSelectCommand {
 				}
 				topics.add(topic);
 			}
+			
+			// hack: the following should happen in frame class(es):	
+			if(Arrays.asList(properties.get("plugins").toString().split(",")).contains("frame")) {
+				JSONObject frame = new JSONObject();
+				JSONArray frames = new JSONArray();
+				ResultSet frameRS = database.executeQuery("SELECT * FROM FRAMES WHERE DOCUMENT_ID=" +
+						docId + " ORDER BY START_POSITION DESC");
+				ResultSetMetaData frameRSMD = frameRS.getMetaData();
+				String[] frameColumnNames = new String[frameRSMD.getColumnCount()];
+				for(int i = 0; i < frameRSMD.getColumnCount(); i++) {
+					frameColumnNames[i] = frameRSMD.getColumnName(i + 1);
+				}
+				while(frameRS.next()) {
+					for(int i = 0; i < frameColumnNames.length; i++) {
+						frame.put(frameColumnNames[i], frameRS.getString(frameColumnNames[i]));
+					}
+					frames.add(frame);
+				}
+				doc.put("FRAME_LIST", frames);
+			}
+			// hack end
 			doc.put("WORD_LIST", topics);
 			all.put("DOCUMENT", doc);
 			

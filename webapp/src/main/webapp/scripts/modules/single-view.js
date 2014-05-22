@@ -31,6 +31,8 @@ define(
 			self.activeTab.subscribe(function(newValue) {
 				if(topicexplorerModel.view.tab[newValue].module == "single-view") {
 					self.selectedSingleDocument(topicexplorerModel.view.tab[newValue].focus[0]);
+					self.selectedMark(topicexplorerModel.view.tab[newValue].selectedMark);
+					self.markedText(topicexplorerModel.view.tab[newValue][topicexplorerModel.view.tab[newValue].selectedMark]);
 				} 
 			});
 			
@@ -128,7 +130,8 @@ define(
 				if(typeof topicexplorerModel.view.tab[self.activeTab()] != 'undefined' && topicexplorerModel.view.tab[self.activeTab()].module == "single-view") {
 					if(!topicexplorerModel.data.documentsLoading()) {
 						if(typeof topicexplorerModel.data.document[topicexplorerModel.view.tab[self.activeTab()].focus[0]].singleDataLoaded == 'undefined') {
-			    			topicexplorerModel.data.documentsLoading(true);
+			    			console.log('init');
+							topicexplorerModel.data.documentsLoading(true);
 			    			$.getJSON("JsonServlet?" + topicexplorerModel.view.tab[self.activeTab()].getParameter)
 							.success(function(receivedParsedJson) {
 								$.extend(self.topicexplorerModel.data.document[receivedParsedJson.DOCUMENT.DOCUMENT_ID], receivedParsedJson.DOCUMENT);

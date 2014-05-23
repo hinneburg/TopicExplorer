@@ -74,7 +74,7 @@ define(
 			var tabIndex = $.inArray(tab, topicexplorerModel.view.tabs);
 			
 			topicexplorerModel.view.tabs.splice(tabIndex, 1);
-			delete topicexplorerModel.view.tab[tab];
+			
 			
 			if(self.invisibleTabs().length > 0) {
 				var newTabIndex = topicexplorerModel.view.invisibleTabs.shift();
@@ -90,7 +90,9 @@ define(
 				}
 				topicexplorerModel.view.activeTab = topicexplorerModel.view.tabs[tabIndex];
 				self.setActive(false);
-			}			
+			}		
+			
+			delete topicexplorerModel.view.tab[tab];
 		};
 		
 		self.deleteAllHidden = function() {

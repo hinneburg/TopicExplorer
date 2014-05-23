@@ -63,7 +63,7 @@ public class Frames {
 
 		ResultSet frameQueryRS = database.executeQuery(frameMap.getSQLString());
 		int topicId = -1;
-		int counter = 0;
+		int counter = frameMap.offset;
 		while (frameQueryRS.next()) {
 			if (topicId != frameQueryRS.getInt("TOPIC_ID")) {
 				if (topicData.size() > 0) {
@@ -72,7 +72,7 @@ public class Frames {
 					all.put(topicId, frames);
 					topicData = new JSONObject();
 					sorting = new JSONArray();
-					counter = 0;
+					counter = frameMap.offset;
 				} 
 				topicId = frameQueryRS.getInt("TOPIC_ID");
 			} 

@@ -23,6 +23,7 @@ public class Collect extends TableSelectCommand {
 			
 			bestDocAction.addWhereClause("FRAMES.DOCUMENT_ID = DOCUMENT.DOCUMENT_ID");
 			bestDocAction.addWhereClause("FRAMES.FRAME='" + frame + "'");
+			bestDocAction.addWhereClause("FRAMES.TOPIC_ID = DOCUMENT_TOPIC.TOPIC_ID");
 					
 			communicationContext.put("BEST_DOC_ACTION", bestDocAction);
 		}

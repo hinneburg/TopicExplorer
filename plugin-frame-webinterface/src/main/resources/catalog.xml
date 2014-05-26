@@ -5,4 +5,6 @@
 	<command name="BestFrameCreate" className="cc.topicexplorer.plugin.frame.actions.getbestframes.Create"/>
 	<command name="BestFrameGenerateSQL" className="cc.topicexplorer.plugin.frame.actions.getbestframes.GenerateSQL"/>
 	<command name="BestDocsFrameCollect" className="cc.topicexplorer.plugin.frame.actions.bestdocs.Collect"/>
+	<command name="GetTopicsFrameCollect" className="cc.topicexplorer.plugin.frame.actions.gettopics.Collect"/>
+	<command name="InitFrameCollect" className="cc.topicexplorer.plugin.frame.actions.init.Collect"/>
 </catalog>

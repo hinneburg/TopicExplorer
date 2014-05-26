@@ -87,6 +87,8 @@ require([ "knockout","jquery", "scripts/modules/topicexplorer-view-model",
 		});
 	}).delegate(".documentList circle, #groupG rect", "click", moveToTopic);
 	
+	$(document).tooltip();
+	
 	self.minHeight = 400;
 	self.minWidth = 800;
 

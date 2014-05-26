@@ -9,6 +9,7 @@
 	</div>
 	<ul data-bind="foreach: {data: selectedTopics, as: 'selectedTopic'}, style {width: $('.topicList > ul > li').size() * 213 + 'px'}">
 		<li class="topic" data-bind="attr:{ 'id' : 'topic' + selectedTopic}, style: { height: ($parent.topicListHeight() - 14) + 'px', backgroundColor: $root.topicexplorer.data.topic[selectedTopic].COLOR_TOPIC$COLOR}">
+			<div data-bind="text: selectedTopic" style="font-size: xx-small; float:left;"></div>
 			<div  class="topicElementDiv" data-bind="template: { name: function() {return $parent.topicPluginTemplate()}}"></div>
 		</li>
 	</ul>

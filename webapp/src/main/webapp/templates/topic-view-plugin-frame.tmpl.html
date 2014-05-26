@@ -3,7 +3,7 @@
 	<button class="addToCart" name="addToCart" title="add to shortlist" type="button"></button>
 </div>
 
-<div class="topicTitle"><a href="#" data-bind="text: $root.topicexplorer.data.topic[selectedTopic].TEXT$TOPIC_LABEL,click:loadDocumentsForTopic"></a></div>
+<div class="topicTitle"><a href="#" data-bind="text: $root.topicexplorer.data.topic[selectedTopic].TEXT$TOPIC_LABEL,click:loadDocumentsForTopic, attr: {'title': 'FrameCount: ' + $root.topicexplorer.data.topic[selectedTopic].FRAME$FRAME_COUNT + ' UniqueFrameCount: ' + $root.topicexplorer.data.topic[selectedTopic].FRAME$UNIQUE_FRAME_COUNT}"></a></div>
 
 <div class="topicElementContent" data-bind="event: {scroll: $parent.frameScrollCallback}">
 	<ul class="wordList" data-bind = "foreach: {data: $root.topicexplorer.data.topic[selectedTopic].frameSorting, as: 'frame'}">

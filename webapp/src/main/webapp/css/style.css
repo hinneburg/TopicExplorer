@@ -409,3 +409,6 @@ height: 200px;
 #jumpToStart:hover {
 	cursor: pointer;	
 }
+.ui-tooltip {
+	font-size: 60%;
+}

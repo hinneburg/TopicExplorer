@@ -63,13 +63,12 @@ define(
 		    	tooltip: {
 		            formatter: function() {
 		            	var html ="";
-		            	var allTopics = $.extend({}, topicexplorerModel.data.topicSorting, ["average"]);
-		            	for(topic_id in allTopics) {
-		            		if(topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].renderedTopics.indexOf(allTopics[topic_id].toString()) != -1) {
-			            		html += '<span style="color: ' + topicexplorerModel.data.topic[allTopics[topic_id]].COLOR_TOPIC$COLOR 
-			            			+ '">' + topicexplorerModel.data.topic[allTopics[topic_id]].TIME$WORDS_PER_WEEK[this.x].LABEL 
-			            			+ '</span>: ' + topicexplorerModel.data.topic[allTopics[topic_id]].TIME$WORDS_PER_WEEK[this.x].WORD_COUNT
-			            			+ '<br/>';
+		            	if(typeof topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].renderedTopics != 'undefined') {
+			            	for(var i = 0; i < topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].renderedTopics.length; i++ ) {
+				            	html += '<span style="color: ' + topicexplorerModel.data.topic[topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].renderedTopics[i]].COLOR_TOPIC$COLOR 
+				            		+ '">' + topicexplorerModel.data.topic[topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].renderedTopics[i]].TIME$WORDS_PER_WEEK[this.x].LABEL 
+				            		+ '</span>: ' + topicexplorerModel.data.topic[topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].renderedTopics[i]].TIME$WORDS_PER_WEEK[this.x].WORD_COUNT
+				            		+ '<br/>';
 		            		}
 		            	}
 		            	return html;

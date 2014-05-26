@@ -2,5 +2,5 @@
 <catalog>	
 
 	<command name="FrameCreate" className="cc.topicexplorer.plugin.frame.preprocessing.tables.frames.FrameCreate"/>
-	
+	<command name="Frame_TopicCreate" className="cc.topicexplorer.plugin.frame.preprocessing.tables.topic.TopicCreate"/>
 </catalog>

@@ -153,30 +153,6 @@ public final class FrameFill extends TableFillCommand {
 								tableName, frame.getDocumentId(), frame.getTopicId(), frame.getTermNoun(),
 								frame.getTermVerb(), frame.getPosNoun(), frame.getPosVerb()));
 			}
-			
-			// Set inactive
-			database.executeUpdateQuery("UPDATE " + this.tableName 
-					+ ", (SELECT DISTINCT DOCUMENT_ID,TOPIC_ID,FRAME,START_POSITION"
-					+ " FROM FRAMES JOIN DOCUMENT USING (DOCUMENT_ID),"
-					+ "(SELECT '%。%' PATTERN FROM DUAL "
-					+ "UNION ALL SELECT '%？%' PATTERN FROM DUAL "
-					+ "UNION ALL SELECT '%?%' PATTERN FROM DUAL "
-					+ "UNION ALL SELECT '%！%' PATTERN FROM DUAL "
-					+ "UNION ALL SELECT '%!%' PATTERN FROM DUAL "
-					+ "UNION ALL SELECT '%．．%' PATTERN FROM DUAL "
-					+ "UNION ALL SELECT '%..%' PATTERN FROM DUAL "
-					+ "UNION ALL SELECT '%・・%' PATTERN FROM DUAL "
-					+ "UNION ALL SELECT '%．．．%' PATTERN FROM DUAL "
-					+ "UNION ALL SELECT '%...%' PATTERN FROM DUAL "
-					+ "UNION ALL SELECT '%…%' PATTERN FROM DUAL "
-					+ "UNION ALL SELECT '%・・・%' PATTERN FROM DUAL) X "
-					+ "WHERE SUBSTRING(TEXT$FULLTEXT,START_POSITION+1,END_POSITION-START_POSITION) LIKE X.PATTERN "
-					+ "OR SUBSTRING(TEXT$FULLTEXT,START_POSITION+1,END_POSITION-START_POSITION) REGEXP '[[:digit:]]：[[:digit:]]'=1 "
-					+ "OR SUBSTRING(TEXT$FULLTEXT,START_POSITION+1,END_POSITION-START_POSITION) REGEXP '[[:digit:]]:[[:digit:]]'=1) Y "
-					+ "SET " + this.tableName + ".ACTIVE=0 WHERE Y.DOCUMENT_ID=" + this.tableName + ".DOCUMENT_ID AND "
-					+ "Y.TOPIC_ID=" + this.tableName + ".TOPIC_ID AND "
-					+ "Y.FRAME=" + this.tableName + ".FRAME AND "
-					+ "Y.START_POSITION=" + this.tableName + ".START_POSITION");
 
 		} catch (SQLException e) {
 			logger.error("Table could not be filled properly.");
@@ -216,16 +192,16 @@ public final class FrameFill extends TableFillCommand {
 	}
 
 	private void bestFrames() {
+		int numTopics = Integer.parseInt( (String) properties.get("malletNumTopics") );
 		try {
 			database.executeUpdateQuery("DROP TABLE IF EXISTS BEST_FRAMES");
-			int numTopics = Integer.parseInt( (String) properties.get("malletNumTopics") );
 			for (int i = 0; i < numTopics; i++) {
 				if (i == 0) {
 					database.executeUpdateQueryForUpdate("CREATE TABLE BEST_FRAMES AS SELECT FRAME, TOPIC_ID, COUNT(DISTINCT DOCUMENT_ID) AS FRAME_COUNT FROM FRAMES WHERE TOPIC_ID="
-							+ i + " AND ACTIVE=1 GROUP BY FRAME ORDER BY FRAME_COUNT DESC LIMIT 10");
+							+ i + " GROUP BY FRAME ORDER BY FRAME_COUNT DESC LIMIT 10");
 				} else {
 					database.executeUpdateQueryForUpdate("INSERT INTO BEST_FRAMES SELECT FRAME, TOPIC_ID, COUNT(DISTINCT DOCUMENT_ID) AS FRAME_COUNT FROM FRAMES WHERE TOPIC_ID="
-							+ i + " AND ACTIVE=1 GROUP BY FRAME ORDER BY FRAME_COUNT DESC LIMIT 10");
+							+ i + " GROUP BY FRAME ORDER BY FRAME_COUNT DESC LIMIT 10");
 				}
 			}
 		} catch (SQLException e) {

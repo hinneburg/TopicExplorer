@@ -23,6 +23,7 @@ public class Frames {
 		frameMap.select.add("FRAME");
 		frameMap.select.add("COUNT( DISTINCT DOCUMENT_ID ) AS FRAME_COUNT");
 		frameMap.select.add("FRAMES.TOPIC_ID");
+		frameMap.select.add("FRAMES.ACTIVE");
 		frameMap.from.add("FRAMES");
 		frameMap.where.add("TOPIC_ID=" + topicId);
 		frameMap.groupBy.add("FRAMES.FRAME");

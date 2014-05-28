@@ -58,15 +58,17 @@ define(
     		self.chart = new Highcharts.StockChart({
 		   	    chart: {
 		    	   renderTo: 'chart',
-		    	   height: self.timeDesktopHeight()
+		    	   height: self.timeDesktopHeight() - $('#topicCheckboxes').height()
 		    	},
 		    	tooltip: {
 		            formatter: function() {
 		            	var html ="";
 		            	if(typeof topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].renderedTopics != 'undefined') {
 			            	for(var i = 0; i < topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].renderedTopics.length; i++ ) {
-				            	html += '<span style="color: ' + topicexplorerModel.data.topic[topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].renderedTopics[i]].COLOR_TOPIC$COLOR 
-				            		+ '">' + topicexplorerModel.data.topic[topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].renderedTopics[i]].TIME$WORDS_PER_WEEK[this.x].LABEL 
+				            	html += '<span style="color: ' + topicexplorerModel.data.topic[topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].renderedTopics[i]].COLOR_TOPIC$COLOR	+ '">'; 
+				            	if(topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].renderedTopics[i] != 'average')
+				            		html += topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].renderedTopics[i] + ": "; 
+				            	html +=  topicexplorerModel.data.topic[topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].renderedTopics[i]].TIME$WORDS_PER_WEEK[this.x].LABEL 
 				            		+ '</span>: ' + topicexplorerModel.data.topic[topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].renderedTopics[i]].TIME$WORDS_PER_WEEK[this.x].WORD_COUNT
 				            		+ '<br/>';
 		            		}

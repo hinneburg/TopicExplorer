@@ -4,15 +4,18 @@
 		style="display: none; position: absolute; z-index: 1; padding: 21px 0 0 1px;">
 		<div  data-bind="template: {name: 'single-menu-view', afterRender: init}"></div>
 	</div>
-	<div style="padding-left: 30px;">
-	<!-- ko foreach: {data:$root.topicexplorer.data.topicSorting,  as: 'selectedTopic', } -->
+	<div style="padding-left: 30px;" id="topicCheckboxes">
+		<!-- ko foreach: {data:$root.topicexplorer.data.topicSorting,  as: 'selectedTopic', } -->	
+			<label data-bind="attr:{ title: 'Topic ' + selectedTopic, id: 'topicCheckbox_' + selectedTopic}" class="topicCheckbox" style="cursor:pointer">
+				<input type="checkbox" name="timeTopic" data-bind="attr: {value: selectedTopic}, disable: selectedTopic == topicId(), checked: renderedTopics" style="cursor:pointer" />
+				<span class="topicCircle" data-bind="style: {color: $root.topicexplorer.data.topic[selectedTopic].COLOR_TOPIC$COLOR} " style="margin:0 -7px 0 -5px;">&#9679;</span>
+			</label>	
+		<!-- /ko -->
 		
-	<label data-bind="attr:{ title: $root.topicexplorer.data.topic[selectedTopic].TEXT$TOPIC_LABEL, id: 'topicCheckbox_' + selectedTopic}" class="topicCheckbox" style="cursor:pointer">
-		<input type="checkbox" name="timeTopic" data-bind="attr: {value: selectedTopic}, disable: selectedTopic == topicId(), checked: renderedTopics" style="cursor:pointer" /><span class="topicCheckboxCircle" data-bind="style: {color: $root.topicexplorer.data.topic[selectedTopic].COLOR_TOPIC$COLOR} ">&#9679;</span>
-	</label>	
-	<!-- /ko -->
-	
-	<label title="Average" style="cursor:pointer"><input type="checkbox" name="timeTopic" data-bind="checked: renderedTopics" value="average" style="cursor:pointer" /><span style="color: #000000">&#9679;</span></label>
+		<label title="Average" style="cursor:pointer">
+			<input type="checkbox" name="timeTopic" data-bind="checked: renderedTopics" value="average" style="cursor:pointer" />
+			<span class="topicCircleNotMove" style="color: #000000; margin:0 -7px 0 -5px;">&#9679;</span>
+		</label>
 	
 	</div>
 	<div id="chart"></div>

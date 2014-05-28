@@ -44,10 +44,10 @@ define(
 			
 			ko.postbox.publish("TabView.activeTab", topicexplorerModel.view.activeTab);	
 			
-//			ko.postbox.publish("TabView.activeTab", topicexplorerModel.view.activeTab);
-//			console.log("newTab");
-			
-			$("#desktop").scrollTop(topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].scrollPosition);
+			setTimeout(function() {
+				$("#desktop").scrollTop(topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].scrollPosition);
+			}, 10);
+
 			if(!allowLoading) topicexplorerModel.data.documentsLoading(false);
 		};
 		self.toggleActive = function(active) {

@@ -26,8 +26,6 @@ import com.google.common.collect.Lists;
  * 
  */
 public final class FrameFill extends TableFillCommand {
-
-	private static final int NUMBER_OF_TOP_TOPICS = 20;
 	private static final int MAX_DISTANCE_NOUN_TO_VERB = 150;
 	private static final String VERB = "VERB";
 	private static final String NOUN = "SUBS";
@@ -74,9 +72,10 @@ public final class FrameFill extends TableFillCommand {
 					+ "where TOPIC_ID=0 AND WORDTYPE='SUBS'	order by PR_TERM_GIVEN_TOPIC desc limit 20;");
 			database.executeUpdateQuery("alter table TopTerms add index (TOPIC_ID,TERM_NAME)");
 			database.executeUpdateQuery("alter table TopTerms add index (TERM_NAME)");
+			int numTopics = Integer.parseInt( (String) properties.get("malletNumTopics") );
 
 			// best 20 nouns of best 20 topics
-			for (int i = 0; i < NUMBER_OF_TOP_TOPICS; i++) {
+			for (int i = 1; i < numTopics; i++) {
 				database.executeUpdateQueryForUpdate("insert into TopTerms "
 						+ "select TERM_NAME, TOPIC_ID, PR_TERM_GIVEN_TOPIC from TERM_TOPIC join TERM "
 						+ "using (TERM_ID) where TOPIC_ID=" + i
@@ -84,7 +83,7 @@ public final class FrameFill extends TableFillCommand {
 			}
 
 			// best 20 verbs of best 20 topics
-			for (int i = 0; i < NUMBER_OF_TOP_TOPICS; i++) {
+			for (int i = 0; i < numTopics; i++) {
 				database.executeUpdateQueryForUpdate("insert into TopTerms "
 						+ "select TERM_NAME, TOPIC_ID, PR_TERM_GIVEN_TOPIC from TERM_TOPIC join TERM "
 						+ "using (TERM_ID) where TOPIC_ID=" + i

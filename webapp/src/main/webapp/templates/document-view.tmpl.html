@@ -15,14 +15,10 @@
 				<div data-bind="template: { name: function() {return $parent.documentPluginTemplate();} }">
 									</div>
 				<div class="circles">
-					<svg data-bind="foreach {data: $root.topicexplorer.data.document[selectedDocument].TOP_TOPIC, as:'topTopic'}" width="100%" height="100%">
-						<circle data-bind="attr:{ 'class' : 'topicCircle',
-												  'id': 't_' + topTopic, 
-												  'fill' : $root.topicexplorer.data.topic[topTopic].COLOR_TOPIC$COLOR, 
-												  'title' : $root.topicexplorer.data.topic[topTopic].TEXT$TOPIC_LABEL, 
-												  'cy' : ($index() * 15 + 10)}" 
-								r="5" cx="10" stroke-width="0.5" stroke="black">
-					</svg>
+					
+					<!--  ko foreach: $root.topicexplorer.data.document[selectedDocument].TOP_TOPIC --> 
+					<span class="topicCheckboxCircle topicCircle" data-bind="style: {color: $root.topicexplorer.data.topic[$data].COLOR_TOPIC$COLOR}, attr: {id: 't_' + $data, title: 'Topic ' + $data}" >&#9679;</span><br/>
+					<!-- /ko -->
 				</div>
 			</li>
 		<!-- /ko -->

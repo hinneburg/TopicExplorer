@@ -69,14 +69,12 @@ define(
 							+ "')\"  onmouseout=\"$('#" + boxID
 							+ "').val('')\" onclick=\"$('#" + boxID
 							+ "').parent('form').submit()\" style=\"width: "
-							+ ($('#' + boxID).width() + 20) + "px;\">"
-							+ item.label
-							+ "<svg height=\"20px\" width=\"100px\">";
+							+ ($('#' + boxID).width() + 20) + "px;white-space: nowrap;\">"
+							+ item.label;
 					for (var i = 0; i < item.color.length; i++) {
 						circleString += self.generateCircle(item.color[i], i);
 					}
-
-					circleString += "</svg></a>";
+					circleString += "</a>";
 					return $("<li class=\"autocompleteEntry\"></li>").data(
 							"item.autocomplete", item).append(circleString)
 							.appendTo(ul);
@@ -84,20 +82,17 @@ define(
 			};
 
 			self.generateCircle = function(color, itemIdx) {
-				var cx = 10 + itemIdx * 12;
 				var topic = topicexplorerModel.data.topic[color];
 				if (!topic)
 					return "";
-				var circleString = "<circle class=\"topicCircle\" id=\"t_"
+				var circleString = "<span class=\"topicCircle\" id=\"t_"
 						+ color
 						+ "\" "
-						+ " r=\"5\" cx=\""
-						+ cx
-						+ "\" cy=\"14\" fill=\""
+						+ "style=\"color:"
 						+ topic.COLOR_TOPIC$COLOR
-						+ "\" title=\""
-						+ topic.TEXT$TOPIC_LABEL
-						+ "\" stroke=\"black\" stroke-width=\"0.5\" style=\"cursor:pointer\"/>";
+						+ "\" title=\"Topic "
+						+ color
+						+ "\">&#9679;</span>";
 
 				return circleString;
 			};

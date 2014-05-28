@@ -43,11 +43,7 @@ require([ "knockout","jquery", "scripts/modules/topicexplorer-view-model",
 		$(this).addClass('myHover').find(".docButtons").show();
 	}).delegate(".documentList li", 'mouseleave', function(){
 		$(this).removeClass('myHover').find(".docButtons").hide();
-	}).delegate(".documentList circle", "mouseover", function(){
-		$(this).attr("r", "7");
-	}).delegate(".documentList circle", "mouseout", function(){
-		$(this).attr("r", "5");
-	}).delegate(".ui-menu-item circle, .topicCheckbox", "mouseover", function(){
+	}).delegate(".topicCircle, .topicCheckbox, .topicWord", "mouseover", function(){
 		var self = this;
 		if (!timeoutId) {
 	        timeoutId = window.setTimeout(function() {
@@ -55,13 +51,11 @@ require([ "knockout","jquery", "scripts/modules/topicexplorer-view-model",
 	            moveToTopic($(self).attr('id').split('_')[1]);
 		    }, 1500);
 		}
-		$(self).attr("r", "7");
-	}).delegate(".ui-menu-item circle, .topicCheckbox", "mouseout", function(){
+	}).delegate(".topicCircle, .topicCheckbox, .topicWord", "mouseout", function(){
 		if (timeoutId) {
 		    window.clearTimeout(timeoutId);
 		    timeoutId = null;
 		}
-		$(this).attr("r", "5");
 	}).delegate("#groupG rect", "mouseover", function(){
 		$(this).attr("height", "17");
 		$(this).attr("y", "0");
@@ -85,7 +79,7 @@ require([ "knockout","jquery", "scripts/modules/topicexplorer-view-model",
 		$("#desktop").animate({
 			scrollTop: 0
 		});
-	}).delegate(".documentList circle, #groupG rect", "click", moveToTopic);
+	}).delegate(".circles .topicCircle, #groupG rect, .topicWord", "click", moveToTopic);
 	
 	$(document).tooltip();
 	

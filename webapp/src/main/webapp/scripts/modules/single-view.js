@@ -50,7 +50,8 @@ define(
 							text = text.substring(0, words[key].POSITION_OF_TOKEN_IN_DOCUMENT)
 								+ '<span style="border-bottom: 2px solid '
 								+ topicexplorerModel.data.topic[words[key].TOPIC_ID].COLOR_TOPIC$COLOR
-								+ ';">'
+								+ ';" class="topicWord" id="t_' + words[key].TOPIC_ID + '" '
+								+ 'title="Topic ' + words[key].TOPIC_ID + '">'
 								+ words[key].TOKEN
 								+ '</span>'
 								+ text.substring(parseInt(words[key].POSITION_OF_TOKEN_IN_DOCUMENT)
@@ -62,30 +63,50 @@ define(
 					if(topicexplorerModel.data.document[self.selectedSingleDocument()].FRAME_LIST != 'undefined') {
 						var frames = topicexplorerModel.data.document[self.selectedSingleDocument()].FRAME_LIST;
 						text = original;
+						var text2 = original;
 						lastStart = text.length;
+						lastStart2  = text.length;
 						for(key in frames) {
-							if(frames[key].END_POSITION < lastStart) { // avoid covering each other
-								text = text.substring(0, frames[key].START_POSITION)
-									+ '<span style="border-bottom: 2px solid '
-									+ topicexplorerModel.data.topic[frames[key].TOPIC_ID].COLOR_TOPIC$COLOR
-									+ ';">'
-									+ text.substring(frames[key].START_POSITION, frames[key].END_POSITION)
-									+ '</span>'
-									+ text.substring(parseInt(frames[key].END_POSITION));
-								lastStart = frames[key].START_POSITION;
+							if(frames[key].ACTIVE == 1) {
+								if(frames[key].END_POSITION < lastStart) { // avoid covering each other
+									text = text.substring(0, frames[key].START_POSITION)
+										+ '<span style="border-bottom: 2px solid '
+										+ topicexplorerModel.data.topic[frames[key].TOPIC_ID].COLOR_TOPIC$COLOR
+										+ ';" class="topicWord" id="t_' + words[key].TOPIC_ID + '" '
+										+ 'title="Topic ' + words[key].TOPIC_ID + '">'
+										+ text.substring(frames[key].START_POSITION, frames[key].END_POSITION)
+										+ '</span>'
+										+ text.substring(parseInt(frames[key].END_POSITION));
+									lastStart = frames[key].START_POSITION;
+								}
+							} else {
+								if(frames[key].END_POSITION < lastStart2) { // avoid covering each other
+									text2 = text2.substring(0, frames[key].START_POSITION)
+										+ '<span style="border-bottom: 2px solid '
+										+ topicexplorerModel.data.topic[frames[key].TOPIC_ID].COLOR_TOPIC$COLOR
+										+ ';" class="topicWord" id="t_' + words[key].TOPIC_ID + '" '
+										+ 'title="Topic ' + words[key].TOPIC_ID + '">'
+										+ text2.substring(frames[key].START_POSITION, frames[key].END_POSITION)
+										+ '</span>'
+										+ text2.substring(parseInt(frames[key].END_POSITION));
+									lastStart2 = frames[key].START_POSITION;
+								}
 							}
+							
 						} 
 						topicexplorerModel.view.tab[self.activeTab()].TEXT_WITH_MARKED_FRAMES = text;
+						topicexplorerModel.view.tab[self.activeTab()].TEXT_WITH_INACTIVE_FRAMES = text2;
 							
 						if(typeof topicexplorerModel.view.tab[self.activeTab()].focus[1] != 'undefined') {
 							text = original;
 							lastStart = text.length;
 							for(key in frames) {
-								if(frames[key].END_POSITION < lastStart && frames[key].TOPIC_ID == topicexplorerModel.view.tab[self.activeTab()].focus[1].topic) { // avoid covering each other
+								if(frames[key].ACTIVE == 1 && frames[key].END_POSITION < lastStart && frames[key].TOPIC_ID == topicexplorerModel.view.tab[self.activeTab()].focus[1].topic) { // avoid covering each other
 									text = text.substring(0, frames[key].START_POSITION)
 										+ '<span style="border-bottom: 2px solid '
 										+ topicexplorerModel.data.topic[frames[key].TOPIC_ID].COLOR_TOPIC$COLOR
-										+ ';">'
+										+ ';" class="topicWord" id="t_' + words[key].TOPIC_ID + '" '
+										+ 'title="Topic ' + words[key].TOPIC_ID + '">'
 										+ text.substring(frames[key].START_POSITION, frames[key].END_POSITION)
 										+ '</span>'
 										+ text.substring(parseInt(frames[key].END_POSITION));
@@ -101,18 +122,19 @@ define(
 								text = original;
 								lastStart = text.length;
 								for(key in frames) {
-									if(frames[key].END_POSITION < lastStart && frames[key].TOPIC_ID == topicexplorerModel.view.tab[self.activeTab()].focus[1].topic && frames[key].FRAME == topicexplorerModel.view.tab[self.activeTab()].focus[1].frame) { // avoid covering each other											text = text.substring(0, frames[key].START_POSITION)
+									if(frames[key].ACTIVE == 1 && frames[key].END_POSITION < lastStart && frames[key].TOPIC_ID == topicexplorerModel.view.tab[self.activeTab()].focus[1].topic && frames[key].FRAME == topicexplorerModel.view.tab[self.activeTab()].focus[1].frame) { // avoid covering each other											text = text.substring(0, frames[key].START_POSITION)
 										text = text.substring(0, frames[key].START_POSITION)
 											+ '<span style="border-bottom: 2px solid '
 											+ topicexplorerModel.data.topic[frames[key].TOPIC_ID].COLOR_TOPIC$COLOR
-											+ ';">'
+											+ ';" class="topicWord" id="t_' + words[key].TOPIC_ID + '" '
+											+ 'title="Topic ' + words[key].TOPIC_ID + '">'
 											+ text.substring(frames[key].START_POSITION, frames[key].END_POSITION)
 											+ '</span>'
 											+ text.substring(parseInt(frames[key].END_POSITION));
 										lastStart = frames[key].START_POSITION;
 									}
 								} 
-									topicexplorerModel.view.tab[self.activeTab()].TEXT_WITH_MARKED_FRAMES_FOR_TOPIC_AND_FRAME = text;
+								topicexplorerModel.view.tab[self.activeTab()].TEXT_WITH_MARKED_FRAMES_FOR_TOPIC_AND_FRAME = text;
 							}
 							
 						}
@@ -130,8 +152,7 @@ define(
 				if(typeof topicexplorerModel.view.tab[self.activeTab()] != 'undefined' && topicexplorerModel.view.tab[self.activeTab()].module == "single-view") {
 					if(!topicexplorerModel.data.documentsLoading()) {
 						if(typeof topicexplorerModel.data.document[topicexplorerModel.view.tab[self.activeTab()].focus[0]].singleDataLoaded == 'undefined') {
-			    			console.log('init');
-							topicexplorerModel.data.documentsLoading(true);
+			    			topicexplorerModel.data.documentsLoading(true);
 			    			$.getJSON("JsonServlet?" + topicexplorerModel.view.tab[self.activeTab()].getParameter)
 							.success(function(receivedParsedJson) {
 								$.extend(self.topicexplorerModel.data.document[receivedParsedJson.DOCUMENT.DOCUMENT_ID], receivedParsedJson.DOCUMENT);

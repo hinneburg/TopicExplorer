@@ -118,6 +118,15 @@ define(
 				};
 				
 				self.initialize = function() {
+					if(topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].focus.length > 0) {
+						if(topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].focus[0].hasOwnProperty("topic")) {
+							topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].topicId = topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].focus[0].topic;
+							if(topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].focus[0].hasOwnProperty("frame")) {
+								topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].frame = topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].focus[0].frame;	
+							}
+							topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].focus.shift();
+						}
+					}
 					self.selectedDocuments(topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].focus);
 				};
 				

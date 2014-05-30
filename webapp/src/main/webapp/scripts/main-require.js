@@ -43,7 +43,7 @@ require([ "knockout","jquery", "scripts/modules/topicexplorer-view-model",
 		$(this).addClass('myHover').find(".docButtons").show();
 	}).delegate(".documentList li", 'mouseleave', function(){
 		$(this).removeClass('myHover').find(".docButtons").hide();
-	}).delegate(".topicCircle, .topicCheckbox, .topicWord", "mouseover", function(){
+	}).delegate(".ui-autocomplete .topicCircle, .topicCheckbox", "mouseover", function(){
 		var self = this;
 		if (!timeoutId) {
 	        timeoutId = window.setTimeout(function() {
@@ -51,7 +51,7 @@ require([ "knockout","jquery", "scripts/modules/topicexplorer-view-model",
 	            moveToTopic($(self).attr('id').split('_')[1]);
 		    }, 1500);
 		}
-	}).delegate(".topicCircle, .topicCheckbox, .topicWord", "mouseout", function(){
+	}).delegate(".ui-autocomplete .topicCircle, .topicCheckbox", "mouseout", function(){
 		if (timeoutId) {
 		    window.clearTimeout(timeoutId);
 		    timeoutId = null;

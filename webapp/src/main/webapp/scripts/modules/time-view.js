@@ -65,7 +65,8 @@ define(
 		            	var html ="";
 		            	if(typeof topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].renderedTopics != 'undefined') {
 			            	for(var i = 0; i < topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].renderedTopics.length; i++ ) {
-				            	html += '<span style="color: ' + topicexplorerModel.data.topic[topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].renderedTopics[i]].COLOR_TOPIC$COLOR	+ '">'; 
+				            	html += '<span style="font-size: x-large; font-family: Helvetica, Arial, sans-serif;text-shadow: -0.5px 0 black, 0 0.5px black, 0.5px 0 black, 0 -0.5px black;color: ' 
+				            		+ topicexplorerModel.data.topic[topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].renderedTopics[i]].COLOR_TOPIC$COLOR	+ '">● </span><span>'; 
 				            	if(topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].renderedTopics[i] != 'average')
 				            		html += topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].renderedTopics[i] + ": "; 
 				            	html +=  topicexplorerModel.data.topic[topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].renderedTopics[i]].TIME$WORDS_PER_WEEK[this.x].LABEL 

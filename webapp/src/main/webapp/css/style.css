@@ -414,8 +414,16 @@ height: 200px;
 	font-size: 60%;
 }
 
+@font-face {
+    font-family: DeliciousRoman;
+    src: url(http://www.font-face.com/fonts/delicious/Delicious-Roman.otf);
+    font-weight:400;
+}
+
+
 .topicCircle, .topicCircleNotMove {
 	font-size: x-large;
+	font-family: DeliciousRoman, Helvetica, Arial, sans-serif;
 	cursor: pointer;
 	text-shadow: -0.5px 0 black, 0 0.5px black, 0.5px 0 black, 0 -0.5px black;
 }

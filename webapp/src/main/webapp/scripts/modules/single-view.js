@@ -72,8 +72,8 @@ define(
 									text = text.substring(0, frames[key].START_POSITION)
 										+ '<span style="border-bottom: 2px solid '
 										+ topicexplorerModel.data.topic[frames[key].TOPIC_ID].COLOR_TOPIC$COLOR
-										+ ';" class="topicWord" id="t_' + words[key].TOPIC_ID + '" '
-										+ 'title="Topic ' + words[key].TOPIC_ID + '">'
+										+ ';" class="topicWord" id="t_' + frames[key].TOPIC_ID + '" '
+										+ 'title="Topic ' + frames[key].TOPIC_ID + '">'
 										+ text.substring(frames[key].START_POSITION, frames[key].END_POSITION)
 										+ '</span>'
 										+ text.substring(parseInt(frames[key].END_POSITION));
@@ -84,8 +84,8 @@ define(
 									text2 = text2.substring(0, frames[key].START_POSITION)
 										+ '<span style="border-bottom: 2px solid '
 										+ topicexplorerModel.data.topic[frames[key].TOPIC_ID].COLOR_TOPIC$COLOR
-										+ ';" class="topicWord" id="t_' + words[key].TOPIC_ID + '" '
-										+ 'title="Topic ' + words[key].TOPIC_ID + '">'
+										+ ';" class="topicWord" id="t_' + frames[key].TOPIC_ID + '" '
+										+ 'title="Topic ' + frames[key].TOPIC_ID + '">'
 										+ text2.substring(frames[key].START_POSITION, frames[key].END_POSITION)
 										+ '</span>'
 										+ text2.substring(parseInt(frames[key].END_POSITION));
@@ -105,8 +105,8 @@ define(
 									text = text.substring(0, frames[key].START_POSITION)
 										+ '<span style="border-bottom: 2px solid '
 										+ topicexplorerModel.data.topic[frames[key].TOPIC_ID].COLOR_TOPIC$COLOR
-										+ ';" class="topicWord" id="t_' + words[key].TOPIC_ID + '" '
-										+ 'title="Topic ' + words[key].TOPIC_ID + '">'
+										+ ';" class="topicWord" id="t_' + frames[key].TOPIC_ID + '" '
+										+ 'title="Topic ' + frames[key].TOPIC_ID + '">'
 										+ text.substring(frames[key].START_POSITION, frames[key].END_POSITION)
 										+ '</span>'
 										+ text.substring(parseInt(frames[key].END_POSITION));
@@ -126,8 +126,8 @@ define(
 										text = text.substring(0, frames[key].START_POSITION)
 											+ '<span style="border-bottom: 2px solid '
 											+ topicexplorerModel.data.topic[frames[key].TOPIC_ID].COLOR_TOPIC$COLOR
-											+ ';" class="topicWord" id="t_' + words[key].TOPIC_ID + '" '
-											+ 'title="Topic ' + words[key].TOPIC_ID + '">'
+											+ ';" class="topicWord" id="t_' + frames[key].TOPIC_ID + '" '
+											+ 'title="Topic ' + frames[key].TOPIC_ID + '">'
 											+ text.substring(frames[key].START_POSITION, frames[key].END_POSITION)
 											+ '</span>'
 											+ text.substring(parseInt(frames[key].END_POSITION));

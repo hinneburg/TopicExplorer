@@ -53,6 +53,33 @@ define(
 						} else {
 							self.selectedDocuments(topicexplorerModel.view.tab[newValue].focus);
 						}
+						if(topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].activeSorting == undefined) {
+							topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].activeSorting = 'RELEVANCE';
+							self.selectedSorting(topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].activeSorting);
+						}
+					}
+				});
+				
+				self.selectedSorting= ko.observable(topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].activeSorting);
+				self.selectedSorting.subscribe(function(newValue) {
+					if(!topicexplorerModel.data.documentsLoading()) {
+						topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].activeSorting = newValue;
+			//			$("#desktop").scrollTop(0);
+						topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].documentsFull = ko.observable(false);
+			//			self.selectedDocuments(new Array());
+						topicexplorerModel.data.documentsLoading(true);
+						topicexplorerModel.loadDocuments(
+							{paramString: topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].getParameter + "&sorting=" + newValue},
+							function(newDocumentIds) {
+								if(newDocumentIds.length < topicexplorerModel.data.documentLimit) { 
+									topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].documentsFull(true);	
+								}
+								topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].documentCount = newDocumentIds.length;
+								topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].focus = newDocumentIds;
+								self.selectedDocuments(topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].focus);
+								topicexplorerModel.data.documentsLoading(false);
+							}
+						);				
 					}
 				});
 				
@@ -103,7 +130,7 @@ define(
 //						console.log($("#desktop").scrollTop() +" " +  $("#desktop")[0].scrollHeight+" "+ self.desktopHeight());
 						topicexplorerModel.data.documentsLoading(true);
 						topicexplorerModel.loadDocuments(
-							{paramString: topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].getParameter + '&offset=' + topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].documentCount},
+							{paramString: topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].getParameter + '&offset=' + topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].documentCount + "&sorting=" + topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].activeSorting},
 							function(newDocumentIds) {
 								if(newDocumentIds.length < topicexplorerModel.data.documentLimit) { 
 									topicexplorerModel.view.tab[topicexplorerModel.view.activeTab].documentsFull(true);

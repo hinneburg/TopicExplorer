@@ -1,6 +1,6 @@
 define(
-		[ "knockout", "jquery"],
-		function(ko, $) {
+		[ "knockout", "jquery", "moment"],
+		function(ko, $, moment) {
 				self.documentPluginTemplates = topicexplorerModel.config.documentView.pluginTemplates;
 				self.documentPluginTemplate = ko.observable(self.documentPluginTemplates[topicexplorerModel.config.documentView.activePlugin]);
 				self.documentPluginTemplate.subscribe(function(newValue) {

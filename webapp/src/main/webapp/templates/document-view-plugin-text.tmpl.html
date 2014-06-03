@@ -5,6 +5,8 @@
 	<div class="docTitle">
 		<a href="#" data-bind="click: $parent.loadDocument, attr: {id: 'doc' + $root.topicexplorer.data.document[selectedDocument].DOCUMENT_ID}"><nobr data-bind="text: $root.topicexplorer.data.document[selectedDocument].TEXT$TITLE"></nobr></a>
 	</div>
+	
 	<p class="docContent">
+		<span style="font-size:xx-small; color: #7f7f7f" class="date" data-bind="text: moment($root.topicexplorer.data.document[selectedDocument].TIME$TIME_STAMP * 1000).format('LL')"></span><br/>
 		<span data-bind="text:$root.topicexplorer.data.document[selectedDocument].TEXT$SNIPPET"></span>
 	</p>

@@ -10,6 +10,7 @@ require.config({
 		"jquery-ui" : "scripts/lib/jquery-ui-1.10.3.custom.min",
 		"highstock" : "scripts/lib/highstock"
 			
+		"moment": "scripts/lib/moment",
 	}
 });
 

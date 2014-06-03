@@ -19,4 +19,7 @@
 	
 	</div>
 	<div id="chart"></div>
+	<!-- ko if: navigator.userAgent.indexOf('Firefox') > -1 || navigator.userAgent.indexOf('Chrome') > -1 || navigator.userAgent.indexOf("Presto") > -1 || navigator.userAgent.indexOf("MSIE") > -1 -->
+	<button id="getcsv" data-bind="click: downloadCSV">Download CSV</button>
+	<!-- /ko -->
 </div>

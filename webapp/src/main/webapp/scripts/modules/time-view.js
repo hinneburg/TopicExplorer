@@ -1,6 +1,6 @@
 define(
-    [ "knockout", "jquery", "highstock"],
-    function(ko, $) {
+    [ "knockout", "jquery", "moment", "highstock", "filesaver"],
+    function(ko, $, moment) {
     	self.leftBodyHeight=ko.observable(topicexplorerModel.view.leftBodyHeight).subscribeTo("leftBodyHeight");
     	
     	
@@ -58,7 +58,7 @@ define(
     		self.chart = new Highcharts.StockChart({
 		   	    chart: {
 		    	   renderTo: 'chart',
-		    	   height: self.timeDesktopHeight() - $('#topicCheckboxes').height()
+		    	   height: self.timeDesktopHeight() - ($('#topicCheckboxes').height() + 30.0 * $('#getcsv').size())
 		    	},
 		    	tooltip: {
 		            formatter: function() {
@@ -144,6 +144,29 @@ define(
 //    				topics.push(self.renderedTopics()[topic]);
 //    		}
     		topicexplorerModel.newTab("Command=bestDocs&TopicId="+ self.renderedTopics()[0] + "&week=" + week.toString().substr(0,10), date.getDate() + "." + (date.getMonth() + 1) + "." + date.getFullYear().toString().substr(2,2) + " (" + self.renderedTopics()[0] + ")", 'document-view', [{"topic": self.topicId()}]);	
+    	};
+    	
+    	self.downloadCSV = function() {
+    		try {
+    		    var isFileSaverSupported = !!new Blob;
+    		    var out = "id,color";
+        		for(tstamp in topicexplorerModel.data.topic[0].TIME$WORDS_PER_WEEK)
+        			out += "," + moment(parseInt(tstamp)).format('LL');
+        		out += "\n";
+        		for(topic in self.renderedTopics()) {
+        			out += self.renderedTopics()[topic] + "," + topicexplorerModel.data.topic[self.renderedTopics()[topic]].COLOR_TOPIC$COLOR;
+        			if(self.renderedTopics()[topic] != "average") {
+        				for(tstamp in topicexplorerModel.data.topic[self.renderedTopics()[topic]].TIME$WORDS_PER_WEEK) {
+        					out += "," + topicexplorerModel.data.topic[self.renderedTopics()[topic]].TIME$WORDS_PER_WEEK[tstamp].WORD_COUNT;
+        				}
+        				out += "\n";
+        			} 		
+        		}
+        		var blob = new Blob([out], {type: "application/csv;charset=utf-8"});
+        		saveAs(blob, "data.csv");
+    		} catch (e) {
+    			alert("Download is not supported by your browser - please update!");
+    		}
     	};
     	
     	return self;

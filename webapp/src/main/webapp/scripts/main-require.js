@@ -8,9 +8,9 @@ require.config({
 		"text" : "scripts/lib/text",
 		"jquery" : "scripts/lib/jquery-1.9.1.min",
 		"jquery-ui" : "scripts/lib/jquery-ui-1.10.3.custom.min",
-		"highstock" : "scripts/lib/highstock"
-			
+		"highstock" : "scripts/lib/highstock",
 		"moment": "scripts/lib/moment",
+		"filesaver": "scripts/lib/FileSaver"
 	}
 });
 

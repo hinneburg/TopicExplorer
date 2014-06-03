@@ -69,6 +69,10 @@ public class BestDocumentsForGivenTopic {
 		documentMap.from.add(from);
 	}
 
+	public void setOrderBy(ArrayList <String> orderBy) {
+		documentMap.orderBy = orderBy;
+	}
+	
 	public void executeQueriesAndWriteOutBestDocumentsForGivenTopic() {
 		JSONArray topTopic = new JSONArray();
 		JSONArray docSorting = new JSONArray();

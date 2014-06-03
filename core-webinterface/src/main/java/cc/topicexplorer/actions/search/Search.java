@@ -66,6 +66,10 @@ public class Search {
 		searchMap.where.add(whereClause);
 	}
 
+	public void setOrderBy(ArrayList <String> orderBy) {
+		searchMap.orderBy = orderBy;
+	}
+	
 	public void setNumberOfTopics(Integer numberOfTopics) {
 		this.numberOfTopics = numberOfTopics;
 	}

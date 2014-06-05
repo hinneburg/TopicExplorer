@@ -63,6 +63,9 @@ public class WordsPerTopicPerWeekFill extends TableFillCommand {
 					+ "TERM, TIME$WEEK " + ") X  " + "join  " + "TERM  "
 					+ "on (X.TERM=TERM.TERM_NAME) " + "join " + "TIME$WEEK "
 					+ "on (X.TIME$WEEK=TIME$WEEK.TIME$WEEK);");
+			database.executeUpdateQuery("create index TIME$TERM_WEEK$TERM_WEEK_IDX ON "
+					+ "TIME$TERM_WEEK(TERM_NAME,TIME$WEEK,TIME$NUMBER_OF_TOKEN_TERM_PER_WEEK) "
+					+ "USING BTREE");
 		} catch (SQLException e) {
 			logger.error("Table TIME$TERM_WEEK could not be created properly.");
 			throw new RuntimeException(e);
@@ -103,6 +106,10 @@ public class WordsPerTopicPerWeekFill extends TableFillCommand {
 					+ "TOPIC_ID, TIME$WEEK " + ") X  " + "join  " + "TOPIC "
 					+ "on (X.TOPIC_ID=TOPIC.TOPIC_ID) " + "join "
 					+ "TIME$WEEK " + "on (X.TIME$WEEK=TIME$WEEK.TIME$WEEK);");
+			database.executeUpdateQuery("create index TIME$TOPIC_WEEK$TOPIC_WEEK_IDX "
+					+ "ON  TIME$TOPIC_WEEK(TOPIC_ID,TIME$WEEK,TIME$NUMBER_OF_TOKEN_TOPIC_PER_WEEK) "
+					+ "USING BTREE");
+
 		} catch (SQLException e) {
 			logger.error("Table TIME$TOPIC_WEEK could not be created properly.");
 			throw new RuntimeException(e);
@@ -127,36 +134,27 @@ public class WordsPerTopicPerWeekFill extends TableFillCommand {
 					+ "TIME$WEEK, "
 					+ "TIME$NUMBER_OF_TOKEN_AND_TOPIC_PER_WEEK,  "
 					+ "TIME$PR_TOPIC_GIVEN_TERM_WEEK,  "
-					+ "TIME$PR_TERM_GIVEN_TOPIC_WEEK "
-					+ ")   "
-					+ "select  "
-					+ "DOCUMENT_TERM_TOPIC.TOPIC_ID,  "
-					+ "TIME$TERM_WEEK.TERM_NAME, "
-					+ "TIME$TERM_WEEK.TERM_ID,  "
-					+ "DOCUMENT_TERM_TOPIC.TIME$WEEK, "
-					+ "count(*) TIME$NUMBER_OF_TOKEN_AND_TOPIC_PER_WEEK, "
-					+ "cast(count(*) AS DECIMAL(65,30)) /  "
-					+ "    cast(TIME$TERM_WEEK.TIME$NUMBER_OF_TOKEN_TERM_PER_WEEK AS DECIMAL(65,30))  "
-					+ "    as TIME$PR_TOPIC_GIVEN_TERM_WEEK, "
-					+ "cast(count(*) AS DECIMAL(65,30)) /  "
-					+ "    cast(TIME$TOPIC_WEEK.TIME$NUMBER_OF_TOKEN_TOPIC_PER_WEEK AS DECIMAL(65,30))  "
-					+ "    as TIME$PR_TERM_GIVEN_TOPIC_WEEK "
-					+ "from DOCUMENT_TERM_TOPIC  "
-					+ " join TIME$TERM_WEEK on  "
-					+ "     ( "
-					+ "      DOCUMENT_TERM_TOPIC.TERM = TIME$TERM_WEEK.TERM_NAME and  "
-					+ "      DOCUMENT_TERM_TOPIC.TIME$WEEK=TIME$TERM_WEEK.TIME$WEEK "
-					+ "     )   "
-					+ " join TIME$TOPIC_WEEK on  "
-					+ "     ( "
-					+ "      DOCUMENT_TERM_TOPIC.TOPIC_ID = TIME$TOPIC_WEEK.TOPIC_ID and  "
-					+ "      DOCUMENT_TERM_TOPIC.TIME$WEEK=TIME$TOPIC_WEEK.TIME$WEEK "
-					+ "     )   " + " group by  "
-					+ "DOCUMENT_TERM_TOPIC.TERM,  "
+					+ "TIME$PR_TERM_GIVEN_TOPIC_WEEK)   "
+					+ "select X.TOPIC_ID,TIME$TERM_WEEK.TERM_NAME,TIME$TERM_WEEK.TERM_ID,X.TIME$WEEK,"
+					+ "X.TIME$NUMBER_OF_TOKEN_AND_TOPIC_PER_WEEK,"
+					+ "cast(X.TIME$NUMBER_OF_TOKEN_AND_TOPIC_PER_WEEK AS DECIMAL(65,30))/ "
+					+ "cast(TIME$TERM_WEEK.TIME$NUMBER_OF_TOKEN_TERM_PER_WEEK AS DECIMAL(65,30)) as TIME$PR_TOPIC_GIVEN_TERM_WEEK,"
+					+ "cast(X.TIME$NUMBER_OF_TOKEN_AND_TOPIC_PER_WEEK AS DECIMAL(65,30))/ "
+					+ "cast(TIME$TOPIC_WEEK.TIME$NUMBER_OF_TOKEN_TOPIC_PER_WEEK AS DECIMAL(65,30)) as TIME$PR_TERM_GIVEN_TOPIC_WEEK "
+					+ "from (select "
+					+ "DOCUMENT_TERM_TOPIC.TERM,"
 					+ "DOCUMENT_TERM_TOPIC.TOPIC_ID, "
 					+ "DOCUMENT_TERM_TOPIC.TIME$WEEK, "
-					+ "TIME$TERM_WEEK.TIME$NUMBER_OF_TOKEN_TERM_PER_WEEK, "
-					+ "TIME$TOPIC_WEEK.TIME$NUMBER_OF_TOKEN_TOPIC_PER_WEEK");
+					+ "count(*) TIME$NUMBER_OF_TOKEN_AND_TOPIC_PER_WEEK "
+					+ "from DOCUMENT_TERM_TOPIC "
+					+ "group by  "
+					+ "DOCUMENT_TERM_TOPIC.TERM, "
+					+ "DOCUMENT_TERM_TOPIC.TOPIC_ID, "
+					+ "DOCUMENT_TERM_TOPIC.TIME$WEEK "
+					+ ") X join TIME$TERM_WEEK  "
+					+ "on (X.TERM=TIME$TERM_WEEK.TERM_NAME and X.TIME$WEEK=TIME$TERM_WEEK.TIME$WEEK)  "
+					+ "join TIME$TOPIC_WEEK  "
+					+ "on (X.TOPIC_ID=TIME$TOPIC_WEEK.TOPIC_ID and X.TIME$WEEK=TIME$TOPIC_WEEK.TIME$WEEK) ;");
 		} catch (SQLException e) {
 			logger.error("Table TIME$TOPIC_TERM_WEEK could not be created properly.");
 			throw new RuntimeException(e);

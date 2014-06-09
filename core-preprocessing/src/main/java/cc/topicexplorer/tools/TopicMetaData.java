@@ -12,17 +12,18 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Set;
 
-import org.apache.commons.chain.Context;
+import org.apache.log4j.Logger;
 
+import cc.commandmanager.core.Context;
 import cc.topicexplorer.commands.TableCommand;
 
-/**
- * @author angefangen von Mattes weiterverarbeitet von Gert Kommaersetzung,
- *         Pfadangabe eingefügt, Tabellenname mit Jooq verknüpft
- * 
- */
+import com.google.common.collect.Sets;
+
 public class TopicMetaData extends TableCommand {
+
+	private final static Logger logger = Logger.getLogger(TopicMetaData.class);
 
 	@Override
 	public void tableExecute(Context context) {
@@ -49,31 +50,20 @@ public class TopicMetaData extends TableCommand {
 		fos.write("tid\ttid\tsim\n");
 
 		/**
-		 * MIT-JOOQ-START String sql = "SELECT kt1." +
-		 * TERM_TOPIC.TOPIC_ID.getName() + " AS tid1, kt2." +
-		 * TERM_TOPIC.TOPIC_ID.getName() + " AS tid2, sum(kt1." +
-		 * TERM_TOPIC.PR_TERM_GIVEN_TOPIC.getName() + "*kt2." +
-		 * TERM_TOPIC.PR_TERM_GIVEN_TOPIC.getName() +
-		 * ")/sqrt(t1.n1* t2.n2) AS sim " + "FROM " + TERM_TOPIC.getName() +
-		 * " kt1, " + TERM_TOPIC.getName() + " kt2, " + "  ( select " +
-		 * TERM_TOPIC.TOPIC_ID.getName() + ", sum(" +
-		 * TERM_TOPIC.PR_TERM_GIVEN_TOPIC.getName() + "*" +
-		 * TERM_TOPIC.PR_TERM_GIVEN_TOPIC.getName() + ") as n1 from " +
-		 * TERM_TOPIC.getName() + " group by " + TERM_TOPIC.TOPIC_ID.getName() +
-		 * ") t1," + "  ( select " + TERM_TOPIC.TOPIC_ID.getName() + ", sum(" +
-		 * TERM_TOPIC.PR_TERM_GIVEN_TOPIC.getName() + "*" +
-		 * TERM_TOPIC.PR_TERM_GIVEN_TOPIC.getName() + ") as n2 from " +
-		 * TERM_TOPIC.getName() + " group by " + TERM_TOPIC.TOPIC_ID.getName() +
-		 * ") t2 WHERE kt1." + TERM_TOPIC.TERM_ID.getName() + "=kt2." +
-		 * TERM_TOPIC.TERM_ID.getName() + " and t1." +
-		 * TERM_TOPIC.TOPIC_ID.getName() + "=kt1." +
-		 * TERM_TOPIC.TOPIC_ID.getName() + " and  t2." +
-		 * TERM_TOPIC.TOPIC_ID.getName() + "=kt2." +
-		 * TERM_TOPIC.TOPIC_ID.getName() + " " + "GROUP BY kt1." +
-		 * TERM_TOPIC.TOPIC_ID.getName() + ", kt2." +
-		 * TERM_TOPIC.TOPIC_ID.getName() + ", t1.n1, t2.n2 " + "ORDER BY kt1." +
-		 * TERM_TOPIC.TOPIC_ID.getName() + ", kt2." +
-		 * TERM_TOPIC.TOPIC_ID.getName() + " ;"; MIT-JOOQ-ENDE
+		 * MIT-JOOQ-START String sql = "SELECT kt1." + TERM_TOPIC.TOPIC_ID.getName() + " AS tid1, kt2." +
+		 * TERM_TOPIC.TOPIC_ID.getName() + " AS tid2, sum(kt1." + TERM_TOPIC.PR_TERM_GIVEN_TOPIC.getName() + "*kt2." +
+		 * TERM_TOPIC.PR_TERM_GIVEN_TOPIC.getName() + ")/sqrt(t1.n1* t2.n2) AS sim " + "FROM " + TERM_TOPIC.getName() +
+		 * " kt1, " + TERM_TOPIC.getName() + " kt2, " + "  ( select " + TERM_TOPIC.TOPIC_ID.getName() + ", sum(" +
+		 * TERM_TOPIC.PR_TERM_GIVEN_TOPIC.getName() + "*" + TERM_TOPIC.PR_TERM_GIVEN_TOPIC.getName() + ") as n1 from " +
+		 * TERM_TOPIC.getName() + " group by " + TERM_TOPIC.TOPIC_ID.getName() + ") t1," + "  ( select " +
+		 * TERM_TOPIC.TOPIC_ID.getName() + ", sum(" + TERM_TOPIC.PR_TERM_GIVEN_TOPIC.getName() + "*" +
+		 * TERM_TOPIC.PR_TERM_GIVEN_TOPIC.getName() + ") as n2 from " + TERM_TOPIC.getName() + " group by " +
+		 * TERM_TOPIC.TOPIC_ID.getName() + ") t2 WHERE kt1." + TERM_TOPIC.TERM_ID.getName() + "=kt2." +
+		 * TERM_TOPIC.TERM_ID.getName() + " and t1." + TERM_TOPIC.TOPIC_ID.getName() + "=kt1." +
+		 * TERM_TOPIC.TOPIC_ID.getName() + " and  t2." + TERM_TOPIC.TOPIC_ID.getName() + "=kt2." +
+		 * TERM_TOPIC.TOPIC_ID.getName() + " " + "GROUP BY kt1." + TERM_TOPIC.TOPIC_ID.getName() + ", kt2." +
+		 * TERM_TOPIC.TOPIC_ID.getName() + ", t1.n1, t2.n2 " + "ORDER BY kt1." + TERM_TOPIC.TOPIC_ID.getName() +
+		 * ", kt2." + TERM_TOPIC.TOPIC_ID.getName() + " ;"; MIT-JOOQ-ENDE
 		 */
 		/** OHNE_JOOQ-START */
 		// @formatter:off
@@ -135,8 +125,23 @@ public class TopicMetaData extends TableCommand {
 	}
 
 	@Override
-	public void addDependencies() {
-		beforeDependencies.add("TermTopicFill");
-		beforeDependencies.add("TopicFill");
+	public Set<String> getAfterDependencies() {
+		return Sets.newHashSet();
 	}
+
+	@Override
+	public Set<String> getBeforeDependencies() {
+		return Sets.newHashSet("TermTopicFill", "TopicFill");
+	}
+
+	@Override
+	public Set<String> getOptionalAfterDependencies() {
+		return Sets.newHashSet();
+	}
+
+	@Override
+	public Set<String> getOptionalBeforeDependencies() {
+		return Sets.newHashSet();
+	}
+
 }

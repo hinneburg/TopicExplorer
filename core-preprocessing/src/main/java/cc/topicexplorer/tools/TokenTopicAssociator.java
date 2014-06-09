@@ -14,16 +14,19 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 import java.util.zip.GZIPInputStream;
 
-import org.apache.commons.chain.Context;
 import org.apache.log4j.Logger;
 
-import cc.commandmanager.core.CommunicationContext;
-import cc.commandmanager.core.DependencyCommand;
+import cc.commandmanager.core.Command;
+import cc.commandmanager.core.Context;
 
-public class TokenTopicAssociator extends DependencyCommand {
-	public static String TOKENTOPICASSIGNMENTSQLFILE = "temp/tokenTopicAssignment.sql.csv";
+import com.google.common.collect.Sets;
+
+public class TokenTopicAssociator implements Command {
+
+	public static final String TOKEN_TOPIC_ASSIGNMENT_SQL_FILE = "temp/tokenTopicAssignment.sql.csv";
 
 	private static final Logger logger = Logger.getLogger(TokenTopicAssociator.class);
 	private static Properties properties;
@@ -36,7 +39,7 @@ public class TokenTopicAssociator extends DependencyCommand {
 
 		try {
 			outListSQLWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
-					TOKENTOPICASSIGNMENTSQLFILE, true), "UTF-8"));
+					TOKEN_TOPIC_ASSIGNMENT_SQL_FILE, true), "UTF-8"));
 
 			for (String outListElement : outList) {
 				outListSQLWriter.write(outListElement + "\n");
@@ -64,7 +67,7 @@ public class TokenTopicAssociator extends DependencyCommand {
 	}
 
 	private static void deleteOldTFile() {
-		File f = new File(TOKENTOPICASSIGNMENTSQLFILE);
+		File f = new File(TOKEN_TOPIC_ASSIGNMENT_SQL_FILE);
 
 		try {
 			if (f.exists()) {
@@ -130,11 +133,8 @@ public class TokenTopicAssociator extends DependencyCommand {
 	}
 
 	@Override
-	public void specialExecute(Context context) {
-		logger.info("Current Command : [ " + getClass() + " ] ");
-
-		CommunicationContext communicationContext = (CommunicationContext) context;
-		properties = (Properties) communicationContext.get("properties");
+	public void execute(Context context) {
+		properties = context.get("properties", Properties.class);
 
 		String stateFile = "temp/out.topic-state.gz";
 		String inFile = properties.getProperty("InCSVFile");
@@ -161,7 +161,23 @@ public class TokenTopicAssociator extends DependencyCommand {
 	}
 
 	@Override
-	public void addDependencies() {
-		beforeDependencies.add("Mallet");
+	public Set<String> getAfterDependencies() {
+		return Sets.newHashSet();
 	}
+
+	@Override
+	public Set<String> getBeforeDependencies() {
+		return Sets.newHashSet("Mallet");
+	}
+
+	@Override
+	public Set<String> getOptionalAfterDependencies() {
+		return Sets.newHashSet();
+	}
+
+	@Override
+	public Set<String> getOptionalBeforeDependencies() {
+		return Sets.newHashSet();
+	}
+
 }

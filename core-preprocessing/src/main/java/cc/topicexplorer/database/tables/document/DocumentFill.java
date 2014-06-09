@@ -1,27 +1,30 @@
 package cc.topicexplorer.database.tables.document;
 
 import java.sql.SQLException;
+import java.util.Set;
+
+import org.apache.log4j.Logger;
 
 import cc.topicexplorer.commands.TableFillCommand;
 
+import com.google.common.collect.Sets;
+
 /**
- * MIT-JOOQ-START import chain.commands.TableFillCommand; import static
- * jooq.generated.Tables.DOCUMENT; MIT-JOOQ-ENDE
+ * MIT-JOOQ-START import chain.commands.TableFillCommand; import static jooq.generated.Tables.DOCUMENT; MIT-JOOQ-ENDE
  */
 public class DocumentFill extends TableFillCommand {
 
+	private static final Logger logger = Logger.getLogger(DocumentFill.class);
+
 	/*
-	 * TODO pageindeq noch auf 1 gesetzt fehlt auch in config.ini und hier als
-	 * propertyübergabe
+	 * TODO pageindeq noch auf 1 gesetzt fehlt auch in config.ini und hier als propertyübergabe
 	 */
 	@Override
 	public void fillTable() {
 		/**
-		 * MIT-JOOQ-START database.executeUpdateQuery("insert into " +
-		 * DOCUMENT.getName() + " (" + DOCUMENT.DOCUMENT_ID.getName() + ", " +
-		 * DOCUMENT.NUMBER_OF_TOKENS.getName() + ") select " +
-		 * properties.getProperty("OrgTableId") + ", CHAR_LENGTH(" +
-		 * properties.getProperty("OrgTableTxt") + ") from " +
+		 * MIT-JOOQ-START database.executeUpdateQuery("insert into " + DOCUMENT.getName() + " (" +
+		 * DOCUMENT.DOCUMENT_ID.getName() + ", " + DOCUMENT.NUMBER_OF_TOKENS.getName() + ") select " +
+		 * properties.getProperty("OrgTableId") + ", CHAR_LENGTH(" + properties.getProperty("OrgTableTxt") + ") from " +
 		 * properties.getProperty("OrgTableName")); MIT-JOOQ-ENDE
 		 */
 		/** OHNE_JOOQ-START */
@@ -48,8 +51,23 @@ public class DocumentFill extends TableFillCommand {
 	}
 
 	@Override
-	public void addDependencies() {
-		beforeDependencies.add("DocumentCreate");
+	public Set<String> getAfterDependencies() {
+		return Sets.newHashSet();
+	}
+
+	@Override
+	public Set<String> getBeforeDependencies() {
+		return Sets.newHashSet("DocumentCreate");
+	}
+
+	@Override
+	public Set<String> getOptionalAfterDependencies() {
+		return Sets.newHashSet();
+	}
+
+	@Override
+	public Set<String> getOptionalBeforeDependencies() {
+		return Sets.newHashSet();
 	}
 
 }

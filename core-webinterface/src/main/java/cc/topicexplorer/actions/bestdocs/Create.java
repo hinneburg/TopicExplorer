@@ -1,33 +1,47 @@
 package cc.topicexplorer.actions.bestdocs;
 
 import java.io.PrintWriter;
+import java.util.Set;
 
-import org.apache.commons.chain.Context;
-
-import cc.commandmanager.core.CommunicationContext;
+import cc.commandmanager.core.Context;
 import cc.topicexplorer.commands.TableSelectCommand;
+
+import com.google.common.collect.Sets;
 
 public class Create extends TableSelectCommand {
 
 	@Override
 	public void tableExecute(Context context) {
-		CommunicationContext communicationContext = (CommunicationContext) context;
 
-		String topicId = (String) communicationContext.get("TOPIC_ID");
-		int offset = (Integer) communicationContext.get("OFFSET");
-		PrintWriter pw = (PrintWriter) communicationContext.get("SERVLET_WRITER");
+		String topicId = context.getString("TOPIC_ID");
+		int offset = context.getInteger("OFFSET");
+		PrintWriter pw = context.get("SERVLET_WRITER", PrintWriter.class);
 		int limit = Integer.parseInt(properties.getProperty("DocBrowserLimit"));
 		int numberOfTopics = Integer.parseInt(properties.getProperty("malletNumTopics"));
 
 		BestDocumentsForGivenTopic bestDocAction = new BestDocumentsForGivenTopic(topicId, limit, offset, database, pw,
 				numberOfTopics);
-
-		communicationContext.put("BEST_DOC_ACTION", bestDocAction);
+		context.bind("BEST_DOC_ACTION", bestDocAction);
 	}
 
 	@Override
-	public void addDependencies() {
-		afterDependencies.add("BestDocsCoreGenerateSQL");
+	public Set<String> getAfterDependencies() {
+		return Sets.newHashSet("BestDocsCoreGenerateSQL");
+	}
+
+	@Override
+	public Set<String> getBeforeDependencies() {
+		return Sets.newHashSet();
+	}
+
+	@Override
+	public Set<String> getOptionalAfterDependencies() {
+		return Sets.newHashSet();
+	}
+
+	@Override
+	public Set<String> getOptionalBeforeDependencies() {
+		return Sets.newHashSet();
 	}
 
 }

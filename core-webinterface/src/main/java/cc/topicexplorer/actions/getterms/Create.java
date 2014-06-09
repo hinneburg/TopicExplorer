@@ -1,28 +1,40 @@
 package cc.topicexplorer.actions.getterms;
 
 import java.io.PrintWriter;
+import java.util.Set;
 
-import org.apache.commons.chain.Context;
-
-import cc.commandmanager.core.CommunicationContext;
+import cc.commandmanager.core.Context;
 import cc.topicexplorer.commands.TableSelectCommand;
+
+import com.google.common.collect.Sets;
 
 public class Create extends TableSelectCommand {
 
 	@Override
 	public void tableExecute(Context context) {
-		CommunicationContext communicationContext = (CommunicationContext) context;
-
-		PrintWriter pw = (PrintWriter) communicationContext.get("SERVLET_WRITER");
-
+		PrintWriter pw = context.get("SERVLET_WRITER", PrintWriter.class);
 		AllTerms allTermsAction = new AllTerms(database, pw);
-
-		communicationContext.put("ALL_TERMS_ACTION", allTermsAction);
+		context.bind("ALL_TERMS_ACTION", allTermsAction);
 	}
 
 	@Override
-	public void addDependencies() {
-		afterDependencies.add("AllTermsCoreGenerateSQL");
+	public Set<String> getAfterDependencies() {
+		return Sets.newHashSet("AllTermsCoreGenerateSQL");
+	}
+
+	@Override
+	public Set<String> getBeforeDependencies() {
+		return Sets.newHashSet();
+	}
+
+	@Override
+	public Set<String> getOptionalAfterDependencies() {
+		return Sets.newHashSet();
+	}
+
+	@Override
+	public Set<String> getOptionalBeforeDependencies() {
+		return Sets.newHashSet();
 	}
 
 }

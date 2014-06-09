@@ -4,38 +4,38 @@ import java.io.PrintWriter;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Set;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
-import org.apache.commons.chain.Context;
+import org.apache.log4j.Logger;
 
-import cc.commandmanager.core.CommunicationContext;
+import cc.commandmanager.core.Context;
 import cc.topicexplorer.commands.TableSelectCommand;
 import cc.topicexplorer.database.SelectMap;
 
+import com.google.common.collect.Sets;
+
 public class GenerateSQL extends TableSelectCommand {
+
+	private static final Logger logger = Logger.getLogger(GenerateSQL.class);
 
 	@Override
 	public void tableExecute(Context context) {
-		CommunicationContext communicationContext = (CommunicationContext) context;
 		SelectMap preQueryMap, innerQueryMap, mainQueryMap, tempMainQueryMap, tempInnerQueryMap;
-		PrintWriter servletWriter = (PrintWriter) communicationContext.get("SERVLET_WRITER");
-
-		JSONObject topic, topicTerm, topicTermColl, all;
-		JSONArray topicArray, topicTermArray;
-
-		preQueryMap = (SelectMap) communicationContext.get("PRE_QUERY");
-		innerQueryMap = (SelectMap) communicationContext.get("INNER_QUERY");
-		mainQueryMap = (SelectMap) communicationContext.get("MAIN_QUERY");
+		preQueryMap = context.get("PRE_QUERY", SelectMap.class);
+		innerQueryMap = context.get("INNER_QUERY", SelectMap.class);
+		mainQueryMap = context.get("MAIN_QUERY", SelectMap.class);
 
 		ArrayList<String> topicColumnList = mainQueryMap.getCleanColumnNames();
-
 		topicColumnList.remove("TERM_NAME");
 		topicColumnList.remove("relevanz");
 
 		boolean firstRes;
 
+		JSONObject topic, topicTerm, topicTermColl, all;
+		JSONArray topicArray, topicTermArray;
 		all = new JSONObject();
 		topic = new JSONObject();
 		topicTerm = new JSONObject();
@@ -78,6 +78,8 @@ public class GenerateSQL extends TableSelectCommand {
 			}
 			all.put("TOPIC", topicArray);
 			all.put("TERM_TOPIC", topicTermColl);
+
+			PrintWriter servletWriter = context.get("SERVLET_WRITER", PrintWriter.class);
 			servletWriter.println(all.toString());
 		} catch (SQLException e) {
 			logger.error("Error in Query: " + mainQueryMap.getSQLString());
@@ -86,7 +88,23 @@ public class GenerateSQL extends TableSelectCommand {
 	}
 
 	@Override
-	public void addDependencies() {
-		beforeDependencies.add("GetTopicsCoreCollect");
+	public Set<String> getAfterDependencies() {
+		return Sets.newHashSet();
 	}
+
+	@Override
+	public Set<String> getBeforeDependencies() {
+		return Sets.newHashSet("GetTopicsCoreCollect");
+	}
+
+	@Override
+	public Set<String> getOptionalAfterDependencies() {
+		return Sets.newHashSet();
+	}
+
+	@Override
+	public Set<String> getOptionalBeforeDependencies() {
+		return Sets.newHashSet();
+	}
+
 }

@@ -1,23 +1,39 @@
 package cc.topicexplorer.actions.init;
 
-import org.apache.commons.chain.Context;
+import java.util.Set;
 
-import cc.commandmanager.core.CommunicationContext;
+import cc.commandmanager.core.Context;
 import cc.topicexplorer.commands.TableSelectCommand;
 import cc.topicexplorer.database.SelectMap;
+
+import com.google.common.collect.Sets;
 
 public class Create extends TableSelectCommand {
 
 	@Override
 	public void tableExecute(Context context) {
-		CommunicationContext communicationContext = (CommunicationContext) context;
-		communicationContext.put("DOCUMENT_QUERY", new SelectMap());
-		communicationContext.put("TOPIC_QUERY", new SelectMap());
+		context.bind("DOCUMENT_QUERY", new SelectMap());
+		context.bind("TOPIC_QUERY", new SelectMap());
 	}
 
 	@Override
-	public void addDependencies() {
-		afterDependencies.add("InitCoreCollect");
+	public Set<String> getAfterDependencies() {
+		return Sets.newHashSet("InitCoreCollect");
+	}
+
+	@Override
+	public Set<String> getBeforeDependencies() {
+		return Sets.newHashSet();
+	}
+
+	@Override
+	public Set<String> getOptionalAfterDependencies() {
+		return Sets.newHashSet();
+	}
+
+	@Override
+	public Set<String> getOptionalBeforeDependencies() {
+		return Sets.newHashSet();
 	}
 
 }

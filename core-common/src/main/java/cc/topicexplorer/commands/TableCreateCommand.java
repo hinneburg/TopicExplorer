@@ -2,9 +2,14 @@ package cc.topicexplorer.commands;
 
 import java.sql.SQLException;
 
-import org.apache.commons.chain.Context;
+import org.apache.log4j.Logger;
+
+import cc.commandmanager.core.Context;
 
 public abstract class TableCreateCommand extends TableCommand {
+
+	private static final Logger logger = Logger.getLogger(TableCreateCommand.class);
+
 	@Override
 	public void tableExecute(Context context) {
 		dropTable();
@@ -26,7 +31,6 @@ public abstract class TableCreateCommand extends TableCommand {
 		}
 	}
 
-	
 	private boolean exceptionIsTolerated(int errorCode) {
 		return errorCode == 1091;
 	}

@@ -4,7 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import org.apache.commons.chain.Context;
+import cc.commandmanager.core.Context;
 
 public abstract class TableFillCommand extends TableCommand {
 
@@ -14,26 +14,22 @@ public abstract class TableFillCommand extends TableCommand {
 	}
 
 	/**
-	 * Analyzes the table with the corresponding table name, specified in this
-	 * {@link TableFillCommand}
+	 * Analyzes the table with the corresponding table name, specified in this {@link TableFillCommand}
 	 * 
 	 * @throws SQLException
-	 *             if a database access error occurs or the analyze
-	 *             {@link Statement} produces a {@link ResultSet}. See the MySQL
-	 *             specification for detailed information on the error code.
+	 *             if a database access error occurs or the analyze {@link Statement} produces a {@link ResultSet}. See
+	 *             the MySQL specification for detailed information on the error code.
 	 */
 	public void analyzeMainTableOfCommand() throws SQLException {
 		this.database.analyzeTable(this.tableName);
 	}
 
 	/**
-	 * Optimizes the table with the corresponding table name, specified in this
-	 * {@link TableFillCommand}
+	 * Optimizes the table with the corresponding table name, specified in this {@link TableFillCommand}
 	 * 
 	 * @throws SQLException
-	 *             if a database access error occurs or the analyze
-	 *             {@link Statement} produces a {@link ResultSet}. See the MySQL
-	 *             specification for detailed information on the error code.
+	 *             if a database access error occurs or the analyze {@link Statement} produces a {@link ResultSet}. See
+	 *             the MySQL specification for detailed information on the error code.
 	 */
 	public void optimizeMainTableOfCommand() throws SQLException {
 		this.database.optimizeTable(this.tableName);

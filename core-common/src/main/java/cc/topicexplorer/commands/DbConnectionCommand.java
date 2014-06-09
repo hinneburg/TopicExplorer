@@ -1,24 +1,39 @@
 package cc.topicexplorer.commands;
 
 import java.util.Properties;
+import java.util.Set;
 
-import org.apache.commons.chain.Context;
-
-import cc.commandmanager.core.CommunicationContext;
-import cc.commandmanager.core.DependencyCommand;
+import cc.commandmanager.core.Command;
+import cc.commandmanager.core.Context;
 import cc.topicexplorer.database.Database;
 
-public class DbConnectionCommand extends DependencyCommand {
+import com.google.common.collect.Sets;
+
+public class DbConnectionCommand implements Command {
 
 	@Override
-	public void specialExecute(Context context) {
-		CommunicationContext communicationContext = (CommunicationContext) context;
-		Database database = new Database((Properties) communicationContext.get("properties"), false);
-		communicationContext.put("database", database);
+	public void execute(Context context) {
+		Database database = new Database(context.get("properties", Properties.class), false);
+		context.bind("database", database);
 	}
 
 	@Override
-	public void addDependencies() {
-		beforeDependencies.add("PropertiesCommand");
+	public Set<String> getAfterDependencies() {
+		return Sets.newHashSet();
+	}
+
+	@Override
+	public Set<String> getBeforeDependencies() {
+		return Sets.newHashSet("PropertiesCommand");
+	}
+
+	@Override
+	public Set<String> getOptionalAfterDependencies() {
+		return Sets.newHashSet();
+	}
+
+	@Override
+	public Set<String> getOptionalBeforeDependencies() {
+		return Sets.newHashSet();
 	}
 }

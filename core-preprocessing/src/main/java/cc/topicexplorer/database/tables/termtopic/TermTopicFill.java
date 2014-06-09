@@ -8,10 +8,18 @@ package cc.topicexplorer.database.tables.termtopic;
  MIT-JOOQ-ENDE */
 
 import java.sql.SQLException;
+import java.util.Set;
+
+import org.apache.log4j.Logger;
 
 import cc.topicexplorer.commands.TableFillCommand;
 
+import com.google.common.collect.Sets;
+
 public class TermTopicFill extends TableFillCommand {
+
+	private static final Logger logger = Logger.getLogger(TermTopicFill.class);
+
 	@Override
 	public void setTableName() {
 		/**
@@ -108,10 +116,23 @@ public class TermTopicFill extends TableFillCommand {
 	}
 
 	@Override
-	public void addDependencies() {
-		beforeDependencies.add("TermTopicCreate");
-		beforeDependencies.add("DocumentTermTopicFill");
-		beforeDependencies.add("DocumentFill");
-		beforeDependencies.add("TopicFill");
+	public Set<String> getAfterDependencies() {
+		return Sets.newHashSet();
 	}
+
+	@Override
+	public Set<String> getBeforeDependencies() {
+		return Sets.newHashSet("TermTopicCreate", "DocumentTermTopicFill", "DocumentFill", "TopicFill");
+	}
+
+	@Override
+	public Set<String> getOptionalAfterDependencies() {
+		return Sets.newHashSet();
+	}
+
+	@Override
+	public Set<String> getOptionalBeforeDependencies() {
+		return Sets.newHashSet();
+	}
+
 }

@@ -6,10 +6,17 @@ package cc.topicexplorer.database.tables.term;
  import static jooq.generated.Tables.DOCUMENT; 
  MIT-JOOQ-ENDE */
 import java.sql.SQLException;
+import java.util.Set;
+
+import org.apache.log4j.Logger;
 
 import cc.topicexplorer.commands.TableFillCommand;
 
+import com.google.common.collect.Sets;
+
 public class TermFill extends TableFillCommand {
+
+	private static final Logger logger = Logger.getLogger(TermFill.class);
 
 	@Override
 	public void fillTable() {
@@ -112,9 +119,24 @@ public class TermFill extends TableFillCommand {
 	}
 
 	@Override
-	public void addDependencies() {
-		beforeDependencies.add("TermCreate");
-		beforeDependencies.add("DocumentTermTopicFill");
-		beforeDependencies.add("DocumentFill");
+	public Set<String> getAfterDependencies() {
+		return Sets.newHashSet();
 	}
+
+	@Override
+	public Set<String> getBeforeDependencies() {
+		return Sets.newHashSet("TermCreate", "DocumentTermTopicFill", "DocumentFill");
+
+	}
+
+	@Override
+	public Set<String> getOptionalAfterDependencies() {
+		return Sets.newHashSet();
+	}
+
+	@Override
+	public Set<String> getOptionalBeforeDependencies() {
+		return Sets.newHashSet();
+	}
+
 }

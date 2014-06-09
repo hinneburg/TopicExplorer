@@ -7,10 +7,18 @@ package cc.topicexplorer.database.tables.documenttopic;
  import static jooq.generated.Tables.TOPIC; 
  MIT-JOOQ-ENDE */
 import java.sql.SQLException;
+import java.util.Set;
+
+import org.apache.log4j.Logger;
 
 import cc.topicexplorer.commands.TableFillCommand;
 
+import com.google.common.collect.Sets;
+
 public class DocumentTopicFill extends TableFillCommand {
+
+	private static final Logger logger = Logger.getLogger(DocumentTopicFill.class);
+
 	@Override
 	public void setTableName() {
 		/**
@@ -24,48 +32,32 @@ public class DocumentTopicFill extends TableFillCommand {
 	@Override
 	public void fillTable() {
 		/**
-		 * MIT-JOOQ-START String sql = "INSERT INTO " + DOCUMENT_TOPIC.getName()
-		 * + "(" + DOCUMENT_TOPIC.DOCUMENT_ID.getName() + ", " +
-		 * DOCUMENT_TOPIC.TOPIC_ID.getName() + ",  " +
+		 * MIT-JOOQ-START String sql = "INSERT INTO " + DOCUMENT_TOPIC.getName() + "(" +
+		 * DOCUMENT_TOPIC.DOCUMENT_ID.getName() + ", " + DOCUMENT_TOPIC.TOPIC_ID.getName() + ",  " +
 		 * DOCUMENT_TOPIC.NUMBER_OF_TOKEN_TOPIC_IN_DOCUMENT.getName() + ", " +
-		 * DOCUMENT_TOPIC.PR_DOCUMENT_GIVEN_TOPIC.getName() + ",  " +
-		 * DOCUMENT_TOPIC.PR_TOPIC_GIVEN_DOCUMENT.getName() + ") " + "	select "
-		 * + DOCUMENT_TERM_TOPIC.getName() + "." +
-		 * DOCUMENT_TERM_TOPIC.DOCUMENT_ID.getName() + ", " +
-		 * DOCUMENT_TERM_TOPIC.getName() + "." +
-		 * DOCUMENT_TERM_TOPIC.TOPIC_ID.getName() + ",  " + "count(*), " +
-		 * "cast(count(*) AS DECIMAL(65,30)) / cast(" + TOPIC.getName() + "." +
-		 * TOPIC.NUMBER_OF_TOKENS.getName() + " AS DECIMAL(65,30)), " +
-		 * "cast(count(*) AS DECIMAL(65,30)) / cast(" + DOCUMENT.getName() + "."
-		 * + DOCUMENT.NUMBER_OF_TOKENS.getName() + " AS DECIMAL(65,30)) " +
-		 * " from " + DOCUMENT_TERM_TOPIC.getName() + " join " +
-		 * DOCUMENT.getName() + " on ( " + DOCUMENT_TERM_TOPIC.getName() + "." +
-		 * DOCUMENT_TERM_TOPIC.DOCUMENT_ID.getName() + " = " +
-		 * DOCUMENT.getName() + "." + DOCUMENT.DOCUMENT_ID.getName() + ")" +
-		 * " join " + TOPIC.getName() + " on (" + DOCUMENT_TERM_TOPIC.getName()
-		 * + "." + DOCUMENT_TERM_TOPIC.TOPIC_ID.getName() + " = " +
-		 * TOPIC.getName() + "." + TOPIC.TOPIC_ID.getName() + ")" + " group by "
-		 * + DOCUMENT_TERM_TOPIC.getName() + "." +
-		 * DOCUMENT_TERM_TOPIC.DOCUMENT_ID.getName() + ", " +
-		 * DOCUMENT_TERM_TOPIC.getName() + "." +
-		 * DOCUMENT_TERM_TOPIC.TOPIC_ID.getName() + ", " + DOCUMENT.getName() +
-		 * "." + DOCUMENT.NUMBER_OF_TOKENS.getName() + ", " + TOPIC.getName() +
-		 * "." + TOPIC.NUMBER_OF_TOKENS.getName();
+		 * DOCUMENT_TOPIC.PR_DOCUMENT_GIVEN_TOPIC.getName() + ",  " + DOCUMENT_TOPIC.PR_TOPIC_GIVEN_DOCUMENT.getName() +
+		 * ") " + "	select " + DOCUMENT_TERM_TOPIC.getName() + "." + DOCUMENT_TERM_TOPIC.DOCUMENT_ID.getName() + ", " +
+		 * DOCUMENT_TERM_TOPIC.getName() + "." + DOCUMENT_TERM_TOPIC.TOPIC_ID.getName() + ",  " + "count(*), " +
+		 * "cast(count(*) AS DECIMAL(65,30)) / cast(" + TOPIC.getName() + "." + TOPIC.NUMBER_OF_TOKENS.getName() +
+		 * " AS DECIMAL(65,30)), " + "cast(count(*) AS DECIMAL(65,30)) / cast(" + DOCUMENT.getName() + "." +
+		 * DOCUMENT.NUMBER_OF_TOKENS.getName() + " AS DECIMAL(65,30)) " + " from " + DOCUMENT_TERM_TOPIC.getName() +
+		 * " join " + DOCUMENT.getName() + " on ( " + DOCUMENT_TERM_TOPIC.getName() + "." +
+		 * DOCUMENT_TERM_TOPIC.DOCUMENT_ID.getName() + " = " + DOCUMENT.getName() + "." + DOCUMENT.DOCUMENT_ID.getName()
+		 * + ")" + " join " + TOPIC.getName() + " on (" + DOCUMENT_TERM_TOPIC.getName() + "." +
+		 * DOCUMENT_TERM_TOPIC.TOPIC_ID.getName() + " = " + TOPIC.getName() + "." + TOPIC.TOPIC_ID.getName() + ")" +
+		 * " group by " + DOCUMENT_TERM_TOPIC.getName() + "." + DOCUMENT_TERM_TOPIC.DOCUMENT_ID.getName() + ", " +
+		 * DOCUMENT_TERM_TOPIC.getName() + "." + DOCUMENT_TERM_TOPIC.TOPIC_ID.getName() + ", " + DOCUMENT.getName() +
+		 * "." + DOCUMENT.NUMBER_OF_TOKENS.getName() + ", " + TOPIC.getName() + "." + TOPIC.NUMBER_OF_TOKENS.getName();
 		 * 
 		 * database.executeUpdateQuery(sql);
 		 * 
-		 * database.executeUpdateQuery("ALTER TABLE " + DOCUMENT_TOPIC.getName()
-		 * + " ADD KEY PRIMARY_IDX(" + DOCUMENT_TOPIC.DOCUMENT_ID.getName() +
-		 * "," + DOCUMENT_TOPIC.TOPIC_ID.getName() + ")," +
-		 * " ADD KEY TOPIC_DOCUMENT_IDX (" + DOCUMENT_TOPIC.TOPIC_ID.getName() +
-		 * "," + DOCUMENT_TOPIC.DOCUMENT_ID.getName() + ")," +
-		 * " ADD KEY TOPIC_PR_DOCUMENT_GIVEN_TOPIC_IDX (" +
-		 * DOCUMENT_TOPIC.TOPIC_ID.getName() + "," +
-		 * DOCUMENT_TOPIC.PR_DOCUMENT_GIVEN_TOPIC.getName() + ")," +
-		 * " ADD KEY DOCUMENT_PR_DOKUMENT_GIVEN_TOPIC_IDX (" +
-		 * DOCUMENT_TOPIC.DOCUMENT_ID.getName() + "," +
-		 * DOCUMENT_TOPIC.PR_TOPIC_GIVEN_DOCUMENT.getName() + ")");
-		 * MIT-JOOQ-ENDE
+		 * database.executeUpdateQuery("ALTER TABLE " + DOCUMENT_TOPIC.getName() + " ADD KEY PRIMARY_IDX(" +
+		 * DOCUMENT_TOPIC.DOCUMENT_ID.getName() + "," + DOCUMENT_TOPIC.TOPIC_ID.getName() + ")," +
+		 * " ADD KEY TOPIC_DOCUMENT_IDX (" + DOCUMENT_TOPIC.TOPIC_ID.getName() + "," +
+		 * DOCUMENT_TOPIC.DOCUMENT_ID.getName() + ")," + " ADD KEY TOPIC_PR_DOCUMENT_GIVEN_TOPIC_IDX (" +
+		 * DOCUMENT_TOPIC.TOPIC_ID.getName() + "," + DOCUMENT_TOPIC.PR_DOCUMENT_GIVEN_TOPIC.getName() + ")," +
+		 * " ADD KEY DOCUMENT_PR_DOKUMENT_GIVEN_TOPIC_IDX (" + DOCUMENT_TOPIC.DOCUMENT_ID.getName() + "," +
+		 * DOCUMENT_TOPIC.PR_TOPIC_GIVEN_DOCUMENT.getName() + ")"); MIT-JOOQ-ENDE
 		 */
 		/** OHNE_JOOQ-START */
 		// @formatter:off
@@ -121,10 +113,22 @@ public class DocumentTopicFill extends TableFillCommand {
 	}
 
 	@Override
-	public void addDependencies() {
-		beforeDependencies.add("DocumentTopicCreate");
-		beforeDependencies.add("DocumentTermTopicFill");
-		beforeDependencies.add("DocumentFill");
-		beforeDependencies.add("TopicFill");
+	public Set<String> getAfterDependencies() {
+		return Sets.newHashSet();
+	}
+
+	@Override
+	public Set<String> getBeforeDependencies() {
+		return Sets.newHashSet("DocumentTopicCreate", "DocumentTermTopicFill", "DocumentFill", "TopicFill");
+	}
+
+	@Override
+	public Set<String> getOptionalAfterDependencies() {
+		return Sets.newHashSet();
+	}
+
+	@Override
+	public Set<String> getOptionalBeforeDependencies() {
+		return Sets.newHashSet();
 	}
 }

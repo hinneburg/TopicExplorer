@@ -1,24 +1,38 @@
 package cc.topicexplorer.actions.getterms;
 
-import org.apache.commons.chain.Context;
+import java.util.Set;
 
-import cc.commandmanager.core.CommunicationContext;
+import cc.commandmanager.core.Context;
 import cc.topicexplorer.commands.TableSelectCommand;
+
+import com.google.common.collect.Sets;
 
 public class GenerateSQL extends TableSelectCommand {
 
 	@Override
 	public void tableExecute(Context context) {
-		CommunicationContext communicationContext = (CommunicationContext) context;
-
-		AllTerms allTermsAction = (AllTerms) communicationContext.get("ALL_TERMS_ACTION");
-
+		AllTerms allTermsAction = context.get("ALL_TERMS_ACTION", AllTerms.class);
 		allTermsAction.readAllTermsAndGenerateJson();
 	}
 
 	@Override
-	public void addDependencies() {
-		beforeDependencies.add("AllTermsCoreCreate");
+	public Set<String> getAfterDependencies() {
+		return Sets.newHashSet();
+	}
+
+	@Override
+	public Set<String> getBeforeDependencies() {
+		return Sets.newHashSet("AllTermsCoreCreate");
+	}
+
+	@Override
+	public Set<String> getOptionalAfterDependencies() {
+		return Sets.newHashSet();
+	}
+
+	@Override
+	public Set<String> getOptionalBeforeDependencies() {
+		return Sets.newHashSet();
 	}
 
 }

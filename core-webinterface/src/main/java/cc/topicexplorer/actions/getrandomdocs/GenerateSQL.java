@@ -4,27 +4,31 @@ import java.io.PrintWriter;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Set;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
-import org.apache.commons.chain.Context;
+import org.apache.log4j.Logger;
 
-import cc.commandmanager.core.CommunicationContext;
+import cc.commandmanager.core.Context;
 import cc.topicexplorer.commands.TableSelectCommand;
 import cc.topicexplorer.database.SelectMap;
 
+import com.google.common.collect.Sets;
+
 public class GenerateSQL extends TableSelectCommand {
+
+	private static Logger logger = Logger.getLogger(GenerateSQL.class);
 
 	@Override
 	public void tableExecute(Context context) {
-		CommunicationContext communicationContext = (CommunicationContext) context;
 		SelectMap preQueryMap, innerQueryMap, mainQueryMap;
-		PrintWriter servletWriter = (PrintWriter) communicationContext.get("SERVLET_WRITER");
+		PrintWriter servletWriter = context.get("SERVLET_WRITER", PrintWriter.class);
 
-		preQueryMap = (SelectMap) communicationContext.get("PRE_QUERY");
-		innerQueryMap = (SelectMap) communicationContext.get("INNER_QUERY");
-		mainQueryMap = (SelectMap) communicationContext.get("MAIN_QUERY");
+		preQueryMap = context.get("PRE_QUERY", SelectMap.class);
+		innerQueryMap = context.get("INNER_QUERY", SelectMap.class);
+		mainQueryMap = context.get("MAIN_QUERY", SelectMap.class);
 
 		ArrayList<String> docColumnList = innerQueryMap.getCleanColumnNames();
 
@@ -86,7 +90,23 @@ public class GenerateSQL extends TableSelectCommand {
 	}
 
 	@Override
-	public void addDependencies() {
-		beforeDependencies.add("GetRandomDocsCoreCollect");
+	public Set<String> getAfterDependencies() {
+		return Sets.newHashSet();
 	}
+
+	@Override
+	public Set<String> getBeforeDependencies() {
+		return Sets.newHashSet("GetRandomDocsCoreCollect");
+	}
+
+	@Override
+	public Set<String> getOptionalAfterDependencies() {
+		return Sets.newHashSet();
+	}
+
+	@Override
+	public Set<String> getOptionalBeforeDependencies() {
+		return Sets.newHashSet();
+	}
+
 }

@@ -4,18 +4,19 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.MissingResourceException;
 import java.util.Properties;
+import java.util.Set;
 
-import org.apache.commons.chain.Context;
 import org.apache.log4j.Logger;
 
-import cc.commandmanager.core.CommunicationContext;
-import cc.commandmanager.core.DependencyCommand;
+import cc.commandmanager.core.Command;
+import cc.commandmanager.core.Context;
 import cc.topicexplorer.utils.PropertiesUtil;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Strings;
+import com.google.common.collect.Sets;
 
-public class PropertiesCommand extends DependencyCommand {
+public class PropertiesCommand implements Command {
 
 	private static final Logger logger = Logger.getLogger(PropertiesCommand.class);
 
@@ -35,14 +36,12 @@ public class PropertiesCommand extends DependencyCommand {
 	 *             database.global.properties, database.local.properties
 	 */
 	@Override
-	public void specialExecute(Context context) {
-		CommunicationContext communicationContext = (CommunicationContext) context;
-
+	public void execute(Context context) {
 		Properties properties = PropertiesUtil.loadMandatoryProperties("config", NO_PREFIX);
 		properties = PropertiesUtil.updateMandatoryProperties(properties, "database", DATABASE_PREFIX);
 		properties = loadPluginProperties(properties);
 
-		communicationContext.put(PROPERTIES_KEY, properties);
+		context.bind(PROPERTIES_KEY, properties);
 	}
 
 	private static Properties loadPluginProperties(Properties properties) {
@@ -70,6 +69,26 @@ public class PropertiesCommand extends DependencyCommand {
 
 	private static String removeWhiteSpacesAndLowerCase(String plugin) {
 		return plugin.replaceAll("\\s", "").toLowerCase();
+	}
+
+	@Override
+	public Set<String> getAfterDependencies() {
+		return Sets.newHashSet();
+	}
+
+	@Override
+	public Set<String> getBeforeDependencies() {
+		return Sets.newHashSet();
+	}
+
+	@Override
+	public Set<String> getOptionalAfterDependencies() {
+		return Sets.newHashSet();
+	}
+
+	@Override
+	public Set<String> getOptionalBeforeDependencies() {
+		return Sets.newHashSet();
 	}
 
 }

@@ -34,7 +34,7 @@ public class JsonServlet extends HttpServlet {
 
 		PrintWriter writer = response.getWriter();
 
-		Context context = WebChainManagement.getContext();
+		Context context = new Context(WebChainManagement.getContext());
 		context.bind("SERVLET_WRITER", writer);
 
 		int offset = (request.getParameter("offset") != null) ? Integer.parseInt(request.getParameter("offset")) : 0;

@@ -12,15 +12,17 @@ public class Collect extends TableSelectCommand {
 
 	@Override
 	public void tableExecute(Context context) {
-		String frame = context.getString("frame");
-
-		BestDocumentsForGivenTopic bestDocAction = context.get("BEST_DOC_ACTION", BestDocumentsForGivenTopic.class);
-		bestDocAction.addFrom("FRAMES");
-		bestDocAction.addWhereClause("FRAMES.DOCUMENT_ID = DOCUMENT.DOCUMENT_ID");
-		bestDocAction.addWhereClause("FRAMES.FRAME='" + frame + "'");
-		bestDocAction.addWhereClause("FRAMES.TOPIC_ID = DOCUMENT_TOPIC.TOPIC_ID");
-
-		context.rebind("BEST_DOC_ACTION", bestDocAction);
+		if(context.containsKey("frame")) {
+			String frame = context.getString("frame");
+	
+			BestDocumentsForGivenTopic bestDocAction = context.get("BEST_DOC_ACTION", BestDocumentsForGivenTopic.class);
+			bestDocAction.addFrom("FRAMES");
+			bestDocAction.addWhereClause("FRAMES.DOCUMENT_ID = DOCUMENT.DOCUMENT_ID");
+			bestDocAction.addWhereClause("FRAMES.FRAME='" + frame + "'");
+			bestDocAction.addWhereClause("FRAMES.TOPIC_ID = DOCUMENT_TOPIC.TOPIC_ID");
+	
+			context.rebind("BEST_DOC_ACTION", bestDocAction);
+		}
 	}
 
 	@Override

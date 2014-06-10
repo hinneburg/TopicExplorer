@@ -16,19 +16,21 @@ public class Collect extends TableSelectCommand {
 		BestDocumentsForGivenTopic bestDocAction = context.get("BEST_DOC_ACTION", BestDocumentsForGivenTopic.class);
 
 		bestDocAction.addDocumentColumn("DOCUMENT.TIME$TIME_STAMP", "TIME$TIME_STAMP");
-		int startTstamp = Integer.valueOf(context.getString("week"));
-		int endTstamp = startTstamp + 604800;
-
-		bestDocAction.addWhereClause("DOCUMENT.TIME$TIME_STAMP > " + startTstamp);
-		bestDocAction.addWhereClause("DOCUMENT.TIME$TIME_STAMP < " + endTstamp);
-
-		String sorting = context.getString("sorting");
-		if (sorting.equals("TIME")) {
-			ArrayList<String> orderBy = new ArrayList<String>();
-			orderBy.add("DOCUMENT.TIME$TIME_STAMP");
-			bestDocAction.setOrderBy(orderBy);
+		if(context.containsKey("week")) {
+			int startTstamp = Integer.valueOf(context.getString("week"));
+			int endTstamp = startTstamp + 604800;
+	
+			bestDocAction.addWhereClause("DOCUMENT.TIME$TIME_STAMP > " + startTstamp);
+			bestDocAction.addWhereClause("DOCUMENT.TIME$TIME_STAMP < " + endTstamp);
 		}
-
+		if(context.containsKey("sorting")) {
+			String sorting = context.getString("sorting");
+			if (sorting.equals("TIME")) {
+				ArrayList<String> orderBy = new ArrayList<String>();
+				orderBy.add("DOCUMENT.TIME$TIME_STAMP");
+				bestDocAction.setOrderBy(orderBy);
+			}
+		}
 		context.rebind("BEST_DOC_ACTION", bestDocAction);
 	}
 

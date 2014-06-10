@@ -15,14 +15,14 @@ public class Collect extends TableSelectCommand {
 	public void tableExecute(Context context) {
 		Search searchAction = context.get("SEARCH_ACTION", Search.class);
 		searchAction.addSearchColumn("DOCUMENT.TIME$TIME_STAMP", "TIME$TIME_STAMP");
-
-		String sorting = context.getString("sorting");
-		if (sorting.equals("TIME")) {
-			ArrayList<String> orderBy = new ArrayList<String>();
-			orderBy.add("DOCUMENT.TIME$TIME_STAMP");
-			searchAction.setOrderBy(orderBy);
+		if(context.containsKey("sorting")) {
+			String sorting = context.getString("sorting");
+			if (sorting.equals("TIME")) {
+				ArrayList<String> orderBy = new ArrayList<String>();
+				orderBy.add("DOCUMENT.TIME$TIME_STAMP");
+				searchAction.setOrderBy(orderBy);
+			}
 		}
-
 		context.rebind("SEARCH_ACTION", searchAction);
 	}
 

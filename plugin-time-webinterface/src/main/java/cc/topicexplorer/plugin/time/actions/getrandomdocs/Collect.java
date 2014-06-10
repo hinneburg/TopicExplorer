@@ -1,27 +1,40 @@
 package cc.topicexplorer.plugin.time.actions.getrandomdocs;
 
-import org.apache.commons.chain.Context;
+import java.util.Set;
 
-import cc.commandmanager.core.CommunicationContext;
+import cc.commandmanager.core.Context;
 import cc.topicexplorer.commands.TableSelectCommand;
 import cc.topicexplorer.database.SelectMap;
 
+import com.google.common.collect.Sets;
+
 public class Collect extends TableSelectCommand {
+
 	@Override
 	public void tableExecute(Context context) {
-		CommunicationContext communicationContext = (CommunicationContext) context;
-		SelectMap innerQueryMap;
-
-		innerQueryMap = (SelectMap) communicationContext.get("INNER_QUERY");
-
+		SelectMap innerQueryMap = context.get("INNER_QUERY", SelectMap.class);
 		innerQueryMap.select.add("DOCUMENT.TIME$TIME_STAMP");
-
-		communicationContext.put("INNER_QUERY", innerQueryMap);
+		context.rebind("INNER_QUERY", innerQueryMap);
 	}
 
 	@Override
-	public void addDependencies() {
-		beforeDependencies.add("GetRandomDocsCoreCreate");
-		afterDependencies.add("GetRandomDocsCoreGenerateSQL");
+	public Set<String> getAfterDependencies() {
+		return Sets.newHashSet("GetRandomDocsCoreGenerateSQL");
 	}
+
+	@Override
+	public Set<String> getBeforeDependencies() {
+		return Sets.newHashSet("GetRandomDocsCoreCreate");
+	}
+
+	@Override
+	public Set<String> getOptionalAfterDependencies() {
+		return Sets.newHashSet();
+	}
+
+	@Override
+	public Set<String> getOptionalBeforeDependencies() {
+		return Sets.newHashSet();
+	}
+
 }

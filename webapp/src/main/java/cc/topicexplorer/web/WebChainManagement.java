@@ -1,5 +1,6 @@
 package cc.topicexplorer.web;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -39,7 +40,7 @@ public class WebChainManagement {
 
 	public static List<String> getOrderedCommands(Set<String> startCommands) {
 		if (isInitialized) {
-			return commandManagement.getOrderedCommands(commandManagement.getDependencies(), startCommands);
+			return commandManagement.getOrderedCommands(startCommands, new HashSet<String>());
 		} else {
 			throw new IllegalStateException("Class must be initialized before getOrderedCommands can be called.");
 		}

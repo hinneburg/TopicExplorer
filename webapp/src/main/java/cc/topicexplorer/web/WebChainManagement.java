@@ -1,6 +1,6 @@
 package cc.topicexplorer.web;
 
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -38,9 +38,10 @@ public class WebChainManagement {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public static List<String> getOrderedCommands(Set<String> startCommands) {
 		if (isInitialized) {
-			return commandManagement.getOrderedCommands(startCommands, new HashSet<String>());
+			return commandManagement.getOrderedCommands(startCommands, Collections.EMPTY_SET);
 		} else {
 			throw new IllegalStateException("Class must be initialized before getOrderedCommands can be called.");
 		}

@@ -1,38 +1,49 @@
 package cc.topicexplorer.plugin.time.actions.search;
 
 import java.util.ArrayList;
+import java.util.Set;
 
-import org.apache.commons.chain.Context;
-
+import cc.commandmanager.core.Context;
 import cc.topicexplorer.actions.search.Search;
-import cc.commandmanager.core.CommunicationContext;
 import cc.topicexplorer.commands.TableSelectCommand;
+
+import com.google.common.collect.Sets;
 
 public class Collect extends TableSelectCommand {
 
 	@Override
 	public void tableExecute(Context context) {
-		CommunicationContext communicationContext = (CommunicationContext) context;
-		Search searchAction = (Search) communicationContext
-				.get("SEARCH_ACTION");
-		
+		Search searchAction = context.get("SEARCH_ACTION", Search.class);
 		searchAction.addSearchColumn("DOCUMENT.TIME$TIME_STAMP", "TIME$TIME_STAMP");
-		Object sorting = communicationContext.get("sorting");
-		if(sorting != null) {
-			if(sorting.equals("TIME")) {
-				ArrayList<String> orderBy = new ArrayList<String>();
-				orderBy.add("DOCUMENT.TIME$TIME_STAMP");
-				searchAction.setOrderBy(orderBy);
-			}
+
+		String sorting = context.getString("sorting");
+		if (sorting.equals("TIME")) {
+			ArrayList<String> orderBy = new ArrayList<String>();
+			orderBy.add("DOCUMENT.TIME$TIME_STAMP");
+			searchAction.setOrderBy(orderBy);
 		}
-		
-		
-		communicationContext.put("SEARCH_ACTION", searchAction);
+
+		context.rebind("SEARCH_ACTION", searchAction);
 	}
 
 	@Override
-	public void addDependencies() {
-		beforeDependencies.add("SearchCoreCreate");
-		afterDependencies.add("SearchCoreGenerateSQL");
+	public Set<String> getAfterDependencies() {
+		return Sets.newHashSet("SearchCoreGenerateSQL");
 	}
+
+	@Override
+	public Set<String> getBeforeDependencies() {
+		return Sets.newHashSet("SearchCoreCreate");
+	}
+
+	@Override
+	public Set<String> getOptionalAfterDependencies() {
+		return Sets.newHashSet();
+	}
+
+	@Override
+	public Set<String> getOptionalBeforeDependencies() {
+		return Sets.newHashSet();
+	}
+
 }

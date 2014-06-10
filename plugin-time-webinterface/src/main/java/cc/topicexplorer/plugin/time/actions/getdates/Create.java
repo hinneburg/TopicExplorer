@@ -1,27 +1,39 @@
 package cc.topicexplorer.plugin.time.actions.getdates;
 
 import java.io.PrintWriter;
+import java.util.Set;
 
-import org.apache.commons.chain.Context;
-
-import cc.commandmanager.core.CommunicationContext;
+import cc.commandmanager.core.Context;
 import cc.topicexplorer.commands.TableSelectCommand;
+
+import com.google.common.collect.Sets;
 
 public class Create extends TableSelectCommand {
 
 	@Override
 	public void tableExecute(Context context) {
-		CommunicationContext communicationContext = (CommunicationContext) context;
-
-		PrintWriter pw = (PrintWriter) communicationContext.get("SERVLET_WRITER");
-		
-		GetDates getDateAction = new GetDates(database, pw);
-		communicationContext.put("GETDATES_ACTION", getDateAction);
+		PrintWriter pw = context.get("SERVLET_WRITER", PrintWriter.class);
+		context.bind("GETDATES_ACTION", new GetDates(database, pw));
 	}
 
 	@Override
-	public void addDependencies() {
-		afterDependencies.add("GetDatesTimeGenerateSQL");
+	public Set<String> getAfterDependencies() {
+		return Sets.newHashSet("GetDatesTimeGenerateSQL");
+	}
+
+	@Override
+	public Set<String> getBeforeDependencies() {
+		return Sets.newHashSet();
+	}
+
+	@Override
+	public Set<String> getOptionalAfterDependencies() {
+		return Sets.newHashSet();
+	}
+
+	@Override
+	public Set<String> getOptionalBeforeDependencies() {
+		return Sets.newHashSet();
 	}
 
 }

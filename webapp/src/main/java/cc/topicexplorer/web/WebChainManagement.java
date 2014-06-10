@@ -32,7 +32,7 @@ public class WebChainManagement {
 
 	public static Context getContext() {
 		if (isInitialized) {
-			return context;
+			return new Context(context);
 		} else {
 			throw new IllegalStateException("Class must be initialized before getContext can be called.");
 		}

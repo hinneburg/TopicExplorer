@@ -31,11 +31,17 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import cc.commandmanager.core.CommunicationContext;
+import cc.commandmanager.core.Command;
+import cc.commandmanager.core.Context;
+import cc.topicexplorer.commands.DbConnectionCommand;
+import cc.topicexplorer.commands.PropertiesCommand;
 import cc.topicexplorer.utils.LoggerUtil;
 
 public class OnStartup implements ServletContextListener {
+
 	private static final Logger logger = Logger.getLogger(OnStartup.class);
+	private static boolean hasBeenInitialized = false;
+
 	private ServletContext servletContext;
 
 	@Override
@@ -56,39 +62,61 @@ public class OnStartup implements ServletContextListener {
 
 	@Override
 	public void contextInitialized(ServletContextEvent arg0) {
-		System.out.println("Do on startup.");
-		servletContext = arg0.getServletContext();
+		if (!hasBeenInitialized) {
 
-		LoggerUtil.initializeLogger();
+			System.out.println("Do on startup.");
+			servletContext = arg0.getServletContext();
 
-		WebChainManagement.init();
-		if (this.getClass().getResource("/catalog.xml") != null) {
-			String path = servletContext.getRealPath("/");
-			File file = new File(path + "WEB-INF" + File.separator + "classes" + File.separator + "catalog.xml");
-			if (file.delete()) {
-				logger.info(file.getName() + " is deleted!");
-			} else {
-				logger.warn("Delete operation is failed.");
+			Context context = new Context();
+			executeInitialCommands(context);
+			LoggerUtil.initializeLogger();
+
+			if (this.getClass().getResource("/catalog.xml") != null) {
+				String path = servletContext.getRealPath("/");
+				File file = new File(path + "WEB-INF" + File.separator + "classes" + File.separator + "catalog.xml");
+				if (file.delete()) {
+					logger.info(file.getName() + " is deleted!");
+				} else {
+					logger.warn("Delete operation is failed.");
+				}
 			}
+
+			String path = servletContext.getRealPath("/");
+			String catalogLocation = path + "WEB-INF" + File.separator + "classes" + File.separator + "catalog.xml";
+			try {
+				PrintWriter pw = new PrintWriter(new FileWriter(catalogLocation));
+				makeCatalogFromProperties(context.get("properties", Properties.class), pw);
+			} catch (ParserConfigurationException e) {
+				doOnCatalogException(e, catalogLocation);
+			} catch (SAXException e) {
+				doOnCatalogException(e, catalogLocation);
+			} catch (IOException e) {
+				doOnCatalogException(e, catalogLocation);
+			} catch (TransformerException e) {
+				doOnCatalogException(e, catalogLocation);
+			}
+
+			WebChainManagement.init(context, catalogLocation);
+			hasBeenInitialized = true;
 		}
-		try {
-			makeCatalog();
-		} catch (ParserConfigurationException e) {
-			e.printStackTrace();
-		} catch (SAXException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (TransformerException e) {
-			e.printStackTrace();
-		}
-		WebChainManagement.setCatalog("/catalog.xml");
 	}
 
-	private void makeCatalog() throws ParserConfigurationException, SAXException, IOException, TransformerException {
+	private static void executeInitialCommands(Context context) {
+		try {
+			Command propertiesCommand = new PropertiesCommand();
+			propertiesCommand.execute(context);
+
+			Command dbConnectionCommand = new DbConnectionCommand();
+			dbConnectionCommand.execute(context);
+		} catch (RuntimeException rntmEx) {
+			logger.error("Initialization abborted, due to a critical exception", rntmEx);
+			throw rntmEx;
+		}
+	}
+
+	private static void makeCatalogFromProperties(Properties properties, PrintWriter pw)
+			throws ParserConfigurationException, SAXException, IOException, TransformerException {
 		// to be filled with makeCatalog() of RandomDocs.java
-		CommunicationContext communicationContext = WebChainManagement.getCommunicationContext();
-		Properties properties = (Properties) communicationContext.get("properties");
 		String plugins = properties.getProperty("plugins");
 		logger.info("Activated plugins: " + plugins);
 
@@ -99,17 +127,17 @@ public class OnStartup implements ServletContextListener {
 		builder = domFactory.newDocumentBuilder();
 
 		// init
-		Document doc = builder.parse(this.getClass().getResourceAsStream(
-				"/cc/topicexplorer/core-webinterface/catalog/catalog.xml"));
+		Document doc = builder.parse(OnStartup.class
+				.getResourceAsStream("/cc/topicexplorer/core-webinterface/catalog/catalog.xml"));
 
 		// process plugin catalogs
 		for (String plugin : plugins.split(",")) {
 			plugin = plugin.trim().toLowerCase();
 			try {
-				doc = this.getMergedXML(
+				doc = getMergedXML(
 						doc,
-						builder.parse(this.getClass().getResourceAsStream(
-								"/cc/topicexplorer/plugin-" + plugin + "-webinterface/catalog/catalog.xml")));
+						builder.parse(OnStartup.class.getResourceAsStream("/cc/topicexplorer/plugin-" + plugin
+								+ "-webinterface/catalog/catalog.xml")));
 			} catch (SAXException saxEx) {
 				logger.warn("/cc/topicexplorer/plugin-" + plugin + "-webinterface/catalog/catalog.xml not found", saxEx);
 			} catch (IOException ioEx) {
@@ -130,10 +158,6 @@ public class OnStartup implements ServletContextListener {
 		StreamResult result = new StreamResult(new StringWriter());
 		transformer.transform(source, result);
 
-		String path = servletContext.getRealPath("/");
-		PrintWriter pw = new PrintWriter(new FileWriter(path + "WEB-INF" + File.separator + "classes" + File.separator
-				+ "catalog.xml"));
-
 		String xmlOutput = result.getWriter().toString();
 
 		pw.println(xmlOutput);
@@ -142,13 +166,17 @@ public class OnStartup implements ServletContextListener {
 
 	}
 
-	private Document getMergedXML(Document xmlFile1, Document xmlFile2) {
+	private static Document getMergedXML(Document xmlFile1, Document xmlFile2) {
 		NodeList nodes = xmlFile2.getElementsByTagName("catalog").item(0).getChildNodes();
 		for (int i = 0; i < nodes.getLength(); i++) {
 			Node importNode = xmlFile1.importNode(nodes.item(i), true);
 			xmlFile1.getElementsByTagName("catalog").item(0).appendChild(importNode);
 		}
 		return xmlFile1;
+	}
+
+	private void doOnCatalogException(Throwable t, String catalogLocation) {
+		logger.warn("Problems occured while creating and filling the catalog at this location: " + catalogLocation, t);
 	}
 
 }

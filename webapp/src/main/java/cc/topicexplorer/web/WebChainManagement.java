@@ -5,64 +5,55 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import cc.commandmanager.core.ChainManagement;
-import cc.commandmanager.core.CommunicationContext;
-import cc.commandmanager.core.DependencyCollector;
-import cc.commandmanager.core.DependencyCommand;
-import cc.topicexplorer.commands.DbConnectionCommand;
-import cc.topicexplorer.commands.PropertiesCommand;
+import cc.commandmanager.core.CommandManagement;
+import cc.commandmanager.core.Context;
 
 public class WebChainManagement {
 
-	private static ChainManagement chainManagement = null;
+	private static CommandManagement commandManagement;
 	private static final Logger logger = Logger.getLogger(WebChainManagement.class);
 	private static boolean isInitialized = false;
+	private static Context context;
 
 	private WebChainManagement() {
 		throw new UnsupportedOperationException();
 	}
 
-	public static void init() {
+	public static void init(Context context, String catalogLocation) {
 		if (!isInitialized) {
-			CommunicationContext context = new CommunicationContext();
-			executeInitialCommands(context);
-			chainManagement = new ChainManagement(context);
-
+			WebChainManagement.context = context;
+			commandManagement = new CommandManagement(catalogLocation, context);
 			isInitialized = true;
+		} else {
+			throw new IllegalStateException("Class has already been initialized.");
 		}
 	}
 
-	private static void executeInitialCommands(CommunicationContext context) {
-		try {
-			DependencyCommand propertiesCommand = new PropertiesCommand();
-			propertiesCommand.execute(context);
-
-			DependencyCommand dbConnectionCommand = new DbConnectionCommand();
-			dbConnectionCommand.execute(context);
-		} catch (RuntimeException rntmEx) {
-			logger.error("Initialization abborted, due to a critical exception", rntmEx);
-			throw rntmEx;
+	public static Context getContext() {
+		if (isInitialized) {
+			return context;
+		} else {
+			throw new IllegalStateException("Class must be initialized before getContext can be called.");
 		}
 	}
 
-	public static void setCatalog(String catalog) {
-		chainManagement.setCatalog(catalog);
+	public static List<String> getOrderedCommands(Set<String> startCommands) {
+		if (isInitialized) {
+			return commandManagement.getOrderedCommands(commandManagement.getDependencies(), startCommands);
+		} else {
+			throw new IllegalStateException("Class must be initialized before getOrderedCommands can be called.");
+		}
 	}
 
-	public static CommunicationContext getCommunicationContext() {
-		return chainManagement.getCommunicationContext().clone();
-	}
-
-	public static List<String> getOrderedCommands(Set<String> startCommands, Set<String> endCommands) {
-		return chainManagement.getOrderedCommands(new DependencyCollector(chainManagement.catalog).getDependencies(),
-				startCommands, endCommands);
-	}
-
-	public static void executeCommands(List<String> commands, CommunicationContext communicationContext) {
-		try {
-			chainManagement.executeCommands(commands, communicationContext);
-		} catch (RuntimeException e) {
-			logger.error("A command caused a RuntimeException.", e);
+	public static void executeCommands(List<String> commands, Context context) {
+		if (isInitialized) {
+			try {
+				commandManagement.executeCommands(commands, context);
+			} catch (RuntimeException e) {
+				logger.error("A command caused a RuntimeException.", e);
+			}
+		} else {
+			throw new IllegalStateException("Class must be initialized before executeCommands can be called.");
 		}
 	}
 

@@ -149,15 +149,15 @@ define(
     	self.downloadCSV = function() {
     		try {
     		    var isFileSaverSupported = !!new Blob;
-    		    var out = "id,color";
+    		    var out = "id;color";
         		for(tstamp in topicexplorerModel.data.topic[0].TIME$WORDS_PER_WEEK)
-        			out += "," + moment(parseInt(tstamp)).format('LL');
+        			out += ";" + tstamp;
         		out += "\n";
         		for(topic in self.renderedTopics()) {
-        			out += self.renderedTopics()[topic] + "," + topicexplorerModel.data.topic[self.renderedTopics()[topic]].COLOR_TOPIC$COLOR;
+        			out += self.renderedTopics()[topic] + ";" + topicexplorerModel.data.topic[self.renderedTopics()[topic]].COLOR_TOPIC$COLOR;
         			if(self.renderedTopics()[topic] != "average") {
         				for(tstamp in topicexplorerModel.data.topic[self.renderedTopics()[topic]].TIME$WORDS_PER_WEEK) {
-        					out += "," + topicexplorerModel.data.topic[self.renderedTopics()[topic]].TIME$WORDS_PER_WEEK[tstamp].WORD_COUNT;
+        					out += ";" + topicexplorerModel.data.topic[self.renderedTopics()[topic]].TIME$WORDS_PER_WEEK[tstamp].WORD_COUNT;
         				}
         				out += "\n";
         			} 		

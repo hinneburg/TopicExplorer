@@ -13,37 +13,37 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 
-import org.apache.commons.chain.Context;
+import org.apache.log4j.Logger;
 
 import tools.BracketPositions;
 import tools.CategoryElement;
 import tools.ExtraInformations;
 import tools.WikiIDTitlePair;
 import wikiParser.SupporterForBothTypes;
-import cc.commandmanager.core.CommunicationContext;
-import cc.commandmanager.core.DependencyCommand;
+import cc.commandmanager.core.Command;
+import cc.commandmanager.core.Context;
 
-public class CategoryResolver extends DependencyCommand {
+import com.google.common.collect.Sets;
+
+public class CategoryResolver implements Command {
+
+	private static final Logger logger = Logger.getLogger(CategoryResolver.class);
+	private static final String CATPARENTTEXT = ""; // "has_no_parent";
+	public static String categoryFileName = "categories.csv";
 
 	private wikiParser.Database db;
 	private Properties prop;
-	public static String categoryFileName = "categories.csv";
 	private final HashSet<String> catChilds = new HashSet<String>();
 	private wikiParser.SupporterForBothTypes s;
 	private BufferedWriter bw;
 	private final LinkedList<String> stack = new LinkedList<String>();
-	private static final String CATPARENTTEXT = ""; // "has_no_parent";
 
 	@Override
-	public void specialExecute(Context context) {
-
-		if (logger != null) {
-			logger.info("[ " + getClass() + " ] - " + " resolve categorys from wiki-db");
-		}
-
-		CommunicationContext communicationContext = (CommunicationContext) context;
-		prop = (Properties) communicationContext.get("properties");
+	public void execute(Context context) {
+		logger.info("[ " + getClass() + " ] - " + " resolve categorys from wiki-db");
+		prop = context.get("properties", Properties.class);
 
 		try {
 			init();
@@ -55,14 +55,28 @@ public class CategoryResolver extends DependencyCommand {
 	}
 
 	@Override
-	public void addDependencies() {
-		beforeDependencies.add("Wiki_CategoryTreeCreate");
-	};
+	public Set<String> getAfterDependencies() {
+		return Sets.newHashSet();
+	}
+
+	@Override
+	public Set<String> getBeforeDependencies() {
+		return Sets.newHashSet("Wiki_CategoryTreeCreate");
+	}
+
+	@Override
+	public Set<String> getOptionalAfterDependencies() {
+		return Sets.newHashSet();
+	}
+
+	@Override
+	public Set<String> getOptionalBeforeDependencies() {
+		return Sets.newHashSet();
+	}
 
 	private void init() throws IOException {
-		// eigene DB Zugriff auf Wikidb
+		// individual access to db, asides the provided DbConnectionCommand
 		try {
-
 			String outputFolder = prop.getProperty("Wiki_outputFolder");
 			File dir = new File(outputFolder);
 			if (!dir.exists()) {
@@ -104,7 +118,7 @@ public class CategoryResolver extends DependencyCommand {
 
 				child = new WikiIDTitlePair(Integer.valueOf(rs.getString("page_latest")), rs.getString("page_title"));
 
-				// wenn das kind noch nicht untersucht worden ist
+				// it has not been investigated on this child, yet.
 				if (!catChilds.contains(getTitleWithUnderscores(child.getWikiTitle()))) {
 					getParentCategoriesOfWikiIdTitle(child);
 				}
@@ -139,7 +153,6 @@ public class CategoryResolver extends DependencyCommand {
 
 				addToBW(e);
 
-				// wenn noch nicht in hashset kann es auf den stack
 				if (!catChilds.contains(getTitleWithUnderscores(e.getText()))) {
 					stack.add(getTitleWithUnderscores(ExtraInformations.getTargetWithoutCategoryInformation(e.getText())));
 				}
@@ -205,7 +218,6 @@ public class CategoryResolver extends DependencyCommand {
 
 				if (!trueIfCommesFromSource) {
 					CategoryElement ce = new CategoryElement();
-					// ce.setOldId(old_id);
 					ce.setTitle(category);
 					ce.setText(CATPARENTTEXT);
 
@@ -244,7 +256,6 @@ public class CategoryResolver extends DependencyCommand {
 		File f = new File(fileName);
 		if (f.exists()) {
 			prop = new Properties();
-			// prop.load(this.getClass().getResourceAsStream("/config.ini"));
 
 			FileInputStream fis = new FileInputStream(fileName);
 

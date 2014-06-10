@@ -1,21 +1,18 @@
 package cc.topicexplorer.plugin.wiki.preprocessing.tables.orgtable;
 
 import java.sql.SQLException;
+import java.util.Set;
 
-import org.apache.commons.chain.Context;
+import org.apache.log4j.Logger;
 
+import cc.commandmanager.core.Context;
 import cc.topicexplorer.commands.TableCommand;
+
+import com.google.common.collect.Sets;
 
 public class OrgTableCreateAndFill extends TableCommand {
 
-	@Override
-	public void addDependencies() {
-
-		beforeDependencies.add("Wiki_PreMallet");
-
-		afterDependencies.add("DocumentFill");
-
-	}
+	private static final Logger logger = Logger.getLogger(OrgTableCreateAndFill.class);
 
 	@Override
 	public void tableExecute(Context context) {
@@ -52,7 +49,6 @@ public class OrgTableCreateAndFill extends TableCommand {
 		}
 
 		// fill table with values from the output of the wiki plug-in
-
 		sql = " LOAD DATA LOCAL INFILE " + "'" + properties.getProperty("Wiki_outputFolder")
 				+ System.getProperty("file.separator") + "inputsql.csv" + "' " + "INTO TABLE " + tableName + " "
 				+ "CHARACTER set utf8 FIELDS TERMINATED BY ';' ENCLOSED BY '\"'   "
@@ -72,6 +68,26 @@ public class OrgTableCreateAndFill extends TableCommand {
 	@Override
 	public void setTableName() {
 		tableName = this.properties.getProperty("OrgTableName");
+	}
+
+	@Override
+	public Set<String> getAfterDependencies() {
+		return Sets.newHashSet("DocumentFill");
+	}
+
+	@Override
+	public Set<String> getBeforeDependencies() {
+		return Sets.newHashSet("Wiki_PreMallet");
+	}
+
+	@Override
+	public Set<String> getOptionalAfterDependencies() {
+		return Sets.newHashSet();
+	}
+
+	@Override
+	public Set<String> getOptionalBeforeDependencies() {
+		return Sets.newHashSet();
 	}
 
 }

@@ -8,18 +8,24 @@ import java.io.InputStreamReader;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
+import java.util.Set;
 
-import org.apache.commons.chain.Context;
+import org.apache.log4j.Logger;
 
-import cc.commandmanager.core.CommunicationContext;
-import cc.commandmanager.core.DependencyCommand;
+import cc.commandmanager.core.Command;
+import cc.commandmanager.core.Context;
 import cc.topicexplorer.database.Database;
 
-public class Prune_pb extends DependencyCommand {
+import com.google.common.collect.Sets;
+
+public class Prune_pb implements Command {
+
+	private static final Logger logger = Logger.getLogger(Prune_pb.class);
+
 	private Properties properties;
 	private float lowerBound;
 	private float upperBound;
-	protected cc.topicexplorer.database.Database database;
+	private Database database;
 
 	private void processPrune() {
 		ProcessBuilder p = new ProcessBuilder("bash", "-c", "scripts/prune.sh " + properties.getProperty("InCSVFile")
@@ -62,19 +68,16 @@ public class Prune_pb extends DependencyCommand {
 	}
 
 	@Override
-	public void specialExecute(Context context) {
+	public void execute(Context context) {
 		logger.info("[ " + getClass() + " ] - " + "pruning vocabular");
 
-		CommunicationContext communicationContext = (CommunicationContext) context;
-		properties = (Properties) communicationContext.get("properties");
-		database = (Database) communicationContext.get("database");
+		properties = context.get("properties", Properties.class);
+		database = context.get("database", Database.class);
 
 		float upperBoundPercent = Float.parseFloat(properties.getProperty("prune_upperBound"));
 		float lowerBoundPercent = Float.parseFloat(properties.getProperty("prune_lowerBound"));
 
-		// are the bounds valid?
-		if (upperBoundPercent < 0 || lowerBoundPercent < 0 || upperBoundPercent > 100 || lowerBoundPercent > 100
-				|| upperBoundPercent < lowerBoundPercent) {
+		if (!hasValidBounds(upperBoundPercent, lowerBoundPercent)) {
 			logger.error("Stop: Invalid Pruning Bounds!");
 			throw new IllegalArgumentException(String.format("upperBoundPercent: %f, lowerBoundPercent: %f",
 					upperBoundPercent, lowerBoundPercent));
@@ -105,10 +108,28 @@ public class Prune_pb extends DependencyCommand {
 				+ this.upperBound + ".csv", properties.getProperty("InCSVFile"));
 	}
 
+	private boolean hasValidBounds(float upperBoundPercent, float lowerBoundPercent) {
+		return !(upperBoundPercent < 0 || lowerBoundPercent < 0 || upperBoundPercent > 100 || lowerBoundPercent > 100 || upperBoundPercent < lowerBoundPercent);
+	}
+
 	@Override
-	public void addDependencies() {
-		beforeDependencies.add("DocumentTermTopicCreate");
-		afterDependencies.add("InFilePreparation");
+	public Set<String> getAfterDependencies() {
+		return Sets.newHashSet("InFilePreparation");
+	}
+
+	@Override
+	public Set<String> getBeforeDependencies() {
+		return Sets.newHashSet("DocumentTermTopicCreate");
+	}
+
+	@Override
+	public Set<String> getOptionalAfterDependencies() {
+		return Sets.newHashSet();
+	}
+
+	@Override
+	public Set<String> getOptionalBeforeDependencies() {
+		return Sets.newHashSet();
 	}
 
 }

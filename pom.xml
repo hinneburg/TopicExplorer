@@ -108,4 +108,5 @@
 		repository on moon</name> <url>https://moon.informatik.uni-halle.de/archiva/repository/snapshots-db</url> 
 		</snapshotRepository> </distributionManagement> -->
 
+	<name>topicexplorer-parent</name>
 </project>

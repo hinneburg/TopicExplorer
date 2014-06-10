@@ -1,36 +1,48 @@
 package cc.topicexplorer.plugin.wiki.preprocessing;
 
 import java.util.Properties;
+import java.util.Set;
 
-import org.apache.commons.chain.Context;
+import org.apache.log4j.Logger;
 
 import wikiParser.PreMalletAction_EntryPointForParallelisation;
-import cc.commandmanager.core.CommunicationContext;
-import cc.commandmanager.core.DependencyCommand;
+import cc.commandmanager.core.Command;
+import cc.commandmanager.core.Context;
 
-public class PreMallet extends DependencyCommand {
+import com.google.common.collect.Sets;
 
+public class PreMallet implements Command {
+
+	private static final Logger logger = Logger.getLogger(PreMallet.class);
 	private Properties properties;
 
 	@Override
-	public void specialExecute(Context context) {
-
+	public void execute(Context context) {
 		logger.info("[ " + getClass() + " ] - " + "preparing wiki-articles for mallet");
 
-		CommunicationContext communicationContext = (CommunicationContext) context;
-		properties = (Properties) communicationContext.get("properties");
-		// database = (Database) communicationContext.get("database");
-
+		properties = context.get("properties", Properties.class);
 		PreMalletAction_EntryPointForParallelisation ph = new PreMalletAction_EntryPointForParallelisation(properties);
 		ph.start();
-
 	}
 
 	@Override
-	public void addDependencies() {
-		afterDependencies.add("InFilePreparation");
-		optionalAfterDependencies.add("Prune");
+	public Set<String> getAfterDependencies() {
+		return Sets.newHashSet("InFilePreparation");
+	}
 
+	@Override
+	public Set<String> getBeforeDependencies() {
+		return Sets.newHashSet();
+	}
+
+	@Override
+	public Set<String> getOptionalAfterDependencies() {
+		return Sets.newHashSet("Prune");
+	}
+
+	@Override
+	public Set<String> getOptionalBeforeDependencies() {
+		return Sets.newHashSet();
 	}
 
 }

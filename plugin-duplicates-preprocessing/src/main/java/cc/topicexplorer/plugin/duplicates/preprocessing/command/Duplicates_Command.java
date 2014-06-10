@@ -2,27 +2,31 @@ package cc.topicexplorer.plugin.duplicates.preprocessing.command;
 
 import java.sql.SQLException;
 import java.util.Properties;
+import java.util.Set;
 
-import org.apache.commons.chain.Context;
+import org.apache.log4j.Logger;
 
-import cc.commandmanager.core.CommunicationContext;
-import cc.commandmanager.core.DependencyCommand;
+import cc.commandmanager.core.Command;
+import cc.commandmanager.core.Context;
 import cc.topicexplorer.database.Database;
 import cc.topicexplorer.plugin.duplicates.preprocessing.implementation.Duplicates;
 
-public class Duplicates_Command extends DependencyCommand {
+import com.google.common.collect.Sets;
+
+public class Duplicates_Command implements Command {
+
+	private static final Logger logger = Logger.getLogger(Duplicates_Command.class);
 	private Properties properties;
 	protected cc.topicexplorer.database.Database database;
 
 	private final Duplicates duplicates = new Duplicates();
 
 	@Override
-	public void specialExecute(Context context) {
+	public void execute(Context context) {
 		logger.info("[ " + getClass() + " ] - " + "detecting duplicates");
 
-		CommunicationContext communicationContext = (CommunicationContext) context;
-		properties = (Properties) communicationContext.get("properties");
-		database = (Database) communicationContext.get("database");
+		properties = context.get("properties", Properties.class);
+		database = context.get("database", Database.class);
 
 		duplicates.setLogger(logger);
 		duplicates.setDB(database);
@@ -43,10 +47,23 @@ public class Duplicates_Command extends DependencyCommand {
 	}
 
 	@Override
-	public void addDependencies() {
-		beforeDependencies.add("DocumentTermTopicCreate");
-		afterDependencies.add("InFilePreparation");
-		optionalAfterDependencies.add("Prune");
+	public Set<String> getAfterDependencies() {
+		return Sets.newHashSet("InFilePreparation");
+	}
+
+	@Override
+	public Set<String> getBeforeDependencies() {
+		return Sets.newHashSet("DocumentTermTopicCreate");
+	}
+
+	@Override
+	public Set<String> getOptionalAfterDependencies() {
+		return Sets.newHashSet("Prune");
+	}
+
+	@Override
+	public Set<String> getOptionalBeforeDependencies() {
+		return Sets.newHashSet();
 	}
 
 }

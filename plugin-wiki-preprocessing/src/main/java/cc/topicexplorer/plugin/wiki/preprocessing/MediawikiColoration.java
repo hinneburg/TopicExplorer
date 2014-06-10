@@ -1,23 +1,26 @@
 package cc.topicexplorer.plugin.wiki.preprocessing;
 
 import java.util.Properties;
+import java.util.Set;
 
-import org.apache.commons.chain.Context;
+import org.apache.log4j.Logger;
 
 import wikiParser.MediawikiColorationAction_EntryPointForParallelisation;
-import cc.commandmanager.core.CommunicationContext;
-import cc.commandmanager.core.DependencyCommand;
+import cc.commandmanager.core.Command;
+import cc.commandmanager.core.Context;
 
-public class MediawikiColoration extends DependencyCommand {
+import com.google.common.collect.Sets;
+
+public class MediawikiColoration implements Command {
+
+	private static final Logger logger = Logger.getLogger(MediawikiColoration.class);
 	private Properties properties;
 
 	@Override
-	public void specialExecute(Context context) {
+	public void execute(Context context) {
 		logger.info("[ " + getClass() + " ] - " + ": coloring the mediawiki");
 
-		CommunicationContext communicationContext = (CommunicationContext) context;
-		properties = (Properties) communicationContext.get("properties");
-
+		properties = context.get("properties", Properties.class);
 		try {
 			MediawikiColorationAction_EntryPointForParallelisation pj = new MediawikiColorationAction_EntryPointForParallelisation(
 					properties);
@@ -28,8 +31,23 @@ public class MediawikiColoration extends DependencyCommand {
 	}
 
 	@Override
-	public void addDependencies() {
-		beforeDependencies.add("DocumentTermTopicFill");
-		beforeDependencies.add("ColorTopic_TopicFill");
+	public Set<String> getAfterDependencies() {
+		return Sets.newHashSet();
 	}
+
+	@Override
+	public Set<String> getBeforeDependencies() {
+		return Sets.newHashSet("DocumentTermTopicFill", "ColorTopic_TopicFill");
+	}
+
+	@Override
+	public Set<String> getOptionalAfterDependencies() {
+		return Sets.newHashSet();
+	}
+
+	@Override
+	public Set<String> getOptionalBeforeDependencies() {
+		return Sets.newHashSet();
+	}
+
 }

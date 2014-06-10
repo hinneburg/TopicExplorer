@@ -1,14 +1,20 @@
 package cc.topicexplorer.plugin.wiki.preprocessing.tables.categorytree;
 
 import java.sql.SQLException;
+import java.util.Set;
+
+import org.apache.log4j.Logger;
 
 import cc.topicexplorer.commands.TableCreateCommand;
 
+import com.google.common.collect.Sets;
+
 public class CategoryTreeCreate extends TableCreateCommand {
+
+	private static final Logger logger = Logger.getLogger(CategoryTreeCreate.class);
 
 	@Override
 	public void createTable() {
-
 		// drop table
 		try {
 			this.database.executeUpdateQuery("drop table " + this.tableName + ";");
@@ -34,6 +40,26 @@ public class CategoryTreeCreate extends TableCreateCommand {
 	@Override
 	public void setTableName() {
 		tableName = "CATEGORYTREE";
+	}
+
+	@Override
+	public Set<String> getAfterDependencies() {
+		return Sets.newHashSet();
+	}
+
+	@Override
+	public Set<String> getBeforeDependencies() {
+		return Sets.newHashSet();
+	}
+
+	@Override
+	public Set<String> getOptionalAfterDependencies() {
+		return Sets.newHashSet();
+	}
+
+	@Override
+	public Set<String> getOptionalBeforeDependencies() {
+		return Sets.newHashSet();
 	}
 
 }

@@ -9,17 +9,23 @@ package cc.topicexplorer.plugin.text.preprocessing.tables.topic;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Set;
+
+import org.apache.log4j.Logger;
 
 import cc.topicexplorer.commands.TableFillCommand;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Sets;
 
 /**
- * @author angefangen von Mattes weiterverarbeitet von Gert Kommaersetzung,
- *         Pfadangabe eingefügt, Tabellenname mit Jooq verknüpft
+ * @author angefangen von Mattes weiterverarbeitet von Gert Kommaersetzung, Pfadangabe eingefügt, Tabellenname mit Jooq
+ *         verknüpft
  * 
  */
 public class TopicFill extends TableFillCommand {
+
+	private static final Logger logger = Logger.getLogger(TopicFill.class);
 
 	@Override
 	public void fillTable() {
@@ -155,10 +161,23 @@ MIT-JOOQ-ENDE */
 	}
 
 	@Override
-	public void addDependencies() {
-		beforeDependencies.add("Text_TopicCreate");
-		beforeDependencies.add("TopicFill");
-		beforeDependencies.add("TermTopicFill");
-		beforeDependencies.add("TermFill");
+	public Set<String> getAfterDependencies() {
+		return Sets.newHashSet();
 	}
+
+	@Override
+	public Set<String> getBeforeDependencies() {
+		return Sets.newHashSet("Text_TopicCreate", "TopicFill", "TermTopicFill", "TermFill");
+	}
+
+	@Override
+	public Set<String> getOptionalAfterDependencies() {
+		return Sets.newHashSet();
+	}
+
+	@Override
+	public Set<String> getOptionalBeforeDependencies() {
+		return Sets.newHashSet();
+	}
+
 }

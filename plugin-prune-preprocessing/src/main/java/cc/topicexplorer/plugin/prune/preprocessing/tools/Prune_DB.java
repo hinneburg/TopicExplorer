@@ -14,44 +14,37 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.Properties;
+import java.util.Set;
 
-import org.apache.commons.chain.Context;
+import org.apache.log4j.Logger;
 
-import cc.commandmanager.core.CommunicationContext;
-import cc.commandmanager.core.DependencyCommand;
+import cc.commandmanager.core.Command;
+import cc.commandmanager.core.Context;
 import cc.topicexplorer.database.Database;
 
 import com.csvreader.CsvReader;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Sets;
 
 /**
- * MIT-JOOQ-START import static jooq.generated.Tables.DOCUMENT_TERM_TOPIC;
- * MIT-JOOQ-ENDE
+ * MIT-JOOQ-START import static jooq.generated.Tables.DOCUMENT_TERM_TOPIC; MIT-JOOQ-ENDE
  */
 
-public class Prune_DB extends DependencyCommand {
-	private Properties properties;
+public class Prune_DB implements Command {
+
+	private static final Logger logger = Logger.getLogger(Prune_DB.class);
 	private static CsvReader inCsv;
-	protected cc.topicexplorer.database.Database database;
 
-	private void renameFile(String source, String destination) {
-		File sourceFile = new File(source);
-		File destinationFile = new File(destination);
-
-		if (!sourceFile.renameTo(destinationFile)) {
-			logger.error("File could not be renamed: " + source);
-			throw new IllegalStateException();
-		}
-	}
+	private Properties properties;
+	private Database database;
 
 	@Override
-	public void specialExecute(Context context) {
+	public void execute(Context context) {
 
 		logger.info("[ " + getClass() + " ] - " + "pruning vocabular");
 
-		CommunicationContext communicationContext = (CommunicationContext) context;
-		properties = (Properties) communicationContext.get("properties");
-		database = (Database) communicationContext.get("database");
+		properties = context.get("properties", Properties.class);
+		database = context.get("database", Database.class);
 
 		float upperBound, lowerBound;
 		String inFilePath = properties.getProperty("InCSVFile");
@@ -80,8 +73,7 @@ public class Prune_DB extends DependencyCommand {
 
 			// copy from doctermtopic and delete topic_id
 			/**
-			 * MIT-JOOQ-START database.executeUpdateQuery(
-			 * "CREATE TABLE IF NOT EXISTS TEMP4PRUNE LIKE " +
+			 * MIT-JOOQ-START database.executeUpdateQuery( "CREATE TABLE IF NOT EXISTS TEMP4PRUNE LIKE " +
 			 * DOCUMENT_TERM_TOPIC.getName()); MIT-JOOQ-ENDE
 			 */
 
@@ -206,9 +198,34 @@ public class Prune_DB extends DependencyCommand {
 		inCsv.close();
 	}
 
-	@Override
-	public void addDependencies() {
-		beforeDependencies.add("DocumentTermTopicCreate");
-		afterDependencies.add("InFilePreparation");
+	private void renameFile(String source, String destination) {
+		File sourceFile = new File(source);
+		File destinationFile = new File(destination);
+
+		if (!sourceFile.renameTo(destinationFile)) {
+			logger.error("File could not be renamed: " + source);
+			throw new IllegalStateException();
+		}
 	}
+
+	@Override
+	public Set<String> getAfterDependencies() {
+		return Sets.newHashSet("InFilePreparation");
+	}
+
+	@Override
+	public Set<String> getBeforeDependencies() {
+		return Sets.newHashSet("DocumentTermTopicCreate");
+	}
+
+	@Override
+	public Set<String> getOptionalAfterDependencies() {
+		return Sets.newHashSet();
+	}
+
+	@Override
+	public Set<String> getOptionalBeforeDependencies() {
+		return Sets.newHashSet();
+	}
+
 }

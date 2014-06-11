@@ -39,7 +39,7 @@ public class OpenNlp
 		is.close();
 	}
 	
-	public void PartOfSpeechTagging() throws IOException
+	public void PartOfSpeechTagging(String[] sent) throws IOException
 	{
 		InputStream modelIn = null;
 		POSModel model;
@@ -63,13 +63,10 @@ public class OpenNlp
 		}
 		POSTaggerME tagger = new POSTaggerME(model);
 		
-		String sent[] = new String[]{"Most", "large", "cities", "in", "the", "US", "had",
-                "morning", "and", "afternoon", "newspapers", "."};	
-		
 		String tags[] = tagger.tag(sent);
 		for(int i=0; i<tags.length;i++)
 		{
-			System.out.println(sent[i]+" is a "+tags[i]);
+			System.out.println(sent[i]+"on position "+i+" is a "+tags[i]);
 		}
 	}
 	

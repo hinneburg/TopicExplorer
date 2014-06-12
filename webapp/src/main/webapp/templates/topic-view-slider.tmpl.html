@@ -1,10 +1,11 @@
 <div class="topicBottomSliderDiv">
-	<div class="topicPrevElCont">
-		<svg style="z-index: 2;">
-			<g id="groupG" data-bind="foreach: {data: $parent.selectedTopics, as: 'selectedTopic'}, attr: {transform: 'scale(' + sliderElWidth() + ', 1)'}">
-				<rect data-bind="attr:{ 'id' : 'topic_' + selectedTopic, 'x': $index, 'index': $index, 'fill': $root.topicexplorer.data.topic[selectedTopic].COLOR_TOPIC$COLOR, title: 'Topic ' + selectedTopic}" class="topicRec" height="13" width="1" y="2" stroke-width="0.02" stroke="black">
-			</g>
-		</svg>
+	<div class="topicPrevElCont" data-bind="foreach: {data: $parent.selectedTopics, as: 'selectedTopic'}">
+	<!-- ko if: $index() === 0 -->
+		<span class="topicRect" data-bind="attr: {'id' : 'topic_' + selectedTopic, title: 'Topic ' + selectedTopic}, style: {'backgroundColor': $root.topicexplorer.data.topic[selectedTopic].COLOR_TOPIC$COLOR, 'width' : (sliderElWidth() - 1.1)+ 'px'}" style="font-size: xx-small;float: left;height: 15px; border-left: 1px solid black; border-right: 1px solid black; cursor: pointer;">&nbsp;</span>
+	<!-- /ko -->
+	<!-- ko if: $index() !== 0 -->
+		<span class="topicRect" data-bind="attr: {'id' : 'topic_' + selectedTopic, title: 'Topic ' + selectedTopic}, style: {'backgroundColor': $root.topicexplorer.data.topic[selectedTopic].COLOR_TOPIC$COLOR, 'width' : (sliderElWidth() - 1.1)+ 'px'}" style="font-size: xx-small;float: left;height: 15px; border-right: 1px solid black; cursor: pointer;">&nbsp;</span>
+	<!-- /ko -->
 	</div>
-	<div  class="topicPrevSlider"><span>&and;</span></div>
+	<div  class="topicPrevSlider"><span>&#9650;</span></div>
 </div>

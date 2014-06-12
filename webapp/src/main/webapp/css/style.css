@@ -303,8 +303,8 @@ html, body {
 	height: 100%;
     position: relative;
     width: 100%;
-  	padding-top: 2px;
-  	white-space: nowrap;
+  	padding-top: 1px;
+  	overflow:hidden;
 }
 .bottom .topicBottomSliderDiv .topicPrevSlider {
 	position: absolute ! important;

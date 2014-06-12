@@ -14,8 +14,8 @@ function(ko, $) {
 		$('.topicPrevSlider > span').css('margin-left', (topicDivWidth * bottomDivWidth) / (maxListWidth * 2) - ($('.topicPrevSlider > span').width() / 2));	
 		var maxScrollPos = $('.topicBottomSliderDiv').width() - $('.topicPrevSlider').width();	
 		$( ".topicPrevSlider" ).draggable({ 
-		axis: "x", 
-		containment: [ 0, 0, maxScrollPos, 0 ],
+			axis: "x", 
+			containment: [ 0, 0, maxScrollPos, 0 ],
 			drag: function( event, ui ) {	
 				var maxScroll = (maxListWidth - topicDivWidth);	
 				var scroll = ((ui.position.left + 4) / maxScrollPos) * maxScroll ;
@@ -27,7 +27,7 @@ function(ko, $) {
 	
 	self.sliderElWidth = ko.computed (function() {
 	self.setTopicSlider();
-   		return self.windowWidth() / $('.topicList > ul > li').size();
+   		return (self.windowWidth() - 10) / $('.topicList > ul > li').size() - 1;
 	});
 	
 	return self;

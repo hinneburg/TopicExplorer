@@ -315,7 +315,7 @@ html, body {
     opacity: 0.5;
     border: 1px solid black;
 	cursor: col-resize;
-
+	overflow:hidden;
 }
 #groupG rect:hover {
 	cursor: pointer;	

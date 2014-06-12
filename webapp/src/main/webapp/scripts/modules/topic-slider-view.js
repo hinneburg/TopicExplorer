@@ -27,7 +27,7 @@ function(ko, $) {
 	
 	self.sliderElWidth = ko.computed (function() {
 	self.setTopicSlider();
-   		return (self.windowWidth() - 10) / $('.topicList > ul > li').size() - 1;
+   		return (self.windowWidth() - 8) / $('.topicList > ul > li').size() - 1;
 	});
 	
 	return self;

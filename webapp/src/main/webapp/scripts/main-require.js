@@ -117,12 +117,10 @@ function makeMenu(el) {
 	});
 };
 
-function getScrollPositionByValue(val) {	
-	var offset = 3;	
-	var scroll = val;
-	var maxScrollPos = $('.topicBottomSliderDiv').width() - $('.topicPrevSlider').width();
+function getScrollPositionByValue(val) {		var scroll = val;
+	var maxScrollPos = $('.topicPrevElCont').width() - $('.topicPrevSlider').width() - 8;
 	var maxScroll = $('.topicList > ul').width() - $('.topicList').width();
-	var position = Math.round(scroll*maxScrollPos/maxScroll)+offset;	
+	var position = Math.round(scroll*maxScrollPos/maxScroll);
 	if(position < 0)
 		position = 0;
 	if(position > maxScrollPos)
@@ -139,7 +137,6 @@ function moveToTopic(self) {
 		topic_id = $(self.currentTarget).attr('id').split("_")[1];
 	}
 	var offset = $(".topicList").width() / 2 - $("#topic" + topic_id).width() / 2;
-	
 	$(".topicList").animate({
 		scrollLeft : ($("#topic" + topic_id).position().left - offset)
 	}, {

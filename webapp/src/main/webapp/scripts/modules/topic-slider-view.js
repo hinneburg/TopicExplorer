@@ -4,21 +4,21 @@ function(ko, $) {
 	self.windowWidth = ko.observable(topicexplorerModel.view.windowWidth).subscribeTo("windowWidth");
 	
 	self.setTopicSlider = function() {	
+		
 		var slider = $('.topicPrevSlider');	
 		var maxListWidth = $('.topicList > ul').width();
 		var topicDivWidth = $('.topicList').width();
 		var bottomDivWidth = $('.topicBottomSliderDiv').width();
 		
 		slider.width((topicDivWidth*bottomDivWidth)/ maxListWidth);
-		
 		$('.topicPrevSlider > span').css('margin-left', (topicDivWidth * bottomDivWidth) / (maxListWidth * 2) - ($('.topicPrevSlider > span').width() / 2));	
 		var maxScrollPos = $('.topicBottomSliderDiv').width() - $('.topicPrevSlider').width();	
 		$( ".topicPrevSlider" ).draggable({ 
 			axis: "x", 
-			containment: [ 0, 0, maxScrollPos, 0 ],
+			containment: [ 4, 0, maxScrollPos, 0 ],
 			drag: function( event, ui ) {	
 				var maxScroll = (maxListWidth - topicDivWidth);	
-				var scroll = ((ui.position.left + 4) / maxScrollPos) * maxScroll ;
+				var scroll = ((ui.position.left) / maxScrollPos) * maxScroll ;
 				$('.topicList').scrollLeft(scroll);	
 				$('#topicMenu, .topicList > img').css('left', scroll);
 			}
@@ -26,7 +26,7 @@ function(ko, $) {
 	};
 	
 	self.sliderElWidth = ko.computed (function() {
-	self.setTopicSlider();
+		self.setTopicSlider();
    		return (self.windowWidth() - 8) / $('.topicList > ul > li').size() - 1;
 	});
 	

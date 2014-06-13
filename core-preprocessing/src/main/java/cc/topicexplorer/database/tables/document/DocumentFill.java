@@ -16,9 +16,6 @@ public class DocumentFill extends TableFillCommand {
 
 	private static final Logger logger = Logger.getLogger(DocumentFill.class);
 
-	/*
-	 * TODO pageindeq noch auf 1 gesetzt fehlt auch in config.ini und hier als propertyübergabe
-	 */
 	@Override
 	public void fillTable() {
 		/**

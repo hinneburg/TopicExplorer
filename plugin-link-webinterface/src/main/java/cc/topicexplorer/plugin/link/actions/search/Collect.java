@@ -1,26 +1,42 @@
 package cc.topicexplorer.plugin.link.actions.search;
 
-import org.apache.commons.chain.Context;
+
+import java.util.Set;
+
+import com.google.common.collect.Sets;
 
 import cc.topicexplorer.actions.search.Search;
-import cc.commandmanager.core.CommunicationContext;
+import cc.commandmanager.core.Context;
 import cc.topicexplorer.commands.TableSelectCommand;
 
 public class Collect extends TableSelectCommand {
 	@Override
 	public void tableExecute(Context context) {
-		CommunicationContext communicationContext = (CommunicationContext) context;
 
-		Search searchAction = (Search) communicationContext.get("SEARCH_ACTION");
+		Search searchAction = context.get("SEARCH_ACTION", Search.class);
 
 		searchAction.addSearchColumn("DOCUMENT.DOCUMENT.LINK$URL", "DOCUMENT.LINK$URL");
 		
-		communicationContext.put("SEARCH_ACTION", searchAction);
+		context.rebind("SEARCH_ACTION", searchAction);
 	}
 
 	@Override
-	public void addDependencies() {
-		beforeDependencies.add("SearchCoreCreate");
-		afterDependencies.add("SearchCoreGenerateSQL");
+	public Set<String> getAfterDependencies() {
+		return Sets.newHashSet("SearchCoreGenerateSQL");	
+	}
+
+	@Override
+	public Set<String> getBeforeDependencies() {
+		return Sets.newHashSet("SearchCoreCreate");	
+	}
+
+	@Override
+	public Set<String> getOptionalAfterDependencies() {
+		return Sets.newHashSet();
+	}
+
+	@Override
+	public Set<String> getOptionalBeforeDependencies() {
+		return Sets.newHashSet();
 	}
 }

@@ -1,8 +1,11 @@
 package cc.topicexplorer.plugin.link.actions.init;
 
-import org.apache.commons.chain.Context;
 
-import cc.commandmanager.core.CommunicationContext;
+import java.util.Set;
+
+import com.google.common.collect.Sets;
+
+import cc.commandmanager.core.Context;
 import cc.topicexplorer.commands.TableSelectCommand;
 import cc.topicexplorer.database.SelectMap;
 
@@ -10,19 +13,32 @@ public class Collect extends TableSelectCommand {
 
 	@Override
 	public void tableExecute(Context context) {
-		CommunicationContext communicationContext = (CommunicationContext) context;
 		SelectMap documentMap;
 
-		documentMap = (SelectMap) communicationContext.get("DOCUMENT_QUERY");
+		documentMap =  context.get("DOCUMENT_QUERY", SelectMap.class);
 
 		documentMap.select.add("DOCUMENT.LINK$URL");
 		
-		communicationContext.put("DOCUMENT_QUERY", documentMap);
+		context.rebind("DOCUMENT_QUERY", documentMap);
 	}
 
 	@Override
-	public void addDependencies() {
-		beforeDependencies.add("InitCoreCreate");
-		afterDependencies.add("InitCoreGenerateSQL");
+	public Set<String> getAfterDependencies() {
+		return Sets.newHashSet("InitCoreGenerateSQL");	
+	}
+
+	@Override
+	public Set<String> getBeforeDependencies() {
+		return Sets.newHashSet("InitCoreCreate");	
+	}
+
+	@Override
+	public Set<String> getOptionalAfterDependencies() {
+		return Sets.newHashSet();
+	}
+
+	@Override
+	public Set<String> getOptionalBeforeDependencies() {
+		return Sets.newHashSet();
 	}
 }

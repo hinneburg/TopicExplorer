@@ -58,9 +58,13 @@ public final class FrameFill extends TableFillCommand {
 	@Override
 	public void fillTable() {
 		fillWordtypeColumnOfTableTerm();
+		logger.info("fillWordtypeColumnOfTableTerm done.");
 		createAndFillTableTopTerms();
+		logger.info("createAndFillTableTopTerms done.");
 		createAndFillTableTopTermsDocSameTopic();
+		logger.info("createAndFillTableTopTermsDocSameTopic done.");
 		fillTableFrames();
+		logger.info("fillTableFrames done.");
 		dropTemporaryTablesAndColumns();
 		logger.info(String.format("Table %s is filled.", this.tableName));
 	}
@@ -155,6 +159,7 @@ public final class FrameFill extends TableFillCommand {
 								tableName, frame.getDocumentId(), frame.getTopicId(), frame.getTermNoun(),
 								frame.getTermVerb(), frame.getPosNoun(), frame.getPosVerb()));
 			}
+			logger.info("Frame occurrences inserted.");
 
 			// Set inactive
 			database.executeUpdateQuery("UPDATE " + this.tableName
@@ -170,6 +175,8 @@ public final class FrameFill extends TableFillCommand {
 					+ "SET " + this.tableName + ".ACTIVE=0 WHERE Y.DOCUMENT_ID=" + this.tableName + ".DOCUMENT_ID AND "
 					+ "Y.TOPIC_ID=" + this.tableName + ".TOPIC_ID AND " + "Y.FRAME=" + this.tableName + ".FRAME AND "
 					+ "Y.START_POSITION=" + this.tableName + ".START_POSITION");
+			logger.info("Inactive Frames updated.");
+
 		} catch (SQLException e) {
 			logger.error("Table could not be filled properly.");
 			throw new RuntimeException(e);

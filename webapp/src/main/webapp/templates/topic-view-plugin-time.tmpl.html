@@ -1,14 +1,8 @@
-<<<<<<< HEAD
 <div class="topicElementMenu">
-	<button class="timeView" name="timeView" title="show time chart" type="button" data-bind="click: $parent.parent.loadTimeViewForTopic"></button>
-<!-- 	<button class="addToCart" name="addToCart" title="add to shortlist" type="button"></button>-->
-=======
-<div class="topicElementMenu" data-bind="with: selectedTopic">
-	<button class="timeView" name="timeView" title="show time chart" type="button" data-bind="click: loadTimeViewForTopic"></button>
+	<button class="timeView" name="timeView" title="show time chart" type="button" data-bind="click: function() { loadTimeViewForTopic(selectedTopic)}"></button>
 	<button class="addToCart" name="addToCart" title="add to shortlist" type="button"></button>
->>>>>>> #74 topic plugins are now modules instead of templates only
 </div>
-<div class="topicTitle" data-bind="with: selectedTopic"><a href="#" data-bind="text: $root.topicexplorer.data.topic[selectedTopic].TEXT$TOPIC_LABEL,click:loadDocumentsForTopic"></a></div>
+<div class="topicTitle"><a href="#" data-bind="text: $root.topicexplorer.data.topic[selectedTopic].TEXT$TOPIC_LABEL,click: function() { loadDocumentsForTopic(selectedTopic)}"></a></div>
 
 <div class="topicElementContent">
 	<ul class="wordList" data-bind = "foreach: {data: $root.topicexplorer.data.topic[selectedTopic].Top_Terms, as: 'topTerm'}">

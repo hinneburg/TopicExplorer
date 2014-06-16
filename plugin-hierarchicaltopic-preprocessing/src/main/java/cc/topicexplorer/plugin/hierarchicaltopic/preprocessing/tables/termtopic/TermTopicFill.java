@@ -6,15 +6,17 @@ package cc.topicexplorer.plugin.hierarchicaltopic.preprocessing.tables.termtopic
  MIT-JOOQ-ENDE */
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Set;
+
+import org.apache.log4j.Logger;
 
 import cc.topicexplorer.commands.TableFillCommand;
 
-/**
- * @author angefangen von Mattes weiterverarbeitet von Gert Kommaersetzung,
- *         Pfadangabe eingefügt, Tabellenname mit Jooq verknüpft
- * 
- */
+import com.google.common.collect.Sets;
+
 public class TermTopicFill extends TableFillCommand {
+
+	private static final Logger logger = Logger.getLogger(TermTopicFill.class);
 
 	@Override
 	public void fillTable() {
@@ -44,36 +46,24 @@ public class TermTopicFill extends TableFillCommand {
 			int i = 0;
 			rsTopics.beforeFirst();
 			/**
-			 * MIT-JOOQ-START while(rsTopics.next()) { topicIds[i] =
-			 * rsTopics.getInt(TOPIC.TOPIC_ID.getName()); numTokens[i] =
-			 * rsTopics.getInt(TOPIC.NUMBER_OF_TOKENS.getName());
-			 * clusterStart[i] =
-			 * rsTopics.getInt(TOPIC.HIERARCHICAL_TOPIC$START.getName());
-			 * clusterEnd[i] =
+			 * MIT-JOOQ-START while(rsTopics.next()) { topicIds[i] = rsTopics.getInt(TOPIC.TOPIC_ID.getName());
+			 * numTokens[i] = rsTopics.getInt(TOPIC.NUMBER_OF_TOKENS.getName()); clusterStart[i] =
+			 * rsTopics.getInt(TOPIC.HIERARCHICAL_TOPIC$START.getName()); clusterEnd[i] =
 			 * rsTopics.getInt(TOPIC.HIERARCHICAL_TOPIC$END.getName()); i++; }
 			 * 
-			 * for(i = 0; i < rowCount; i++) {
-			 * database.executeUpdateQuery("INSERT INTO " + TERM_TOPIC.getName()
-			 * + " (" + TERM_TOPIC.TOPIC_ID.getName() + "," +
-			 * TERM_TOPIC.TERM_ID.getName() + "," +
-			 * TERM_TOPIC.NUMBER_OF_TOKEN_TOPIC.getName() + "," +
-			 * TERM_TOPIC.PR_TOPIC_GIVEN_TERM.getName() + "," +
-			 * TERM_TOPIC.PR_TERM_GIVEN_TOPIC.getName() + ") SELECT " +
-			 * topicIds[i] + "," + TERM_TOPIC.TERM_ID.getName() + "," + "SUM(" +
-			 * TERM_TOPIC.NUMBER_OF_TOKEN_TOPIC.getName() + ")," + "SUM(" +
-			 * TERM_TOPIC.PR_TOPIC_GIVEN_TERM.getName() + ")," + "SUM(" +
-			 * TERM_TOPIC.NUMBER_OF_TOKEN_TOPIC.getName() + ") / T." +
-			 * TOPIC.NUMBER_OF_TOKENS.getName() + " FROM " +
-			 * TERM_TOPIC.getName() + "," + TOPIC.getName() + " TB," +
-			 * TOPIC.getName() + " T WHERE " + TERM_TOPIC.getName() + "." +
-			 * TERM_TOPIC.TOPIC_ID.getName() + "=TB." + TOPIC.TOPIC_ID.getName()
-			 * + " AND " + "TB." + TOPIC.HIERARCHICAL_TOPIC$START.getName() +
-			 * "=" + "TB." + TOPIC.HIERARCHICAL_TOPIC$END.getName() + " AND " +
-			 * "TB." + TOPIC.HIERARCHICAL_TOPIC$START.getName() + ">=" +
-			 * clusterStart[i] + " AND " + "TB." +
-			 * TOPIC.HIERARCHICAL_TOPIC$END.getName() + "<=" + clusterEnd[i] +
-			 * " AND " + "T." + TOPIC.TOPIC_ID.getName() + "=" + topicIds[i] +
-			 * " GROUP BY " + TERM_TOPIC.TERM_ID.getName() + ", T." +
+			 * for(i = 0; i < rowCount; i++) { database.executeUpdateQuery("INSERT INTO " + TERM_TOPIC.getName() + " ("
+			 * + TERM_TOPIC.TOPIC_ID.getName() + "," + TERM_TOPIC.TERM_ID.getName() + "," +
+			 * TERM_TOPIC.NUMBER_OF_TOKEN_TOPIC.getName() + "," + TERM_TOPIC.PR_TOPIC_GIVEN_TERM.getName() + "," +
+			 * TERM_TOPIC.PR_TERM_GIVEN_TOPIC.getName() + ") SELECT " + topicIds[i] + "," + TERM_TOPIC.TERM_ID.getName()
+			 * + "," + "SUM(" + TERM_TOPIC.NUMBER_OF_TOKEN_TOPIC.getName() + ")," + "SUM(" +
+			 * TERM_TOPIC.PR_TOPIC_GIVEN_TERM.getName() + ")," + "SUM(" + TERM_TOPIC.NUMBER_OF_TOKEN_TOPIC.getName() +
+			 * ") / T." + TOPIC.NUMBER_OF_TOKENS.getName() + " FROM " + TERM_TOPIC.getName() + "," + TOPIC.getName() +
+			 * " TB," + TOPIC.getName() + " T WHERE " + TERM_TOPIC.getName() + "." + TERM_TOPIC.TOPIC_ID.getName() +
+			 * "=TB." + TOPIC.TOPIC_ID.getName() + " AND " + "TB." + TOPIC.HIERARCHICAL_TOPIC$START.getName() + "=" +
+			 * "TB." + TOPIC.HIERARCHICAL_TOPIC$END.getName() + " AND " + "TB." +
+			 * TOPIC.HIERARCHICAL_TOPIC$START.getName() + ">=" + clusterStart[i] + " AND " + "TB." +
+			 * TOPIC.HIERARCHICAL_TOPIC$END.getName() + "<=" + clusterEnd[i] + " AND " + "T." + TOPIC.TOPIC_ID.getName()
+			 * + "=" + topicIds[i] + " GROUP BY " + TERM_TOPIC.TERM_ID.getName() + ", T." +
 			 * TOPIC.NUMBER_OF_TOKENS.getName());
 			 * 
 			 * } MIT-JOOQ-ENDE
@@ -138,8 +128,23 @@ public class TermTopicFill extends TableFillCommand {
 	}
 
 	@Override
-	public void addDependencies() {
-		beforeDependencies.add("TermTopicFill");
-		beforeDependencies.add("HierarchicalTopic_TopicFill");
+	public Set<String> getAfterDependencies() {
+		return Sets.newHashSet();
 	}
+
+	@Override
+	public Set<String> getBeforeDependencies() {
+		return Sets.newHashSet("TermTopicFill", "HierarchicalTopic_TopicFill");
+	}
+
+	@Override
+	public Set<String> getOptionalAfterDependencies() {
+		return Sets.newHashSet();
+	}
+
+	@Override
+	public Set<String> getOptionalBeforeDependencies() {
+		return Sets.newHashSet();
+	}
+
 }

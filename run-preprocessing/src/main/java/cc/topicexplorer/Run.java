@@ -28,9 +28,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import cc.commandmanager.core.ChainManagement;
-import cc.commandmanager.core.CommunicationContext;
-import cc.commandmanager.core.DependencyCommand;
+import cc.commandmanager.core.Command;
+import cc.commandmanager.core.CommandManagement;
+import cc.commandmanager.core.Context;
 import cc.topicexplorer.commands.DbConnectionCommand;
 import cc.topicexplorer.commands.PropertiesCommand;
 import cc.topicexplorer.utils.CommandLineParser;
@@ -85,7 +85,7 @@ public class Run {
 			boolean commandsShouldGetExecuted) throws ParserConfigurationException, TransformerException, IOException,
 			SAXException {
 		Date start = new Date();
-		CommunicationContext context = new CommunicationContext();
+		Context context = new Context();
 		executeInitialCommands(context);
 
 		Properties properties = (Properties) context.get("properties");
@@ -93,14 +93,13 @@ public class Run {
 		logger.info("Activated plugins: " + plugins);
 
 		makeCatalog(plugins);
-		ChainManagement chainManager = new ChainManagement();
-		chainManager.setCatalog("/" + CATALOG_FILENAME);
+		CommandManagement commandManagement = new CommandManagement(CATALOG_FILENAME);
 
-		List<String> orderedCommands = chainManager.getOrderedCommands(startCommands, endCommands);
+		List<String> orderedCommands = commandManagement.getOrderedCommands(startCommands, endCommands);
 		logger.info("ordered commands: " + orderedCommands);
 
 		if (commandsShouldGetExecuted) {
-			chainManager.executeCommands(orderedCommands, context);
+			commandManagement.executeCommands(orderedCommands, context);
 			logger.info("Preprocessing successfully executed!");
 		}
 		Date end = new Date();
@@ -113,12 +112,12 @@ public class Run {
 		logger.info("#####################################");
 	}
 
-	private static void executeInitialCommands(CommunicationContext context) {
+	private static void executeInitialCommands(Context context) {
 		try {
-			DependencyCommand propertiesCommand = new PropertiesCommand();
+			Command propertiesCommand = new PropertiesCommand();
 			propertiesCommand.execute(context);
 
-			DependencyCommand dbConnectionCommand = new DbConnectionCommand();
+			Command dbConnectionCommand = new DbConnectionCommand();
 			dbConnectionCommand.execute(context);
 		} catch (RuntimeException exception) {
 			logger.error("Initialization abborted, due to a critical exception");

@@ -9,15 +9,17 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Set;
+
+import org.apache.log4j.Logger;
 
 import cc.topicexplorer.commands.TableFillCommand;
 
-/**
- * @author angefangen von Mattes weiterverarbeitet von Gert Kommaersetzung,
- *         Pfadangabe eingefügt, Tabellenname mit Jooq verknüpft
- * 
- */
+import com.google.common.collect.Sets;
+
 public class TopicFill extends TableFillCommand {
+
+	private static final Logger logger = Logger.getLogger(TopicFill.class);
 
 	@Override
 	public void fillTable() {
@@ -42,31 +44,25 @@ public class TopicFill extends TableFillCommand {
 		int numTokens[] = new int[Integer.parseInt(this.properties.getProperty("malletNumTopics"))];
 		ResultSet rsNumTokens;
 		/**
-		 * MIT-JOOQ-START for (int i = 0; i < Integer.parseInt(this.properties
-		 * .getProperty("malletNumTopics")); i++) {
+		 * MIT-JOOQ-START for (int i = 0; i < Integer.parseInt(this.properties .getProperty("malletNumTopics")); i++) {
 		 * 
 		 * String[] oldLine = br.readLine().split(",");
 		 * 
-		 * newLine[0] = Integer.toString(Integer.parseInt(oldLine[0]) - 1);
-		 * newLine[1] = Integer.toString(Integer.parseInt(oldLine[1]) - 1);
+		 * newLine[0] = Integer.toString(Integer.parseInt(oldLine[0]) - 1); newLine[1] =
+		 * Integer.toString(Integer.parseInt(oldLine[1]) - 1);
 		 * 
-		 * cluster[Integer.parseInt(newLine[1])] = oldLine[3].replaceAll("\"",
-		 * "");
+		 * cluster[Integer.parseInt(newLine[1])] = oldLine[3].replaceAll("\"", "");
 		 * 
-		 * database.executeUpdateQuery(" UPDATE " + TOPIC.getName() + " set " +
-		 * TOPIC.HIERARCHICAL_TOPIC$START.getName() + " = " + newLine[1] + " , "
-		 * + TOPIC.HIERARCHICAL_TOPIC$END.getName() + " = " + newLine[1] + " , "
-		 * + TOPIC.HIERARCHICAL_TOPIC$CLUSTER_MEMBERSHIP.getName() + " = '" +
-		 * oldLine[3].replaceAll("\"", "") + "' WHERE " +
-		 * TOPIC.TOPIC_ID.getName() + " = " + newLine[0] + "; ");
+		 * database.executeUpdateQuery(" UPDATE " + TOPIC.getName() + " set " + TOPIC.HIERARCHICAL_TOPIC$START.getName()
+		 * + " = " + newLine[1] + " , " + TOPIC.HIERARCHICAL_TOPIC$END.getName() + " = " + newLine[1] + " , " +
+		 * TOPIC.HIERARCHICAL_TOPIC$CLUSTER_MEMBERSHIP.getName() + " = '" + oldLine[3].replaceAll("\"", "") + "' WHERE "
+		 * + TOPIC.TOPIC_ID.getName() + " = " + newLine[0] + "; ");
 		 * 
 		 * }
 		 * 
-		 * rsNumTokens = database.executeQuery("SELECT * FROM " +
-		 * TOPIC.getName()); while (rsNumTokens.next()) {
-		 * numTokens[rsNumTokens.getInt(TOPIC.HIERARCHICAL_TOPIC$START
-		 * .getName())] = rsNumTokens.getInt(TOPIC.NUMBER_OF_TOKENS .getName());
-		 * } MIT-JOOQ-ENDE
+		 * rsNumTokens = database.executeQuery("SELECT * FROM " + TOPIC.getName()); while (rsNumTokens.next()) {
+		 * numTokens[rsNumTokens.getInt(TOPIC.HIERARCHICAL_TOPIC$START .getName())] =
+		 * rsNumTokens.getInt(TOPIC.NUMBER_OF_TOKENS .getName()); } MIT-JOOQ-ENDE
 		 */
 		/** OHNE_JOOQ-START */
 		for (int i = 0; i < Integer.parseInt(this.properties.getProperty("malletNumTopics")); i++) {
@@ -170,9 +166,8 @@ public class TopicFill extends TableFillCommand {
 						/** OHNE_JOOQ-ENDE */
 					}
 					/**
-					 * MIT-JOOQ-START rsID = database.executeQuery("SELECT MAX("
-					 * + TOPIC.TOPIC_ID.getName() + ") AS id FROM " +
-					 * TOPIC.getName()); MIT-JOOQ-ENDE
+					 * MIT-JOOQ-START rsID = database.executeQuery("SELECT MAX(" + TOPIC.TOPIC_ID.getName() +
+					 * ") AS id FROM " + TOPIC.getName()); MIT-JOOQ-ENDE
 					 */
 					/** OHNE_JOOQ-START */
 					rsID = database.executeQuery("SELECT MAX(" + "TOPIC.TOPIC_ID" + ") AS id FROM " + "TOPIC");
@@ -206,17 +201,13 @@ public class TopicFill extends TableFillCommand {
 
 	private void newTopic(int id, int start, int end, int depth, int numToken) throws SQLException {
 		/**
-		 * MIT-JOOQ-START if (start < end) {
-		 * database.executeUpdateQuery("INSERT INTO " + TOPIC.getName() + "(" +
-		 * TOPIC.TOPIC_ID.getName() + "," + TOPIC.NUMBER_OF_TOKENS.getName() +
-		 * "," + TOPIC.HIERARCHICAL_TOPIC$START.getName() + "," +
-		 * TOPIC.HIERARCHICAL_TOPIC$END.getName() + "," +
-		 * TOPIC.HIERARCHICAL_TOPIC$DEPTH.getName() + ") VALUES (" + id + "," +
-		 * numToken + "," + start + "," + end + "," + depth + ")"); } else if
-		 * (start == end) { database.executeUpdateQuery("UPDATE " +
-		 * TOPIC.getName() + " SET " + TOPIC.HIERARCHICAL_TOPIC$DEPTH.getName()
-		 * + "=" + depth + " WHERE " + TOPIC.HIERARCHICAL_TOPIC$START.getName()
-		 * + "=" + start + " AND " + TOPIC.HIERARCHICAL_TOPIC$END.getName() +
+		 * MIT-JOOQ-START if (start < end) { database.executeUpdateQuery("INSERT INTO " + TOPIC.getName() + "(" +
+		 * TOPIC.TOPIC_ID.getName() + "," + TOPIC.NUMBER_OF_TOKENS.getName() + "," +
+		 * TOPIC.HIERARCHICAL_TOPIC$START.getName() + "," + TOPIC.HIERARCHICAL_TOPIC$END.getName() + "," +
+		 * TOPIC.HIERARCHICAL_TOPIC$DEPTH.getName() + ") VALUES (" + id + "," + numToken + "," + start + "," + end + ","
+		 * + depth + ")"); } else if (start == end) { database.executeUpdateQuery("UPDATE " + TOPIC.getName() + " SET "
+		 * + TOPIC.HIERARCHICAL_TOPIC$DEPTH.getName() + "=" + depth + " WHERE " +
+		 * TOPIC.HIERARCHICAL_TOPIC$START.getName() + "=" + start + " AND " + TOPIC.HIERARCHICAL_TOPIC$END.getName() +
 		 * "=" + start); } MIT-JOOQ-ENDE
 		 */
 		/** OHNE_JOOQ-START */
@@ -243,9 +234,23 @@ public class TopicFill extends TableFillCommand {
 	}
 
 	@Override
-	public void addDependencies() {
-		beforeDependencies.add("TopicFill");
-		beforeDependencies.add("TopicMetaData");
-		beforeDependencies.add("HierarchicalTopic_TopicCreate");
+	public Set<String> getAfterDependencies() {
+		return Sets.newHashSet();
 	}
+
+	@Override
+	public Set<String> getBeforeDependencies() {
+		return Sets.newHashSet("TopicFill", "TopicMetaData", "HierarchicalTopic_TopicCreate");
+	}
+
+	@Override
+	public Set<String> getOptionalAfterDependencies() {
+		return Sets.newHashSet();
+	}
+
+	@Override
+	public Set<String> getOptionalBeforeDependencies() {
+		return Sets.newHashSet();
+	}
+
 }

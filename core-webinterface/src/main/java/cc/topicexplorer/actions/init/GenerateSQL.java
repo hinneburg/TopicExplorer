@@ -5,30 +5,30 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Properties;
+import java.util.Set;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
-import org.apache.commons.chain.Context;
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 
-import cc.commandmanager.core.CommunicationContext;
+import cc.commandmanager.core.Context;
 import cc.topicexplorer.commands.TableSelectCommand;
 import cc.topicexplorer.database.SelectMap;
 
+import com.google.common.collect.Sets;
+
 public class GenerateSQL extends TableSelectCommand {
+
+	private static final Logger logger = Logger.getLogger(GenerateSQL.class);
 
 	@Override
 	public void tableExecute(Context context) {
-		CommunicationContext communicationContext = (CommunicationContext) context;
-
-		Properties properties = (Properties) communicationContext.get("properties");
-
-		PrintWriter servletWriter = (PrintWriter) communicationContext.get("SERVLET_WRITER");
-
-		SelectMap documentMap = (SelectMap) communicationContext.get("DOCUMENT_QUERY");
-
-		SelectMap topicMap = (SelectMap) communicationContext.get("TOPIC_QUERY");
+		Properties properties = context.get("properties", Properties.class);
+		PrintWriter servletWriter = context.get("SERVLET_WRITER", PrintWriter.class);
+		SelectMap documentMap = context.get("DOCUMENT_QUERY", SelectMap.class);
+		SelectMap topicMap = context.get("TOPIC_QUERY", SelectMap.class);
 
 		ArrayList<String> docColumnList = documentMap.getCleanColumnNames();
 		ArrayList<String> topicColumnList = topicMap.getCleanColumnNames();
@@ -50,7 +50,7 @@ public class GenerateSQL extends TableSelectCommand {
 		JSONObject all = new JSONObject();
 		ResultSet preQueryRS;
 		long start = System.currentTimeMillis();
-		
+
 		boolean firstTopic;
 		try {
 			preQueryRS = database.executeQuery("SELECT COUNT(*) AS COUNT FROM DOCUMENT");
@@ -88,7 +88,7 @@ public class GenerateSQL extends TableSelectCommand {
 					firstTopic = true;
 //					@formatter:on
 					while (reverseDocTopicRS.next()) {
-						if(firstTopic) {
+						if (firstTopic) {
 							doc.put("TOPIC_ID", reverseDocTopicRS.getInt("TOPIC_ID"));
 							firstTopic = false;
 						}
@@ -108,25 +108,15 @@ public class GenerateSQL extends TableSelectCommand {
 				Long start2 = System.currentTimeMillis();
 				// TOPIC
 				/*
-				 * int topicId = -1;
-				 * 
-				 * topicMap.select.add("TERM_TOPIC.TERM_ID");
-				 * topicMap.select.add
-				 * ("TERM_TOPIC.PR_TERM_GIVEN_TOPIC As relevance");
-				 * topicMap.from.add("TERM_TOPIC");
-				 * topicMap.where.add("TOPIC.TOPIC_ID=TERM_TOPIC.TOPIC_ID");
-				 * topicMap.orderBy.add("relevance"); ResultSet topicRS =
-				 * database.executeQuery(topicMap .getSQLString()); int j = 0;
-				 * while(topicRS.next()) { if(topicId !=
-				 * topicRS.getInt("TOPIC_ID")) { if(topic.size() > 0) {
-				 * topic.put("Top_Terms", topTerms); topTerms.clear();
-				 * topics.put(topicId, topic); } for(int i = 0; i <
-				 * docColumnList.size(); i++ ) {
-				 * topic.put(topicColumnList.get(i),
-				 * topicRS.getString(topicColumnList.get(i))); } topicId =
-				 * topicRS.getInt("TOPIC_ID"); j = 0; } if(j < 20) {
-				 * topTerm.put("TermId", topicRS.getString("TERM_ID"));
-				 * topTerm.put("relevance", topicRS.getString("relevance"));
+				 * int topicId = -1; topicMap.select.add("TERM_TOPIC.TERM_ID"); topicMap.select.add
+				 * ("TERM_TOPIC.PR_TERM_GIVEN_TOPIC As relevance"); topicMap.from.add("TERM_TOPIC");
+				 * topicMap.where.add("TOPIC.TOPIC_ID=TERM_TOPIC.TOPIC_ID"); topicMap.orderBy.add("relevance");
+				 * ResultSet topicRS = database.executeQuery(topicMap .getSQLString()); int j = 0; while(topicRS.next())
+				 * { if(topicId != topicRS.getInt("TOPIC_ID")) { if(topic.size() > 0) { topic.put("Top_Terms",
+				 * topTerms); topTerms.clear(); topics.put(topicId, topic); } for(int i = 0; i < docColumnList.size();
+				 * i++ ) { topic.put(topicColumnList.get(i), topicRS.getString(topicColumnList.get(i))); } topicId =
+				 * topicRS.getInt("TOPIC_ID"); j = 0; } if(j < 20) { topTerm.put("TermId",
+				 * topicRS.getString("TERM_ID")); topTerm.put("relevance", topicRS.getString("relevance"));
 				 * topTerms.add(topTerm); j++; } }
 				 */
 				ResultSet topicRS = database.executeQuery(topicMap.getSQLString());
@@ -182,8 +172,23 @@ public class GenerateSQL extends TableSelectCommand {
 	}
 
 	@Override
-	public void addDependencies() {
-		beforeDependencies.add("InitCoreCollect");
+	public Set<String> getAfterDependencies() {
+		return Sets.newHashSet();
+	}
+
+	@Override
+	public Set<String> getBeforeDependencies() {
+		return Sets.newHashSet("InitCoreCollect");
+	}
+
+	@Override
+	public Set<String> getOptionalAfterDependencies() {
+		return Sets.newHashSet();
+	}
+
+	@Override
+	public Set<String> getOptionalBeforeDependencies() {
+		return Sets.newHashSet();
 	}
 
 }

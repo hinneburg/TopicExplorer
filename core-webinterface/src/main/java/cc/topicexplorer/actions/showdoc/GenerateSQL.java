@@ -6,25 +6,28 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Set;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
-import org.apache.commons.chain.Context;
+import org.apache.log4j.Logger;
 
-import cc.commandmanager.core.CommunicationContext;
+import cc.commandmanager.core.Context;
 import cc.topicexplorer.commands.TableSelectCommand;
 import cc.topicexplorer.database.SelectMap;
 
+import com.google.common.collect.Sets;
+
 public class GenerateSQL extends TableSelectCommand {
+
+	private static final Logger logger = Logger.getLogger(GenerateSQL.class);
 
 	@Override
 	public void tableExecute(Context context) {
-		CommunicationContext communicationContext = (CommunicationContext) context;
-
-		PrintWriter servletWriter = (PrintWriter) communicationContext.get("SERVLET_WRITER");
-		SelectMap documentMap = (SelectMap) communicationContext.get("DOCUMENT_QUERY");
-		SelectMap topicMap = (SelectMap) communicationContext.get("TOPIC_QUERY");
+		PrintWriter servletWriter = context.get("SERVLET_WRITER", PrintWriter.class);
+		SelectMap documentMap = context.get("DOCUMENT_QUERY", SelectMap.class);
+		SelectMap topicMap = context.get("TOPIC_QUERY", SelectMap.class);
 
 		ArrayList<String> docColumnList = documentMap.getCleanColumnNames();
 		ArrayList<String> topicColumnList = topicMap.getCleanColumnNames();
@@ -56,21 +59,21 @@ public class GenerateSQL extends TableSelectCommand {
 				}
 				topics.add(topic);
 			}
-			
-			// hack: the following should happen in frame class(es):	
-			if(Arrays.asList(properties.get("plugins").toString().split(",")).contains("frame")) {
+
+			// hack: the following should happen in frame class(es):
+			if (Arrays.asList(properties.get("plugins").toString().split(",")).contains("frame")) {
 				JSONObject frame = new JSONObject();
 				JSONArray frames = new JSONArray();
-				ResultSet frameRS = database.executeQuery("SELECT * FROM FRAMES WHERE DOCUMENT_ID=" +
-						docId + " ORDER BY START_POSITION DESC");
+				ResultSet frameRS = database.executeQuery("SELECT * FROM FRAMES WHERE DOCUMENT_ID=" + docId
+						+ " ORDER BY START_POSITION DESC");
 				ResultSetMetaData frameRSMD = frameRS.getMetaData();
 				String[] frameColumnNames = new String[frameRSMD.getColumnCount()];
-				for(int i = 0; i < frameRSMD.getColumnCount(); i++) {
+				for (int i = 0; i < frameRSMD.getColumnCount(); i++) {
 					frameColumnNames[i] = frameRSMD.getColumnName(i + 1);
 				}
-				while(frameRS.next()) {
-					for(int i = 0; i < frameColumnNames.length; i++) {
-						frame.put(frameColumnNames[i], frameRS.getString(frameColumnNames[i]));
+				while (frameRS.next()) {
+					for (String frameColumnName : frameColumnNames) {
+						frame.put(frameColumnName, frameRS.getString(frameColumnName));
 					}
 					frames.add(frame);
 				}
@@ -79,7 +82,7 @@ public class GenerateSQL extends TableSelectCommand {
 			// hack end
 			doc.put("WORD_LIST", topics);
 			all.put("DOCUMENT", doc);
-			
+
 		} catch (SQLException e) {
 			logger.error("JSON Object could not be filled properly, due to database problems.");
 			throw new RuntimeException(e);
@@ -88,8 +91,23 @@ public class GenerateSQL extends TableSelectCommand {
 	}
 
 	@Override
-	public void addDependencies() {
-		beforeDependencies.add("ShowDocCoreCollect");
+	public Set<String> getAfterDependencies() {
+		return Sets.newHashSet();
+	}
+
+	@Override
+	public Set<String> getBeforeDependencies() {
+		return Sets.newHashSet("ShowDocCoreCollect");
+	}
+
+	@Override
+	public Set<String> getOptionalAfterDependencies() {
+		return Sets.newHashSet();
+	}
+
+	@Override
+	public Set<String> getOptionalBeforeDependencies() {
+		return Sets.newHashSet();
 	}
 
 }

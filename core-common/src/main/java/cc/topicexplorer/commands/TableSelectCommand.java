@@ -1,6 +1,6 @@
 package cc.topicexplorer.commands;
 
-import org.apache.commons.chain.Context;
+import cc.commandmanager.core.Context;
 
 public abstract class TableSelectCommand extends TableCommand {
 

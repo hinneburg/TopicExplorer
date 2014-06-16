@@ -1,10 +1,12 @@
 package cc.topicexplorer.actions.getrandomdocs;
 
-import org.apache.commons.chain.Context;
+import java.util.Set;
 
-import cc.commandmanager.core.CommunicationContext;
+import cc.commandmanager.core.Context;
 import cc.topicexplorer.commands.TableSelectCommand;
 import cc.topicexplorer.database.SelectMap;
+
+import com.google.common.collect.Sets;
 
 public class Collect extends TableSelectCommand {
 
@@ -12,38 +14,44 @@ public class Collect extends TableSelectCommand {
 	public void tableExecute(Context context) {
 		SelectMap preQueryMap, innerQueryMap, mainQueryMap;
 
-		CommunicationContext communicationContext = (CommunicationContext) context;
-
-		preQueryMap = (SelectMap) communicationContext.get("PRE_QUERY");
-
+		preQueryMap = context.get("PRE_QUERY", SelectMap.class);
 		preQueryMap.select.add("COUNT(*) AS COUNT");
 		preQueryMap.from.add("DOCUMENT");
+		context.rebind("PRE_QUERY", preQueryMap);
 
-		communicationContext.put("PRE_QUERY", preQueryMap);
-
-		innerQueryMap = (SelectMap) communicationContext.get("INNER_QUERY");
-
+		innerQueryMap = context.get("INNER_QUERY", SelectMap.class);
 		innerQueryMap.select.add("DOCUMENT.DOCUMENT_ID");
 		innerQueryMap.from.add("DOCUMENT");
 		innerQueryMap.limit = 20;
+		context.rebind("INNER_QUERY", innerQueryMap);
 
-		communicationContext.put("INNER_QUERY", innerQueryMap);
-
-		mainQueryMap = (SelectMap) communicationContext.get("MAIN_QUERY");
-
+		mainQueryMap = context.get("MAIN_QUERY", SelectMap.class);
 		mainQueryMap.select.add("*");
 		mainQueryMap.from.add("DOCUMENT_TOPIC y");
 		mainQueryMap.where.add("x.DOCUMENT_ID=y.DOCUMENT_ID");
 		mainQueryMap.orderBy.add("x.DOCUMENT_ID");
 		mainQueryMap.orderBy.add("y.TOPIC_ID");
-
-		communicationContext.put("MAIN_QUERY", mainQueryMap);
+		context.rebind("MAIN_QUERY", mainQueryMap);
 	}
 
 	@Override
-	public void addDependencies() {
-		beforeDependencies.add("GetRandomDocsCoreCreate");
-		afterDependencies.add("GetRandomDocsCoreGenerateSQL");
+	public Set<String> getAfterDependencies() {
+		return Sets.newHashSet("GetRandomDocsCoreGenerateSQL");
+	}
+
+	@Override
+	public Set<String> getBeforeDependencies() {
+		return Sets.newHashSet("GetRandomDocsCoreCreate");
+	}
+
+	@Override
+	public Set<String> getOptionalAfterDependencies() {
+		return Sets.newHashSet();
+	}
+
+	@Override
+	public Set<String> getOptionalBeforeDependencies() {
+		return Sets.newHashSet();
 	}
 
 }

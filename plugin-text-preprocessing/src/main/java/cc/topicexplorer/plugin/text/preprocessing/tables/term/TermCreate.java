@@ -1,10 +1,17 @@
 package cc.topicexplorer.plugin.text.preprocessing.tables.term;
 
 import java.sql.SQLException;
+import java.util.Set;
+
+import org.apache.log4j.Logger;
 
 import cc.topicexplorer.commands.TableCreateCommand;
 
+import com.google.common.collect.Sets;
+
 public class TermCreate extends TableCreateCommand {
+
+	private static final Logger logger = Logger.getLogger(TermCreate.class);
 
 	@Override
 	public void createTable() {
@@ -37,7 +44,23 @@ public class TermCreate extends TableCreateCommand {
 	}
 
 	@Override
-	public void addDependencies() {
-		beforeDependencies.add("TermCreate");
+	public Set<String> getAfterDependencies() {
+		return Sets.newHashSet();
 	}
+
+	@Override
+	public Set<String> getBeforeDependencies() {
+		return Sets.newHashSet("TermCreate");
+	}
+
+	@Override
+	public Set<String> getOptionalAfterDependencies() {
+		return Sets.newHashSet();
+	}
+
+	@Override
+	public Set<String> getOptionalBeforeDependencies() {
+		return Sets.newHashSet();
+	}
+
 }

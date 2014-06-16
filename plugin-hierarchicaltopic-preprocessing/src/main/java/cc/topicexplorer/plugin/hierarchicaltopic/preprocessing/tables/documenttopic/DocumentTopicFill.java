@@ -6,15 +6,22 @@ package cc.topicexplorer.plugin.hierarchicaltopic.preprocessing.tables.documentt
  MIT-JOOQ-ENDE */
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Set;
+
+import org.apache.log4j.Logger;
 
 import cc.topicexplorer.commands.TableFillCommand;
 
+import com.google.common.collect.Sets;
+
 /**
- * @author angefangen von Mattes weiterverarbeitet von Gert Kommaersetzung,
- *         Pfadangabe eingefügt, Tabellenname mit Jooq verknüpft
+ * @author angefangen von Mattes weiterverarbeitet von Gert Kommaersetzung, Pfadangabe eingefügt, Tabellenname mit Jooq
+ *         verknüpft
  * 
  */
 public class DocumentTopicFill extends TableFillCommand {
+
+	private static final Logger logger = Logger.getLogger(DocumentTopicFill.class);
 
 	@Override
 	public void fillTable() {
@@ -45,41 +52,26 @@ public class DocumentTopicFill extends TableFillCommand {
 			int i = 0;
 			rsTopics.beforeFirst();
 			/**
-			 * MIT-JOOQ-START while(rsTopics.next()) { topicIds[i] =
-			 * rsTopics.getInt(TOPIC.TOPIC_ID.getName()); numTokens[i] =
-			 * rsTopics.getInt(TOPIC.NUMBER_OF_TOKENS.getName());
-			 * clusterStart[i] =
-			 * rsTopics.getInt(TOPIC.HIERARCHICAL_TOPIC$START.getName());
-			 * clusterEnd[i] =
+			 * MIT-JOOQ-START while(rsTopics.next()) { topicIds[i] = rsTopics.getInt(TOPIC.TOPIC_ID.getName());
+			 * numTokens[i] = rsTopics.getInt(TOPIC.NUMBER_OF_TOKENS.getName()); clusterStart[i] =
+			 * rsTopics.getInt(TOPIC.HIERARCHICAL_TOPIC$START.getName()); clusterEnd[i] =
 			 * rsTopics.getInt(TOPIC.HIERARCHICAL_TOPIC$END.getName()); i++; }
 			 * 
-			 * for(i = 0; i < rowCount; i++) {
-			 * database.executeUpdateQuery("INSERT INTO " +
-			 * DOCUMENT_TOPIC.getName() + " (" +
-			 * DOCUMENT_TOPIC.TOPIC_ID.getName() + "," +
-			 * DOCUMENT_TOPIC.DOCUMENT_ID.getName() + "," +
-			 * DOCUMENT_TOPIC.NUMBER_OF_TOKEN_TOPIC_IN_DOCUMENT.getName() + ","
-			 * + DOCUMENT_TOPIC.PR_TOPIC_GIVEN_DOCUMENT.getName() + "," +
-			 * DOCUMENT_TOPIC.PR_DOCUMENT_GIVEN_TOPIC.getName() + ") SELECT " +
-			 * topicIds[i] + "," + DOCUMENT_TOPIC.DOCUMENT_ID.getName() + "," +
-			 * "SUM(" +
-			 * DOCUMENT_TOPIC.NUMBER_OF_TOKEN_TOPIC_IN_DOCUMENT.getName() + "),"
-			 * + "SUM(" + DOCUMENT_TOPIC.PR_TOPIC_GIVEN_DOCUMENT.getName() +
-			 * ")," + "SUM(" +
-			 * DOCUMENT_TOPIC.NUMBER_OF_TOKEN_TOPIC_IN_DOCUMENT.getName() +
-			 * ") / T." + TOPIC.NUMBER_OF_TOKENS.getName() + " FROM " +
-			 * DOCUMENT_TOPIC.getName() + "," + TOPIC.getName() + " TB," +
-			 * TOPIC.getName() + " T WHERE " + DOCUMENT_TOPIC.getName() + "." +
-			 * DOCUMENT_TOPIC.TOPIC_ID.getName() + "=TB." +
-			 * TOPIC.TOPIC_ID.getName() + " AND " + "TB." +
-			 * TOPIC.HIERARCHICAL_TOPIC$START.getName() + "=" + "TB." +
-			 * TOPIC.HIERARCHICAL_TOPIC$END.getName() + " AND " + "TB." +
-			 * TOPIC.HIERARCHICAL_TOPIC$START.getName() + ">=" + clusterStart[i]
-			 * + " AND " + "TB." + TOPIC.HIERARCHICAL_TOPIC$END.getName() + "<="
-			 * + clusterEnd[i] + " AND " + "T." + TOPIC.TOPIC_ID.getName() + "="
-			 * + topicIds[i] + " GROUP BY " +
-			 * DOCUMENT_TOPIC.DOCUMENT_ID.getName() + ", T." +
-			 * TOPIC.NUMBER_OF_TOKENS.getName());
+			 * for(i = 0; i < rowCount; i++) { database.executeUpdateQuery("INSERT INTO " + DOCUMENT_TOPIC.getName() +
+			 * " (" + DOCUMENT_TOPIC.TOPIC_ID.getName() + "," + DOCUMENT_TOPIC.DOCUMENT_ID.getName() + "," +
+			 * DOCUMENT_TOPIC.NUMBER_OF_TOKEN_TOPIC_IN_DOCUMENT.getName() + "," +
+			 * DOCUMENT_TOPIC.PR_TOPIC_GIVEN_DOCUMENT.getName() + "," + DOCUMENT_TOPIC.PR_DOCUMENT_GIVEN_TOPIC.getName()
+			 * + ") SELECT " + topicIds[i] + "," + DOCUMENT_TOPIC.DOCUMENT_ID.getName() + "," + "SUM(" +
+			 * DOCUMENT_TOPIC.NUMBER_OF_TOKEN_TOPIC_IN_DOCUMENT.getName() + ")," + "SUM(" +
+			 * DOCUMENT_TOPIC.PR_TOPIC_GIVEN_DOCUMENT.getName() + ")," + "SUM(" +
+			 * DOCUMENT_TOPIC.NUMBER_OF_TOKEN_TOPIC_IN_DOCUMENT.getName() + ") / T." + TOPIC.NUMBER_OF_TOKENS.getName()
+			 * + " FROM " + DOCUMENT_TOPIC.getName() + "," + TOPIC.getName() + " TB," + TOPIC.getName() + " T WHERE " +
+			 * DOCUMENT_TOPIC.getName() + "." + DOCUMENT_TOPIC.TOPIC_ID.getName() + "=TB." + TOPIC.TOPIC_ID.getName() +
+			 * " AND " + "TB." + TOPIC.HIERARCHICAL_TOPIC$START.getName() + "=" + "TB." +
+			 * TOPIC.HIERARCHICAL_TOPIC$END.getName() + " AND " + "TB." + TOPIC.HIERARCHICAL_TOPIC$START.getName() +
+			 * ">=" + clusterStart[i] + " AND " + "TB." + TOPIC.HIERARCHICAL_TOPIC$END.getName() + "<=" + clusterEnd[i]
+			 * + " AND " + "T." + TOPIC.TOPIC_ID.getName() + "=" + topicIds[i] + " GROUP BY " +
+			 * DOCUMENT_TOPIC.DOCUMENT_ID.getName() + ", T." + TOPIC.NUMBER_OF_TOKENS.getName());
 			 * 
 			 * } MIT-JOOQ-ENDE
 			 */
@@ -135,8 +127,7 @@ public class DocumentTopicFill extends TableFillCommand {
 	@Override
 	public void setTableName() {
 		/**
-		 * MIT-JOOQ-START this.tableName = DOCUMENT_TOPIC.getName();
-		 * MIT-JOOQ-ENDE
+		 * MIT-JOOQ-START this.tableName = DOCUMENT_TOPIC.getName(); MIT-JOOQ-ENDE
 		 */
 		/** OHNE_JOOQ-START */
 		this.tableName = "DOCUMENT_TOPIC";
@@ -144,8 +135,22 @@ public class DocumentTopicFill extends TableFillCommand {
 	}
 
 	@Override
-	public void addDependencies() {
-		beforeDependencies.add("DocumentTopicFill");
-		beforeDependencies.add("HierarchicalTopic_TopicFill");
+	public Set<String> getAfterDependencies() {
+		return Sets.newHashSet();
+	}
+
+	@Override
+	public Set<String> getBeforeDependencies() {
+		return Sets.newHashSet("DocumentTopicFill", "HierarchicalTopic_TopicFill");
+	}
+
+	@Override
+	public Set<String> getOptionalAfterDependencies() {
+		return Sets.newHashSet();
+	}
+
+	@Override
+	public Set<String> getOptionalBeforeDependencies() {
+		return Sets.newHashSet();
 	}
 }

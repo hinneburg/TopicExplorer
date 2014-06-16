@@ -8,15 +8,17 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Set;
+
+import org.apache.log4j.Logger;
 
 import cc.topicexplorer.commands.TableFillCommand;
 
-/**
- * @autor angefangen von Mattes weiterverarbeitet von Gert Kommaersetzung,
- *        Pfadangabe eingefügt, Tabellenname mit Jooq verknüpft
- * 
- */
+import com.google.common.collect.Sets;
+
 public class TopicFill extends TableFillCommand {
+
+	private static final Logger logger = Logger.getLogger(TopicFill.class);
 
 	@Override
 	public void fillTable() {
@@ -37,9 +39,7 @@ public class TopicFill extends TableFillCommand {
 
 		String id;
 		/**
-		 * MIT-JOOQ-START Statement stmt =
-		 * database.getCreateJooq().getConnection() .createStatement();
-		 * MIT-JOOQ-ENDE
+		 * MIT-JOOQ-START Statement stmt = database.getCreateJooq().getConnection() .createStatement(); MIT-JOOQ-ENDE
 		 */
 		/** OHNE_JOOQ-START */
 		Statement stmt = this.database.getConnection().createStatement();
@@ -57,10 +57,8 @@ public class TopicFill extends TableFillCommand {
 			}
 
 			/**
-			 * MIT-JOOQ-START stmt.addBatch(" UPDATE " + TOPIC.getName() +
-			 * " set " + TOPIC.COLOR_TOPIC$COLOR.getName() + " = '" + colour +
-			 * "' WHERE " + TOPIC.TOPIC_ID.getName() + " = " + id + "; ");
-			 * MIT-JOOQ-ENDE
+			 * MIT-JOOQ-START stmt.addBatch(" UPDATE " + TOPIC.getName() + " set " + TOPIC.COLOR_TOPIC$COLOR.getName() +
+			 * " = '" + colour + "' WHERE " + TOPIC.TOPIC_ID.getName() + " = " + id + "; "); MIT-JOOQ-ENDE
 			 */
 			/** OHNE_JOOQ-START */
 //			@formatter:off
@@ -89,9 +87,22 @@ public class TopicFill extends TableFillCommand {
 	}
 
 	@Override
-	public void addDependencies() {
-		beforeDependencies.add("TopicFill");
-		beforeDependencies.add("TopicMetaData");
-		beforeDependencies.add("ColorTopic_TopicCreate");
+	public Set<String> getAfterDependencies() {
+		return Sets.newHashSet();
+	}
+
+	@Override
+	public Set<String> getBeforeDependencies() {
+		return Sets.newHashSet("TopicFill", "TopicMetaData", "ColorTopic_TopicCreate");
+	}
+
+	@Override
+	public Set<String> getOptionalAfterDependencies() {
+		return Sets.newHashSet();
+	}
+
+	@Override
+	public Set<String> getOptionalBeforeDependencies() {
+		return Sets.newHashSet();
 	}
 }

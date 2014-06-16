@@ -3,10 +3,14 @@ package cc.topicexplorer.plugin.frame.preprocessing.tables.frames;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.Set;
+
+import org.apache.log4j.Logger;
 
 import cc.topicexplorer.commands.TableFillCommand;
 
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 /**
  * <b>Needed database tables</b>: {@code TERM}, {@code TERM_TOPIC}, {@code DOCUMENT_TERM_TOPIC}.
@@ -21,15 +25,10 @@ import com.google.common.collect.Lists;
  * <p>
  * Within any frame there will be <b>only one noun and one verb</b>. No second verb to a specific noun and no second
  * noun to a specific verb, unless one occurs a second time in the text corpus.
- * 
- * @author Benjamin Schandera (4.23@gmx.de)
- * 
  */
 public final class FrameFill extends TableFillCommand {
-	private static final int MAX_DISTANCE_NOUN_TO_VERB = 150;
-	private static final String VERB = "VERB";
-	private static final String NOUN = "SUBS";
-	private static final int MAX_NUMBER_OF_RECURSIONS = 1000;
+
+	private static final Logger logger = Logger.getLogger(FrameFill.class);
 
 	@Override
 	public void setTableName() {
@@ -37,11 +36,23 @@ public final class FrameFill extends TableFillCommand {
 	}
 
 	@Override
-	public void addDependencies() {
-		this.beforeDependencies.add("TermFill");
-		this.beforeDependencies.add("TermTopicFill");
-		this.beforeDependencies.add("DocumentTermTopicFill");
-		this.beforeDependencies.add("FrameCreate");
+	public Set<String> getAfterDependencies() {
+		return Sets.newHashSet();
+	}
+
+	@Override
+	public Set<String> getBeforeDependencies() {
+		return Sets.newHashSet("TermFill", "TermTopicFill", "DocumentTermTopicFill", "FrameCreate");
+	}
+
+	@Override
+	public Set<String> getOptionalAfterDependencies() {
+		return Sets.newHashSet();
+	}
+
+	@Override
+	public Set<String> getOptionalBeforeDependencies() {
+		return Sets.newHashSet();
 	}
 
 	@Override
@@ -72,7 +83,7 @@ public final class FrameFill extends TableFillCommand {
 					+ "where TOPIC_ID=0 AND WORDTYPE='SUBS'	order by PR_TERM_GIVEN_TOPIC desc limit 20;");
 			database.executeUpdateQuery("alter table TopTerms add index (TOPIC_ID,TERM_NAME)");
 			database.executeUpdateQuery("alter table TopTerms add index (TERM_NAME)");
-			int numTopics = Integer.parseInt( (String) properties.get("malletNumTopics") );
+			int numTopics = Integer.parseInt((String) properties.get("malletNumTopics"));
 
 			// best 20 nouns of best 20 topics
 			for (int i = 1; i < numTopics; i++) {
@@ -115,65 +126,49 @@ public final class FrameFill extends TableFillCommand {
 			ResultSet topTerms = database
 					.executeQuery("SELECT * FROM TOP_TERMS_DOC_SAME_TOPIC order by DOCUMENT_ID asc, TOPIC_ID asc, POSITION_OF_TOKEN_IN_DOCUMENT asc");
 
-//			while (topTerms.next()) { // look for the first noun
-//				if (topTerms.getString("WORDTYPE$WORDTYPE").equals(NOUN)) {
-//					lookForFramesInRemainingTerms(topTerms, frames, topTerms.getInt("POSITION_OF_TOKEN_IN_DOCUMENT"));
-//				}
-//			}
 			int documentId = 0;
 			int position = 0;
 			int topicId = 0;
 			String term = null, wordType = null;
 			int endPos;
-			while (topTerms.next()) { 
-				if(documentId != topTerms.getInt("DOCUMENT_ID") || 
-						topicId != topTerms.getInt("TOPIC_ID") || 
-								topTerms.getInt("POSITION_OF_TOKEN_IN_DOCUMENT") - position > 150 || 
-										topTerms.getString("WORDTYPE$WORDTYPE").equals("SUBS")) {
+			while (topTerms.next()) {
+				if (documentId != topTerms.getInt("DOCUMENT_ID") || topicId != topTerms.getInt("TOPIC_ID")
+						|| topTerms.getInt("POSITION_OF_TOKEN_IN_DOCUMENT") - position > 150
+						|| topTerms.getString("WORDTYPE$WORDTYPE").equals("SUBS")) {
 					documentId = topTerms.getInt("DOCUMENT_ID");
 					topicId = topTerms.getInt("TOPIC_ID");
 					position = topTerms.getInt("POSITION_OF_TOKEN_IN_DOCUMENT");
 					term = topTerms.getString("TERM");
 					wordType = topTerms.getString("WORDTYPE$WORDTYPE");
 				} else {
-					if(wordType.equals("SUBS")) {
+					if (wordType.equals("SUBS")) {
 						endPos = topTerms.getInt("POSITION_OF_TOKEN_IN_DOCUMENT") + topTerms.getString("TERM").length();
-						//int docId, int topic, String noun, String term, int startPos, int endPos
 						frames.add(new Frame(documentId, topicId, term, topTerms.getString("TERM"), position, endPos));
-						//	echo "INSERT INTO FRAMES (DOCUMENT_ID, TOPIC_ID, FRAME, START_POSITION, END_POSITION) VALUES ($doc, $topic, '$term, " . $row['TERM'] . "', $pos, $endPos)\n";		
-					}	
+					}
 					position = -150;
-					
 				}
 			}
-			
+
 			for (Frame frame : frames) {
 				database.executeUpdateQueryForUpdate(String
 						.format("INSERT INTO %s (DOCUMENT_ID, TOPIC_ID, FRAME, START_POSITION, END_POSITION) VALUES (%d, %d, \"%s, %s\", %d, %d)",
 								tableName, frame.getDocumentId(), frame.getTopicId(), frame.getTermNoun(),
 								frame.getTermVerb(), frame.getPosNoun(), frame.getPosVerb()));
 			}
-			
+
 			// Set inactive
-			database.executeUpdateQuery("UPDATE " + this.tableName 
+			database.executeUpdateQuery("UPDATE " + this.tableName
 					+ ", (SELECT DISTINCT DOCUMENT_ID,TOPIC_ID,FRAME,START_POSITION"
-					+ " FROM FRAMES JOIN DOCUMENT USING (DOCUMENT_ID),"
-					+ "(SELECT '%。%' PATTERN FROM DUAL "
-					+ "UNION ALL SELECT '%？%' PATTERN FROM DUAL "
-					+ "UNION ALL SELECT '%?%' PATTERN FROM DUAL "
-					+ "UNION ALL SELECT '%！%' PATTERN FROM DUAL "
-					+ "UNION ALL SELECT '%!%' PATTERN FROM DUAL "
-					+ "UNION ALL SELECT '%．．%' PATTERN FROM DUAL "
-					+ "UNION ALL SELECT '%..%' PATTERN FROM DUAL "
-					+ "UNION ALL SELECT '%・・%' PATTERN FROM DUAL "
-					+ "UNION ALL SELECT '%．．．%' PATTERN FROM DUAL "
-					+ "UNION ALL SELECT '%...%' PATTERN FROM DUAL "
-					+ "UNION ALL SELECT '%…%' PATTERN FROM DUAL "
+					+ " FROM FRAMES JOIN DOCUMENT USING (DOCUMENT_ID)," + "(SELECT '%。%' PATTERN FROM DUAL "
+					+ "UNION ALL SELECT '%？%' PATTERN FROM DUAL " + "UNION ALL SELECT '%?%' PATTERN FROM DUAL "
+					+ "UNION ALL SELECT '%！%' PATTERN FROM DUAL " + "UNION ALL SELECT '%!%' PATTERN FROM DUAL "
+					+ "UNION ALL SELECT '%．．%' PATTERN FROM DUAL " + "UNION ALL SELECT '%..%' PATTERN FROM DUAL "
+					+ "UNION ALL SELECT '%・・%' PATTERN FROM DUAL " + "UNION ALL SELECT '%．．．%' PATTERN FROM DUAL "
+					+ "UNION ALL SELECT '%...%' PATTERN FROM DUAL " + "UNION ALL SELECT '%…%' PATTERN FROM DUAL "
 					+ "UNION ALL SELECT '%・・・%' PATTERN FROM DUAL) X "
 					+ "WHERE SUBSTRING(TEXT$FULLTEXT,START_POSITION+1,END_POSITION-START_POSITION) LIKE X.PATTERN) Y "
 					+ "SET " + this.tableName + ".ACTIVE=0 WHERE Y.DOCUMENT_ID=" + this.tableName + ".DOCUMENT_ID AND "
-					+ "Y.TOPIC_ID=" + this.tableName + ".TOPIC_ID AND "
-					+ "Y.FRAME=" + this.tableName + ".FRAME AND "
+					+ "Y.TOPIC_ID=" + this.tableName + ".TOPIC_ID AND " + "Y.FRAME=" + this.tableName + ".FRAME AND "
 					+ "Y.START_POSITION=" + this.tableName + ".START_POSITION");
 		} catch (SQLException e) {
 			logger.error("Table could not be filled properly.");
@@ -182,38 +177,8 @@ public final class FrameFill extends TableFillCommand {
 		bestFrames();
 	}
 
-	private static int numberOfMethodCalls = 0;
-
-	private void lookForFramesInRemainingTerms(ResultSet terms, Collection<Frame> frames, int positionOfNounInDocument) {
-
-		try {
-			numberOfMethodCalls++;
-			if (numberOfMethodCalls == MAX_NUMBER_OF_RECURSIONS) {
-				terms.previous();
-				return;
-			}
-
-			Term noun = Term.createNounWithExplicitPosition(terms, positionOfNounInDocument);
-			boolean frameFound = false;
-
-			while (terms.next()) {
-				Term currentTerm = Term.createTerm(terms);
-				if (currentTerm.isNoun()) {
-					lookForFramesInRemainingTerms(terms, frames, currentTerm.getPositionOfTermInDocument());
-				} else if (!frameFound && isFrame(noun, currentTerm)) {
-					frameFound = true;
-					frames.add(new Frame(noun, currentTerm.getTerm(), currentTerm.getPositionOfTermInDocument()));
-				}
-
-			}
-		} catch (SQLException e) {
-			logger.error("Exception in handling the current resultset.");
-			throw new RuntimeException(e);
-		}
-	}
-
 	private void bestFrames() {
-		int numTopics = Integer.parseInt( (String) properties.get("malletNumTopics") );
+		int numTopics = Integer.parseInt((String) properties.get("malletNumTopics"));
 		try {
 			database.executeUpdateQuery("DROP TABLE IF EXISTS BEST_FRAMES");
 			for (int i = 0; i < numTopics; i++) {
@@ -226,15 +191,9 @@ public final class FrameFill extends TableFillCommand {
 				}
 			}
 		} catch (SQLException e) {
-			this.logger.error("Exception while creating bestFrames table.");
+			logger.error("Exception while creating bestFrames table.");
 			throw new RuntimeException(e);
 		}
-	}
-
-	private boolean isFrame(Term noun, Term currentWord) {
-		return (currentWord.isVerb() && currentWord.getDocumentId() == noun.getDocumentId()
-				&& currentWord.getTopicId() == noun.getTopicId() && currentWord.getPositionOfTermInDocument()
-				- noun.getPositionOfTermInDocument() <= MAX_DISTANCE_NOUN_TO_VERB);
 	}
 
 	private void dropTemporaryTablesAndColumns() {
@@ -247,61 +206,6 @@ public final class FrameFill extends TableFillCommand {
 		}
 	}
 
-	private static class Term {
-
-		private final String wordtype;
-		private final int documentId;
-		private final int topicId;
-		private final String term;
-		private final int positionOfWordInDocument;
-
-		private Term(ResultSet currentWord, String wordtype, int positionOfWordInDocument) throws SQLException {
-			this.wordtype = wordtype;
-			documentId = currentWord.getInt("DOCUMENT_ID");
-			topicId = currentWord.getInt("TOPIC_ID");
-			term = currentWord.getString("TERM");
-			this.positionOfWordInDocument = positionOfWordInDocument;
-		}
-
-		public boolean isVerb() {
-			return getWordtype().equals(VERB);
-		}
-
-		public boolean isNoun() {
-			return getWordtype().equals(NOUN);
-		}
-
-		public static Term createNounWithExplicitPosition(ResultSet noun, int positionOfnounInDocument)
-				throws SQLException {
-			return new Term(noun, NOUN, positionOfnounInDocument);
-		}
-
-		public static Term createTerm(ResultSet term) throws SQLException {
-			return new Term(term, term.getString("WORDTYPE$WORDTYPE"), term.getInt("POSITION_OF_TOKEN_IN_DOCUMENT"));
-		}
-
-		public String getWordtype() {
-			return wordtype;
-		}
-
-		public int getDocumentId() {
-			return documentId;
-		}
-
-		public int getTopicId() {
-			return topicId;
-		}
-
-		public String getTerm() {
-			return term;
-		}
-
-		public int getPositionOfTermInDocument() {
-			return positionOfWordInDocument;
-		}
-
-	}
-
 	private static class Frame {
 
 		private final int documentId;
@@ -311,15 +215,6 @@ public final class FrameFill extends TableFillCommand {
 		private final int positionOfNounInDocument;
 		private final int positionOfVerbInDocument;
 
-		public Frame(Term noun, String term, int positionOfTermInDocument) {
-			documentId = noun.getDocumentId();
-			topicId = noun.getTopicId();
-			termNoun = noun.getTerm();
-			termVerb = term;
-			positionOfNounInDocument = noun.getPositionOfTermInDocument();
-			positionOfVerbInDocument = positionOfTermInDocument;
-		}
-		
 		public Frame(int docId, int topic, String noun, String term, int startPos, int endPos) {
 			documentId = docId;
 			topicId = topic;

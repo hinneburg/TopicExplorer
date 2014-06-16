@@ -1,24 +1,26 @@
 package cc.topicexplorer.plugin.frame.preprocessing.tables.topic;
 
 import java.sql.SQLException;
+import java.util.Set;
+
+import org.apache.log4j.Logger;
 
 import cc.topicexplorer.commands.TableCreateCommand;
 
-/*
- * angefangen von Mattes weiterverarbeitet von Gert Kommaersetzung, Pfadangabe
- * eingefügt, Tabellenname mit Jooq verknüpft
- * 
- */
+import com.google.common.collect.Sets;
+
 public class TopicCreate extends TableCreateCommand {
+
+	private static final Logger logger = Logger.getLogger(TopicCreate.class);
 
 	@Override
 	public void createTable() {
 		try {
 			this.database.executeUpdateQuery("ALTER TABLE " + this.tableName
-					+ " ADD COLUMN FRAME$UNIQUE_FRAME_COUNT INT,"
-					+ " ADD COLUMN FRAME$FRAME_COUNT INT");
+					+ " ADD COLUMN FRAME$UNIQUE_FRAME_COUNT INT," + " ADD COLUMN FRAME$FRAME_COUNT INT");
 		} catch (SQLException e) {
-			logger.error("Columns FRAME$UNIQUE_FRAME_COUNT and FRAME$FRAME_COUNTcould not be added to table " + this.tableName);
+			logger.error("Columns FRAME$UNIQUE_FRAME_COUNT and FRAME$FRAME_COUNTcould not be added to table "
+					+ this.tableName);
 			throw new RuntimeException(e);
 		}
 	}
@@ -49,8 +51,23 @@ public class TopicCreate extends TableCreateCommand {
 	}
 
 	@Override
-	public void addDependencies() {
-		beforeDependencies.add("TopicCreate");
+	public Set<String> getAfterDependencies() {
+		return Sets.newHashSet();
+	}
+
+	@Override
+	public Set<String> getBeforeDependencies() {
+		return Sets.newHashSet("TopicCreate");
+	}
+
+	@Override
+	public Set<String> getOptionalAfterDependencies() {
+		return Sets.newHashSet();
+	}
+
+	@Override
+	public Set<String> getOptionalBeforeDependencies() {
+		return Sets.newHashSet();
 	}
 
 }

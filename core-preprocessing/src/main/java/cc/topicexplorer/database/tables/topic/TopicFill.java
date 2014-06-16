@@ -5,10 +5,18 @@ package cc.topicexplorer.database.tables.topic;
  import static jooq.generated.Tables.DOCUMENT_TERM_TOPIC; 
  MIT-JOOQ-ENDE */
 import java.sql.SQLException;
+import java.util.Set;
+
+import org.apache.log4j.Logger;
 
 import cc.topicexplorer.commands.TableFillCommand;
 
+import com.google.common.collect.Sets;
+
 public class TopicFill extends TableFillCommand {
+
+	private static final Logger logger = Logger.getLogger(TopicFill.class);
+
 	@Override
 	public void setTableName() {
 		/**
@@ -22,14 +30,11 @@ public class TopicFill extends TableFillCommand {
 	@Override
 	public void fillTable() {
 		/**
-		 * MIT-JOOQ-START database.executeUpdateQuery("insert into `" +
-		 * TOPIC.getName() + "` (`" + TOPIC.TOPIC_ID.getName() + "`, `" +
-		 * TOPIC.NUMBER_OF_TOKENS.getName() + "`) select `" +
-		 * DOCUMENT_TERM_TOPIC.TOPIC_ID.getName() + "`, count(*) from `" +
-		 * DOCUMENT_TERM_TOPIC.getName() + "` group by `" +
-		 * DOCUMENT_TERM_TOPIC.TOPIC_ID.getName() + "`");
-		 * database.executeUpdateQuery("ALTER TABLE " + TOPIC.getName() +
-		 * " ADD KEY IDX0 (`" + TOPIC.TOPIC_ID.getName() + "`)"); MIT-JOOQ-ENDE
+		 * MIT-JOOQ-START database.executeUpdateQuery("insert into `" + TOPIC.getName() + "` (`" +
+		 * TOPIC.TOPIC_ID.getName() + "`, `" + TOPIC.NUMBER_OF_TOKENS.getName() + "`) select `" +
+		 * DOCUMENT_TERM_TOPIC.TOPIC_ID.getName() + "`, count(*) from `" + DOCUMENT_TERM_TOPIC.getName() +
+		 * "` group by `" + DOCUMENT_TERM_TOPIC.TOPIC_ID.getName() + "`"); database.executeUpdateQuery("ALTER TABLE " +
+		 * TOPIC.getName() + " ADD KEY IDX0 (`" + TOPIC.TOPIC_ID.getName() + "`)"); MIT-JOOQ-ENDE
 		 */
 		/** OHNE_JOOQ-START */
 		try {
@@ -51,8 +56,23 @@ public class TopicFill extends TableFillCommand {
 	}
 
 	@Override
-	public void addDependencies() {
-		beforeDependencies.add("TopicCreate");
-		beforeDependencies.add("DocumentTermTopicFill");
+	public Set<String> getAfterDependencies() {
+		return Sets.newHashSet();
 	}
+
+	@Override
+	public Set<String> getBeforeDependencies() {
+		return Sets.newHashSet("TopicCreate", "DocumentTermTopicFill");
+	}
+
+	@Override
+	public Set<String> getOptionalAfterDependencies() {
+		return Sets.newHashSet();
+	}
+
+	@Override
+	public Set<String> getOptionalBeforeDependencies() {
+		return Sets.newHashSet();
+	}
+
 }

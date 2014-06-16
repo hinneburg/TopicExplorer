@@ -2,25 +2,28 @@ package cc.topicexplorer.plugin.prune.preprocessing.tools;
 
 import java.io.IOException;
 import java.util.Properties;
+import java.util.Set;
 
-import org.apache.commons.chain.Context;
+import org.apache.log4j.Logger;
 
-import cc.commandmanager.core.CommunicationContext;
-import cc.commandmanager.core.DependencyCommand;
-import cc.topicexplorer.database.Database;
+import cc.commandmanager.core.Command;
+import cc.commandmanager.core.Context;
+import cc.topicexplorer.database.tables.document.DocumentFill;
 
-public class Prune_Command extends DependencyCommand {
+import com.google.common.collect.Sets;
+
+public class Prune_Command implements Command {
+
+	private static final Logger logger = Logger.getLogger(DocumentFill.class);
+
 	private Properties properties;
-	protected cc.topicexplorer.database.Database database;
 	private final Prune_Ram_SortedCsv prune = new Prune_Ram_SortedCsv();
 
 	@Override
-	public void specialExecute(Context context) {
+	public void execute(Context context) {
 		logger.info("[ " + getClass() + " ] - " + "pruning vocabular");
 
-		CommunicationContext communicationContext = (CommunicationContext) context;
-		properties = (Properties) communicationContext.get("properties");
-		database = (Database) communicationContext.get("database");
+		properties = context.get("properties", Properties.class);
 
 		float upperBoundPercent = Float.parseFloat(properties.getProperty("Prune_upperBound"));
 		float lowerBoundPercent = Float.parseFloat(properties.getProperty("Prune_lowerBound"));
@@ -33,14 +36,29 @@ public class Prune_Command extends DependencyCommand {
 		try {
 			prune.prune();
 		} catch (IOException e) {
-			logger.error("During prune a file stream problem occured.");
+			logger.error("During prune a file stream problem occured. Input file path: " + inFilePath);
 			throw new RuntimeException(e);
 		}
 	}
 
 	@Override
-	public void addDependencies() {
-		beforeDependencies.add("DocumentTermTopicCreate");
-		afterDependencies.add("InFilePreparation");
+	public Set<String> getAfterDependencies() {
+		return Sets.newHashSet("InFilePreparation");
 	}
+
+	@Override
+	public Set<String> getBeforeDependencies() {
+		return Sets.newHashSet("DocumentTermTopicCreate");
+	}
+
+	@Override
+	public Set<String> getOptionalAfterDependencies() {
+		return Sets.newHashSet();
+	}
+
+	@Override
+	public Set<String> getOptionalBeforeDependencies() {
+		return Sets.newHashSet();
+	}
+
 }

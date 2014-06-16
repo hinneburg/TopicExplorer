@@ -8,34 +8,25 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import cc.commandmanager.core.CommunicationContext;
+import cc.commandmanager.core.Context;
 
 public class UserTest extends HttpServlet {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
-	protected void doGet(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-
-		CommunicationContext communicationContext = WebChainManagement
-				.getCommunicationContext();
-
-		communicationContext.put("SERVLET_WRITER", response.getWriter());
-
-		WebChainManagement.executeCommands(WebChainManagement
-				.getOrderedCommands(new HashSet<String>(),
-						new HashSet<String>()), communicationContext);
+	@Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		Context context = WebChainManagement.getContext();
+		context.bind("SERVLET_WRITER", response.getWriter());
+		WebChainManagement.executeCommands(WebChainManagement.getOrderedCommands(new HashSet<String>()), context);
 	}
 
 	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-	 *      response)
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
-	protected void doPost(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
+	@Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
+			IOException {
 
 	}
 

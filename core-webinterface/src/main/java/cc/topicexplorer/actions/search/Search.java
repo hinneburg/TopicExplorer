@@ -14,27 +14,25 @@ import cc.topicexplorer.database.Database;
 import cc.topicexplorer.database.SelectMap;
 
 public class Search {
-	SelectMap searchMap;
-	Database database;
-	PrintWriter outWriter;
-	String searchWord;
-	int limit, numberOfTopics;
-	Logger logger;
 
+	private static Logger logger = Logger.getLogger(Search.class);
 
-	public Search(String searchWord, Database db, PrintWriter out, int limit, int offset, int numberOfTopics, Logger logger) {
+	private SelectMap searchMap;
+	private Database database;
+	private PrintWriter outWriter;
+	private String searchWord;
+	private int numberOfTopics;
+
+	public Search(String searchWord, Database db, PrintWriter out, int limit, int offset, int numberOfTopics) {
 		searchMap = new SelectMap();
 		searchMap.select.add("DOCUMENT.DOCUMENT_ID");
 		searchMap.from.add("DOCUMENT");
 		searchMap.limit = limit;
 		searchMap.offset = offset;
 
-		this.logger = logger;
-
 		setDatabase(db);
 		setServletWriter(out);
 		setSearchWord(searchWord);
-		setLimit(limit);
 		setNumberOfTopics(numberOfTopics);
 	}
 
@@ -54,10 +52,6 @@ public class Search {
 		this.outWriter = servletWriter;
 	}
 
-	public void setLimit(Integer limit) {
-		this.limit = limit;
-	}
-
 	public void addSearchColumn(String documentColumn, String documentColumnName) {
 		searchMap.select.add(documentColumn + " as " + documentColumnName);
 	}
@@ -66,10 +60,10 @@ public class Search {
 		searchMap.where.add(whereClause);
 	}
 
-	public void setOrderBy(ArrayList <String> orderBy) {
+	public void setOrderBy(ArrayList<String> orderBy) {
 		searchMap.orderBy = orderBy;
 	}
-	
+
 	public void setNumberOfTopics(Integer numberOfTopics) {
 		this.numberOfTopics = numberOfTopics;
 	}
@@ -108,13 +102,10 @@ public class Search {
 			while (bestTopicsRS.next()) {
 				topTopic.add(bestTopicsRS.getInt("TOPIC_ID"));
 			}
-			
-			ResultSet reverseDocTopicRS = database
-					.executeQuery("SELECT TOPIC_ID FROM DOCUMENT_TOPIC WHERE TOPIC_ID < "
-							+ getNumberOfTopics().toString()
-							+ " AND DOCUMENT_ID="
-							+ mainQueryRS.getInt("DOCUMENT_ID")
-							+ " ORDER BY PR_DOCUMENT_GIVEN_TOPIC DESC LIMIT 1");
+
+			ResultSet reverseDocTopicRS = database.executeQuery("SELECT TOPIC_ID FROM DOCUMENT_TOPIC WHERE TOPIC_ID < "
+					+ getNumberOfTopics().toString() + " AND DOCUMENT_ID=" + mainQueryRS.getInt("DOCUMENT_ID")
+					+ " ORDER BY PR_DOCUMENT_GIVEN_TOPIC DESC LIMIT 1");
 			if (reverseDocTopicRS.next()) {
 				doc.put("TOPIC_ID", reverseDocTopicRS.getInt("TOPIC_ID"));
 			}

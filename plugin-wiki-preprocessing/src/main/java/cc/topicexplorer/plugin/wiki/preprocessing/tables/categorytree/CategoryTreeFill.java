@@ -1,11 +1,18 @@
 package cc.topicexplorer.plugin.wiki.preprocessing.tables.categorytree;
 
 import java.sql.SQLException;
+import java.util.Set;
+
+import org.apache.log4j.Logger;
 
 import cc.topicexplorer.commands.TableFillCommand;
 import cc.topicexplorer.plugin.wiki.preprocessing.CategoryResolver;
 
+import com.google.common.collect.Sets;
+
 public class CategoryTreeFill extends TableFillCommand {
+
+	private static final Logger logger = Logger.getLogger(CategoryTreeFill.class);
 
 	@Override
 	public void fillTable() {
@@ -23,7 +30,7 @@ public class CategoryTreeFill extends TableFillCommand {
 			throw new RuntimeException(e);
 		}
 
-		// TODO noch index hinzufügen!
+		// TODO add index!
 
 	}
 
@@ -33,8 +40,23 @@ public class CategoryTreeFill extends TableFillCommand {
 	}
 
 	@Override
-	public void addDependencies() {
-		beforeDependencies.add("Wiki_CategoryResolver");
+	public Set<String> getAfterDependencies() {
+		return Sets.newHashSet();
+	}
+
+	@Override
+	public Set<String> getBeforeDependencies() {
+		return Sets.newHashSet("Wiki_CategoryResolver");
+	}
+
+	@Override
+	public Set<String> getOptionalAfterDependencies() {
+		return Sets.newHashSet();
+	}
+
+	@Override
+	public Set<String> getOptionalBeforeDependencies() {
+		return Sets.newHashSet();
 	}
 
 }

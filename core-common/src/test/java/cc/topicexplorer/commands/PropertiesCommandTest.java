@@ -9,7 +9,7 @@ import java.util.Properties;
 
 import org.junit.Test;
 
-import cc.commandmanager.core.CommunicationContext;
+import cc.commandmanager.core.Context;
 
 public class PropertiesCommandTest {
 
@@ -23,7 +23,7 @@ public class PropertiesCommandTest {
 		Properties targetProperties = new Properties();
 		targetProperties.load(propertiesStream);
 
-		CommunicationContext communicationContext = new CommunicationContext();
+		Context communicationContext = new Context();
 		commandUnderTest.execute(communicationContext);
 
 		Properties actualProperties = (Properties) communicationContext.get(PropertiesCommand.PROPERTIES_KEY);

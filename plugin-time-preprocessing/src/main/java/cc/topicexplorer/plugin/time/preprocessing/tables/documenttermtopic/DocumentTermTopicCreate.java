@@ -1,15 +1,21 @@
 package cc.topicexplorer.plugin.time.preprocessing.tables.documenttermtopic;
 
 import java.sql.SQLException;
+import java.util.Set;
+
+import org.apache.log4j.Logger;
 
 import cc.topicexplorer.commands.TableCreateCommand;
 
+import com.google.common.collect.Sets;
+
 public class DocumentTermTopicCreate extends TableCreateCommand {
+
+	private static final Logger logger = Logger.getLogger(DocumentTermTopicCreate.class);
 
 	/**
 	 * @throws SQLException
-	 *             if a database access error occurs or the given SQL statement
-	 *             produces a ResultSet object
+	 *             if a database access error occurs or the given SQL statement produces a ResultSet object
 	 */
 	@Override
 	public void createTable() {
@@ -44,7 +50,23 @@ public class DocumentTermTopicCreate extends TableCreateCommand {
 	}
 
 	@Override
-	public void addDependencies() {
-		beforeDependencies.add("DocumentTermTopicCreate");
+	public Set<String> getAfterDependencies() {
+		return Sets.newHashSet();
 	}
+
+	@Override
+	public Set<String> getBeforeDependencies() {
+		return Sets.newHashSet("DocumentTermTopicCreate");
+	}
+
+	@Override
+	public Set<String> getOptionalAfterDependencies() {
+		return Sets.newHashSet();
+	}
+
+	@Override
+	public Set<String> getOptionalBeforeDependencies() {
+		return Sets.newHashSet();
+	}
+
 }

@@ -1,10 +1,12 @@
 package cc.topicexplorer.actions.gettopics;
 
-import org.apache.commons.chain.Context;
+import java.util.Set;
 
-import cc.commandmanager.core.CommunicationContext;
+import cc.commandmanager.core.Context;
 import cc.topicexplorer.commands.TableSelectCommand;
 import cc.topicexplorer.database.SelectMap;
+
+import com.google.common.collect.Sets;
 
 public class Collect extends TableSelectCommand {
 
@@ -12,29 +14,21 @@ public class Collect extends TableSelectCommand {
 	public void tableExecute(Context context) {
 		SelectMap preQueryMap, innerQueryMap, mainQueryMap;
 
-		CommunicationContext communicationContext = (CommunicationContext) context;
-
-		preQueryMap = (SelectMap) communicationContext.get("PRE_QUERY");
-
+		preQueryMap = context.get("PRE_QUERY", SelectMap.class);
 		preQueryMap.select.add("TOPIC_ID");
 		preQueryMap.from.add("TOPIC");
+		context.rebind("PRE_QUERY", preQueryMap);
 
-		communicationContext.put("PRE_QUERY", preQueryMap);
-
-		innerQueryMap = (SelectMap) communicationContext.get("INNER_QUERY");
-
+		innerQueryMap = context.get("INNER_QUERY", SelectMap.class);
 		innerQueryMap.select.add("COUNT(*) AS words");
 		innerQueryMap.select.add("SUM(PR_TERM_GIVEN_TOPIC) AS maxRelevanz");
 		innerQueryMap.select.add("TOPIC_ID");
 		innerQueryMap.from.add("TERM_TOPIC");
+		context.rebind("INNER_QUERY", innerQueryMap);
 
-		communicationContext.put("INNER_QUERY", innerQueryMap);
-
-		mainQueryMap = (SelectMap) communicationContext.get("MAIN_QUERY");
-
+		mainQueryMap = context.get("MAIN_QUERY", SelectMap.class);
 		mainQueryMap.select.add("(PR_TERM_GIVEN_TOPIC/maxRelevanz) AS relevanz");
 		mainQueryMap.select.add("TERM.TERM_NAME");
-		// mainQueryMap.select.add("maxRelevanz");
 		mainQueryMap.from.add("TERM_TOPIC");
 		mainQueryMap.from.add("TERM");
 		mainQueryMap.from.add("TOPIC");
@@ -43,14 +37,27 @@ public class Collect extends TableSelectCommand {
 		mainQueryMap.where.add("TERM_TOPIC.TOPIC_ID = TOPIC.TOPIC_ID");
 		mainQueryMap.orderBy.add("relevanz DESC");
 		mainQueryMap.limit = 40;
-
-		communicationContext.put("MAIN_QUERY", mainQueryMap);
-
+		context.rebind("MAIN_QUERY", mainQueryMap);
 	}
 
 	@Override
-	public void addDependencies() {
-		beforeDependencies.add("GetTopicsCoreCreate");
-		afterDependencies.add("GetTopicsCoreGenerateSQL");
+	public Set<String> getAfterDependencies() {
+		return Sets.newHashSet("GetTopicsCoreGenerateSQL");
 	}
+
+	@Override
+	public Set<String> getBeforeDependencies() {
+		return Sets.newHashSet("GetTopicsCoreCreate");
+	}
+
+	@Override
+	public Set<String> getOptionalAfterDependencies() {
+		return Sets.newHashSet();
+	}
+
+	@Override
+	public Set<String> getOptionalBeforeDependencies() {
+		return Sets.newHashSet();
+	}
+
 }

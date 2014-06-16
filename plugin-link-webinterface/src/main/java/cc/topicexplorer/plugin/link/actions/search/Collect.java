@@ -1,6 +1,7 @@
 package cc.topicexplorer.plugin.link.actions.search;
 
 
+import java.util.Collections;
 import java.util.Set;
 
 import com.google.common.collect.Sets;
@@ -32,11 +33,11 @@ public class Collect extends TableSelectCommand {
 
 	@Override
 	public Set<String> getOptionalAfterDependencies() {
-		return Sets.newHashSet();
+		return Collections.emptySet();
 	}
 
 	@Override
 	public Set<String> getOptionalBeforeDependencies() {
-		return Sets.newHashSet();
+		return Collections.emptySet();
 	}
 }

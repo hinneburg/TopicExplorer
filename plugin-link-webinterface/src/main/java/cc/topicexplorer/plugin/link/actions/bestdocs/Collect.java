@@ -1,10 +1,12 @@
 package cc.topicexplorer.plugin.link.actions.bestdocs;
 
+import java.util.Collections;
 import java.util.Set;
 
 import cc.topicexplorer.actions.bestdocs.BestDocumentsForGivenTopic;
 import cc.commandmanager.core.Context;
 import cc.topicexplorer.commands.TableSelectCommand;
+
 import com.google.common.collect.Sets;
 
 public class Collect extends TableSelectCommand {
@@ -31,11 +33,11 @@ public class Collect extends TableSelectCommand {
 
 	@Override
 	public Set<String> getOptionalAfterDependencies() {
-		return Sets.newHashSet();
+		return Collections.emptySet();
 	}
 
 	@Override
 	public Set<String> getOptionalBeforeDependencies() {
-		return Sets.newHashSet();
+		return Collections.emptySet();
 	}
 }

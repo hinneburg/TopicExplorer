@@ -1,5 +1,6 @@
 package cc.topicexplorer.plugin.link.actions.getrandomdocs;
 
+import java.util.Collections;
 import java.util.Set;
 
 import cc.commandmanager.core.Context;
@@ -19,7 +20,7 @@ public class Collect extends TableSelectCommand {
 
 	@Override
 	public Set<String> getAfterDependencies() {
-		return Sets.newHashSet();
+		return Collections.emptySet();
 	}
 
 	@Override
@@ -29,12 +30,12 @@ public class Collect extends TableSelectCommand {
 
 	@Override
 	public Set<String> getOptionalAfterDependencies() {
-		return Sets.newHashSet();
+		return Collections.emptySet();
 	}
 
 	@Override
 	public Set<String> getOptionalBeforeDependencies() {
-		return Sets.newHashSet();
+		return Collections.emptySet();
 	}
 
 }

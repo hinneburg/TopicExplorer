@@ -29,6 +29,10 @@ public class NLP_Tests
 		{
 			System.out.println("Testing Sentence Detector");
 			OpenNlp nlp = new OpenNlp();
+			
+			nlp.setPath("/home/slayer/workspace/TopicExplorer/"
+					+ "plugin-POS-preprocessing/src/main/resources/opennlpResources/");
+			System.out.println(nlp.getPath());
 			nlp.SentenceDetect();
 			System.out.println();
 		}
@@ -37,7 +41,10 @@ public class NLP_Tests
 		public void TestNlpTags () throws InvalidFormatException, IOException
 		{
 			System.out.println("Testing Part Of Speech Tags");
+			
 			OpenNlp nlp = new OpenNlp();
+			nlp.setPath("/home/slayer/workspace/TopicExplorer/"
+			+ "plugin-POS-preprocessing/src/main/resources/opennlpResources/");
 			nlp.PartOfSpeechTagging(new String[]{"Most", "large", "cities", "in", "the", "US", "had",
 		                "morning", "and", "afternoon", "newspapers", "."});
 			System.out.println();

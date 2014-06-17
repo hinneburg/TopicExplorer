@@ -11,7 +11,7 @@
 
 	<properties>
 		<!-- Unique entry point for version number management -->
-		<global.version>1.0-SNAPSHOT</global.version>
+		<global.version>1.0</global.version>
 	</properties>
 
 	<modules>

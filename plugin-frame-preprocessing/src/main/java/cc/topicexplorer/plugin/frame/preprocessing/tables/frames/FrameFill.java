@@ -152,6 +152,7 @@ public final class FrameFill extends TableFillCommand {
 					position = -150;
 				}
 			}
+			logger.info("Frame occurrences computed.");
 
 			for (Frame frame : frames) {
 				database.executeUpdateQueryForUpdate(String

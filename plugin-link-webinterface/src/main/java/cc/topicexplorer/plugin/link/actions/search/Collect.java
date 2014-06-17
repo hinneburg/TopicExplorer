@@ -16,7 +16,7 @@ public class Collect extends TableSelectCommand {
 
 		Search searchAction = context.get("SEARCH_ACTION", Search.class);
 
-		searchAction.addSearchColumn("DOCUMENT.DOCUMENT.LINK$URL", "DOCUMENT.LINK$URL");
+		searchAction.addSearchColumn("DOCUMENT.LINK$URL", "LINK$URL");
 		
 		context.rebind("SEARCH_ACTION", searchAction);
 	}

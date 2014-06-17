@@ -17,8 +17,8 @@ public class Collect extends TableSelectCommand {
 		BestDocumentsForGivenTopic bestDocAction = context.get(
 				"BEST_DOC_ACTION", BestDocumentsForGivenTopic.class);
 
-		bestDocAction.addDocumentColumn("DOCUMENT.DOCUMENT.LINK$URL",
-				"DOCUMENT.LINK$URL");
+		bestDocAction.addDocumentColumn("DOCUMENT.LINK$URL",
+				"LINK$URL");
 
 		context.rebind("BEST_DOC_ACTION", bestDocAction);
 	}

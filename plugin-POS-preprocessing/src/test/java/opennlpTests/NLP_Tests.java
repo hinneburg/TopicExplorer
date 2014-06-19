@@ -2,6 +2,7 @@ package opennlpTests;
 
 import java.io.IOException;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import cc.topicexplorer.plugin.pos.preprocessing.opennlp.OpenNlp;
@@ -24,6 +25,7 @@ public class NLP_Tests
 				e.printStackTrace();
 			}
 */
+
 		@Test
 		public void TestNlpSentences () throws InvalidFormatException, IOException
 		{
@@ -32,11 +34,11 @@ public class NLP_Tests
 			
 			nlp.setPath("/home/slayer/workspace/TopicExplorer/"
 					+ "plugin-POS-preprocessing/src/main/resources/opennlpResources/");
-			System.out.println(nlp.getPath());
+			//System.out.println(nlp.getPath());
 			nlp.SentenceDetect();
 			System.out.println();
 		}
-		
+		/*
 		@Test
 		public void TestNlpTags () throws InvalidFormatException, IOException
 		{
@@ -47,6 +49,18 @@ public class NLP_Tests
 			+ "plugin-POS-preprocessing/src/main/resources/opennlpResources/");
 			nlp.PartOfSpeechTagging(new String[]{"Most", "large", "cities", "in", "the", "US", "had",
 		                "morning", "and", "afternoon", "newspapers", "."});
+			System.out.println();
+		}
+
+		@Test
+		public void TestNlpTokens () throws InvalidFormatException, IOException
+		{
+			System.out.println("Testing Tokenizer");
+			
+			OpenNlp nlp = new OpenNlp();
+			nlp.setPath("/home/slayer/workspace/TopicExplorer/"
+			+ "plugin-POS-preprocessing/src/main/resources/opennlpResources/");
+			nlp.TokenizeSentences("Most large cities in the US had morning and afternoon newspapers.");
 			System.out.println();
 		}
 /*

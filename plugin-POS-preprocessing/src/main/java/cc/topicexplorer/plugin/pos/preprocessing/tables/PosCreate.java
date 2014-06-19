@@ -1,10 +1,17 @@
 package cc.topicexplorer.plugin.pos.preprocessing.tables;
 
 import java.sql.SQLException;
+import java.util.Collections;
+import java.util.Set;
+
+import org.apache.log4j.Logger;
+
 import cc.topicexplorer.commands.TableCreateCommand;
 
 
 public class PosCreate extends TableCreateCommand {
+
+	private static final Logger logger = Logger.getLogger(PosCreate.class);
 
 	@Override
 	public void createTable() {
@@ -42,8 +49,23 @@ public class PosCreate extends TableCreateCommand {
 	}
 
 	@Override
-	public void addDependencies() {
-		beforeDependencies.add("PosCreate");
+	public Set<String> getAfterDependencies() {
+		return Collections.emptySet();
+	}
+
+	@Override
+	public Set<String> getBeforeDependencies() {
+		return Collections.emptySet();
+	}
+
+	@Override
+	public Set<String> getOptionalAfterDependencies() {
+		return Collections.emptySet();
+	}
+
+	@Override
+	public Set<String> getOptionalBeforeDependencies() {
+		return Collections.emptySet();
 	}
 
 }

@@ -20,11 +20,7 @@
 		<dependency>
 			<groupId>cc.commandmanager</groupId>
 			<artifactId>command-manager</artifactId>
-<<<<<<< HEAD
-<version>1.0beta</version>
-=======
 			<version>1.0beta</version>
->>>>>>> 3626c50c2ab0958bec32534938969680952e786f
 		</dependency>
 		<dependency>
 			<groupId>log4j</groupId>

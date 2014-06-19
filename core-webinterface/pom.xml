@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>cc.topicexplorer</groupId>
 		<artifactId>topicexplorer-parent</artifactId>
-		<version>1.0-SNAPSHOT</version>
+		<version>${global.version}</version>
 	</parent>
 	<artifactId>core-webinterface</artifactId>
 	<name>core-webinterface</name>
@@ -12,7 +12,12 @@
 		<dependency>
 			<groupId>cc.topicexplorer</groupId>
 			<artifactId>core-common</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>${global.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>cc.commandmanager</groupId>
+			<artifactId>command-manager</artifactId>
+			<version>1.0beta</version>
 		</dependency>
 		<dependency>
 			<groupId>cc.commandmanager</groupId>

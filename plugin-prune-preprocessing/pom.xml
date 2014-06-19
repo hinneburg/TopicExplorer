@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>cc.topicexplorer</groupId>
 		<artifactId>topicexplorer-parent</artifactId>
-		<version>1.0-SNAPSHOT</version>
+		<version>${global.version}</version>
 	</parent>
 	<artifactId>plugin-prune-preprocessing</artifactId>
 	<name>plugin-prune-preprocessing</name>
@@ -17,7 +17,7 @@
 		<dependency>
 			<groupId>cc.topicexplorer</groupId>
 			<artifactId>core-preprocessing</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>${global.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>log4j</groupId>

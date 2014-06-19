@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>cc.topicexplorer</groupId>
 		<artifactId>topicexplorer-parent</artifactId>
-		<version>1.0-SNAPSHOT</version>
+		<version>${global.version}</version>
 	</parent>
 	<artifactId>core-common</artifactId>
 	<name>core-common</name>

@@ -303,7 +303,8 @@ html, body {
 	height: 100%;
     position: relative;
     width: 100%;
-  
+  	padding-top: 1px;
+  	overflow:hidden;
 }
 .bottom .topicBottomSliderDiv .topicPrevSlider {
 	position: absolute ! important;
@@ -314,8 +315,7 @@ html, body {
     opacity: 0.5;
     border: 1px solid black;
 	cursor: col-resize;
-	margin-left: 4px;
-	left: -4px;
+	overflow:hidden;
 }
 #groupG rect:hover {
 	cursor: pointer;	

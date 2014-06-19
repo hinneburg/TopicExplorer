@@ -57,12 +57,12 @@ require([ "knockout","jquery", "scripts/modules/topicexplorer-view-model",
 		    window.clearTimeout(timeoutId);
 		    timeoutId = null;
 		}
-	}).delegate("#groupG rect", "mouseover", function(){
-		$(this).attr("height", "17");
-		$(this).attr("y", "0");
-	}).delegate("#groupG rect", "mouseout", function(){
-		$(this).attr("height", "13");
-		$(this).attr("y", "2");
+	}).delegate(".topicRect", "mouseover", function(){
+		$(this).css("height", "17px");
+		$(this).css("margin-top", "-1px");
+	}).delegate(".topicRect", "mouseout", function(){
+		$(this).css("height", "15px");
+		$(this).css("margin-top", "0px");
 	}).delegate(".topicList", "mouseenter", function(){
 		$(this).children(":first").show();
 	}).delegate("#desktop", "mouseenter", function(){
@@ -80,7 +80,7 @@ require([ "knockout","jquery", "scripts/modules/topicexplorer-view-model",
 		$("#desktop").animate({
 			scrollTop: 0
 		});
-	}).delegate(".circles .topicCircle, #groupG rect, .topicWord", "click", moveToTopic);
+	}).delegate(".circles .topicCircle, .topicRect, .topicWord", "click", moveToTopic);
 	
 	$(document).tooltip();
 	
@@ -117,12 +117,10 @@ function makeMenu(el) {
 	});
 };
 
-function getScrollPositionByValue(val) {	
-	var offset = 3;	
-	var scroll = val;
-	var maxScrollPos = $('.topicBottomSliderDiv').width() - $('.topicPrevSlider').width();
+function getScrollPositionByValue(val) {		var scroll = val;
+	var maxScrollPos = $('.topicPrevElCont').width() - $('.topicPrevSlider').width() - 8;
 	var maxScroll = $('.topicList > ul').width() - $('.topicList').width();
-	var position = Math.round(scroll*maxScrollPos/maxScroll)+offset;	
+	var position = Math.round(scroll*maxScrollPos/maxScroll);
 	if(position < 0)
 		position = 0;
 	if(position > maxScrollPos)
@@ -139,7 +137,6 @@ function moveToTopic(self) {
 		topic_id = $(self.currentTarget).attr('id').split("_")[1];
 	}
 	var offset = $(".topicList").width() / 2 - $("#topic" + topic_id).width() / 2;
-	
 	$(".topicList").animate({
 		scrollLeft : ($("#topic" + topic_id).position().left - offset)
 	}, {

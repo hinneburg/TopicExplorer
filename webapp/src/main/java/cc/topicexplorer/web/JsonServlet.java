@@ -122,19 +122,21 @@ public class JsonServlet extends HttpServlet {
 			}
 		}
 		for (String element : pluginArray) {
-			try {
-				frontendViewArray = properties
-						.get(element.substring(0, 1).toUpperCase() + element.substring(1) + "_FrontendViews")
-						.toString().split(",");
-				for (int k = 0; k < frontendViewArray.length; k++) {
-					if (!frontendViews.contains("\"" + frontendViewArray[k] + "\"")) {
-						frontendViews.add("\"" + frontendViewArray[k] + "\"");
+			if(!element.isEmpty()) {
+				try {
+					frontendViewArray = properties
+							.get(element.substring(0, 1).toUpperCase() + element.substring(1) + "_FrontendViews")
+							.toString().split(",");
+					for (int k = 0; k < frontendViewArray.length; k++) {
+						if (!frontendViews.contains("\"" + frontendViewArray[k] + "\"")) {
+							frontendViews.add("\"" + frontendViewArray[k] + "\"");
+						}
 					}
+	
+				} catch (Exception e) { // TODO Specify exception type!
+					logger.info("Property " + element.substring(0, 1).toUpperCase() + element.substring(1)
+							+ "_FrontendViews not found");
 				}
-
-			} catch (Exception e) { // TODO Specify exception type!
-				logger.info("Property " + element.substring(0, 1).toUpperCase() + element.substring(1)
-						+ "_FrontendViews not found");
 			}
 		}
 		logger.info(frontendViews.toString());

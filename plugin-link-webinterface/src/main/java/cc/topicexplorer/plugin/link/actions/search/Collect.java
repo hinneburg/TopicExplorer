@@ -1,6 +1,7 @@
 package cc.topicexplorer.plugin.link.actions.search;
 
 
+import java.util.Collections;
 import java.util.Set;
 
 import com.google.common.collect.Sets;
@@ -15,7 +16,7 @@ public class Collect extends TableSelectCommand {
 
 		Search searchAction = context.get("SEARCH_ACTION", Search.class);
 
-		searchAction.addSearchColumn("DOCUMENT.DOCUMENT.LINK$URL", "DOCUMENT.LINK$URL");
+		searchAction.addSearchColumn("DOCUMENT.LINK$URL", "LINK$URL");
 		
 		context.rebind("SEARCH_ACTION", searchAction);
 	}
@@ -32,11 +33,11 @@ public class Collect extends TableSelectCommand {
 
 	@Override
 	public Set<String> getOptionalAfterDependencies() {
-		return Sets.newHashSet();
+		return Collections.emptySet();
 	}
 
 	@Override
 	public Set<String> getOptionalBeforeDependencies() {
-		return Sets.newHashSet();
+		return Collections.emptySet();
 	}
 }

@@ -5,8 +5,8 @@
 		<div  data-bind="template: {name: 'document-menu-view', afterRender: makeMenu}"></div>
 	</div>
 	<div id="jumpToStart" data-bind="style: {left: (windowWidth() / 2 - 14) + 'px'}">^</div>
-	<!--  ko if: typeof $root.topicexplorer.data.document[selectedDocuments()[0]] != 'undefined' && $root.topicexplorer.view.tab[$root.topicexplorer.view.activeTab].tabTitle != "Random" -->
-	<div id="browserToolbar" style="border-bottom: 1px solid  #DCDCDC; margin: 0 0 10px 0; padding: 10px 0 10px 30px; font-size:80%" data-bind="if: typeof $root.topicexplorer.data.document[selectedDocuments()[0]].TIME$TIME_STAMP != 'undefined'">
+	<!--  ko if: typeof $root.topicexplorer.data.document[selectedDocuments()[0]] != 'undefined' && $root.topicexplorer.view.tab[$root.topicexplorer.view.activeTab].tabTitle != "Random" && typeof $root.topicexplorer.data.document[selectedDocuments()[0]].TIME$TIME_STAMP != 'undefined'-->
+	<div id="browserToolbar" style="border-bottom: 1px solid  #DCDCDC; margin: 0 0 10px 0; padding: 10px 0 10px 30px; font-size:80%">
 		Sorting: 
 		<input type="radio" name="mark" value="RELEVANCE" data-bind="checked: selectedSorting" > Relevance
 	    <input type="radio" name="mark" value="TIME" data-bind="checked: selectedSorting" > Time

@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>cc.topicexplorer</groupId>
 		<artifactId>topicexplorer-parent</artifactId>
-		<version>1.0-SNAPSHOT</version>
+		<version>${global.version}</version>
 	</parent>
 
 	<artifactId>plugin-text-preprocessing</artifactId>
@@ -15,12 +15,16 @@
 		<dependency>
 			<groupId>cc.topicexplorer</groupId>
 			<artifactId>core-preprocessing</artifactId>
-			<version>1.0-SNAPSHOT</version>
+			<version>${global.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>cc.commandmanager</groupId>
 			<artifactId>command-manager</artifactId>
+<<<<<<< HEAD
 <version>1.0beta</version>
+=======
+			<version>1.0beta</version>
+>>>>>>> 3626c50c2ab0958bec32534938969680952e786f
 		</dependency>
 		<dependency>
 			<groupId>log4j</groupId>

@@ -1,5 +1,6 @@
 package cc.topicexplorer.plugin.link.actions.bestdocs;
 
+import java.util.Collections;
 import java.util.Set;
 
 import cc.topicexplorer.actions.bestdocs.BestDocumentsForGivenTopic;
@@ -15,8 +16,8 @@ public class Collect extends TableSelectCommand {
 		BestDocumentsForGivenTopic bestDocAction = context.get(
 				"BEST_DOC_ACTION", BestDocumentsForGivenTopic.class);
 
-		bestDocAction.addDocumentColumn("DOCUMENT.DOCUMENT.LINK$URL",
-				"DOCUMENT.LINK$URL");
+		bestDocAction.addDocumentColumn("DOCUMENT.LINK$URL",
+				"LINK$URL");
 
 		context.rebind("BEST_DOC_ACTION", bestDocAction);
 	}
@@ -31,11 +32,11 @@ public class Collect extends TableSelectCommand {
 
 	@Override
 	public Set<String> getOptionalAfterDependencies() {
-		return Sets.newHashSet();
+		return Collections.emptySet();
 	}
 
 	@Override
 	public Set<String> getOptionalBeforeDependencies() {
-		return Sets.newHashSet();
+		return Collections.emptySet();
 	}
 }

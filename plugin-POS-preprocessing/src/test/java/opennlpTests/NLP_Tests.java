@@ -6,6 +6,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import cc.topicexplorer.plugin.pos.preprocessing.opennlp.OpenNlp;
+import cc.topicexplorer.plugin.pos.preprocessing.tables.PosCreate;
 import opennlp.tools.util.InvalidFormatException;
 
 public class NLP_Tests 
@@ -29,6 +30,7 @@ public class NLP_Tests
 		@Test
 		public void TestNlpSentences () throws InvalidFormatException, IOException
 		{
+			/*
 			System.out.println("Testing Sentence Detector");
 			OpenNlp nlp = new OpenNlp();
 			
@@ -37,6 +39,12 @@ public class NLP_Tests
 			//System.out.println(nlp.getPath());
 			nlp.SentenceDetect();
 			System.out.println();
+			*/
+			PosCreate posC= new PosCreate();
+			
+			posC.setTableName();
+			posC.createTable();
+			//posC.dropTable();
 		}
 		/*
 		@Test

@@ -3,6 +3,8 @@ package cc.topicexplorer.plugin.pos.preprocessing.opennlp;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import cc.topicexplorer.utils.PropertiesUtil;
 import opennlp.tools.postag.POSModel;
@@ -80,7 +82,7 @@ public class OpenNlp {
 		
 	}
 
-	public void PartOfSpeechTagging(String[] sent) throws IOException {
+	public List<String[]> PartOfSpeechTagging(String[] sent) throws IOException {
 		InputStream modelIn = null;
 		POSModel model;
 		try {
@@ -92,7 +94,7 @@ public class OpenNlp {
 		} catch (IOException e) {
 			// Model loading failed, handle the error
 			e.printStackTrace();
-			return;
+			return null;
 		} finally {
 			if (modelIn != null) {
 				try {
@@ -102,12 +104,17 @@ public class OpenNlp {
 			}
 		}
 		POSTaggerME tagger = new POSTaggerME(model);
-
-		String tags[] = tagger.tag(sent);
+		List<String[]> result = new ArrayList<String[]>();
+		String [] tags = tagger.tag(sent);
+		
+		
 		for (int i = 0; i < tags.length; i++) {
+			String[] tag = {"DUMMY:Document_ID", String.valueOf(i), sent[i], tags[i]};
 			System.out.println(sent[i] + " on position " + i + " is a "
 					+ tags[i]);
+			result.add(tag);
 		}
+		return result;
 	}
 
 }

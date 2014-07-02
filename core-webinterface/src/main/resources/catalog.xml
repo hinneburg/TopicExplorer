@@ -4,7 +4,6 @@
 	<command name="GetRandomDocsCoreCollect" className="cc.topicexplorer.actions.getrandomdocs.Collect"/>	
 	<command name="GetRandomDocsCoreGenerateSQL" className="cc.topicexplorer.actions.getrandomdocs.GenerateSQL"/>	
 	<command name="GetTopicsCoreCreate" className="cc.topicexplorer.actions.gettopics.Create"/>
-	<command name="GetTopicsCoreCollect" className="cc.topicexplorer.actions.gettopics.Collect"/>
 	<command name="GetTopicsCoreGenerateSQL" className="cc.topicexplorer.actions.gettopics.GenerateSQL"/>	
 	<command name="InitCoreCreate" className="cc.topicexplorer.actions.init.Create"/>
 	<command name="InitCoreCollect" className="cc.topicexplorer.actions.init.Collect"/>

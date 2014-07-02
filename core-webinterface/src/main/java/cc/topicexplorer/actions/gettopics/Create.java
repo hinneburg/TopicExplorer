@@ -1,10 +1,10 @@
 package cc.topicexplorer.actions.gettopics;
 
+import java.io.PrintWriter;
 import java.util.Set;
 
 import cc.commandmanager.core.Context;
 import cc.topicexplorer.commands.TableSelectCommand;
-import cc.topicexplorer.database.SelectMap;
 
 import com.google.common.collect.Sets;
 
@@ -12,14 +12,14 @@ public class Create extends TableSelectCommand {
 
 	@Override
 	public void tableExecute(Context context) {
-		context.bind("PRE_QUERY", new SelectMap());
-		context.bind("INNER_QUERY", new SelectMap());
-		context.bind("MAIN_QUERY", new SelectMap());
+		PrintWriter pw = context.get("SERVLET_WRITER", PrintWriter.class);
+		GetTopics getTopicsAction = new GetTopics(database, pw);
+		context.bind("GET_TOPICS_ACTION", getTopicsAction);
 	}
 
 	@Override
 	public Set<String> getAfterDependencies() {
-		return Sets.newHashSet("GetTopicsCoreCollect");
+		return Sets.newHashSet("GetTopicsCoreGenerateSQL");
 	}
 
 	@Override

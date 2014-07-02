@@ -3,8 +3,8 @@ package cc.topicexplorer.plugin.frame.actions.gettopics;
 import java.util.Set;
 
 import cc.commandmanager.core.Context;
+import cc.topicexplorer.actions.gettopics.GetTopics;
 import cc.topicexplorer.commands.TableSelectCommand;
-import cc.topicexplorer.database.SelectMap;
 
 import com.google.common.collect.Sets;
 
@@ -12,12 +12,12 @@ public class Collect extends TableSelectCommand {
 
 	@Override
 	public void tableExecute(Context context) {
-		SelectMap mainQueryMap = context.get("MAIN_QUERY", SelectMap.class);
+		GetTopics getTopicsAction = context.get("GET_TOPICS_ACTION", GetTopics.class);
 
-		mainQueryMap.select.add("FRAME$FRAME_COUNT");
-		mainQueryMap.select.add("FRAME$UNIQUE_FRAME_COUNT");
-
-		context.rebind("MAIN_QUERY", mainQueryMap);
+		getTopicsAction.addTopicColumn("TOPIC.FRAME$FRAME_COUNT", "FRAME$FRAME_COUNT");
+		getTopicsAction.addTopicColumn("TOPIC.FRAME$UNIQUE_FRAME_COUNT", "FRAME$UNIQUE_FRAME_COUNT");
+		
+		context.rebind("GET_TOPICS_ACTION", getTopicsAction);
 	}
 
 	@Override

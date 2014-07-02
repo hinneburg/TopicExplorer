@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>cc.topicexplorer</groupId>
 		<artifactId>topicexplorer-parent</artifactId>
-		<version>${global.version}</version>
+		<version>1.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>webapp</artifactId>
 	<packaging>war</packaging>
@@ -33,42 +31,42 @@
 		<dependency>
 			<groupId>cc.topicexplorer</groupId>
 			<artifactId>core-common</artifactId>
-			<version>${global.version}</version>
+			<version>1.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>cc.topicexplorer</groupId>
 			<artifactId>core-webinterface</artifactId>
-			<version>${global.version}</version>
+			<version>1.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>cc.topicexplorer</groupId>
 			<artifactId>plugin-link-webinterface</artifactId>
-			<version>${global.version}</version>
+			<version>1.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>cc.topicexplorer</groupId>
 			<artifactId>plugin-text-webinterface</artifactId>
-			<version>${global.version}</version>
+			<version>1.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>cc.topicexplorer</groupId>
 			<artifactId>plugin-time-webinterface</artifactId>
-			<version>${global.version}</version>
+			<version>1.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>cc.topicexplorer</groupId>
 			<artifactId>plugin-colortopic-webinterface</artifactId>
-			<version>${global.version}</version>
+			<version>1.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>cc.topicexplorer</groupId>
 			<artifactId>plugin-hierarchicaltopic-webinterface</artifactId>
-			<version>${global.version}</version>
+			<version>1.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>cc.topicexplorer</groupId>
 			<artifactId>plugin-frame-webinterface</artifactId>
-			<version>${global.version}</version>
+			<version>1.1-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 
@@ -78,7 +76,7 @@
 		<servlet.port>8080</servlet.port>
 		<hostname>topicexplorer.informatik.uni-halle.de</hostname>
 		<username>hinnebur</username>
-		<password></password>
+		<password />
 	</properties>
 
 	<profiles>

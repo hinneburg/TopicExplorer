@@ -13,24 +13,7 @@ public class PosCreate extends TableCreateCommand {
 
 	private static final Logger logger = Logger.getLogger(PosCreate.class);
 
-	@Override
-	public void createTable() {
-		try {
-			database.executeUpdateQuery(" CREATE TABLE `" + this.tableName + "` ( "
-					+ "`DOCUMENT_ID` INT(11) NOT NULL, " + "`POSITION_OF_TOKEN_IN_DOCUMENT` INT(11) NOT NULL, "
-					+ "`TERM` varchar(255) COLLATE utf8_bin NOT NULL, "
-					+ "`TOKEN` varchar(255) COLLATE utf8_bin NOT NULL, " + "`TOPIC_ID` int(11) NOT NULL, "
-					+ "`PROBALITY_TOPIC_GIVEN_DOCUMENT_TERM` FLOAT, "
-					+ "`DOCUMENT_TERM_TOPIC_ASSIGNMENT` INT(11) NOT NULL "
-					+ ") ENGINE=InnoDB CHARSET=utf8 COLLATE=utf8_bin ;");
-		} catch (SQLException e) {
-			logger.error("Table " + this.tableName + " could not be created");
-			throw new RuntimeException(e);
-		}
-
-	}
 	
-	/*
 	@Override
 	public void createTable() {
 		try {
@@ -47,7 +30,7 @@ public class PosCreate extends TableCreateCommand {
 			throw new RuntimeException(e);
 		}
 	}
-*/
+
 	private void dropColumns() {
 		try {
 			this.database.executeUpdateQuery("ALTER TABLE " + this.tableName 
@@ -66,7 +49,6 @@ public class PosCreate extends TableCreateCommand {
 			}
 		}
 	}
-
 	@Override
 	public void dropTable() {
 		this.dropColumns();

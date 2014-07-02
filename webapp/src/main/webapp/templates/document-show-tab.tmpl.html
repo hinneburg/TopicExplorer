@@ -1,0 +1,20 @@
+<div id="desktop" data-bind="style: {height: $parents[1].desktopHeight() + 'px'}">	
+	<!--  ko if: loading -->
+		<img style="margin-left: 24px; margin-top: 24px;" src="images/ajax-loader.gif" alt="Loading"/>
+	<!-- /ko -->
+	<!--  ko ifnot: loading -->
+		<div id="singleToolbar" style="border-bottom: 1px solid  #DCDCDC; margin: 0 0 10px 0; padding: 10px 0 10px 30px; font-size:80%">
+			<select data-bind="options: singleData[active()].textSelectArray, value: singleData[active()].textSelection,optionsText: 'label'"></select>
+		</div>
+		<a class="docTitle" style="margin-left: 10px; font-size: x-large;">
+			<nobr data-bind="text: singleData[active()].TITLE_REPRESENTATION[singleData[active()].textSelection().field]"></nobr>
+		</a>
+		<!-- ko if: typeof singleData[active()].TIME$TIME_STAMP != 'undefined' -->
+		<span style="font-size:xx-small; color: #7f7f7f" class="date" data-bind="text:singleData[active()].TIME$TIME_STAMP + moment(singleData[active()].TIME$TIME_STAMP * 1000).format('LLL')"></span><br/>
+		<!-- /ko -->
+		<p class="docContent">
+			<span data-bind="html: singleData[active()].TEXT_REPRESENTATION[singleData[active()].textSelection().field]"></span>
+		</p>
+		
+	<!-- /ko -->
+</div>

@@ -1,0 +1,25 @@
+<!-- ko if: invisibleTabs().length -->
+<p class="reiter button gradientGray tab" id="invisbleTabs" style="cursor: default; width: 60px;">
+	<span style="cursor: pointer;" data-bind="text: '...' + invisibleTabs().length, click: toggleInvisbleTabs"></span>
+	<img data-bind="click: deleteAllHidden" style="cursor: pointer; position:absolute; top:4px; right: 5px; display: none" width="12px" height="12px" src="images/delete_24.png" alt="close"/>
+</p>
+
+<ul id="invisbleTabMenu" class="ui-menu ui-widget ui-widget-content" data-bind="foreach: {data: invisibleTabs}"  style="display: none; position: absolute; z-index: 3; margin: 20px 0 0 5px;">
+	<li style="font-weight: normal" class="ui-menu-item" data-bind="text: $parent.allTabs[$data].tabHeading, click: $parent.switchActive, event: {mouseover: function(data, event) { $(event.target).addClass('ui-state-focus');},mouseout: function(data, event) { $(event.target).removeClass('ui-state-focus');} }"></li>
+</ul>
+
+<!-- /ko -->
+
+<!-- ko foreach: {data:visibleTabs} -->
+<p class="reiter button gradientGray tab" data-bind="attr: { id: $data}" style="cursor: default;">
+	<img data-bind="click: $parent.deleteTab" style="cursor: pointer; position:absolute; top:5px; right: 5px; display: none;" width="12px" height="12px" class="close" src="images/delete_24.png" alt="close"/>
+	<span style="cursor: pointer;" data-bind="text: $parent.allTabs[$data].tabHeading, click: $parent.switchActive"></span>	
+</p>
+<!-- /ko -->
+
+<!-- ko foreach: {data:visibleTabs} -->
+	<!-- ko if: $data===$parent.active() -->
+	
+		<div id="tab" data-bind="module: {name: $parent.allTabs[$data].moduleName, data: $parent.allTabs[$data].data}"></div>
+	<!-- /ko -->
+<!-- /ko -->

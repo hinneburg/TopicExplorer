@@ -1,0 +1,11 @@
+<div class="topicElementMenu">
+	<!-- ko if: typeof $parent.loadTimeViewForTopic == 'function' -->
+		<button class="timeView" name="timeView" title="show time chart" type="button" data-bind="click: function() { $parent.loadTimeViewForTopic(selectedTopic)}"></button>
+	<!-- /ko -->
+</div>
+<div class="topicTitle"><a href="#" data-bind="text: $parent.Topic[selectedTopic].TITLE_REPRESENTATION[$parent.textSelection().field],click: function() { $parent.loadDocumentsForTopic(selectedTopic)}"></a></div>
+<div class="topicElementContent">
+	<ul class="wordList" data-bind = "foreach: {data: globalData.Topic[selectedTopic].Top_Terms, as: 'topTerm'}">
+		<li data-bind="text: globalData.Term[topTerm.TermId].TERM_NAME, style: {fontSize: 25*topTerm.relevance/globalData.Topic[selectedTopic].Top_Terms[0].relevance > 9 ? 25*topTerm.relevance/globalData.Topic[selectedTopic].Top_Terms[0].relevance+'px' : '9px'}" ></li>
+	</ul>
+</div>

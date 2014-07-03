@@ -1,5 +1,5 @@
-define([ "knockout", "jquery", "moment", "domready", "highstock", "filesaver"],
-function(ko, $, moment, domready) {
+define([ "knockout", "jquery", "moment", "highstock", "filesaver"],
+function(ko, $, moment) {
 	var instance;
     function Singleton (data) {    	
     	var timeoutId = null;

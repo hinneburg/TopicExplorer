@@ -15,23 +15,14 @@ function(ko, $) {
 		return ((self.windowHeight() - 186) * 0.7);
 	});
 	
-	self.invisibleTabs = ko.observableArray(['tab4', 'tab7', 'tab5', 'tab2']);
-	self.visibleTabs = ko.observableArray(['tab6', 'tab0', 'tab3', 'tab1','tab8','tab9']);
+	self.invisibleTabs = ko.observableArray([]);
+	self.visibleTabs = ko.observableArray(['tab0']);
 	self.allTabs = new Object({
-		tab0 : {moduleName:"document-show-tab", tabHeading:"Show Document 11700", data:{documentId: 11700}},
-		tab1 : {moduleName:"document-browse-tab",tabHeading:"Topic 12", data: {topicId: 12, getParam: "bestDocs&TopicId=12"}},
-		tab2 : {moduleName:"document-browse-tab",tabHeading:"Topic 10", data: {topicId: 10, getParam: "bestDocs&TopicId=10"}},
-		tab3 : {moduleName:"document-show-tab", tabHeading:"Show Document 37173", data:{documentId: 37173}},
-		tab4 : {moduleName:"document-show-tab", tabHeading:"Show Document 13717", data:{documentId: 13717}},
-		tab5 : {moduleName:"document-show-tab", tabHeading:"Show Document 15797", data:{documentId: 15797}},
-		tab6 : {moduleName:"document-show-tab", tabHeading:"Show Document 37355", data:{documentId: 37355}},
-		tab7 : {moduleName:"document-show-tab", tabHeading:"Show Document 39570", data:{documentId: 39570}},
-		tab8 : {moduleName:"time-chart-tab", tabHeading:"Time Chart 1", data:{topicId: 1}},
-		tab9 : {moduleName:"time-chart-tab", tabHeading:"Time Chart 9", data:{topicId: 9}}
+		tab0 : {moduleName:"document-browse-tab",tabHeading:"Topic 0", data: {topicId: 0, getParam: "bestDocs&TopicId=0"}}
 	});
 
-	self.active = ko.observable("tab1");
-	self.nextTabIndex = 10;
+	self.active = ko.observable("tab0");
+	self.nextTabIndex = 1;
 	
 	
 	ko.postbox.subscribe("openNewTab", function(newTabData) {

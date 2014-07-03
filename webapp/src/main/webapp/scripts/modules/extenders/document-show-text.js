@@ -1,5 +1,5 @@
-define(["knockout"],
-function(ko) {
+define(["knockout", "jquery"],
+function(ko, $) {
 	return function (instance) {
 		$('#tab').delegate('.topicWord', 'click', function() {
 			instance.moveToTopic($(this).attr('id').split('_')[1]);

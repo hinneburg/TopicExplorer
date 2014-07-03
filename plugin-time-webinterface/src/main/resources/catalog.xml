@@ -4,6 +4,5 @@
 	<command name="GetDatesTimeGenerateSQL" className="cc.topicexplorer.plugin.time.actions.getdates.GenerateSQL"/>
 	<command name="BestDocsTimeCollect" className="cc.topicexplorer.plugin.time.actions.bestdocs.Collect"/>
 	<command name="SearchTimeCollect" className="cc.topicexplorer.plugin.time.actions.search.Collect"/>
-	<command name="InitTimeCollect" className="cc.topicexplorer.plugin.time.actions.init.Collect"/>
 	<command name="ShowDocTimeCollect" className="cc.topicexplorer.plugin.time.actions.showdoc.Collect"/>
 </catalog>

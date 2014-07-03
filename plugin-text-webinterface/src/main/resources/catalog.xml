@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <catalog>
 	<command name="GetTopicsTextCollect" className="cc.topicexplorer.plugin.text.actions.gettopics.Collect"/>
-	<command name="InitTextCollect" className="cc.topicexplorer.plugin.text.actions.init.Collect"/>
 	<command name="ShowDocTextCollect" className="cc.topicexplorer.plugin.text.actions.showdoc.Collect"/>
 	<command name="BestDocsTextCollect" className="cc.topicexplorer.plugin.text.actions.bestdocs.Collect"/>
 	<command name="SearchTextCollect" className="cc.topicexplorer.plugin.text.actions.search.Collect"/>

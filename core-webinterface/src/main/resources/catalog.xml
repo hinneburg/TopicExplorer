@@ -2,9 +2,6 @@
 <catalog>
 	<command name="GetTopicsCoreCreate" className="cc.topicexplorer.actions.gettopics.Create"/>
 	<command name="GetTopicsCoreGenerateSQL" className="cc.topicexplorer.actions.gettopics.GenerateSQL"/>	
-	<command name="InitCoreCreate" className="cc.topicexplorer.actions.init.Create"/>
-	<command name="InitCoreCollect" className="cc.topicexplorer.actions.init.Collect"/>
-	<command name="InitCoreGenerateSQL" className="cc.topicexplorer.actions.init.GenerateSQL"/>	
 	<command name="ShowDocCoreCreate" className="cc.topicexplorer.actions.showdoc.Create"/>
 	<command name="ShowDocCoreCollect" className="cc.topicexplorer.actions.showdoc.Collect"/>
 	<command name="ShowDocCoreGenerateSQL" className="cc.topicexplorer.actions.showdoc.GenerateSQL"/>	

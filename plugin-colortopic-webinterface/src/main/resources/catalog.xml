@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <catalog>
 	<command name="GetTopicsColorTopicCollect" className="cc.topicexplorer.plugin.colortopic.actions.gettopics.Collect"/>
-	<command name="InitColorTopicCollect" className="cc.topicexplorer.plugin.colortopic.actions.init.Collect"/>
 </catalog>

@@ -3,8 +3,8 @@ package cc.topicexplorer.plugin.time.actions.showdoc;
 import java.util.Set;
 
 import cc.commandmanager.core.Context;
+import cc.topicexplorer.actions.showdoc.ShowDoc;
 import cc.topicexplorer.commands.TableSelectCommand;
-import cc.topicexplorer.database.SelectMap;
 
 import com.google.common.collect.Sets;
 
@@ -12,11 +12,11 @@ public class Collect extends TableSelectCommand {
 
 	@Override
 	public void tableExecute(Context context) {
-		SelectMap documentMap = context.get("DOCUMENT_QUERY", SelectMap.class);
-
-		documentMap.select.add("DOCUMENT.TIME$TIME_STAMP");
-
-		context.rebind("DOCUMENT_QUERY", documentMap);
+		ShowDoc showDocAction = context.get("SHOW_DOC_ACTION", ShowDoc.class);
+		
+		showDocAction.addDocumentColumn("DOCUMENT.TIME$TIME_STAMP", "TIME$TIME_STAMP");
+		
+		context.rebind("SHOW_DOC_ACTION", showDocAction);
 	}
 
 	@Override

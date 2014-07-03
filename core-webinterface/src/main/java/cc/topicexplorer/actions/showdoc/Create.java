@@ -1,10 +1,12 @@
 package cc.topicexplorer.actions.showdoc;
 
+import java.io.PrintWriter;
+
 import java.util.Set;
 
 import cc.commandmanager.core.Context;
+
 import cc.topicexplorer.commands.TableSelectCommand;
-import cc.topicexplorer.database.SelectMap;
 
 import com.google.common.collect.Sets;
 
@@ -12,13 +14,16 @@ public class Create extends TableSelectCommand {
 
 	@Override
 	public void tableExecute(Context context) {
-		context.bind("DOCUMENT_QUERY", new SelectMap());
-		context.bind("TOPIC_QUERY", new SelectMap());
+		String docId = context.getString("SHOW_DOC_ID");
+		PrintWriter pw = context.get("SERVLET_WRITER", PrintWriter.class);
+
+		ShowDoc showDocAction = new ShowDoc(docId, database, pw, properties);
+		context.bind("SHOW_DOC_ACTION", showDocAction);
 	}
 
 	@Override
 	public Set<String> getAfterDependencies() {
-		return Sets.newHashSet("ShowDocCoreCollect");
+		return Sets.newHashSet("ShowDocCoreGenerateSQL");
 	}
 
 	@Override

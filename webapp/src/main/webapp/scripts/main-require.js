@@ -44,7 +44,10 @@ require([ "knockout","jquery", "text!/JsonServlet?Command=getTopics", "knockout-
 	//fallback:
 	setTimeout(function() {
 		$(window).trigger('resize');
-	}, 2500);
+	}, 3000);
+	setTimeout(function() {
+		$(window).trigger('resize');
+	}, 8000);
 });
 
 

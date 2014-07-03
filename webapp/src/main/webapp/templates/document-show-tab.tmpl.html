@@ -9,12 +9,11 @@
 		<a class="docTitle" style="margin-left: 10px; font-size: x-large;">
 			<nobr data-bind="text: singleData[active()].TITLE_REPRESENTATION[singleData[active()].textSelection().field]"></nobr>
 		</a>
-		<!-- ko if: typeof singleData[active()].TIME$TIME_STAMP != 'undefined' -->
-		<span style="font-size:xx-small; color: #7f7f7f" class="date" data-bind="text:singleData[active()].TIME$TIME_STAMP + moment(singleData[active()].TIME$TIME_STAMP * 1000).format('LLL')"></span><br/>
+		<!-- ko if: typeof singleData[active()].DOCUMENT.TIME$TIME_STAMP != 'undefined' -->
+		<span style="font-size:xx-small; color: #7f7f7f" class="date" data-bind="text:moment(singleData[active()].DOCUMENT.TIME$TIME_STAMP * 1000).format('LLL')"></span><br/>
 		<!-- /ko -->
 		<p class="docContent">
 			<span data-bind="html: singleData[active()].TEXT_REPRESENTATION[singleData[active()].textSelection().field]"></span>
-		</p>
-		
+		</p>		
 	<!-- /ko -->
 </div>

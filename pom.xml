@@ -33,6 +33,7 @@
 		<module>plugin-hierarchicaltopic-webinterface</module>
 		<module>run-preprocessing</module>
 		<module>webapp</module>
+		<module>common-crawl</module>
 	</modules>
 	<dependencies>
 		<dependency>

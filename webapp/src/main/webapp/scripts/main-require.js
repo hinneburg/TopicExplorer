@@ -20,7 +20,8 @@ require.config({
 
 require([ "knockout","jquery", "text!/JsonServlet?Command=getTopics", "knockout-amd-helpers", "knockout-postbox", "moment",	"text", "jquery-ui",
           "scripts/modules/extenders/document-show-frames", 
-          "scripts/modules/extenders/document-show-text", 
+          "scripts/modules/extenders/document-show-text",
+          "scripts/modules/extenders/document-show-time",
           "scripts/modules/extenders/document-browse-time",
           "scripts/modules/extenders/topic-view-time",
           "scripts/modules/extenders/topic-view-frame"], function(ko, $, topics) {

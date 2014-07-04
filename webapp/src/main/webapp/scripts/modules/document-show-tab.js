@@ -1,9 +1,9 @@
-define(["knockout", "jquery", "moment"],
-function(ko, $, moment) {
+define(["knockout", "jquery"],
+function(ko, $) {
 	var instance;
     function Singleton (data) {
 		// this could be loaded from somewhere else, however all AMD modules need to be loaded in advance
-		var extend = new Array("scripts/modules/extenders/document-show-frames", "scripts/modules/extenders/document-show-text");
+		var extend = new Array("scripts/modules/extenders/document-show-frames", "scripts/modules/extenders/document-show-text", "scripts/modules/extenders/document-show-time");
 		// here comes the show-document-tab 
 		var self = {};
 		

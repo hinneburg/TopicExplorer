@@ -1,5 +1,5 @@
-define(["knockout"],
-function(ko) {
+define(["knockout", "jquery"],
+function(ko, $) {
 	return function (instance) {
 		var frames = instance.singleData[instance.active()].DOCUMENT.FRAME_LIST;
 		var text = instance.singleData[instance.active()].DOCUMENT.TEXT$FULLTEXT;

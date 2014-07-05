@@ -7,8 +7,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import org.apache.hadoop.io.Text;
 import org.apache.commons.io.*;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
+// TODO move language detection to optional class member
 public class BlogIdentifier {
     public static String fileKey = "validdomainfile";
 
@@ -35,8 +40,32 @@ public class BlogIdentifier {
         }
     }
     
-    public boolean isBlog(Map<String, Object> metadata) {
-        // TODO implement
+    public boolean isValidBlog(String url, String metadataString) {
+        boolean isValidURL = isValidURL(url);
+        
+        boolean isFeed = isFeed(metadataString);
+        
+        return isValidURL && isFeed;
+    }
+    
+    public boolean isValidURL(String url) {
+        // TODO validata url
         return false;
     }
+
+    public boolean isFeed(String metadataString) {
+        JsonParser parser = new JsonParser();
+        JsonObject metadata = parser.parse(metadataString).getAsJsonObject();
+
+        // catch malformed json
+        try {
+            JsonObject content = metadata.get("content").getAsJsonObject();
+            String contentType = content.get("type").getAsString();
+            return contentType.contains("feed");
+        } catch (Exception e) {
+            return false;
+        }
+    }
+    
+    
 }

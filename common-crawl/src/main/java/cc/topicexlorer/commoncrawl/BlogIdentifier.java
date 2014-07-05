@@ -19,6 +19,9 @@ public class BlogIdentifier {
 
     public BlogIdentifier(String domainFile) {
         try {
+            // suppress warning:
+            // Type safety: The expression of type List needs unchecked conversion to conform to List<String>
+            // this is necessary since readLines declares the wrong return type
             @SuppressWarnings("unchecked")
             List<String> lines = FileUtils.readLines(new File(domainFile));
             

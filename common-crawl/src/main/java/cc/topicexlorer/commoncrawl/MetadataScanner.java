@@ -37,12 +37,18 @@ public class MetadataScanner extends Configured implements Tool {
     private static final Logger LOG = Logger.getLogger(MetadataScanner.class);
 
     /**
-    */ 
+     */ 
     public static class MetadataScannerMapper extends MapReduceBase implements Mapper<Text, Text, Text, Text> {
+        public BlogIdentifier identifier = null;
 
         // implement the main "map" function
         public void map(Text key, Text value, OutputCollector<Text, Text> output, Reporter reporter) throws IOException {
 
+        }
+        
+        @Override
+        public void configure(JobConf job) {
+            this.identifier = new BlogIdentifier(job.get(BlogIdentifier.fileKey));
         }
     }
 

@@ -7,47 +7,55 @@ import org.junit.Test;
 import cc.topicexlorer.commoncrawl.BlogIdentifier;
 
 public class BlogIdentifierTest {
-    // TODO make path dynamic
-    private final String path = "/Users/florianluecke/Eclipse/workspace/TopicExplorer/common-crawl/src/test/resources/blogproviders.txt";
+    private final String path = this.getClass().getResource("/blogproviders.txt").getPath();
     private BlogIdentifier id = new BlogIdentifier(path);
 
     @Test
-    public void testIsFeed() {
-        System.out.println("Testing " + "{\"content\":{\"type\":\"atom-feed\"}}");
-        boolean isFeed = id.isFeed("{\"content\":{\"type\":\"atom-feed\"}}");
-        assertThat(isFeed).isEqualTo(true);
-        
-        System.out.println("Testing " + "{\"content\":{\"type\":\"rss-feed\"}}");
-        isFeed = id.isFeed("{\"content\":{\"type\":\"rss-feed\"}}");
-        assertThat(isFeed).isEqualTo(true);
-        
-        System.out.println("Testing " + "{\"content\":{\"type\":\"html-doc\"}}");
-        isFeed = id.isFeed("{\"content\":{\"type\":\"html-doc\"}}");
-        assertThat(isFeed).isEqualTo(false);
-        
-        System.out.println("Testing " + "{}");
-        isFeed = id.isFeed("{}");
-        assertThat(isFeed).isEqualTo(false);
+    public void testIsFeed_atomFeed() {
+        System.out.println(path);
+        String jsonString = "{\"content\":{\"type\":\"atom-feed\"}}";
+        assertThat(id.isFeed(jsonString)).isEqualTo(true);
     }
     
     @Test
-    public void testIsValidURL() {
-        System.out.println();
-        System.out.println("Testing isValidURL");
+    public void testIsFeed_rssFeed() {
+        String jsonString = "{\"content\":{\"type\":\"rss-feed\"}}";
+        assertThat(id.isFeed(jsonString)).isEqualTo(true);
+    }
+    
+    @Test
+    public void testIsFeed_htmlDoc() {
+        String jsonString = "{\"content\":{\"type\":\"html-doc\"}}";
+        assertThat(id.isFeed(jsonString)).isEqualTo(false);
+    }
+    
+    @Test
+    public void testIsFeed_invalidObject() {
+        String jsonString = "{}";
+        assertThat(id.isFeed(jsonString)).isEqualTo(false);
+    }
+    
+    @Test
+    public void testIsValidURL_minkara() {
         String blogURL = "http://minkara.carview.co.jp/userid/601087/blog/";
-        System.out.println("Testing " + blogURL);
         assertThat(id.isValidURL(blogURL)).isEqualTo(true);
-        
-        blogURL = "http://imikowa.hatenablog.com/";
-        System.out.println("Testing " + blogURL);
+    }
+    
+    @Test
+    public void testIsValidURL_hatenablog() {
+        String blogURL = "http://imikowa.hatenablog.com/";
         assertThat(id.isValidURL(blogURL)).isEqualTo(true);
-        
-        blogURL = "http://nazlife.hatenablog.com/entry/2014/07/05/";
-        System.out.println("Testing " + blogURL);
+    }
+    
+    @Test
+    public void testIsValidURL_hatenaExtended() {
+        String blogURL = "http://nazlife.hatenablog.com/entry/2014/07/05/";
         assertThat(id.isValidURL(blogURL)).isEqualTo(true);
-        
-        blogURL = "http://hatenablog.com";
-        System.out.println("Testing " + blogURL);
+    }
+
+    @Test
+    public void testIsValidURL_invalidURL() {
+        String blogURL = "http://hatenablog.com";
         assertThat(id.isValidURL(blogURL)).isEqualTo(false);
     }
 }

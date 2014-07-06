@@ -1,4 +1,4 @@
 <configuration>
 	<property>
 		<name>validdomainfile</name>
-		<value>/Users/florianluecke/Eclipse/workspace/TopicExplorer/common-crawl/src/test/resources/blogproviders.txt</value></property></configuration>
+		<value>blogproviders.txt</value></property></configuration>

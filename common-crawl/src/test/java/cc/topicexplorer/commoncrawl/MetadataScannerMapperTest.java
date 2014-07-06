@@ -12,18 +12,16 @@ import cc.topicexlorer.commoncrawl.MetadataScanner.MetadataScannerMapper;
 
 public class MetadataScannerMapperTest {
 
-    // TODO make filePath dynamic
     @Test
     public void testConfigure() {
+        String confFile = this.getClass().getResource("/testconf.xml").getPath();
         JobConf conf = new JobConf();
-        conf.addResource("testconf.xml");
-        String filePath = "/Users/florianluecke/Eclipse/workspace/TopicExplorer/common-crawl/src/test/resources/blogproviders.txt";
-        assertThat(conf.get(BlogIdentifier.fileKey)).isEqualTo(filePath);
-        
+        conf.addResource(confFile);
+
         MetadataScannerMapper m = new MetadataScannerMapper();
         m.configure(conf);
         
-        System.out.println("Testing file path");
+        String filePath = conf.get(BlogIdentifier.fileKey);
         assertThat(m.identifier.domainFile).isEqualTo(filePath);
         
         try {
@@ -32,5 +30,4 @@ public class MetadataScannerMapperTest {
             e.printStackTrace();
         }
     }
-
 }

@@ -4,7 +4,7 @@ import static org.fest.assertions.Assertions.assertThat;
 
 import org.junit.Test;
 
-import cc.topicexlorer.commoncrawl.BlogIdentifier;
+import cc.topicexplorer.commoncrawl.BlogIdentifier;
 
 public class BlogIdentifierTest {
     private final String path = this.getClass().getResource("/blogproviders.txt").getPath();

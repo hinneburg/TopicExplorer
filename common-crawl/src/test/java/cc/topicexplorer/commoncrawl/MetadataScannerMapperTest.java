@@ -7,8 +7,7 @@ import java.io.IOException;
 import org.apache.hadoop.mapred.JobConf;
 import org.junit.Test;
 
-import cc.topicexlorer.commoncrawl.BlogIdentifier;
-import cc.topicexlorer.commoncrawl.MetadataScanner.MetadataScannerMapper;
+import cc.topicexplorer.commoncrawl.MetadataScanner.MetadataScannerMapper;
 
 public class MetadataScannerMapperTest {
 

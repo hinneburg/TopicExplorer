@@ -1,4 +1,4 @@
-package cc.topicexlorer.commoncrawl;
+package cc.topicexplorer.commoncrawl;
 
 import java.io.File;
 import java.io.IOException;

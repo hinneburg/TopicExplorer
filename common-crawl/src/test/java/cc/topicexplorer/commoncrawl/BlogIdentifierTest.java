@@ -2,7 +2,7 @@ package cc.topicexplorer.commoncrawl;
 
 import static org.fest.assertions.Assertions.assertThat;
 
-import org.junit.*;
+import org.junit.Test;
 
 import cc.topicexlorer.commoncrawl.BlogIdentifier;
 

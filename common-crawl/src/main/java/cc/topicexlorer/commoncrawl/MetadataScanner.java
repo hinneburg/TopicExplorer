@@ -29,7 +29,7 @@ import org.apache.hadoop.util.ToolRunner;
 
 
 /**
- * A metadata scanner for the CommonCrawl archive. Based on Chris Stephens' <chris@commoncrawl.org> ExampleMetadataDomainPageCount.
+ * A metadata scanner for the CommonCrawl archive. Based on Chris Stephens' <chris@commoncrawl.org> ExampleMetadataDomainPageCount.java
  * @author Florian Luecke
  */
 public class MetadataScanner extends Configured implements Tool {
@@ -37,6 +37,7 @@ public class MetadataScanner extends Configured implements Tool {
     private static final Logger LOG = Logger.getLogger(MetadataScanner.class);
 
     /**
+     * Implemets the map function for MapReduce.
      */ 
     public static class MetadataScannerMapper extends MapReduceBase implements Mapper<Text, Text, Text, Text> {
         public BlogIdentifier identifier = null;

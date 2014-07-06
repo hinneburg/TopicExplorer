@@ -2,25 +2,17 @@ package cc.topicexplorer.commoncrawl;
 
 import static org.fest.assertions.Assertions.assertThat;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
-import org.junit.*;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.mapred.JobConf;
+import org.junit.Test;
 
 import cc.topicexlorer.commoncrawl.BlogIdentifier;
 import cc.topicexlorer.commoncrawl.MetadataScanner.MetadataScannerMapper;
 
 public class MetadataScannerMapperTest {
 
-    /**
-     * Tests the configure method of {@link MetadataScannerMapper}.
-     * 
-     * TODO make filePath dynamic
-     */
+    // TODO make filePath dynamic
     @Test
     public void testConfigure() {
         JobConf conf = new JobConf();

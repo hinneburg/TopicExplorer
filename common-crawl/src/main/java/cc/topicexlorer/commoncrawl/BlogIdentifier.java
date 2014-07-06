@@ -1,18 +1,20 @@
 package cc.topicexlorer.commoncrawl;
 
 import java.io.File;
-import org.apache.hadoop.fs.GlobPattern;
 import java.io.IOException;
 import java.util.List;
 import java.util.regex.Pattern;
-import org.apache.commons.io.*;
+
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.hadoop.fs.GlobPattern;
+
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 // TODO move language detection to optional class member
 public class BlogIdentifier {
-    public static String fileKey = "validdomainfile";
+    public static final String fileKey = "validdomainfile";
     
     public String domainFile = null;
     private GlobPattern _globPattern = null;
@@ -24,14 +26,23 @@ public class BlogIdentifier {
         this.domainFile = domainFile;
     }
     
+    /**
+     * Tests if the web document is a valid blog, i.e.
+     * its URL matches and its metadata contains a feed.
+     * @param url The URL of the web document.
+     * @param metadataString A JSON string containing the document's metadata.
+     * @return true, if the document is a vlaid blog, false otherwise
+     *
+     * @see isValidURL
+     * @see isFeed
+     */
     public boolean isValidBlog(String url, String metadataString) {
         boolean isValidURL = isValidURL(url);
-        
         boolean isFeed = isFeed(metadataString);
         
         return isValidURL && isFeed;
     }
-    
+
     /**
      * Tests if a URL is valid by matching it against urls in domainFile.
      * @param url The url that should be testet.
@@ -56,6 +67,11 @@ public class BlogIdentifier {
         }
     }
 
+    /**
+     * Tests if a JSON object contains a feed.
+     * @param metadataString The JSON object.
+     * @return true, if a feed is found, false otherwise.
+     */
     public boolean isFeed(String metadataString) {
         JsonParser parser = new JsonParser();
         JsonObject metadata = parser.parse(metadataString).getAsJsonObject();

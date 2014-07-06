@@ -29,4 +29,25 @@ public class BlogIdentifierTest {
         isFeed = id.isFeed("{}");
         assertThat(isFeed).isEqualTo(false);
     }
+    
+    @Test
+    public void testIsValidURL() {
+        System.out.println();
+        System.out.println("Testing isValidURL");
+        String blogURL = "http://minkara.carview.co.jp/userid/601087/blog/";
+        System.out.println("Testing " + blogURL);
+        assertThat(id.isValidURL(blogURL)).isEqualTo(true);
+        
+        blogURL = "http://imikowa.hatenablog.com/";
+        System.out.println("Testing " + blogURL);
+        assertThat(id.isValidURL(blogURL)).isEqualTo(true);
+        
+        blogURL = "http://nazlife.hatenablog.com/entry/2014/07/05/";
+        System.out.println("Testing " + blogURL);
+        assertThat(id.isValidURL(blogURL)).isEqualTo(true);
+        
+        blogURL = "http://hatenablog.com";
+        System.out.println("Testing " + blogURL);
+        assertThat(id.isValidURL(blogURL)).isEqualTo(false);
+    }
 }

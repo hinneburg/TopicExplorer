@@ -2,9 +2,13 @@ package cc.topicexplorer.commoncrawl;
 
 import static org.fest.assertions.Assertions.assertThat;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import org.junit.*;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.mapred.JobConf;
 
 import cc.topicexlorer.commoncrawl.BlogIdentifier;
@@ -27,8 +31,8 @@ public class MetadataScannerMapperTest {
         MetadataScannerMapper m = new MetadataScannerMapper();
         m.configure(conf);
         
-        System.out.println("Testing valid domain count");
-        assertThat(m.identifier.validDomains.size()).isEqualTo(32);
+        System.out.println("Testing file path");
+        assertThat(m.identifier.domainFile).isEqualTo(filePath);
         
         try {
             m.close();

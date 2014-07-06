@@ -33,8 +33,8 @@ public class BlogIdentifier {
      * @param metadataString A JSON string containing the document's metadata.
      * @return true, if the document is a valid blog, false otherwise
      *
-     * @see isValidURL
-     * @see isFeed
+     * @see BlogIdentifier#isValidURL
+     * @see BlogIdentifier#isFeed
      */
     public boolean isValidBlog(String url, String metadataString) {
         boolean isValidURL = isValidURL(url);
@@ -45,7 +45,7 @@ public class BlogIdentifier {
 
     /**
      * Tests if a URL is valid by matching it against urls in domainFile.
-     * @param url The url that should be testet.
+     * @param url The url that should be tested.
      * @return true, if url is valid, false otherwise.
      */
     public boolean isValidURL(String url) {

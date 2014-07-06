@@ -31,7 +31,7 @@ public class BlogIdentifier {
      * its URL matches and its metadata contains a feed.
      * @param url The URL of the web document.
      * @param metadataString A JSON string containing the document's metadata.
-     * @return true, if the document is a vlaid blog, false otherwise
+     * @return true, if the document is a valid blog, false otherwise
      *
      * @see isValidURL
      * @see isFeed

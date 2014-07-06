@@ -12,7 +12,6 @@ public class BlogIdentifierTest {
 
     @Test
     public void testIsFeed_atomFeed() {
-        System.out.println(path);
         String jsonString = "{\"content\":{\"type\":\"atom-feed\"}}";
         assertThat(id.isFeed(jsonString)).isEqualTo(true);
     }

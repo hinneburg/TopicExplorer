@@ -78,17 +78,18 @@ public class MetadataScanner extends Configured implements Tool {
             configFile = args[1];
         }
 
-        // TODO this could be a command line parameter
-        String inputPath = "s4n://aws-publicdatasets/common-crawl/parse-output/segment/1341690166822/metadata-0000*";
-
         // Read in any additional config parameters.
         if (configFile != null) {
             LOG.info("adding config parameters from '"+ configFile + "'");
             this.getConf().addResource(configFile);
         }
 
+
         // Creates a new job configuration for this Hadoop job.
         JobConf job = new JobConf(this.getConf());
+
+        String inputPath = "s3n://aws-publicdatasets/common-crawl/parse-output/segment/1341690166822/metadata-*";
+        inputPath = job.get("inputpath", inputPath);
 
         job.setJarByClass(MetadataScanner.class);
 

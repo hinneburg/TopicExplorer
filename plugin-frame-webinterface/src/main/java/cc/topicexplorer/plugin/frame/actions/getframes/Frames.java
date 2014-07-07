@@ -22,11 +22,11 @@ public class Frames {
 		frameMap = new SelectMap();
 		frameMap.select.add("FRAME");
 		frameMap.select.add("COUNT( DISTINCT DOCUMENT_ID ) AS FRAME_COUNT");
-		frameMap.select.add("FRAMES.TOPIC_ID");
-		frameMap.select.add("FRAMES.ACTIVE");
-		frameMap.from.add("FRAMES");
+		frameMap.select.add("FRAME$FRAMES.TOPIC_ID");
+		frameMap.select.add("FRAME$FRAMES.ACTIVE");
+		frameMap.from.add("FRAME$FRAMES");
 		frameMap.where.add("TOPIC_ID=" + topicId);
-		frameMap.groupBy.add("FRAMES.FRAME");
+		frameMap.groupBy.add("FRAME$FRAMES.FRAME");
 		frameMap.orderBy.add("FRAME_COUNT DESC");
 		frameMap.limit = 10;
 		frameMap.offset = offset;

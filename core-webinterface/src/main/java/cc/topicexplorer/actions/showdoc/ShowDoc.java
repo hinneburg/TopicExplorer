@@ -99,9 +99,7 @@ public class ShowDoc {
 			if (Arrays.asList(properties.get("plugins").toString().split(",")).contains("frame")) {
 				JSONObject frame = new JSONObject();
 				JSONArray frames = new JSONArray();
-System.out.println("SELECT * FROM FRAMES WHERE DOCUMENT_ID=" + docId
-		+ " ORDER BY START_POSITION DESC");
-				ResultSet frameRS = database.executeQuery("SELECT * FROM FRAMES WHERE DOCUMENT_ID=" + docId
+				ResultSet frameRS = database.executeQuery("SELECT * FROM FRAME$FRAMES WHERE DOCUMENT_ID=" + docId
 						+ " ORDER BY START_POSITION DESC");
 				ResultSetMetaData frameRSMD = frameRS.getMetaData();
 				String[] frameColumnNames = new String[frameRSMD.getColumnCount()];

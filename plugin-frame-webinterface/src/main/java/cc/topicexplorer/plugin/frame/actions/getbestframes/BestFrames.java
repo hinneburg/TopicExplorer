@@ -23,7 +23,7 @@ public class BestFrames {
 		frameMap.select.add("FRAME");
 		frameMap.select.add("FRAME_COUNT");
 		frameMap.select.add("TOPIC_ID");
-		frameMap.from.add("BEST_FRAMES");
+		frameMap.from.add("FRAME$BEST_FRAMES");
 		frameMap.orderBy.add("TOPIC_ID");
 		frameMap.orderBy.add("FRAME_COUNT DESC");
 

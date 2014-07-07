@@ -29,7 +29,7 @@ public class TopicFill extends TableFillCommand {
 	private void prepareMetaDataAndFillTable() throws SQLException {
 		database.executeUpdateQuery("UPDATE "
 				+ this.tableName
-				+ ", (SELECT COUNT(*) AS FRAME_COUNT, COUNT(DISTINCT FRAME) AS UNIQUE_FRAME_COUNT, TOPIC_ID FROM `FRAMES` WHERE ACTIVE=1 GROUP BY TOPIC_ID) FRAME"
+				+ ", (SELECT COUNT(*) AS FRAME_COUNT, COUNT(DISTINCT FRAME) AS UNIQUE_FRAME_COUNT, TOPIC_ID FROM `FRAME$FRAMES` WHERE ACTIVE=1 GROUP BY TOPIC_ID) FRAME"
 				+ " SET " + this.tableName + ".FRAME$FRAME_COUNT=FRAME.FRAME_COUNT, " + this.tableName
 				+ ".FRAME$UNIQUE_FRAME_COUNT=FRAME.UNIQUE_FRAME_COUNT" + " WHERE FRAME.TOPIC_ID = TOPIC.TOPIC_ID");
 	}

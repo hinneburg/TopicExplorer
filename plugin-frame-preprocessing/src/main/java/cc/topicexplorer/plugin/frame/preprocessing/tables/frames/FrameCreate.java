@@ -30,7 +30,7 @@ public final class FrameCreate extends TableCreateCommand {
 
 	@Override
 	public void setTableName() {
-		this.tableName = "FRAMES";
+		this.tableName = "FRAME$FRAMES";
 	}
 
 	@Override

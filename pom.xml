@@ -86,14 +86,18 @@
 			<resource>
 				<directory>src/main/resources</directory>
 				<excludes>
-					<exclude>**/*.xml</exclude>
+					<exclude>**/preJooqConfig.xml</exclude>
+					<exclude>**/postJooqConfig.xml</exclude>
+					<exclude>**/catalog.xml</exclude>
 					<exclude>scripts/*</exclude>
 				</excludes>
 			</resource>
 			<resource>
 				<directory>src/main/resources</directory>
 				<includes>
-					<include>**/*.xml</include>
+					<include>**/preJooqConfig.xml</include>
+					<include>**/postJooqConfig.xml</include>
+					<include>**/catalog.xml</include>
 				</includes>
 				<targetPath>cc/topicexplorer/${project.artifactId}/catalog</targetPath>
 			</resource>

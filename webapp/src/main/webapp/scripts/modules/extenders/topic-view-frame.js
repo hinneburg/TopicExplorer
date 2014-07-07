@@ -35,7 +35,7 @@ function(ko, $) {
 		instance.framesLoading = ko.observable(false);
 		
 		instance.frameScrollCallback = function(el) {
-			if(!instance.framesLoading() && !globalData.Topic[el].frameFull && $('#topic' + el).children('div').children('.topicElementContent').height() +  $('#topic' + el).children('div').children('.topicElementContent').scrollTop() >=  $('#topic' + el).children('div').children('.topicElementContent')[0].scrollHeight) {
+			if(!instance.framesLoading() && !globalData.Topic[el].frameFull && $('#topic_' + el).children('div').children('.topicElementContent').height() +  $('#topic_' + el).children('div').children('.topicElementContent').scrollTop() >=  $('#topic_' + el).children('div').children('.topicElementContent')[0].scrollHeight) {
 				instance.framesLoading(true);
 				$.getJSON("JsonServlet?Command=getFrames&topicId=" + el + "&offset=" + globalData.Topic[el].frameCount).success(function(receivedParsedJson) {
 					$.extend(globalData.Topic[el].FRAMES, receivedParsedJson[el].FRAMES);

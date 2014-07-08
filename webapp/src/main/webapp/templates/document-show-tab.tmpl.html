@@ -9,9 +9,9 @@
 			<a data-bind="attr:{href: singleData[active()].DOCUMENT.LINK$URL}" target="blank">open original</a>
 			<!-- /ko -->
 		</div>
-		<a class="docTitle" style="margin-left: 10px; font-size: x-large;">
+		<span class="docTitle" style="margin-left: 10px; font-size: x-large;">
 			<nobr data-bind="text: singleData[active()].TITLE_REPRESENTATION[singleData[active()].textSelection().field]"></nobr>
-		</a>
+		</span>
 		<!-- ko if: typeof singleData[active()].DOCUMENT.TIME$TIME_STAMP != 'undefined' -->
 		<span style="font-size:xx-small; color: #7f7f7f" class="date" data-bind="text:moment(singleData[active()].DOCUMENT.TIME$TIME_STAMP * 1000).format('LLL')"></span><br/>
 		<!-- /ko -->

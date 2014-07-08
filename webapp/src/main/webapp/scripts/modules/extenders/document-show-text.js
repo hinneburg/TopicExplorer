@@ -1,7 +1,7 @@
 define(["knockout", "jquery"],
 function(ko, $) {
 	return function (instance) {
-		$('#tab').delegate('.topicWord', 'click', function() {
+		$(document).delegate('.topicWord', 'click', function() {
 			instance.moveToTopic($(this).attr('id').split('_')[1]);
 		});
 		var words = instance.singleData[instance.active()].DOCUMENT.WORD_LIST;

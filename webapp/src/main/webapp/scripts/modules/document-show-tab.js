@@ -20,6 +20,13 @@ function(ko, $) {
 		
 		self.loading = ko.observable(false);
 		
+		self.windowWidth = ko.observable(Math.max(800, $(window).width(), /* For opera: */ document.documentElement.clientWidth)).subscribeTo("windowWidth");
+		
+		self.lineHeight = ko.computed (function() {
+			var width = Math.min(Math.max(800, self.windowWidth()), 3000);
+			return 130 + (((width - 800) / 2200) * 100);
+		});
+		
 		self.setData = function (data) { 
 			self.active = ko.observable(data.documentId);
 			if (!self.singleData[self.active()]) {

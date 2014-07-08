@@ -430,6 +430,7 @@ height: 200px;
 }
 
 a {
+	color: black;
 	text-decoration: none;
 }
 a:hover {

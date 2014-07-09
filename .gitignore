@@ -10,5 +10,3 @@
 
 # But not these files
 !*/src/test/resources/*
-.idea
-*.iml

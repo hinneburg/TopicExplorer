@@ -30,7 +30,7 @@ import org.apache.hadoop.util.ToolRunner;
 
 /**
  * A metadata scanner for the CommonCrawl archive. Based on Chris Stephens' <chris@commoncrawl.org> ExampleMetadataDomainPageCount.java
- * @author Florian Lücke
+ * @author Florian Luecke
  */
 public class MetadataScanner extends Configured implements Tool {
 
@@ -44,7 +44,9 @@ public class MetadataScanner extends Configured implements Tool {
 
         // implement the main "map" function
         public void map(Text key, Text value, OutputCollector<Text, Text> output, Reporter reporter) throws IOException {
-
+            if (identifier.isValidBlog(key.toString(), value.toString())){
+                output.collect(key, value);
+            }
         }
         
         @Override

@@ -21,7 +21,7 @@ public class MetadataScannerMapperTest {
         m.configure(conf);
         
         String filePath = conf.get(BlogIdentifier.fileKey);
-        assertThat(m.identifier.domainFile).isEqualTo(filePath);
+        assertThat(m.identifier.domainFilePath).isEqualTo(filePath);
         
         try {
             m.close();

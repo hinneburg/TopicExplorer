@@ -16,14 +16,14 @@ import com.google.gson.JsonParser;
 public class BlogIdentifier {
     public static final String fileKey = "validdomainfile";
     
-    public String domainFile = null;
+    public String domainFilePath = null;
     private GlobPattern _globPattern = null;
 
     private final String _patternString = "[\\p{InHiragana}\\p{InKatakana}\u3000-\u303F\uFF5F-\uFF9F]+";
     private final Pattern _pattern = Pattern.compile(_patternString);
 
-    public BlogIdentifier(String domainFile) {
-        this.domainFile = domainFile;
+    public BlogIdentifier(String domainFilePath) {
+        this.domainFilePath = domainFilePath;
     }
     
     /**
@@ -44,7 +44,8 @@ public class BlogIdentifier {
     }
 
     /**
-     * Tests if a URL is valid by matching it against urls in domainFile.
+     * Tests if a URL is valid by matching it against urls in the file at
+     * domainFilePath.
      * @param url The url that should be tested.
      * @return true, if url is valid, false otherwise.
      */
@@ -58,7 +59,7 @@ public class BlogIdentifier {
 
     private void initializeGlobPattern() {
         try {
-            List<?> lines = FileUtils.readLines(new File(this.domainFile));
+            List<?> lines = FileUtils.readLines(new File(this.domainFilePath));
             String globPatternString = StringUtils.join(lines.toArray(), ",");
 
             _globPattern = new GlobPattern("{" + globPatternString + "}");

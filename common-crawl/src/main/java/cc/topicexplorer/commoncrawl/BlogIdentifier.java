@@ -66,7 +66,7 @@ public class BlogIdentifier {
             List<?> lines = FileUtils.readLines(new File(this.domainFilePath));
             String globPatternString = StringUtils.join(lines.toArray(), ",");
 
-            _globPattern = new GlobPattern("{" + globPatternString + "}");
+            _globPattern = new GlobPattern("http*://{" + globPatternString + "}");
         } catch (IOException e) {
             e.printStackTrace();
         }

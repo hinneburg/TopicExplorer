@@ -58,7 +58,7 @@ public class BlogIdentifier {
             this.initializeGlobPattern();
         }
 
-        return _globPattern.matches(url);
+        return this._globPattern.matches(url);
     }
 
     private void initializeGlobPattern() {
@@ -66,7 +66,7 @@ public class BlogIdentifier {
             List<?> lines = FileUtils.readLines(new File(this.domainFilePath));
             String globPatternString = StringUtils.join(lines.toArray(), ",");
 
-            _globPattern = new GlobPattern("http*://{" + globPatternString + "}");
+            this._globPattern = new GlobPattern("http*://{" + globPatternString + "}");
         } catch (IOException e) {
             e.printStackTrace();
         }

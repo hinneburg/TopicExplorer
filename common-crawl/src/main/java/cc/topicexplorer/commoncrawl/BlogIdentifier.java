@@ -22,6 +22,10 @@ public class BlogIdentifier {
     private final String _patternString = "[\\p{InHiragana}\\p{InKatakana}\u3000-\u303F\uFF5F-\uFF9F]+";
     private final Pattern _pattern = Pattern.compile(_patternString);
 
+    /**
+     * Constructs a new BlogIdentifier.
+     * @param domainFilePath Path of a file that contains valid domains
+     */
     public BlogIdentifier(String domainFilePath) {
         this.domainFilePath = domainFilePath;
     }

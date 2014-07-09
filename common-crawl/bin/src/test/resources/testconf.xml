@@ -1,4 +1,0 @@
-<properties>
-	<property>
-		<name> validdomainfile</name>
-		<value>/common-crawl/src/test/resources/blogproviders.txt</value></property></properties>

@@ -1,4 +1,4 @@
-package cc.topicexplorer.plugin.frame.preprocessing.tables.topic;
+package cc.topicexplorer.plugin.frame.preprocessing.tables.topicframe;
 
 /** MIT-JOOQ-START 
  import static jooq.generated.Tables.TOPIC;
@@ -12,9 +12,9 @@ import cc.topicexplorer.commands.TableFillCommand;
 
 import com.google.common.collect.Sets;
 
-public class TopicFill extends TableFillCommand {
+public class TopicFrameFill extends TableFillCommand {
 
-	private static final Logger logger = Logger.getLogger(TopicFill.class);
+	private static final Logger logger = Logger.getLogger(TopicFrameFill.class);
 
 	@Override
 	public void fillTable() {
@@ -27,11 +27,10 @@ public class TopicFill extends TableFillCommand {
 	}
 
 	private void prepareMetaDataAndFillTable() throws SQLException {
-		database.executeUpdateQuery("UPDATE "
+		database.executeUpdateQuery("INSERT INTO "
 				+ this.tableName
-				+ ", (SELECT COUNT(*) AS FRAME_COUNT, COUNT(DISTINCT FRAME) AS UNIQUE_FRAME_COUNT, TOPIC_ID FROM `FRAME$FRAMES` WHERE ACTIVE=1 GROUP BY TOPIC_ID) FRAME"
-				+ " SET " + this.tableName + ".FRAME$FRAME_COUNT=FRAME.FRAME_COUNT, " + this.tableName
-				+ ".FRAME$UNIQUE_FRAME_COUNT=FRAME.UNIQUE_FRAME_COUNT" + " WHERE FRAME.TOPIC_ID = TOPIC.TOPIC_ID");
+				+ " SELECT COUNT(*) AS FRAME_COUNT, COUNT(DISTINCT FRAME) AS UNIQUE_FRAME_COUNT," 
+				+ " TOPIC_ID, FRAME_TYPE FROM `FRAME$FRAMES` WHERE ACTIVE=1 GROUP BY TOPIC_ID, FRAME_TYPE");
 	}
 
 	@Override
@@ -40,7 +39,7 @@ public class TopicFill extends TableFillCommand {
 		 * MIT-JOOQ-START this.tableName = TOPIC.getName(); MIT-JOOQ-ENDE
 		 */
 		/** OHNE_JOOQ-START */
-		this.tableName = "TOPIC";
+		this.tableName = "FRAME$TOPIC_FRAME";
 		/** OHNE_JOOQ-ENDE */
 	}
 
@@ -51,7 +50,7 @@ public class TopicFill extends TableFillCommand {
 
 	@Override
 	public Set<String> getBeforeDependencies() {
-		return Sets.newHashSet("TopicFill", "TopicMetaData", "FrameCreate", "Frame_TopicCreate");
+		return Sets.newHashSet("TopicFill", "TopicMetaData", "FrameFill", "TopicFrameCreate");
 	}
 
 	@Override

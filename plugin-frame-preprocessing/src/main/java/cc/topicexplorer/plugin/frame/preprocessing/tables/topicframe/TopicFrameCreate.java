@@ -1,4 +1,4 @@
-package cc.topicexplorer.plugin.frame.preprocessing.tables.frames;
+package cc.topicexplorer.plugin.frame.preprocessing.tables.topicframe;
 
 import java.sql.SQLException;
 import java.util.Set;
@@ -7,21 +7,18 @@ import org.apache.log4j.Logger;
 
 import cc.topicexplorer.commands.TableCreateCommand;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
 
-public final class FrameCreate extends TableCreateCommand {
+public class TopicFrameCreate extends TableCreateCommand {
 
-	private static final Logger logger = Logger.getLogger(FrameCreate.class);
+	private static final Logger logger = Logger.getLogger(TopicFrameCreate.class);
 
 	@Override
 	public void createTable() {
-		Preconditions.checkState(this.tableName != null, "Table name has not been set, yet");
 		try {
-			this.database
-					.executeUpdateQuery("CREATE TABLE "
+			this.database.executeUpdateQuery("CREATE TABLE "
 							+ this.tableName
-							+ " (DOCUMENT_ID INT, TOPIC_ID INT, FRAME VARCHAR(255), START_POSITION INT, END_POSITION INT, ACTIVE BOOLEAN NOT NULL DEFAULT 1, FRAME_TYPE VARCHAR(255)) DEFAULT CHARSET=utf8 COLLATE=utf8_bin");
+							+ " (FRAME_COUNT INT, UNIQUE_FRAME_COUNT INT, TOPIC_ID INT, FRAME_TYPE VARCHAR(255))");
 		} catch (SQLException e) {
 			logger.error("Table " + this.tableName + " could not be created.");
 			throw new RuntimeException(e);
@@ -30,12 +27,12 @@ public final class FrameCreate extends TableCreateCommand {
 
 	@Override
 	public void setTableName() {
-		this.tableName = "FRAME$FRAMES";
+		this.tableName = "FRAME$TOPIC_FRAME";
 	}
 
 	@Override
 	public Set<String> getAfterDependencies() {
-		return Sets.newHashSet();
+		return Sets.newHashSet("TopicFrameFill");
 	}
 
 	@Override

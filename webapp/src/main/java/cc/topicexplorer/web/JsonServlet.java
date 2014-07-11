@@ -71,10 +71,13 @@ public class JsonServlet extends HttpServlet {
 				startCommands.add("BestFrameCreate");
 			} else if (command.contains("getTopics")) {
 				startCommands.add("GetTopicsCoreCreate");
+			} else if (command.contains("getFrameInfo")) {
+				startCommands.add("FrameInfoCreate");
 			} else if (command.contains("getFrames")) {
 				context.bind("TOPIC_ID", request.getParameter("topicId"));
 				context.bind("OFFSET", offset);
-
+				context.bind("FRAME_TYPE", request.getParameter("frameType"));
+				
 				startCommands.add("FrameCreate");
 			} else if (command.contains("getDates")) {
 				startCommands.add("GetDatesTimeCreate");

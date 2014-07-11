@@ -18,9 +18,10 @@ public class Create extends TableSelectCommand {
 	public void tableExecute(Context context) {
 		PrintWriter pw = context.get("SERVLET_WRITER", PrintWriter.class);
 		String topicId = context.getString("TOPIC_ID");
+		String frameType = context.getString("FRAME_TYPE");
 		int offset = context.getInteger("OFFSET");
 
-		context.bind("FRAME_ACTION", new Frames(this.database, pw, logger, topicId, offset));
+		context.bind("FRAME_ACTION", new Frames(this.database, pw, logger, topicId, frameType, offset));
 	}
 
 	@Override

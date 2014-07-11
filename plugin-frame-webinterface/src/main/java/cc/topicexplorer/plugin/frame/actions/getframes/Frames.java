@@ -18,7 +18,7 @@ public class Frames {
 	private PrintWriter outWriter;
 	private Database database;
 
-	public Frames(Database database, PrintWriter pw, Logger logger, String topicId, int offset) {
+	public Frames(Database database, PrintWriter pw, Logger logger, String topicId, String frameType, int offset) {
 		frameMap = new SelectMap();
 		frameMap.select.add("FRAME");
 		frameMap.select.add("COUNT( DISTINCT DOCUMENT_ID ) AS FRAME_COUNT");
@@ -26,6 +26,7 @@ public class Frames {
 		frameMap.select.add("FRAME$FRAMES.ACTIVE");
 		frameMap.from.add("FRAME$FRAMES");
 		frameMap.where.add("TOPIC_ID=" + topicId);
+		frameMap.where.add("FRAME_TYPE='" + frameType + "'");
 		frameMap.groupBy.add("FRAME$FRAMES.FRAME");
 		frameMap.orderBy.add("FRAME_COUNT DESC");
 		frameMap.limit = 10;

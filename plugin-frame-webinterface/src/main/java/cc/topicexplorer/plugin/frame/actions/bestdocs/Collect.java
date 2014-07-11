@@ -14,11 +14,13 @@ public class Collect extends TableSelectCommand {
 	public void tableExecute(Context context) {
 		if(context.containsKey("frame")) {
 			String frame = context.getString("frame");
-	
+			String frameType = context.getString("frameType");
+			
 			BestDocumentsForGivenTopic bestDocAction = context.get("BEST_DOC_ACTION", BestDocumentsForGivenTopic.class);
 			bestDocAction.addFrom("FRAME$FRAMES");
 			bestDocAction.addWhereClause("FRAME$FRAMES.DOCUMENT_ID = DOCUMENT.DOCUMENT_ID");
 			bestDocAction.addWhereClause("FRAME$FRAMES.FRAME='" + frame + "'");
+			bestDocAction.addWhereClause("FRAME$FRAMES.FRAME_TYPE='" + frameType + "'");
 			bestDocAction.addWhereClause("FRAME$FRAMES.TOPIC_ID = DOCUMENT_TOPIC.TOPIC_ID");
 	
 			context.rebind("BEST_DOC_ACTION", bestDocAction);

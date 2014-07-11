@@ -74,7 +74,7 @@ function(ko, $) {
 		if(textTopicFrame) {
 			instance.singleData[instance.active()].TITLE_REPRESENTATION.TEXT_TOPIC_FRAME_FRAMES = instance.singleData[instance.active()].DOCUMENT.TEXT$TITLE;
 			instance.singleData[instance.active()].TEXT_REPRESENTATION.TEXT_TOPIC_FRAME_FRAMES = text4;
-			instance.singleData[instance.active()].textSelectArray.push(new instance.TextRepresentation('Text with Frame '  + instance.singleData[instance.active()].data.frame + ' and Topic ' + instance.singleData[instance.active()].data.topicId, 'TEXT_TOPIC_FRAME_FRAMES'));
+			instance.singleData[instance.active()].textSelectArray.push(new instance.TextRepresentation('Text with Frame "'  + instance.singleData[instance.active()].data.frame + '" and Topic ' + instance.singleData[instance.active()].data.topicId, 'TEXT_TOPIC_FRAME_FRAMES'));
 		}
 	};
 });

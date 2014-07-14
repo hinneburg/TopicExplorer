@@ -2,4 +2,5 @@
 <catalog>
 	<command name="BestDocsLinkCollect" className="cc.topicexplorer.plugin.link.actions.bestdocs.Collect"/>
 	<command name="SearchLinkCollect" className="cc.topicexplorer.plugin.link.actions.search.Collect"/>
+	<command name="ShowDocLinkCollect" className="cc.topicexplorer.plugin.link.actions.showdoc.Collect"/>
 </catalog>

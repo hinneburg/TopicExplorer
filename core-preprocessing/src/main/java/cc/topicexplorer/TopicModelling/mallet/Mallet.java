@@ -47,7 +47,7 @@ public class Mallet implements Command {
 
 	private static void importFile() throws FileNotFoundException, IOException {
 		String[] malletArgs = { "--keep-sequence", "TRUE", "--input", "temp/malletinput.txt", "--output",
-				"temp/out.sequence.input", "--print-output", "FALSE", "--token-regex", "[\\p{L}\\p{N}_]+|[\\p{P}]+" };
+				"temp/out.sequence.input", "--print-output", "FALSE", "--token-regex", "[^\\s]+" }; //[\\p{L}\\p{N}_]+|[\\p{P}]+
 		Csv2Vectors.main(malletArgs);
 		logger.info("import done");
 	}

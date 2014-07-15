@@ -40,6 +40,31 @@ public class BestDocumentsForGivenTopic {
 		setServletWriter(out);
 		setNumberOfTopics(numberOfTopics);
 	}
+	
+	public BestDocumentsForGivenTopic(String topicId, Integer limit, Integer offset, Database db, PrintWriter out,
+			int numberOfTopics, String term) {
+		documentMap = new SelectMap();
+		documentMap.select.add("DOCUMENT.DOCUMENT_ID");
+		documentMap.select.add("DOCUMENT_TERM_TOPIC.TOPIC_ID");
+		documentMap.select.add("COUNT(*) AS DOCUMENT_COUNT");
+		documentMap.from.add("DOCUMENT");
+		documentMap.from.add("DOCUMENT_TERM_TOPIC");
+		documentMap.from.add("DOCUMENT_TOPIC");
+		documentMap.where.add("DOCUMENT.DOCUMENT_ID=DOCUMENT_TOPIC.DOCUMENT_ID");
+		documentMap.where.add("DOCUMENT.DOCUMENT_ID=DOCUMENT_TERM_TOPIC.DOCUMENT_ID");
+		documentMap.where.add("DOCUMENT_TERM_TOPIC.TOPIC_ID IN (" + topicId + ")");
+		documentMap.where.add("DOCUMENT_TERM_TOPIC.TERM IN ('" + term + "')");
+		documentMap.groupBy.add("DOCUMENT_ID");
+		documentMap.groupBy.add("DOCUMENT_TERM_TOPIC.TOPIC_ID");
+		documentMap.orderBy.add("DOCUMENT_COUNT DESC");
+		documentMap.orderBy.add("PR_DOCUMENT_GIVEN_TOPIC DESC");
+		documentMap.limit = limit;
+		documentMap.offset = offset;
+
+		setDatabase(db);
+		setServletWriter(out);
+		setNumberOfTopics(numberOfTopics);
+	}
 
 	public void setDatabase(Database database) {
 		this.database = database;
@@ -59,6 +84,7 @@ public class BestDocumentsForGivenTopic {
 
 	public void addDocumentColumn(String documentColumn, String documentColumnName) {
 		documentMap.select.add(documentColumn + " as " + documentColumnName);
+		documentMap.groupBy.add(documentColumnName);
 	}
 	
 	public void addWhereClause(String where) {
@@ -84,6 +110,7 @@ public class BestDocumentsForGivenTopic {
 		String docId;
 
 		try {
+			System.out.println(documentMap.getSQLString());
 			ResultSet mainQueryRS = database.executeQuery(documentMap.getSQLString());
 			while (mainQueryRS.next()) {
 				docId = mainQueryRS.getString("DOCUMENT_ID");

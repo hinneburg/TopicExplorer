@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <catalog>	
 	<command name="Text_DocumentCreate" className="cc.topicexplorer.plugin.text.preprocessing.tables.document.DocumentCreate"/>
-	<command name="Text_TermCreate" className="cc.topicexplorer.plugin.text.preprocessing.tables.term.TermCreate"/>
 </catalog>

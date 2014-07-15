@@ -2,5 +2,5 @@
 <catalog>	
   
 	<command name="WordType_DocumentTermTopicCreate" className="cc.topicexplorer.plugin.wordtype.preprocessing.tables.documenttermtopic.DocumentTermTopicCreate"/>
-	
+	<command name="WordType_TermCreate" className="cc.topicexplorer.plugin.wordtype.preprocessing.tables.term.TermCreate"/>
 </catalog>

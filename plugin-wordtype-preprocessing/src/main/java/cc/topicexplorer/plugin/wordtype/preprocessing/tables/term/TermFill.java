@@ -1,4 +1,4 @@
-package cc.topicexplorer.plugin.text.preprocessing.tables.term;
+package cc.topicexplorer.plugin.wordtype.preprocessing.tables.term;
 
 import java.sql.SQLException;
 import java.util.Set;
@@ -16,7 +16,9 @@ public class TermFill extends TableFillCommand {
 	@Override
 	public void fillTable() {
 		try {
-			String query = "UPDATE " + this.tableName + " SET TEXT$WORD_TYPE=TERM_NAME";
+			String query = "UPDATE " + this.tableName + ", DOCUMENT_TERM_TOPIC SET "
+					+ this.tableName + ".WORDTYPE$WORDTYPE=DOCUMENT_TERM_TOPIC.WORDTYPE$WORDTYPE "
+					+ "WHERE " + this.tableName + ".TERM_NAME=DOCUMENT_TERM_TOPIC.TERM";
 			database.executeUpdateQuery(query);
 		} catch (SQLException e) {
 			logger.error("Column TEXT$WORD_TYPE in table " + this.tableName + " could not be set to TERM_NAME.");
@@ -36,7 +38,7 @@ public class TermFill extends TableFillCommand {
 
 	@Override
 	public Set<String> getBeforeDependencies() {
-		return Sets.newHashSet("TermFill");
+		return Sets.newHashSet("TermFill", "WordType_TermCreate", "DocumentTermTopicFill");
 	}
 
 	@Override

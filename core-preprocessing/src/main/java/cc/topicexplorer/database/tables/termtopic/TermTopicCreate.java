@@ -19,6 +19,7 @@ public class TermTopicCreate extends TableCreateCommand {
 			database.executeUpdateQuery("create table `" + this.tableName + "` ("
 					+ "TERM_ID INTEGER(11) NOT NULL, TOPIC_ID INTEGER(11) NOT NULL, "
 					+ "NUMBER_OF_TOKEN_TOPIC int(11) NOT NULL, "
+					+ "NUMBER_OF_DOCUMENT_TOPIC int(11) NOT NULL, "
 					+ "PR_TOPIC_GIVEN_TERM DOUBLE NOT NULL, PR_TERM_GIVEN_TOPIC DOUBLE) "
 					+ "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin; ");
 		} catch (SQLException e) {

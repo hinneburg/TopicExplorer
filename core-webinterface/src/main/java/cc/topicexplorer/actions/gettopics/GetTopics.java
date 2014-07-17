@@ -75,13 +75,13 @@ public class GetTopics {
 				}
 	//			@formatter:off
 				ResultSet topicTermRS = database
-						.executeQuery("SELECT TERM_ID, PR_TERM_GIVEN_TOPIC FROM TERM_TOPIC WHERE TOPIC_ID="
+						.executeQuery("SELECT TERM_ID, NUMBER_OF_DOCUMENT_TOPIC FROM TERM_TOPIC WHERE TOPIC_ID="
 								+ topicRS.getString("TOPIC_ID")
-								+ " ORDER BY PR_TERM_GIVEN_TOPIC DESC LIMIT 20");
+								+ " ORDER BY NUMBER_OF_DOCUMENT_TOPIC DESC LIMIT 20");
 	//			@formatter:on
 				while (topicTermRS.next()) {
 					topTerm.put("TermId", topicTermRS.getString("TERM_ID"));
-					topTerm.put("relevance", topicTermRS.getString("PR_TERM_GIVEN_TOPIC"));
+					topTerm.put("relevance", topicTermRS.getString("NUMBER_OF_DOCUMENT_TOPIC"));
 					topTerms.add(topTerm);
 					termList.add(topicTermRS.getInt("TERM_ID"));
 				}

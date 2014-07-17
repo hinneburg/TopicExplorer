@@ -13,13 +13,17 @@ public class Create extends TableSelectCommand {
 	@Override
 	public void tableExecute(Context context) {
 		PrintWriter pw = context.get("SERVLET_WRITER", PrintWriter.class);
-		AllTerms allTermsAction = new AllTerms(database, pw);
-		context.bind("ALL_TERMS_ACTION", allTermsAction);
+		String topicId = context.getString("TOPIC_ID");
+		int offset = context.getInteger("OFFSET");
+
+		GetTerms getTermsAction = new GetTerms(database, pw, topicId, offset);
+		
+		context.bind("GET_TERMS_ACTION", getTermsAction);
 	}
 
 	@Override
 	public Set<String> getAfterDependencies() {
-		return Sets.newHashSet("AllTermsCoreGenerateSQL");
+		return Sets.newHashSet("GetTermsCoreGenerateSQL");
 	}
 
 	@Override

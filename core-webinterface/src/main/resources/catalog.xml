@@ -6,8 +6,8 @@
 	<command name="ShowDocCoreGenerateSQL" className="cc.topicexplorer.actions.showdoc.GenerateSQL"/>	
 	<command name="BestDocsCoreCreate" className="cc.topicexplorer.actions.bestdocs.Create"/>
 	<command name="BestDocsCoreGenerateSQL" className="cc.topicexplorer.actions.bestdocs.GenerateSQL"/>	
-	<command name="AllTermsCoreCreate" className="cc.topicexplorer.actions.getterms.Create"/>
-	<command name="AllTermsCoreGenerateSQL" className="cc.topicexplorer.actions.getterms.GenerateSQL"/>
+	<command name="GetTermsCoreCreate" className="cc.topicexplorer.actions.getterms.Create"/>
+	<command name="GetTermsCoreGenerateSQL" className="cc.topicexplorer.actions.getterms.GenerateSQL"/>
 	<command name="AutocompleteCoreCreate" className="cc.topicexplorer.actions.autocomplete.Create"/>
 	<command name="AutocompleteCoreGenerateSQL" className="cc.topicexplorer.actions.autocomplete.GenerateSQL"/>
 	<command name="SearchCoreCreate" className="cc.topicexplorer.actions.search.Create"/>

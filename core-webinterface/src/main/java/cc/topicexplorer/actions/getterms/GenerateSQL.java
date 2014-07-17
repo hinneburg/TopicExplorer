@@ -11,7 +11,7 @@ public class GenerateSQL extends TableSelectCommand {
 
 	@Override
 	public void tableExecute(Context context) {
-		AllTerms allTermsAction = context.get("ALL_TERMS_ACTION", AllTerms.class);
+		GetTerms allTermsAction = context.get("GET_TERMS_ACTION", GetTerms.class);
 		allTermsAction.readAllTermsAndGenerateJson();
 	}
 
@@ -22,7 +22,7 @@ public class GenerateSQL extends TableSelectCommand {
 
 	@Override
 	public Set<String> getBeforeDependencies() {
-		return Sets.newHashSet("AllTermsCoreCreate");
+		return Sets.newHashSet("GetTermsCoreCreate");
 	}
 
 	@Override

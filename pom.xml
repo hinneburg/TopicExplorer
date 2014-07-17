@@ -14,8 +14,11 @@
 		<module>core-webinterface</module>
 		<module>distribution</module>
 		<module>plugin-text-preprocessing</module>
+		<module>plugin-text-webinterface</module>
 		<module>plugin-colortopic-preprocessing</module>
+		<module>plugin-colortopic-webinterface</module>
 		<module>plugin-hierarchicaltopic-preprocessing</module>
+		<module>plugin-hierarchicaltopic-webinterface</module>
 		<module>plugin-prune-preprocessing</module>
 		<module>plugin-category-preprocessing</module>
 		<module>plugin-duplicates-preprocessing</module>
@@ -23,14 +26,12 @@
 		<module>plugin-frame-webinterface</module>
 		<module>plugin-fulltext-preprocessing</module>
 		<module>plugin-link-preprocessing</module>
+		<module>plugin-link-webinterface</module>
 		<module>plugin-time-preprocessing</module>
+		<module>plugin-time-webinterface</module>
 		<module>plugin-wiki-preprocessing</module>
 		<module>plugin-wordtype-preprocessing</module>
-		<module>plugin-text-webinterface</module>
-		<module>plugin-link-webinterface</module>
-		<module>plugin-time-webinterface</module>
-		<module>plugin-colortopic-webinterface</module>
-		<module>plugin-hierarchicaltopic-webinterface</module>
+		<module>plugin-wordtype-webinterface</module>
 		<module>run-preprocessing</module>
 		<module>webapp</module>
 	</modules>

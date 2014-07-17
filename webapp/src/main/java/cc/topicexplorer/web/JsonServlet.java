@@ -40,7 +40,6 @@ public class JsonServlet extends HttpServlet {
 		int offset = (request.getParameter("offset") != null) ? Integer.parseInt(request.getParameter("offset")) : 0;
 
 		Set<String> startCommands = new HashSet<String>();
-
 		if (command != null) {
 			if (command.contains("getDoc")) {
 				context.bind("SHOW_DOC_ID", request.getParameter("DocId"));
@@ -56,8 +55,16 @@ public class JsonServlet extends HttpServlet {
 					context.bind(paramName, request.getParameter(paramName));
 				}
 				startCommands.add("BestDocsCoreCreate");
-			} else if (command.contains("allTerms")) {
-				startCommands.add("AllTermsCoreCreate");
+			} else if (command.contains("getTerms")) {
+				context.bind("TOPIC_ID", request.getParameter("TopicId"));
+				context.bind("OFFSET", offset);
+				@SuppressWarnings("unchecked")
+				Enumeration<String> parameterNames = request.getParameterNames();
+				while (parameterNames.hasMoreElements()) {
+					String paramName = parameterNames.nextElement();
+					context.bind(paramName, request.getParameter(paramName));
+				}
+				startCommands.add("GetTermsCoreCreate");
 			} else if (command.contains("autocomplete")) {
 				context.bind("SEARCH_WORD", request.getParameter("SearchWord"));
 
@@ -69,6 +76,8 @@ public class JsonServlet extends HttpServlet {
 				startCommands.add("SearchCoreCreate");
 			} else if (command.contains("getBestFrames")) {
 				startCommands.add("BestFrameCreate");
+			} else if (command.contains("getBestTerms")) {
+				startCommands.add("BestTermsCreate");
 			} else if (command.contains("getTopics")) {
 				startCommands.add("GetTopicsCoreCreate");
 			} else if (command.contains("getFrameInfo")) {

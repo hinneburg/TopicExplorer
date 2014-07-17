@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog>
+	<command name="BestTermsCreate" className="cc.topicexplorer.plugin.wordtype.actions.getbestterms.Create"/>
+	<command name="BestTermsGenerateSQL" className="cc.topicexplorer.plugin.wordtype.actions.getbestterms.GenerateSQL"/>
+	<command name="GetTermsWordtypeCollect" className="cc.topicexplorer.plugin.wordtype.actions.getterms.Collect"/>
+</catalog>

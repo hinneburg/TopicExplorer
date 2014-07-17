@@ -189,7 +189,6 @@ html, body {
 }
 .leftBody .topicList .topicElementMenu {
 	float: right;
-	height: 25px;
 }
 .leftBody .topicList button {
 	height: 20px;
@@ -225,9 +224,8 @@ html, body {
     white-space: nowrap;
 }
 .leftBody .topicList .topicElementContent {
-	margin-left: 5%;
     overflow: auto;
-    width: 90%;
+    width: 100%;
     text-align: center;
     height: 87%;
 }
@@ -425,8 +423,8 @@ height: 200px;
 	cursor: pointer;
 }
 
-.frameLink:hover {
-	text-decoration: underline;
+#topicMenuActivator:hover {
+	text-decoration: none;
 }
 
 a {

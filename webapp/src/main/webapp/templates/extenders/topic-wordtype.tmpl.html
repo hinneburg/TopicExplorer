@@ -1,0 +1,11 @@
+<div class="topicElementMenu">
+	<!-- ko if: typeof $parent.loadTimeViewForTopic == 'function' -->
+		<button class="timeView" name="timeView" title="show time chart" type="button" data-bind="click: function() { $parent.loadTimeViewForTopic(selectedTopic)}"></button>
+	<!-- /ko -->
+</div>
+<div class="topicTitle"><a href="#" data-bind="text: $parent.Topic[selectedTopic].TITLE_REPRESENTATION[$parent.textSelection().field],click: function() { $parent.loadDocumentsForTopic(selectedTopic)}"></a></div>
+<div class="topicElementContent" data-bind="event: {scroll: function() { $parent.wordtypeScrollCallback(selectedTopic)}}, style: {height: ($parent.topicListHeight() - 33) + 'px'}">				
+	<ul class="wordList" data-bind = "foreach: {data: globalData.Topic[selectedTopic].WORDTYPES[$parent.activeWordType()].wordtypeSorting, as: 'wordtype'}">
+		<li><a href="#" data-bind="text: globalData.Topic[selectedTopic].WORDTYPES[$parents[1].activeWordType()][wordtype].TERM_NAME + ' (' + globalData.Topic[selectedTopic].WORDTYPES[$parents[1].activeWordType()][wordtype].NUMBER_OF_DOCUMENT_TOPIC + ')', click: function(data, event) { $parents[1].loadDocumentsForKeywords(globalData.Topic[selectedTopic].WORDTYPES[$parents[1].activeWordType()][wordtype].TERM_NAME, event)}"></a></li>
+	</ul>
+</div>

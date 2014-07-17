@@ -24,9 +24,23 @@ require([ "knockout","jquery", "text!/JsonServlet?Command=getTopics", "knockout-
           "scripts/modules/extenders/document-show-time",
           "scripts/modules/extenders/document-browse-time",
           "scripts/modules/extenders/topic-view-time",
-          "scripts/modules/extenders/topic-view-frame"], function(ko, $, topics) {
+          "scripts/modules/extenders/topic-view-frame",
+          "scripts/modules/extenders/topic-view-wordtype"], function(ko, $, topics) {
 	var self = this;
 	self.globalData = JSON.parse(topics);
+	
+	for(var i in self.globalData.Topic) {
+		var termSorting = [];
+		globalData.Topic[i].termsFull = ko.observable(false);
+		if( self.globalData.Topic[i].Top_Terms.length < 20) {
+			globalData.Topic[i].termsFull(true);
+		} 
+		self.globalData.Topic[i].termCount = self.globalData.Topic[i].Top_Terms.length;
+		for(var j = 0; j <  self.globalData.Topic[i].Top_Terms.length; j++) {
+			termSorting.push(self.globalData.Topic[i].Top_Terms[j].TermId);
+		}
+		globalData.Topic[i].termSorting = ko.observableArray(termSorting);
+	}
 	
 	ko.bindingHandlers.module.baseDir = "scripts/modules";
 	

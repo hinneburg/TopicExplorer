@@ -12,10 +12,14 @@ function(ko, $) {
 	    $(this).next().toggle('blind');	    	    
 	});
 	
-	var extend = new Array("scripts/modules/extenders/topic-view-time", "scripts/modules/extenders/topic-view-frame");
-	
+	var extend = new Array("scripts/modules/extenders/topic-view-time", "scripts/modules/extenders/topic-view-wordtype", "scripts/modules/extenders/topic-view-frame");
 	
 	var self = {};
+	
+	self.loadDocumentsForKeywords = function (keyword, context) { 
+		var topicId = $(context.target).parents('.topic').attr('id').split('_')[1];
+		ko.postbox.publish('openNewTab', {moduleName:"document-browse-tab", tabHeading:"Topic " + topicId + " (" + keyword + ")", data: {topicId: topicId, term: keyword, getParam: "bestDocs&TopicId=" + topicId + "&term=" + keyword}});	
+	};
 	
 	self.TextRepresentation = function(label, field) {
 		this.label = label;
@@ -58,6 +62,28 @@ function(ko, $) {
 		return(self.windowHeight() - 154) * 0.3;
 	});	
 	
+	self.termsLoading = ko.observable(false);
+	
+	self.termScrollCallback = function(el) {
+		if(!self.termsLoading() && !globalData.Topic[el].termFull && $('#topic_' + el).children('div').children('.topicElementContent').height() +  $('#topic_' + el).children('div').children('.topicElementContent').scrollTop() >=  $('#topic_' + el).children('div').children('.topicElementContent')[0].scrollHeight - 10) {
+			self.termsLoading(true);
+			$.getJSON("JsonServlet?Command=getTerms&TopicId=" + el + "&offset=" + globalData.Topic[el].termCount).success(function(receivedParsedJson) {
+				$.extend(globalData.Term, receivedParsedJson.Term);
+				var termSorting = [];
+				if( receivedParsedJson.Topic[el].Top_Terms.length < 20) {
+					globalData.Topic[el].termsFull(true);
+				} 
+				for(var j = 0; j <  receivedParsedJson.Topic[el].Top_Terms.length; j++) {
+					termSorting.push(receivedParsedJson.Topic[el].Top_Terms[j].TermId);
+					globalData.Topic[el].Top_Terms.push(receivedParsedJson.Topic[el].Top_Terms[j]);
+				}
+				globalData.Topic[el].termSorting(globalData.Topic[el].termSorting().concat(termSorting));
+				globalData.Topic[el].termCount += termSorting.length;	
+				self.termsLoading(false);				
+			});
+		}
+	};	
+	
 	self.getScrollPositionByValue = function (val) {		
 		var scroll = val;
 		var maxScrollPos = $('.topicPrevElCont').width() - $('.topicPrevSlider').width() - 8;
@@ -80,18 +106,20 @@ function(ko, $) {
 		$(".topicList").animate({
 			scrollLeft : ($("#topic_" + topic_id).position().left - offset)
 		}, {
+			queue: false,
 			duration : 2000,
 			easing : "swing"
 		});
 		$(".topicPrevSlider").animate({
 			left : self.getScrollPositionByValue(($("#topic_" + topic_id).position().left - offset))
 		}, {
+			queue: false,
 			duration : 2000,
 			easing : "swing"
 		});	
-		setTimeout(function() { 
-			$(".topicList > img, #topicMenu").css('left', $(".topicList").scrollLeft());	
-		}, 2000);
+		$("#topicMenuActivator, #topicMenu").css(
+			'left', Math.min(Math.max(0, $("#topic_" + topic_id).position().left - offset), $('.topicList > ul').width() -  $('.topicList').width())
+		);
 	});
 	
 	for (var i=0;i<extend.length;i++) {

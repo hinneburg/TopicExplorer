@@ -31,7 +31,7 @@ function(ko, $) {
 				var maxScroll = (maxListWidth - topicDivWidth);	
 				var scroll = ((ui.position.left) / maxScrollPos) * maxScroll ;
 				$('.topicList').scrollLeft(scroll);	
-				$('#topicMenu, .topicList > img').css('left', scroll);
+				$('#topicMenuActivator, #topicMenu').css('left', scroll);
 			}
 		});
 	};

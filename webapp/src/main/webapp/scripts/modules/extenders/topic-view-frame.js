@@ -41,10 +41,8 @@ function(ko, $) {
 			}
 			$.getJSON("JsonServlet?Command=getFrameInfo").success(function(receivedParsedJson2) {
 				for (topicId in receivedParsedJson2) {
-					console.log(topicId);
 					for(frameType in receivedParsedJson2[topicId].FRAMES) {
 						$.extend(globalData.Topic[topicId].FRAMES[frameType], receivedParsedJson2[topicId].FRAMES[frameType]);
-						console.log(frameType + " " + topicId);
 					}
 				}
 			});
@@ -61,7 +59,7 @@ function(ko, $) {
 		instance.framesLoading = ko.observable(false);
 		
 		instance.frameScrollCallback = function(el) {
-			if(!instance.framesLoading() && !globalData.Topic[el].FRAMES[instance.activeFrameType()].frameFull && $('#topic_' + el).children('div').children('.topicElementContent').height() +  $('#topic_' + el).children('div').children('.topicElementContent').scrollTop() >=  $('#topic_' + el).children('div').children('.topicElementContent')[0].scrollHeight) {
+			if(!instance.framesLoading() && !globalData.Topic[el].FRAMES[instance.activeFrameType()].frameFull && $('#topic_' + el).children('div').children('.topicElementContent').height() +  $('#topic_' + el).children('div').children('.topicElementContent').scrollTop() >=  $('#topic_' + el).children('div').children('.topicElementContent')[0].scrollHeight - 10) {
 				instance.framesLoading(true);
 				$.getJSON("JsonServlet?Command=getFrames&topicId=" + el + "&offset=" + globalData.Topic[el].FRAMES[instance.activeFrameType()].frameCount + "&frameType=" + instance.activeFrameType()).success(function(receivedParsedJson) {
 					$.extend(globalData.Topic[el].FRAMES[instance.activeFrameType()], receivedParsedJson[el].FRAMES);

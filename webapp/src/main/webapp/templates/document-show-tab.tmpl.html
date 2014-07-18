@@ -5,9 +5,9 @@
 	<!--  ko ifnot: loading -->
 		<div id="singleToolbar" style="border-bottom: 1px solid  #DCDCDC; margin: 0 0 10px 0; padding: 10px 0 10px 30px; font-size:80%">
 			<select data-bind="options: singleData[active()].textSelectArray, value: singleData[active()].textSelection,optionsText: 'label'"></select>
-			<!-- ko if: typeof singleData[active()].DOCUMENT.LINK$URL != 'undefined' -->
-			<a data-bind="attr:{href: singleData[active()].DOCUMENT.LINK$URL}" target="blank">open original</a>
-			<!-- /ko -->
+			<div data-bind="if: typeof singleData[active()].DOCUMENT.LINK$URL != 'undefined'" style="float:right; margin-right:30px;">	
+				<a data-bind="attr:{href: singleData[active()].DOCUMENT.LINK$URL}" style="" target="blank"><img src="images/link.png" alt="link"/>open original</a>
+			</div>
 		</div>
 		<span class="docTitle" style="margin-left: 10px; font-size: x-large;">
 			<nobr data-bind="text: singleData[active()].TITLE_REPRESENTATION[singleData[active()].textSelection().field]"></nobr>

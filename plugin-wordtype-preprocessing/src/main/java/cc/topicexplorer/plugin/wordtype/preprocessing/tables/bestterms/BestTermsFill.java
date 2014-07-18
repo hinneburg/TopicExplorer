@@ -1,6 +1,9 @@
 package cc.topicexplorer.plugin.wordtype.preprocessing.tables.bestterms;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -16,18 +19,24 @@ public class BestTermsFill extends TableFillCommand {
 	@Override
 	public void fillTable() {
 		int numTopics = Integer.parseInt((String) properties.get("malletNumTopics"));
-		String wordTypes[] = ((String) properties.get("Wordtype_wordtypes")).split(",");
+		int bestTermCount = 10;
 		try {	
+			ResultSet wordtypeRS = database.executeQuery("SELECT DISTINCT WORDTYPE$WORDTYPE FROM TERM");
+			List<String> wordtypes = new ArrayList<String>();
+			while(wordtypeRS.next()) {
+				wordtypes.add(wordtypeRS.getString("WORDTYPE$WORDTYPE"));
+			}
+			
 			for (int i = 0; i < numTopics; i++) {
-				for(int j = 0; j < wordTypes.length; j++) {
+				for(String wordtype : wordtypes) {
 					database.executeUpdateQueryForUpdate("INSERT INTO " + this.tableName 
 							+ "(TERM_ID, TERM_NAME, TOPIC_ID, NUMBER_OF_DOCUMENT_TOPIC, "
 							+ "WORDTYPE) SELECT TERM.TERM_ID, TERM.TERM_NAME, " 
 							+ i + ", TERM_TOPIC.NUMBER_OF_DOCUMENT_TOPIC, " 
 							+ "TERM.WORDTYPE$WORDTYPE FROM TERM, TERM_TOPIC "
 							+ "WHERE TERM.TERM_ID=TERM_TOPIC.TERM_ID AND TOPIC_ID=" + i 
-							+ " AND TERM.WORDTYPE$WORDTYPE='" + wordTypes[j] +"' "
-							+ "ORDER BY NUMBER_OF_DOCUMENT_TOPIC DESC LIMIT 20");
+							+ " AND TERM.WORDTYPE$WORDTYPE='" + wordtype +"' "
+							+ "ORDER BY NUMBER_OF_DOCUMENT_TOPIC DESC LIMIT " + bestTermCount);
 				}
 			}
 		}catch (SQLException e) {

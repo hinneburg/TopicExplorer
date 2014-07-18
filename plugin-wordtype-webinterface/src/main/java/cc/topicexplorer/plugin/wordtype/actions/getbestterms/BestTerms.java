@@ -24,7 +24,6 @@ public class BestTerms {
 			wordtypeInString += ",'" + wordtypes[i] + "'"; 
 		}
 		wordtypeInString += ")";
-		System.out.println(wordtypeInString);
 		bestTermsMap = new SelectMap();
 		bestTermsMap.select.add("TERM_ID");
 		bestTermsMap.select.add("TERM_NAME");

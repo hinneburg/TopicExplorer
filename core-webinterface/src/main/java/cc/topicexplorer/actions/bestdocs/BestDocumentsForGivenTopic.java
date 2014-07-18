@@ -110,7 +110,6 @@ public class BestDocumentsForGivenTopic {
 		String docId;
 
 		try {
-			System.out.println(documentMap.getSQLString());
 			ResultSet mainQueryRS = database.executeQuery(documentMap.getSQLString());
 			while (mainQueryRS.next()) {
 				docId = mainQueryRS.getString("DOCUMENT_ID");

@@ -63,7 +63,6 @@ public class BestFrames {
 		JSONArray sorting = new JSONArray();
 
 		ResultSet frameQueryRS = database.executeQuery(frameMap.getSQLString());
-		System.out.println(frameMap.getSQLString());
 		int topicId = -1;
 		String frameType = "";
 		int counter = 0;

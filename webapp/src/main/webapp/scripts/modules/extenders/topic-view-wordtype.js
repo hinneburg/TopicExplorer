@@ -60,7 +60,7 @@ function(ko, $) {
 					}
 					globalData.Topic[el].WORDTYPES[instance.activeWordType()].wordtypeSorting(globalData.Topic[el].WORDTYPES[instance.activeWordType()].wordtypeSorting().concat(wordtypeSorting));
 					globalData.Topic[el].WORDTYPES[instance.activeWordType()].wordtypeCount += wordtypeSorting.length;
-					if(wordtypeSorting.length < 10) {
+					if(wordtypeSorting.length < 20) {
 						globalData.Topic[el].WORDTYPES[instance.activeWordType()].wordtypeFull = true;
 					}	
 					instance.wordtypesLoading(false);

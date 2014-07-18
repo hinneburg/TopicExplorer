@@ -59,13 +59,14 @@ function(ko, $) {
 		instance.framesLoading = ko.observable(false);
 		
 		instance.frameScrollCallback = function(el) {
+			instance.checkScrollHeightForJumpStart(el);
 			if(!instance.framesLoading() && !globalData.Topic[el].FRAMES[instance.activeFrameType()].frameFull && $('#topic_' + el).children('div').children('.topicElementContent').height() +  $('#topic_' + el).children('div').children('.topicElementContent').scrollTop() >=  $('#topic_' + el).children('div').children('.topicElementContent')[0].scrollHeight - 10) {
 				instance.framesLoading(true);
 				$.getJSON("JsonServlet?Command=getFrames&topicId=" + el + "&offset=" + globalData.Topic[el].FRAMES[instance.activeFrameType()].frameCount + "&frameType=" + instance.activeFrameType()).success(function(receivedParsedJson) {
 					$.extend(globalData.Topic[el].FRAMES[instance.activeFrameType()], receivedParsedJson[el].FRAMES);
 					globalData.Topic[el].FRAMES[instance.activeFrameType()].frameSorting(globalData.Topic[el].FRAMES[instance.activeFrameType()].frameSorting().concat(receivedParsedJson[el].SORTING));
 					globalData.Topic[el].FRAMES[instance.activeFrameType()].frameCount += receivedParsedJson[el].SORTING.length;
-					if(receivedParsedJson[el].SORTING.length < 10) {
+					if(receivedParsedJson[el].SORTING.length < 20) {
 						globalData.Topic[el].FRAMES[instance.activeFrameType()].frameFull = true;
 					}	
 					instance.framesLoading(false);

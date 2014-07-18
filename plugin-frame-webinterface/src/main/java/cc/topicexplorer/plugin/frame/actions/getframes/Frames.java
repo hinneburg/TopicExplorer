@@ -29,7 +29,7 @@ public class Frames {
 		frameMap.where.add("FRAME_TYPE='" + frameType + "'");
 		frameMap.groupBy.add("FRAME$FRAMES.FRAME");
 		frameMap.orderBy.add("FRAME_COUNT DESC");
-		frameMap.limit = 10;
+		frameMap.limit = 20;
 		frameMap.offset = offset;
 
 		this.setDatabase(database);

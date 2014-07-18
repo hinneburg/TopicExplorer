@@ -393,7 +393,7 @@ html, body {
 height: 200px;
 }
 
-#jumpToStart {
+.jumpToStart {
 	padding: 15px 15px 0; 
 	background-color: #F5F5F5; 
 	border: 1px solid #DCDCDC; 
@@ -405,7 +405,7 @@ height: 200px;
 	z-index:3;
 	color: darkgray;
 }
-#jumpToStart:hover {
+.jumpToStart:hover {
 	cursor: pointer;	
 }
 .ui-tooltip {

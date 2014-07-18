@@ -5,7 +5,15 @@
 </div>
 <div class="topicTitle"><a href="#" data-bind="text: $parent.Topic[selectedTopic].TITLE_REPRESENTATION[$parent.textSelection().field],click: function() { $parent.loadDocumentsForTopic(selectedTopic)}"></a></div>
 <div class="topicElementContent" data-bind="event: {scroll: function() { $parent.frameScrollCallback(selectedTopic)}}, attr: {title: globalData.Topic[selectedTopic].FRAMES[$parent.activeFrameType()].FRAME_COUNT + ' frames, ' + globalData.Topic[selectedTopic].FRAMES[$parent.activeFrameType()].UNIQUE_FRAME_COUNT + ' unique frames'}, style: {height: ($parent.topicListHeight() - 33) + 'px'}">				
-	<ul class="wordList" data-bind = "foreach: {data: globalData.Topic[selectedTopic].FRAMES[$parent.activeFrameType()].frameSorting, as: 'frame'}">
-		<li><a href="#" data-bind="text: globalData.Topic[selectedTopic].FRAMES[$parents[1].activeFrameType()][frame].FRAME + ' (' + globalData.Topic[selectedTopic].FRAMES[$parents[1].activeFrameType()][frame].FRAME_COUNT + ')', click: function(data, event) { $parents[1].loadDocumentsForFrames(frame, event)}"></a></li>
+	<ul class="wordList">
+		<li>
+			<div class="jumpToStart" data-bind="click: function(data, event) { $(event.target).parents('.topicElementContent').scrollTop(0) }" style="left:60px;">^</div>
+		</li>
+		<!-- ko foreach: {data: globalData.Topic[selectedTopic].FRAMES[$parent.activeFrameType()].frameSorting, as: 'frame'} -->
+			<li><a href="#" data-bind="text: globalData.Topic[selectedTopic].FRAMES[$parents[1].activeFrameType()][frame].FRAME + ' (' + globalData.Topic[selectedTopic].FRAMES[$parents[1].activeFrameType()][frame].FRAME_COUNT + ')', click: function(data, event) { $parents[1].loadDocumentsForFrames(frame, event)}"></a></li>
+		<!-- /ko -->
+		<!-- ko if: !globalData.Topic[selectedTopic].FRAMES[$parent.activeFrameType()].frameFull -->
+			<li><img src="images/ajax-loader.gif" alt="Loading"/></li>
+		<!-- /ko -->
 	</ul>
 </div>

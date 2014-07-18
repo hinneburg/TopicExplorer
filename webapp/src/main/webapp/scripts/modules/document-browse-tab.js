@@ -14,13 +14,13 @@ function(ko, $) {
 		self.loading = ko.observable(false);
 		
 		self.scrollCallback = function(el) {
-			$("#jumpToStart").css('top',($("#desktop").scrollTop() - 10) + 'px');
+			$("#desktop").children(".documentList").children(".jumpToStart").css('top',($("#desktop").scrollTop() - 10) + 'px');
 			self.loadMoreDocuments();
 			
 			if($("#desktop").scrollTop() > 1000) {
-				$("#jumpToStart").show();
+				$("#desktop").children(".documentList").children(".jumpToStart").show();
 			} else {
-				$("#jumpToStart").hide();
+				$("#desktop").children(".documentList").children(".jumpToStart").hide();
 			}
 		};
 		

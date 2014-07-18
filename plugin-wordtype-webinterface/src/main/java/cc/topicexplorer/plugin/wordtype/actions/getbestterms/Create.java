@@ -17,7 +17,7 @@ public class Create extends TableSelectCommand {
 	@Override
 	public void tableExecute(Context context) {
 		PrintWriter pw = context.get("SERVLET_WRITER", PrintWriter.class);
-		context.bind("BEST_TERMS_ACTION", new BestTerms(this.database, pw, logger));
+		context.bind("BEST_TERMS_ACTION", new BestTerms(this.database, pw, logger, ((String) properties.get("Wordtype_wordtypes")).split(",")));
 	}
 
 	@Override

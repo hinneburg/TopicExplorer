@@ -14,28 +14,35 @@ import cc.topicexplorer.database.Database;
 import cc.topicexplorer.database.SelectMap;
 
 public class BestTerms {
-	private final SelectMap besTermsMap;
+	private final SelectMap bestTermsMap;
 	private PrintWriter outWriter;
 	private Database database;
 
-	public BestTerms(Database database, PrintWriter pw, Logger logger) {
-		besTermsMap = new SelectMap();
-		besTermsMap.select.add("TERM_ID");
-		besTermsMap.select.add("TERM_NAME");
-		besTermsMap.select.add("NUMBER_OF_DOCUMENT_TOPIC");
-		besTermsMap.select.add("TOPIC_ID");
-		besTermsMap.select.add("WORDTYPE");
-		besTermsMap.from.add("WORDTYPE$BEST_TERMS");
-		besTermsMap.orderBy.add("TOPIC_ID");
-		besTermsMap.orderBy.add("WORDTYPE");
-		besTermsMap.orderBy.add("NUMBER_OF_DOCUMENT_TOPIC DESC");
+	public BestTerms(Database database, PrintWriter pw, Logger logger, String wordtypes[]) {
+		String wordtypeInString = "WORDTYPE IN ('" + wordtypes[0] + "'";
+		for(int i = 1; i < wordtypes.length; i++) {
+			wordtypeInString += ",'" + wordtypes[i] + "'"; 
+		}
+		wordtypeInString += ")";
+		System.out.println(wordtypeInString);
+		bestTermsMap = new SelectMap();
+		bestTermsMap.select.add("TERM_ID");
+		bestTermsMap.select.add("TERM_NAME");
+		bestTermsMap.select.add("NUMBER_OF_DOCUMENT_TOPIC");
+		bestTermsMap.select.add("TOPIC_ID");
+		bestTermsMap.select.add("WORDTYPE");
+		bestTermsMap.from.add("WORDTYPE$BEST_TERMS");
+		bestTermsMap.where.add(wordtypeInString);
+		bestTermsMap.orderBy.add("TOPIC_ID");
+		bestTermsMap.orderBy.add("WORDTYPE");
+		bestTermsMap.orderBy.add("NUMBER_OF_DOCUMENT_TOPIC DESC");
 
 		this.setDatabase(database);
 		this.setServletWriter(pw);
 	}
 
 	public SelectMap getBestTermsMap() {
-		return this.besTermsMap;
+		return this.bestTermsMap;
 	}
 
 	public void setDatabase(Database database) {
@@ -47,11 +54,11 @@ public class BestTerms {
 	}
 
 	public void addBestTermsColumn(String bestTermsColumn, String bestTermsColumnName) {
-		besTermsMap.select.add(bestTermsColumn + " as " + bestTermsColumnName);
+		bestTermsMap.select.add(bestTermsColumn + " as " + bestTermsColumnName);
 	}
 
 	public void getBestTerms() throws SQLException {
-		ArrayList<String> bestTermsColumnList = besTermsMap.getCleanColumnNames();
+		ArrayList<String> bestTermsColumnList = bestTermsMap.getCleanColumnNames();
 		
 		bestTermsColumnList.remove("TOPIC_ID");
 		bestTermsColumnList.remove("WORDTYPE");
@@ -63,8 +70,7 @@ public class BestTerms {
 		JSONObject all = new JSONObject();
 		JSONArray sorting = new JSONArray();
 
-		ResultSet termQueryRS = database.executeQuery(besTermsMap.getSQLString());
-		System.out.println(besTermsMap.getSQLString());
+		ResultSet termQueryRS = database.executeQuery(bestTermsMap.getSQLString());
 		int topicId = -1;
 		String wordType = "";
 		while (termQueryRS.next()) {

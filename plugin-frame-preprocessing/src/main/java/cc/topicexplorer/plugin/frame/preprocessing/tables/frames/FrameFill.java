@@ -1,6 +1,7 @@
 package cc.topicexplorer.plugin.frame.preprocessing.tables.frames;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -175,6 +176,10 @@ public final class FrameFill extends TableFillCommand {
 
 	private void fillTableFrames(int maxFrameSize, String startWordType, String frameType) throws IOException {
 		try {
+			File fileTemp = new File("temp/frames.sql.csv");
+	        if (fileTemp.exists()) {
+	        	fileTemp.delete();
+	        }  
 			BufferedWriter frameCSVWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("temp/frames.sql.csv", true), "UTF-8"));
 			ResultSet topTerms = database
 					.executeQuery("SELECT * FROM TOP_TERMS_DOC_SAME_TOPIC order by DOCUMENT_ID asc, TOPIC_ID asc, POSITION_OF_TOKEN_IN_DOCUMENT asc");

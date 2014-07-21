@@ -1,6 +1,6 @@
 <div class="topicElementMenu">
 	<!-- ko if: typeof $parent.loadTimeViewForTopic == 'function' -->
-		<button class="timeView" name="timeView" title="show time chart" type="button" data-bind="click: function() { $parent.loadTimeViewForTopic(selectedTopic)}"></button>
+		<img src="images/date.png" name="timeView" title="show time chart" data-bind="click: function() { $parent.loadTimeViewForTopic(selectedTopic)}"/>
 	<!-- /ko -->
 </div>
 <div class="topicTitle"><a href="#" data-bind="text: $parent.Topic[selectedTopic].TITLE_REPRESENTATION[$parent.textSelection().field],click: function() { $parent.loadDocumentsForTopic(selectedTopic)}"></a></div>
@@ -12,7 +12,7 @@
 		<!-- ko foreach: {data: globalData.Topic[selectedTopic].FRAMES[$parent.activeFrameType()].frameSorting, as: 'frame'} -->
 			<li><a href="#" data-bind="text: globalData.Topic[selectedTopic].FRAMES[$parents[1].activeFrameType()][frame].FRAME + ' (' + globalData.Topic[selectedTopic].FRAMES[$parents[1].activeFrameType()][frame].FRAME_COUNT + ')', click: function(data, event) { $parents[1].loadDocumentsForFrames(frame, event)}"></a></li>
 		<!-- /ko -->
-		<!-- ko if: !globalData.Topic[selectedTopic].FRAMES[$parent.activeFrameType()].frameFull -->
+		<!-- ko if: !globalData.Topic[selectedTopic].FRAMES[$parent.activeFrameType()].frameFull() -->
 			<li><img src="images/ajax-loader.gif" alt="Loading"/></li>
 		<!-- /ko -->
 	</ul>

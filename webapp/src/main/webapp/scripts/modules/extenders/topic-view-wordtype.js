@@ -19,11 +19,13 @@ function(ko, $) {
 						}
 					}
 					globalData.Topic[topicId].WORDTYPES[wordType].wordtypeSorting = ko.observableArray(wordtypes);
+					
+					globalData.Topic[topicId].WORDTYPES[wordType].wordtypeFull = ko.observable(false);
+					
 					if(globalData.Topic[topicId].WORDTYPES[wordType].wordtypeCount < 10) {
-						globalData.Topic[topicId].WORDTYPES[wordType].wordtypeFull = true;
-					} else {
-						globalData.Topic[topicId].WORDTYPES[wordType].wordtypeFull = false;
-					}
+						globalData.Topic[topicId].WORDTYPES[wordType].wordtypeFull(true);
+					} 
+					
 					instance.Topic[topicId].TITLE_REPRESENTATION[wordType] = instance.Topic[topicId].TITLE_REPRESENTATION.KEYWORDS;
 					if(firstTopic) {
 						instance.bodyTemplate[wordType] = 'extenders/topic-wordtype';
@@ -47,13 +49,10 @@ function(ko, $) {
 		
 		instance.wordtypeScrollCallback = function(el) {
 			instance.checkScrollHeightForJumpStart(el);
-			if(!instance.wordtypesLoading() && !globalData.Topic[el].WORDTYPES[instance.activeWordType()].wordtypeFull && $('#topic_' + el).children('div').children('.topicElementContent').height() +  $('#topic_' + el).children('div').children('.topicElementContent').scrollTop() >=  $('#topic_' + el).children('div').children('.topicElementContent')[0].scrollHeight - 10) {
+			if(!instance.wordtypesLoading() && !globalData.Topic[el].WORDTYPES[instance.activeWordType()].wordtypeFull() && $('#topic_' + el).children('div').children('.topicElementContent').height() +  $('#topic_' + el).children('div').children('.topicElementContent').scrollTop() >=  $('#topic_' + el).children('div').children('.topicElementContent')[0].scrollHeight - 10) {
 				instance.wordtypesLoading(true);
 				$.getJSON("JsonServlet?Command=getTerms&TopicId=" + el + "&offset=" + globalData.Topic[el].WORDTYPES[instance.activeWordType()].wordtypeCount + "&wordtype=" + instance.activeWordType()).success(function(receivedParsedJson) {
-					$.extend(globalData.Topic[el].WORDTYPES[instance.activeWordType()], receivedParsedJson.Term);
-					if( receivedParsedJson.Topic[el].Top_Terms.length < 20) {
-						globalData.Topic[el].WORDTYPES[instance.activeWordType()].wordtypeFull = true;
-					} 
+					$.extend(globalData.Topic[el].WORDTYPES[instance.activeWordType()], receivedParsedJson.Term); 
 					wordtypeSorting = [];
 					for(var j = 0; j <  receivedParsedJson.Topic[el].Top_Terms.length; j++) {
 						wordtypeSorting.push(receivedParsedJson.Topic[el].Top_Terms[j].TermId);
@@ -62,7 +61,7 @@ function(ko, $) {
 					globalData.Topic[el].WORDTYPES[instance.activeWordType()].wordtypeSorting(globalData.Topic[el].WORDTYPES[instance.activeWordType()].wordtypeSorting().concat(wordtypeSorting));
 					globalData.Topic[el].WORDTYPES[instance.activeWordType()].wordtypeCount += wordtypeSorting.length;
 					if(wordtypeSorting.length < 20) {
-						globalData.Topic[el].WORDTYPES[instance.activeWordType()].wordtypeFull = true;
+						globalData.Topic[el].WORDTYPES[instance.activeWordType()].wordtypeFull(true);
 					}	
 					instance.wordtypesLoading(false);
 					

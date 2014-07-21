@@ -12,7 +12,7 @@
 		<!-- ko foreach: {data: globalData.Topic[selectedTopic].WORDTYPES[$parent.activeWordType()].wordtypeSorting, as: 'wordtype'} -->
 			<li><a href="#" data-bind="text: globalData.Topic[selectedTopic].WORDTYPES[$parents[1].activeWordType()][wordtype].TERM_NAME + ' (' + globalData.Topic[selectedTopic].WORDTYPES[$parents[1].activeWordType()][wordtype].NUMBER_OF_DOCUMENT_TOPIC + ')', click: function(data, event) { $parents[1].loadDocumentsForKeywords(globalData.Topic[selectedTopic].WORDTYPES[$parents[1].activeWordType()][wordtype].TERM_NAME, event)}"></a></li>
 		<!-- /ko -->
-		<!-- ko if: !globalData.Topic[selectedTopic].WORDTYPES[$parent.activeWordType()].wordtypeFull -->
+		<!-- ko if: !globalData.Topic[selectedTopic].WORDTYPES[$parent.activeWordType()].wordtypeFull() -->
 			<li><img src="images/ajax-loader.gif" alt="Loading"/></li>
 		<!-- /ko -->
 	</ul>

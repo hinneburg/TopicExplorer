@@ -268,7 +268,7 @@ public final class FrameFill extends TableFillCommand {
 		try {	
 			for (int i = 0; i < numTopics; i++) {
 				database.executeUpdateQueryForUpdate("INSERT INTO FRAME$BEST_FRAMES SELECT FRAME, TOPIC_ID, COUNT(DISTINCT DOCUMENT_ID) AS FRAME_COUNT, FRAME_TYPE FROM " + 
-						this.tableName + " WHERE FRAME_TYPE='" + frameType + "' AND TOPIC_ID="	+ i + " GROUP BY FRAME ORDER BY FRAME_COUNT DESC LIMIT 10");
+						this.tableName + " WHERE FRAME_TYPE='" + frameType + "' AND TOPIC_ID="	+ i + " AND ACTIVE=1 GROUP BY FRAME ORDER BY FRAME_COUNT DESC LIMIT 10");
 			}
 		} catch (SQLException e) {
 			logger.error("Exception while creating bestFrames table.");

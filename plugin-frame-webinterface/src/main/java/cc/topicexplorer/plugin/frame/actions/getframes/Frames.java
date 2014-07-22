@@ -27,6 +27,7 @@ public class Frames {
 		frameMap.from.add("FRAME$FRAMES");
 		frameMap.where.add("TOPIC_ID=" + topicId);
 		frameMap.where.add("FRAME_TYPE='" + frameType + "'");
+		frameMap.where.add("ACTIVE=1");
 		frameMap.groupBy.add("FRAME$FRAMES.FRAME");
 		frameMap.orderBy.add("FRAME_COUNT DESC");
 		frameMap.limit = 20;

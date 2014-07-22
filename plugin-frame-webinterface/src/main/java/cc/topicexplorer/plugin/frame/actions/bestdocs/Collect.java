@@ -21,6 +21,7 @@ public class Collect extends TableSelectCommand {
 			bestDocAction.addWhereClause("FRAME$FRAMES.DOCUMENT_ID = DOCUMENT.DOCUMENT_ID");
 			bestDocAction.addWhereClause("FRAME$FRAMES.FRAME='" + frame + "'");
 			bestDocAction.addWhereClause("FRAME$FRAMES.FRAME_TYPE='" + frameType + "'");
+			bestDocAction.addWhereClause("ACTIVE=1");
 			bestDocAction.addWhereClause("FRAME$FRAMES.TOPIC_ID = DOCUMENT_TOPIC.TOPIC_ID");
 	
 			context.rebind("BEST_DOC_ACTION", bestDocAction);

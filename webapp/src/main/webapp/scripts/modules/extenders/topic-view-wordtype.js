@@ -49,7 +49,7 @@ function(ko, $) {
 		
 		instance.wordtypeScrollCallback = function(el) {
 			instance.checkScrollHeightForJumpStart(el);
-			if(!instance.wordtypesLoading() && !globalData.Topic[el].WORDTYPES[instance.activeWordType()].wordtypeFull() && $('#topic_' + el).children('div').children('.topicElementContent').height() +  $('#topic_' + el).children('div').children('.topicElementContent').scrollTop() >=  $('#topic_' + el).children('div').children('.topicElementContent')[0].scrollHeight - 10) {
+			if(!instance.wordtypesLoading() && !globalData.Topic[el].WORDTYPES[instance.activeWordType()].wordtypeFull() && $('#topic_' + el).children('div').children('.topicElementContent').height() +  $('#topic_' + el).children('div').children('.topicElementContent').scrollTop() >=  $('#topic_' + el).children('div').children('.topicElementContent')[0].scrollHeight - 35) {
 				instance.wordtypesLoading(true);
 				$.getJSON("JsonServlet?Command=getTerms&TopicId=" + el + "&offset=" + globalData.Topic[el].WORDTYPES[instance.activeWordType()].wordtypeCount + "&wordtype=" + instance.activeWordType()).success(function(receivedParsedJson) {
 					$.extend(globalData.Topic[el].WORDTYPES[instance.activeWordType()], receivedParsedJson.Term); 

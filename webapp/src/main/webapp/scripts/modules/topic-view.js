@@ -75,8 +75,7 @@ function(ko, $) {
 	
 	self.termScrollCallback = function(el) {
 		self.checkScrollHeightForJumpStart(el);
-		
-		if(!self.termsLoading() && !globalData.Topic[el].termFull && $('#topic_' + el).children('.topicElementDiv').children('.topicElementContent').height() +  $('#topic_' + el).children('div').children('.topicElementContent').scrollTop() >=  $('#topic_' + el).children('div').children('.topicElementContent')[0].scrollHeight - 10) {
+		if(!self.termsLoading() && !globalData.Topic[el].termFull && $('#topic_' + el).children('.topicElementDiv').children('.topicElementContent').height() +  $('#topic_' + el).children('div').children('.topicElementContent').scrollTop() >=  $('#topic_' + el).children('div').children('.topicElementContent')[0].scrollHeight - 35) {
 			self.termsLoading(true);
 			$.getJSON("JsonServlet?Command=getTerms&TopicId=" + el + "&offset=" + globalData.Topic[el].termCount).success(function(receivedParsedJson) {
 				$.extend(globalData.Term, receivedParsedJson.Term);

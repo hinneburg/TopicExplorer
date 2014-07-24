@@ -7,11 +7,17 @@ function(ko, $) {
 		// here comes the show-document-tab 
 		var self = {};
 		
+		self.TextRepresentation = function(label, field) {
+    		this.label = label;
+    		this.field = field;
+    	};
+		
 		self.documentLimit = 20;
 		
 		self.browseData= new Object();
 		
 		self.loading = ko.observable(false);
+		self.firstLoading = ko.observable(false);
 		
 		self.scrollCallback = function(el) {
 			$("#desktop").children(".documentList").children(".jumpToStart").css('top',($("#desktop").scrollTop() - 10) + 'px');
@@ -92,12 +98,15 @@ function(ko, $) {
 			self.active = ko.observable(data.getParam);
 			if (!self.browseData[self.active()]) {
 				self.loading(true);
+				self.firstLoading(true);
 				self.browseData[self.active()] = {};
 				self.browseData[self.active()].data = data;
 				self.browseData[self.active()].sortingOptions = ko.observableArray(['RELEVANCE']);
 				self.browseData[self.active()].selectedSorting = ko.observable('RELEVANCE');
 				self.browseData[self.active()].selectedSorting.subscribe(self.changeSorting);
 				self.browseData[self.active()].selectedDocuments = ko.observableArray([]);
+				self.browseData[self.active()].textSelectArray = ko.observableArray([]);
+				self.browseData[self.active()].textSelection = ko.observable();
 				$.getJSON("JsonServlet?Command=" + self.active() + "&sorting=" + self.browseData[self.active()].selectedSorting())
 				.success(function(receivedParsedJson) {
 					self.browseData[self.active()].nextOffset = self.documentLimit;
@@ -108,11 +117,15 @@ function(ko, $) {
 					}
 					$.extend(globalData.DOCUMENT, receivedParsedJson.DOCUMENT);
 					self.browseData[self.active()].selectedDocuments(receivedParsedJson.DOCUMENT_SORTING);
+					self.browseData[self.active()].textSelectArray.push(new self.TextRepresentation('Keywords', 'KEYWORD_'));
+					self.browseData[self.active()].textSelection(new self.TextRepresentation('Keywords', 'KEYWORD_'));
+					
 					for (var i=0;i<extend.length;i++) {
 			 			var extender = require(extend[i]);
 						extender(self);
 					}
 					self.loading(false);
+					self.firstLoading(false);
 				});
 			} 
 		};

@@ -23,6 +23,7 @@ require([ "knockout","jquery", "text!/JsonServlet?Command=getTopics", "knockout-
           "scripts/modules/extenders/document-show-text",
           "scripts/modules/extenders/document-show-time",
           "scripts/modules/extenders/document-browse-time",
+          "scripts/modules/extenders/document-browse-text",
           "scripts/modules/extenders/topic-view-time",
           "scripts/modules/extenders/topic-view-frame",
           "scripts/modules/extenders/topic-view-wordtype"], function(ko, $, topics) {

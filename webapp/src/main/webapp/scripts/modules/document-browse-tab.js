@@ -3,7 +3,7 @@ function(ko, $) {
 	var instance;
     function Singleton (data) {
 		// this could be loaded from somewhere else, however all AMD modules need to be loaded in advance
-		var extend = new Array("scripts/modules/extenders/document-browse-time");
+		var extend = new Array("scripts/modules/extenders/document-browse-time","scripts/modules/extenders/document-browse-text");
 		// here comes the show-document-tab 
 		var self = {};
 		

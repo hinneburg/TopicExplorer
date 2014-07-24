@@ -108,6 +108,7 @@ public class BestDocumentsForGivenTopic {
 
 		ArrayList<String> docColumnList = documentMap.getCleanColumnNames();
 		String docId;
+		String keywordTitle, keywordText;
 
 		try {
 			ResultSet mainQueryRS = database.executeQuery(documentMap.getSQLString());
@@ -121,11 +122,31 @@ public class BestDocumentsForGivenTopic {
 						+ " ORDER BY PR_TOPIC_GIVEN_DOCUMENT DESC LIMIT 4");
 				while (bestTopicsRS.next()) {
 					topTopic.add(bestTopicsRS.getInt("TOPIC_ID"));
-				}
+				}				
 				doc.put("TOP_TOPIC", topTopic);
+				
+				keywordTitle = "";
+				ResultSet keywordCountsRS = database.executeQuery("SELECT TERM, COUNT(TERM) FROM DOCUMENT_TERM_TOPIC WHERE DOCUMENT_ID="
+						+ docId + " GROUP BY TERM ORDER BY COUNT(TERM) DESC LIMIT 3");
+				while(keywordCountsRS.next()) {
+					keywordTitle += keywordCountsRS.getString("TERM") + " ";
+				}
+				doc.put("KEYWORD_TITLE", keywordTitle);
+				
+				keywordText = "";
+				ResultSet keywordPosRS = database.executeQuery("SELECT TERM FROM DOCUMENT_TERM_TOPIC WHERE DOCUMENT_ID="
+						+ docId + " ORDER BY POSITION_OF_TOKEN_IN_DOCUMENT LIMIT 50");
+				while(keywordPosRS.next()) {
+					keywordText += keywordPosRS.getString("TERM") + " ";
+				}
+				doc.put("KEYWORD_SNIPPET", keywordText);
+				
 				docs.put(docId, doc);
 				docSorting.add(docId);
 				topTopic.clear();
+				
+				
+				
 			}
 			all.put("DOCUMENT", docs);
 			all.put("DOCUMENT_SORTING", docSorting);

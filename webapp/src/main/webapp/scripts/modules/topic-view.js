@@ -31,17 +31,15 @@ function(ko, $) {
 	for(var i=0; i<self.selectedTopics().length; i++) {
 		self.Topic[i] = new Object();
 		self.Topic[i].TITLE_REPRESENTATION = new Object();
-		self.Topic[i].TITLE_REPRESENTATION.ID = i;
 		self.Topic[i].TITLE_REPRESENTATION.KEYWORDS = globalData.Term[globalData.Topic[i].Top_Terms[0].TermId].TERM_NAME;
 		for(var j = 1; j < 3; j++) {
 			self.Topic[i].TITLE_REPRESENTATION.KEYWORDS += ', ' + globalData.Term[globalData.Topic[i].Top_Terms[j].TermId].TERM_NAME;
 		}
 	}
 	self.bodyTemplate = {};
-	self.bodyTemplate.ID = 'extenders/topic-keyword';
 	self.bodyTemplate.KEYWORDS = 'extenders/topic-keyword';
-	self.textSelectArray = ko.observableArray([new self.TextRepresentation('Id', 'ID'), new self.TextRepresentation('Keywords', 'KEYWORDS')]);
-	self.textSelection = ko.observable(new self.TextRepresentation('Id', 'ID'));
+	self.textSelectArray = ko.observableArray([new self.TextRepresentation('Keywords', 'KEYWORDS')]);
+	self.textSelection = ko.observable(new self.TextRepresentation('Keywords', 'KEYWORDS'));
 	self.textSelection.subscribe(function() {
 		$('#topicMenuActivator').toggleClass("rotate1 rotate2");
 		$('#topicMenu').toggle('blind');	   

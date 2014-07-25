@@ -37,40 +37,13 @@ function(ko, $) {
 					self.singleData[self.active()].TEXT_REPRESENTATION = new Object();
 					self.singleData[self.active()].TITLE_REPRESENTATION = new Object();
 					self.singleData[self.active()].TEXT_REPRESENTATION.KEYWORDS = receivedParsedJson.DOCUMENT.WORD_LIST[0].TOKEN;
-					var keywordCounts = {};
-					keywordCounts[receivedParsedJson.DOCUMENT.WORD_LIST[0].TOKEN] = 1;
 					
 					for(var i = 1; i < receivedParsedJson.DOCUMENT.WORD_LIST.length; i++) {
 						self.singleData[self.active()].TEXT_REPRESENTATION.KEYWORDS += ' ' + receivedParsedJson.DOCUMENT.WORD_LIST[i].TOKEN;
-						if(keywordCounts[receivedParsedJson.DOCUMENT.WORD_LIST[i].TOKEN]) {
-							keywordCounts[receivedParsedJson.DOCUMENT.WORD_LIST[i].TOKEN]++;
-						} else {
-							keywordCounts[receivedParsedJson.DOCUMENT.WORD_LIST[i].TOKEN] = 1;
-						}
 					}
-					var best = 0, second = 0, third = 0;
-					bestWord = ['', '', ''];
-					for(key in keywordCounts) {
-						if(keywordCounts[key] > third) {
-							if(keywordCounts[key] > second) {
-								if(keywordCounts[key] > best) {
-									best = keywordCounts[key];
-									bestWord[0] = key;
-								} else {
-									second = keywordCounts[key];
-									bestWord[1] = key;
-								}
-							} else {
-								third = keywordCounts[key];
-								bestWord[2] = key;
-							}
-						}
-					}
-					self.singleData[self.active()].TITLE_REPRESENTATION.KEYWORDS = bestWord.join(' ');
-					self.singleData[self.active()].TITLE_REPRESENTATION.ID = receivedParsedJson.DOCUMENT.DOCUMENT_ID;
-					self.singleData[self.active()].TEXT_REPRESENTATION.ID = '';
-					self.singleData[self.active()].textSelectArray = ko.observableArray([new self.TextRepresentation('Id','ID'), new self.TextRepresentation('Keywords', 'KEYWORDS')]);
-					self.singleData[self.active()].textSelection = ko.observable(new self.TextRepresentation('Id','ID'));
+					self.singleData[self.active()].TITLE_REPRESENTATION.KEYWORDS = globalData.DOCUMENT[self.active()].KEYWORD_TITLE;
+					self.singleData[self.active()].textSelectArray = ko.observableArray([new self.TextRepresentation('Keywords', 'KEYWORDS')]);
+					self.singleData[self.active()].textSelection = ko.observable(new self.TextRepresentation('Keywords', 'KEYWORDS'));
 					self.singleData[self.active()].data = data;
 					for (var i=0;i<extend.length;i++) {
 			 			var extender = require(extend[i]);

@@ -4,15 +4,15 @@
 	<!-- /ko -->
 </div>
 <div class="topicTitle"><a href="#" data-bind="text: $parent.Topic[selectedTopic].TITLE_REPRESENTATION[$parent.textSelection().field],click: function() { $parent.loadDocumentsForTopic(selectedTopic)}"></a></div>
-<div class="topicElementContent" data-bind="event: {scroll: function() { $parent.termScrollCallback(selectedTopic)}}, style: {height: ($parent.topicListHeight() - 33) + 'px'}">
+<div class="topicElementContent" data-bind="event: {scroll: function() { $parent.scrollCallback[$parent.textSelection().field](selectedTopic)}}, style: {height: ($parent.topicListHeight() - 33) + 'px'}">
 	<ul class="wordList">
 		<li>
 			<div class="jumpToStart" data-bind="click: function(data, event) { $(event.target).parents('.topicElementContent').scrollTop(0) }" style="left:60px;">^</div>
 		</li>
-		<!-- ko foreach: {data: globalData.Topic[selectedTopic].termSorting, as: 'topTerm'} -->
+		<!-- ko foreach: {data: globalData.Topic[selectedTopic].SORTING[$parent.textSelection().field], as: 'topTerm'} -->
 			<li><a href="#" data-bind="text: globalData.Term[topTerm].TERM_NAME + ' (' + globalData.Topic[selectedTopic].Top_Terms[$index()].relevance + ')', click: function(data, event) { $parents[1].loadDocumentsForKeywords(globalData.Term[topTerm].TERM_NAME, event)}" ></a></li>
 		<!-- /ko -->
-		<!-- ko if: !globalData.Topic[selectedTopic].termsFull() -->
+		<!-- ko if: !globalData.Topic[selectedTopic].FULL[$parent.textSelection().field]() -->
 			<li><img src="images/ajax-loader.gif" alt="Loading"/></li>
 		<!-- /ko -->
 	</ul>

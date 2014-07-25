@@ -32,15 +32,18 @@ require([ "knockout","jquery", "text!/JsonServlet?Command=getTopics", "knockout-
 	
 	for(var i in self.globalData.Topic) {
 		var termSorting = [];
-		globalData.Topic[i].termsFull = ko.observable(false);
+		globalData.Topic[i].FULL = {};
+		globalData.Topic[i].COUNT = {};
+		globalData.Topic[i].SORTING = {};
+		globalData.Topic[i].FULL.KEYWORDS = ko.observable(false);
 		if( self.globalData.Topic[i].Top_Terms.length < 20) {
-			globalData.Topic[i].termsFull(true);
+			globalData.Topic[i].FULL.KEYWORDS(true);
 		} 
-		self.globalData.Topic[i].termCount = self.globalData.Topic[i].Top_Terms.length;
+		self.globalData.Topic[i].COUNT.KEYWORDS = self.globalData.Topic[i].Top_Terms.length;
 		for(var j = 0; j <  self.globalData.Topic[i].Top_Terms.length; j++) {
 			termSorting.push(self.globalData.Topic[i].Top_Terms[j].TermId);
 		}
-		globalData.Topic[i].termSorting = ko.observableArray(termSorting);
+		globalData.Topic[i].SORTING.KEYWORDS = ko.observableArray(termSorting);
 	}
 	
 	ko.bindingHandlers.module.baseDir = "scripts/modules";

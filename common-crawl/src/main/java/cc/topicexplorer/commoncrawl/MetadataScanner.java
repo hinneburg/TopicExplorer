@@ -38,17 +38,21 @@ public class MetadataScanner extends Configured implements Tool {
 
     /**
      * Implements the map function for MapReduce.
-     */ 
+     */
     public static class MetadataScannerMapper extends MapReduceBase implements Mapper<Text, Text, Text, Text> {
         public BlogIdentifier identifier = null;
 
         // implement the main "map" function
+        // TODO: use Context instead of OuputCollector and Reporter
+        // TODO: output.collect -> context.write
+        // TODO: reporter.getCounter -> context.getCounter
         public void map(Text key, Text value, OutputCollector<Text, Text> output, Reporter reporter) throws IOException {
             if (identifier.isValidBlog(key.toString(), value.toString())){
                 output.collect(key, value);
             }
         }
-        
+
+        // TODO: should be setup
         @Override
         public void configure(JobConf job) {
             this.identifier = new BlogIdentifier(job.get(BlogIdentifier.fileKey));
@@ -60,8 +64,8 @@ public class MetadataScanner extends Configured implements Tool {
      * Implmentation of Tool.run() method, which builds and runs the Hadoop job.
      *
      * @param  args command line parameters, less common Hadoop job parameters stripped
-     *              out and interpreted by the Tool class.  
-     * @return      0 if the Hadoop job completes successfully, 1 if not. 
+     *              out and interpreted by the Tool class.
+     * @return      0 if the Hadoop job completes successfully, 1 if not.
      */
     @Override
     public int run(String[] args) throws Exception {
@@ -113,7 +117,7 @@ public class MetadataScanner extends Configured implements Tool {
         FileOutputFormat.setOutputPath(job, new Path(outputPath));
         FileOutputFormat.setCompressOutput(job, false);
 
-        // Set which InputFormat class to use. 
+        // Set which InputFormat class to use.
         job.setInputFormat(SequenceFileInputFormat.class);
 
         // Set which OutputFormat class to use.

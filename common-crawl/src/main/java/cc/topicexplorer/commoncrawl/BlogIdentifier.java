@@ -14,10 +14,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-// TODO move language detection to optional class member
+// TODO move language detection to optional class
 public class BlogIdentifier {
     public static final String fileKey = "validdomainfile";
-    
+
     public String domainFilePath = null;
     private GlobPattern _globPattern = null;
 
@@ -26,21 +26,24 @@ public class BlogIdentifier {
 
     /**
      * Constructs a new BlogIdentifier.
-     * @param domainFilePath Path of a file that contains valid domains
+     * @param domainFilePath Path of a file that contains valid
      */
     public BlogIdentifier(String domainFilePath) {
         this.domainFilePath = domainFilePath;
     }
-    
+
     /**
      * Tests if the web document is a valid blog, i.e.
      * its URL matches and its metadata contains a feed.
+     * If the URL does not match and the metadata contains a feed tests if the
+     * language is
      * @param url The URL of the web document.
      * @param metadataString A JSON string containing the document's metadata.
-     * @return true, if the document is a valid blog, false otherwise
+     * @return true, if the document is a valid blog, false
      *
-     * @see BlogIdentifier#isValidURL
-     * @see BlogIdentifier#isFeed
+     * @see BlogIdentifier#isValidURL(String)
+     * @see BlogIdentifier#isFeed(JsonObject)
+     * @see BlogIdentifier#isJapanese(JsonObject)
      */
     public boolean isValidBlog(String url, String metadataString) {
         boolean isValidURL = isValidURL(url);
@@ -59,7 +62,7 @@ public class BlogIdentifier {
     }
 
     /**
-     * Tests if a URL is valid by matching it against urls in the file at
+     * Tests if a URL is valid by matching it against urls in the file
      * domainFilePath.
      * @param url The url that should be tested.
      * @return true, if url is valid, false otherwise.

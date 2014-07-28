@@ -9,6 +9,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.fs.GlobPattern;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -42,8 +44,17 @@ public class BlogIdentifier {
      */
     public boolean isValidBlog(String url, String metadataString) {
         boolean isValidURL = isValidURL(url);
-        boolean isFeed = isFeed(metadataString);
-        
+
+        JsonParser parser = new JsonParser();
+        JsonObject metadata = parser.parse(metadataString).getAsJsonObject();
+
+        boolean isFeed = isFeed(metadata);
+
+        if (!isValidURL && isFeed) {
+            boolean isJapanese = this.isJapanese(metadata);
+            return isJapanese;
+        }
+
         return isValidURL && isFeed;
     }
 
@@ -73,15 +84,38 @@ public class BlogIdentifier {
     }
 
     /**
+     * Tests if a blog contains Japanese Posts.
+     * @param metadata The metadata of the blog.
+     * @return true, if japanese posts were found, false otherwise.
+     */
+    public boolean isJapanese(JsonObject metadata) {
+        try {
+            JsonObject content = metadata.get("content").getAsJsonObject();
+            JsonArray items = content.get("items").getAsJsonArray();
+            for (JsonElement e: items) {
+                JsonObject o = e.getAsJsonObject();
+                String title = o.get("title").getAsString();
+
+                boolean foundJapaneseChars = this._pattern.matcher(title).matches();
+                if (foundJapaneseChars) {
+                    return true;
+                }
+            }
+        } catch(Exception e) {
+            return false;
+        }
+
+        return false;
+    }
+
+    /**
      * Tests if a JSON object contains a feed.
      * @param metadataString The JSON object.
      * @return true, if a feed is found, false otherwise.
      */
-    public boolean isFeed(String metadataString) {
-        JsonParser parser = new JsonParser();
-        JsonObject metadata = parser.parse(metadataString).getAsJsonObject();
+    public boolean isFeed(JsonObject metadata) {
 
-        // catch malformed json
+        // catch malformed
         try {
             JsonObject content = metadata.get("content").getAsJsonObject();
             String contentType = content.get("type").getAsString();

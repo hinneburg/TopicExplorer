@@ -13,17 +13,12 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.Text;
-import org.apache.hadoop.mapred.FileInputFormat;
-import org.apache.hadoop.mapred.FileOutputFormat;
-import org.apache.hadoop.mapred.JobClient;
-import org.apache.hadoop.mapred.JobConf;
-import org.apache.hadoop.mapred.Mapper;
-import org.apache.hadoop.mapred.MapReduceBase;
-import org.apache.hadoop.mapred.OutputCollector;
-import org.apache.hadoop.mapred.Reporter;
-import org.apache.hadoop.mapred.SequenceFileInputFormat;
-import org.apache.hadoop.mapred.TextOutputFormat;
-import org.apache.hadoop.mapred.lib.IdentityReducer;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
+import org.apache.hadoop.mapreduce.Job;
+import org.apache.hadoop.mapreduce.Mapper;
+import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
@@ -39,22 +34,21 @@ public class MetadataScanner extends Configured implements Tool {
     /**
      * Implements the map function for MapReduce.
      */
-    public static class MetadataScannerMapper extends MapReduceBase implements Mapper<Text, Text, Text, Text> {
+    public static class MetadataScannerMapper extends Mapper<Text, Text, Text, Text> {
         public BlogIdentifier identifier = null;
 
         // implement the main "map" function
-        // TODO: use Context instead of OuputCollector and Reporter
-        // TODO: output.collect -> context.write
         // TODO: reporter.getCounter -> context.getCounter
-        public void map(Text key, Text value, OutputCollector<Text, Text> output, Reporter reporter) throws IOException {
+        @Override
+        public void map(Text key, Text value, Context context) throws IOException, InterruptedException {
             if (identifier.isValidBlog(key.toString(), value.toString())){
-                output.collect(key, value);
+                context.write(key, value);
             }
         }
 
-        // TODO: should be setup
         @Override
-        public void configure(JobConf job) {
+        public void setup(Context context) {
+            Configuration job = context.getConfiguration();
             this.identifier = new BlogIdentifier(job.get(BlogIdentifier.fileKey));
         }
     }
@@ -92,10 +86,10 @@ public class MetadataScanner extends Configured implements Tool {
 
 
         // Creates a new job configuration for this Hadoop job.
-        JobConf job = new JobConf(this.getConf());
+        Job job = new Job(this.getConf());
 
         String inputPath = "s3n://aws-publicdatasets/common-crawl/parse-output/segment/1341690166822/metadata-*";
-        inputPath = job.get("inputpath", inputPath);
+        inputPath = this.getConf().get("inputpath", inputPath);
 
         job.setJarByClass(MetadataScanner.class);
 
@@ -106,7 +100,7 @@ public class MetadataScanner extends Configured implements Tool {
         // Delete the output path directory if it already exists.
         LOG.info("clearing the output path at '" + outputPath + "'");
 
-        FileSystem fs = FileSystem.get(new URI(outputPath), job);
+        FileSystem fs = FileSystem.get(new URI(outputPath), this.getConf());
 
         if (fs.exists(new Path(outputPath))) {
             fs.delete(new Path(outputPath), true);
@@ -118,10 +112,10 @@ public class MetadataScanner extends Configured implements Tool {
         FileOutputFormat.setCompressOutput(job, false);
 
         // Set which InputFormat class to use.
-        job.setInputFormat(SequenceFileInputFormat.class);
+        job.setInputFormatClass(SequenceFileInputFormat.class);
 
         // Set which OutputFormat class to use.
-        job.setOutputFormat(TextOutputFormat.class);
+        job.setOutputFormatClass(TextOutputFormat.class);
 
         // Set the output data types.
         job.setOutputKeyClass(Text.class);
@@ -129,13 +123,8 @@ public class MetadataScanner extends Configured implements Tool {
 
         // Set which Mapper and Reducer classes to use.
         job.setMapperClass(MetadataScanner.MetadataScannerMapper.class);
-        job.setReducerClass(IdentityReducer.class);
 
-        if (JobClient.runJob(job).isSuccessful()) {
-            return 0;
-        } else {
-            return 1;
-        }
+        return job.waitForCompletion(true) ? 0 : 1;
     }
 
     /**

@@ -31,22 +31,27 @@ grant file on *.* to <user>@localhost ;
 with some mysql client, e.g. on Ubuntu: `mysql -u <user> -p`.
 ```
 create database <Maerchen Datenbank>;
+```
+####Download the document collection of Grimms fairy tales
+  - Fulltexts: http://users.informatik.uni-halle.de/~hinnebur/maerchen/grimms_maerchen_without_duplicates.sql
+  - Tokens: http://users.informatik.uni-halle.de/~hinnebur/maerchen/grimms_maerchen_without_duplicates_TE.csv
 
-use <Maerchen Datenbank>;
-
+using an IP of uni-halle.de, e.g. login to the vpn of Uni Halle.
+####Load documents into database
+using some mysql client
+e.g. on Ubuntu 
+```
+mysql -u <user> -p -d <Maerchen Datenbank> < <Path to File>grimms_maerchen_without_duplicates.sql
+```
+This creates and fills a table with the structure
+```
 CREATE TABLE orgTable (
   id int(11) NOT NULL,
   title text COLLATE utf8_bin NOT NULL,
   txt text COLLATE utf8_bin NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
-load data local infile '<Path to File>grimms_maerchen_without_duplicates.csv' 
-     into table orgTable 
-     CHARACTER SET 'utf8'
-     fields terminated by ',' OPTIONALLY ENCLOSED BY '"'
-     ignore 1 lines
-    (id,title,txt);
 ```
+
 ####Create as developer the following two paths
 `<path to your git copy>TopicExplorer/core-common/local/main/resources/` and 
 `<path to your git copy>TopicExplorer/webapp/local/main/resources/`

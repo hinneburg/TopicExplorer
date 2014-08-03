@@ -1,0 +1,14 @@
+{
+	"content": {
+		"title":"title1",
+		"type":"rss-feed",
+		"items":[
+			{
+				"title":"itemtitle1"
+			},
+			{
+				"title":"itemtitle2"
+			}
+		]
+	}
+}

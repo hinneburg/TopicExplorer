@@ -6,11 +6,11 @@ import com.google.gson.JsonObject;
 
 import org.junit.Test;
 
-import cc.topicexplorer.commoncrawl.BlogIdentifier;
+import cc.topicexplorer.commoncrawl.JapaneseBlogIdentifier;
 
-public class BlogIdentifierTest {
+public class JapaneseBlogIdentifierTest {
     private final String path = this.getClass().getResource("/blogproviders.txt").getPath();
-    private BlogIdentifier id = new BlogIdentifier(path);
+    private JapaneseBlogIdentifier id = new JapaneseBlogIdentifier(path);
     private JsonParser parser = new JsonParser();
 
     private JsonObject parseJson(String jsonString) {

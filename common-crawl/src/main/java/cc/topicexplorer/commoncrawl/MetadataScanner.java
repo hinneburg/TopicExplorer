@@ -24,7 +24,8 @@ import org.apache.hadoop.util.ToolRunner;
 
 
 /**
- * A metadata scanner for the CommonCrawl archive. Based on Chris Stephens' <chris@commoncrawl.org> ExampleMetadataDomainPageCount.java
+ * A metadata scanner for the CommonCrawl archive. Based on Chris Stephens' <chris@commoncrawl.org>
+ * ExampleMetadataDomainPageCount.java
  * @author Florian Luecke
  */
 public class MetadataScanner extends Configured implements Tool {
@@ -35,21 +36,18 @@ public class MetadataScanner extends Configured implements Tool {
      * Implements the map function for MapReduce.
      */
     public static class MetadataScannerMapper extends Mapper<Text, Text, Text, Text> {
-        public BlogIdentifier identifier = null;
 
         // implement the main "map" function
         // TODO: reporter.getCounter -> context.getCounter
         @Override
         public void map(Text key, Text value, Context context) throws IOException, InterruptedException {
-            if (identifier.isValidBlog(key.toString(), value.toString())){
-                context.write(key, value);
+            try {
+                Configuration config = context.getConfiguration();
+                String domainFilePath = config.get(BlogIdentifier.domainFileKey);
+                JapaneseBlog blog = new JapaneseBlog(key.toString(), value.toString(), domainFilePath);
+            } catch (InvalidBlogMetadataException ex) {
+                
             }
-        }
-
-        @Override
-        public void setup(Context context) {
-            Configuration job = context.getConfiguration();
-            this.identifier = new BlogIdentifier(job.get(BlogIdentifier.fileKey));
         }
     }
 

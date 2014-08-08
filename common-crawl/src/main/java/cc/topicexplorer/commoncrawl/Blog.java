@@ -53,9 +53,5 @@ public abstract class Blog {
         JsonObject content = blogMetadada.getAsJsonObject("content");
         return content.get(member).getAsString();
     }
-    
-    @SuppressWarnings("unused")
-    private String getAsString(String member) {
-        return blogMetadada.get(member).getAsString();
     }
 }

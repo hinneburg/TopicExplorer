@@ -17,4 +17,9 @@ public class JapaneseBlog extends Blog {
         
         this.init(url, metadataString, context);
     }
+
+    @Override
+    public String getID() {
+        return this.getLink();
+    }
 }

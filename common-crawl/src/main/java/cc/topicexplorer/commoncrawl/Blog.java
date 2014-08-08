@@ -70,4 +70,6 @@ public abstract class Blog {
 
         return this.content;
     }
+
+    public abstract String getID();
 }

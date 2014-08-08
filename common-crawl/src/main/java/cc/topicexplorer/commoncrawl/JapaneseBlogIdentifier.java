@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.fs.GlobPattern;
+import org.apache.hadoop.mapreduce.Mapper.Context;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -43,8 +44,9 @@ public class JapaneseBlogIdentifier extends BlogIdentifier {
      * @see JapaneseBlogIdentifier#isFeed(JsonObject)
      * @see JapaneseBlogIdentifier#isJapanese(JsonObject)
      */
+    @SuppressWarnings("rawtypes")
     @Override
-    public boolean isValidBlog(String url, String metadataString) {
+    public boolean isValidBlog(String url, String metadataString, Context context) {
         boolean isValidURL = isValidURL(url);
 
         JsonParser parser = new JsonParser();

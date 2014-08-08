@@ -42,9 +42,7 @@ public class MetadataScanner extends Configured implements Tool {
         @Override
         public void map(Text key, Text value, Context context) throws IOException, InterruptedException {
             try {
-                Configuration config = context.getConfiguration();
-                String domainFilePath = config.get(BlogIdentifier.domainFileKey);
-                JapaneseBlog blog = new JapaneseBlog(key.toString(), value.toString(), domainFilePath);
+                JapaneseBlog blog = new JapaneseBlog(key.toString(), value.toString(), context);
             } catch (InvalidBlogMetadataException ex) {
                 
             }

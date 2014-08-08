@@ -9,6 +9,8 @@ import cc.topicexplorer.commoncrawl.InvalidBlogMetadataException;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
+import org.apache.hadoop.mapreduce.Mapper.Context;
 /**
  * @author florianluecke
  *
@@ -16,10 +18,12 @@ import com.google.gson.JsonParser;
 public abstract class Blog {
     BlogIdentifier id;
     JsonObject blogMetadada;
-    
-    protected void init(String url, String metadataString) throws InvalidBlogMetadataException {
+    JsonObject content;
 
-        if (! this.id.isValidBlog(url, metadataString)) {
+    @SuppressWarnings("rawtypes")
+    protected void init(String url, String metadataString, Context context) throws InvalidBlogMetadataException {
+
+        if (! this.id.isValidBlog(url, metadataString, context)) {
             throw new InvalidBlogMetadataException();
         } else {
             JsonParser parser = new JsonParser();

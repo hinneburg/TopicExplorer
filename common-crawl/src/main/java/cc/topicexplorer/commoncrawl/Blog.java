@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package cc.topicexplorer.commoncrawl;
 
@@ -30,21 +30,41 @@ public abstract class Blog {
             blogMetadada = parser.parse(metadataString).getAsJsonObject();
         }
     }
-    
+
+    /**
+     * Get the number of posts of this blog.
+     * @return The number of posts in this blog.
+     */
     public int getNumberOfPosts() {
         JsonObject content = this.getContent();
         JsonArray items = content.getAsJsonArray("items");
 
         return items.size();
     }
+
+    /**
+     * Get the Type of the feed.
+     * @return "rss-feed" or "atom-feed" respectively.
+     * @see Blog#getAsString(String)
+     */
     public String getFeedType() {
         return this.getAsString("type");
     }
 
+    /**
+     * Get the name of the blog.
+     * @return The title of the blog.
+     * @see Blog#getAsString(String)
+     */
     public String getTitle() {
         return this.getAsString("title");
     }
-    
+
+    /**
+     * Get a link to the Blog.
+     * @return A URL where the blog can be found.
+     * @see Blog#getAsString(String)
+     */
     public String getLink() {
         JsonObject content = this.getContent();
         return this.getAsString(content.getAsJsonObject("link"), "href");

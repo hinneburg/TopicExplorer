@@ -32,27 +32,35 @@ public abstract class Blog {
     }
     
     public int getNumberOfPosts() {
-        JsonObject content = blogMetadada.getAsJsonObject("content");
+        JsonObject content = this.getContent();
         JsonArray items = content.getAsJsonArray("items");
-        
+
         return items.size();
     }
     public String getFeedType() {
-        return this.contentGetAsString("type");
+        return this.getAsString("type");
     }
 
     public String getTitle() {
-        return this.contentGetAsString("title");
+        return this.getAsString("title");
     }
     
     public String getLink() {
         JsonObject content = this.getContent();
         return this.getAsString(content.getAsJsonObject("link"), "href");
     }
-    
-    private String contentGetAsString(String member) {
-        JsonObject content = blogMetadada.getAsJsonObject("content");
-        return content.get(member).getAsString();
+
+    /**
+     * Get a field by name.
+     * @param member The Name of the field.
+     * @return
+     */
+    public String getAsString(String member) {
+        return this.getAsString(this.getContent(), member);
+    }
+
+    private String getAsString(JsonObject object, String member) {
+        return object.get(member).getAsString();
     }
 
     private JsonObject getContent() {

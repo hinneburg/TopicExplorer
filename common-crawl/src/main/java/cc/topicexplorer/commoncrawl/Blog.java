@@ -46,12 +46,20 @@ public abstract class Blog {
     }
     
     public String getLink() {
-        return this.contentGetAsString("link");
+        JsonObject content = this.getContent();
+        return this.getAsString(content.getAsJsonObject("link"), "href");
     }
     
     private String contentGetAsString(String member) {
         JsonObject content = blogMetadada.getAsJsonObject("content");
         return content.get(member).getAsString();
     }
+
+    private JsonObject getContent() {
+        if (this.content == null) {
+            this.content = this.blogMetadada.getAsJsonObject("content");
+        }
+
+        return this.content;
     }
 }

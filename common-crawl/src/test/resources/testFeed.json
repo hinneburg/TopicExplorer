@@ -2,6 +2,9 @@
 	"content": {
 		"title":"title1",
 		"type":"rss-feed",
+		"link": {
+			"href": "http://testdomain.com"
+		},
 		"items":[
 			{
 				"title":"itemtitle1"

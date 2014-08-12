@@ -81,8 +81,7 @@ function(ko, $, moment) {
     	};
     	
     	self.loadDocumentsForTopicsAndWeek = function (week) { 
-    		date = new Date(week);
-    		ko.postbox.publish('openNewTab',{moduleName:"document-browse-tab", tabHeading:date.getDate() + "." + (date.getMonth() + 1) + "." + date.getFullYear().toString().substr(2,2) + " (" + self.timeData[self.active()].topicId() + ")", data: {topicId: self.timeData[self.active()].topicId(), getParam: "bestDocs&TopicId="+ self.timeData[self.active()].topicId() + "&week=" + week.toString().substr(0,10)}});	
+    		ko.postbox.publish('openNewTab',{moduleName:"document-browse-tab", tabHeading: moment(week).format('L').substr(0, 6) + ' - ' + moment(week).add('d', 6).format('L') + " (" + self.timeData[self.active()].topicId() + ")", data: {topicId: self.timeData[self.active()].topicId(), getParam: "bestDocs&TopicId="+ self.timeData[self.active()].topicId() + "&week=" + week.toString().substr(0,10)}});	
     	};
     	
     	self.makeChart = function() {
@@ -103,6 +102,7 @@ function(ko, $, moment) {
 				            	+ '</span>: ' + globalData.Topic[self.timeData[self.active()].renderedTopics()[i]].TIME$WORDS_PER_WEEK[this.x].WORD_COUNT
 				            	+ '<br/>';
 		            	}
+		            	html += '<span style="color: #7f7f7f;font-size:xx-small">click to open best documents for topic ' + self.timeData[self.active()].renderedTopics()[0] + ' from ' + moment(this.x).format('LL') + ' to ' + moment(this.x).add('d', 6).format('LL');
 		            	return html;
 		            }
 		    	}

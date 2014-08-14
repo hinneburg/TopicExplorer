@@ -20,14 +20,14 @@ public class BestFrames {
 
 	public BestFrames(Database database, PrintWriter pw, Logger logger) {
 		frameMap = new SelectMap();
-		frameMap.select.add("FRAME");
-		frameMap.select.add("FRAME_COUNT");
+		frameMap.select.add("FRAME AS ITEM_NAME");
+		frameMap.select.add("FRAME_COUNT AS ITEM_COUNT");
 		frameMap.select.add("TOPIC_ID");
 		frameMap.select.add("FRAME_TYPE");
 		frameMap.from.add("FRAME$BEST_FRAMES");
 		frameMap.orderBy.add("TOPIC_ID");
 		frameMap.orderBy.add("FRAME_TYPE");
-		frameMap.orderBy.add("FRAME_COUNT DESC");
+		frameMap.orderBy.add("ITEM_COUNT DESC");
 
 		this.setDatabase(database);
 		this.setServletWriter(pw);
@@ -72,7 +72,7 @@ public class BestFrames {
 					topicData.put("SORTING", sorting);
 					frames.put(frameType, topicData);
 					if(topicId != frameQueryRS.getInt("TOPIC_ID")) {
-						frameTypes.put("FRAMES", frames);
+						frameTypes.put("ITEMS", frames);
 						all.put(topicId, frameTypes);
 						frames = new JSONObject();
 						frameTypes = new JSONObject();
@@ -96,7 +96,7 @@ public class BestFrames {
 		}
 		topicData.put("SORTING", sorting);
 		frames.put(frameType, topicData);
-		frameTypes.put("FRAMES", frames);
+		frameTypes.put("ITEMS", frames);
 		all.put(topicId, frameTypes);
 
 		outWriter.print(all.toString());

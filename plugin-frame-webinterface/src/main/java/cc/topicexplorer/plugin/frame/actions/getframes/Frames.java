@@ -20,16 +20,16 @@ public class Frames {
 
 	public Frames(Database database, PrintWriter pw, Logger logger, String topicId, String frameType, int offset) {
 		frameMap = new SelectMap();
-		frameMap.select.add("FRAME");
-		frameMap.select.add("COUNT( DISTINCT DOCUMENT_ID ) AS FRAME_COUNT");
+		frameMap.select.add("FRAME AS ITEM_NAME");
+		frameMap.select.add("COUNT( DISTINCT DOCUMENT_ID ) AS ITEM_COUNT");
 		frameMap.select.add("FRAME$FRAMES.TOPIC_ID");
 		frameMap.select.add("FRAME$FRAMES.ACTIVE");
 		frameMap.from.add("FRAME$FRAMES");
 		frameMap.where.add("TOPIC_ID=" + topicId);
 		frameMap.where.add("FRAME_TYPE='" + frameType + "'");
 		frameMap.where.add("ACTIVE=1");
-		frameMap.groupBy.add("FRAME$FRAMES.FRAME");
-		frameMap.orderBy.add("FRAME_COUNT DESC");
+		frameMap.groupBy.add("ITEM_NAME");
+		frameMap.orderBy.add("ITEM_COUNT DESC");
 		frameMap.limit = 20;
 		frameMap.offset = offset;
 

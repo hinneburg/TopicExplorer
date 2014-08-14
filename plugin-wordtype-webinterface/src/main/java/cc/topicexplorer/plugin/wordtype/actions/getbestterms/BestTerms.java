@@ -25,16 +25,16 @@ public class BestTerms {
 		}
 		wordtypeInString += ")";
 		bestTermsMap = new SelectMap();
-		bestTermsMap.select.add("TERM_ID");
-		bestTermsMap.select.add("TERM_NAME");
-		bestTermsMap.select.add("NUMBER_OF_DOCUMENT_TOPIC");
+		bestTermsMap.select.add("TERM_ID AS ITEM_ID");
+		bestTermsMap.select.add("TERM_NAME AS ITEM_NAME");
+		bestTermsMap.select.add("NUMBER_OF_DOCUMENT_TOPIC AS ITEM_COUNT");
 		bestTermsMap.select.add("TOPIC_ID");
 		bestTermsMap.select.add("WORDTYPE");
 		bestTermsMap.from.add("WORDTYPE$BEST_TERMS");
 		bestTermsMap.where.add(wordtypeInString);
 		bestTermsMap.orderBy.add("TOPIC_ID");
 		bestTermsMap.orderBy.add("WORDTYPE");
-		bestTermsMap.orderBy.add("NUMBER_OF_DOCUMENT_TOPIC DESC");
+		bestTermsMap.orderBy.add("ITEM_COUNT DESC");
 
 		this.setDatabase(database);
 		this.setServletWriter(pw);
@@ -78,7 +78,7 @@ public class BestTerms {
 					topicData.put("SORTING", sorting);
 					bestTerms.put(wordType, topicData);
 					if(topicId != termQueryRS.getInt("TOPIC_ID")) {
-						wordTypes.put("WORDTYPES", bestTerms);
+						wordTypes.put("ITEMS", bestTerms);
 						all.put(topicId, wordTypes);
 						bestTerms = new JSONObject();
 						wordTypes = new JSONObject();
@@ -95,12 +95,12 @@ public class BestTerms {
 			for (int i = 0; i < bestTermsColumnList.size(); i++) {
 				bestTermsData.put(bestTermsColumnList.get(i), termQueryRS.getString(bestTermsColumnList.get(i)));
 			}
-			topicData.put(termQueryRS.getString("TERM_ID"), bestTermsData);
-			sorting.add(termQueryRS.getString("TERM_ID"));
+			topicData.put(termQueryRS.getString("ITEM_ID"), bestTermsData);
+			sorting.add(termQueryRS.getString("ITEM_ID"));
 		}
 		topicData.put("SORTING", sorting);
 		bestTerms.put(wordType, topicData);
-		wordTypes.put("WORDTYPES", bestTerms);
+		wordTypes.put("ITEMS", bestTerms);
 		all.put(topicId, wordTypes);
 
 		outWriter.print(all.toString());

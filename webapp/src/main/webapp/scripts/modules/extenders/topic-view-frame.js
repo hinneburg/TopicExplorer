@@ -3,21 +3,21 @@ function(ko, $) {
 	return function (instance) {
 		instance.loadDocumentsForFrames = function (frameIndex, context) { 
 			var topicId = $(context.target).parents('.topic').attr('id').split('_')[1];
-			var frame = globalData.Topic[topicId].FRAMES[instance.activeFrameType()][frameIndex].FRAME; 
-			ko.postbox.publish('openNewTab', {moduleName:"document-browse-tab", tabHeading:"Topic " + topicId + " (" + frame + ")", data: {topicId: topicId, frame: frame, frameType: instance.activeFrameType(), getParam: "bestDocs&TopicId=" + topicId + "&frame=" + frame + "&frameType=" + instance.activeFrameType()}});	
+			var frame = globalData.Topic[topicId].ITEMS[instance.textSelection().field][frameIndex].ITEM_NAME; 
+			ko.postbox.publish('openNewTab', {moduleName:"document-browse-tab", tabHeading:"Topic " + topicId + " (" + frame + ")", data: {topicId: topicId, frame: frame, frameType: instance.textSelection().field, getParam: "bestDocs&TopicId=" + topicId + "&frame=" + frame + "&frameType=" + instance.textSelection().field}});	
 		};
 		
 		
 		instance.frameScrollCallback = function(el) {
 			instance.checkScrollHeightForJumpStart(el);
-			if(!instance.loading() && !globalData.Topic[el].FULL[instance.activeFrameType()]() && $('#topic_' + el).children('div').children('.topicElementContent').height() +  $('#topic_' + el).children('div').children('.topicElementContent').scrollTop() >=  $('#topic_' + el).children('div').children('.topicElementContent')[0].scrollHeight - 35) {
+			if(!instance.loading() && !globalData.Topic[el].FULL[instance.textSelection().field]() && $('#topic_' + el).children('div').children('.topicElementContent').height() +  $('#topic_' + el).children('div').children('.topicElementContent').scrollTop() >=  $('#topic_' + el).children('div').children('.topicElementContent')[0].scrollHeight - 35) {
 				instance.loading(true);
-				$.getJSON("JsonServlet?Command=getFrames&topicId=" + el + "&offset=" + globalData.Topic[el].COUNT[instance.activeFrameType()] + "&frameType=" + instance.activeFrameType()).success(function(receivedParsedJson) {
-					$.extend(globalData.Topic[el].FRAMES[instance.activeFrameType()], receivedParsedJson[el].FRAMES);
-					globalData.Topic[el].SORTING[instance.activeFrameType()](globalData.Topic[el].SORTING[instance.activeFrameType()]().concat(receivedParsedJson[el].SORTING));
-					globalData.Topic[el].COUNT[instance.activeFrameType()] += receivedParsedJson[el].SORTING.length;
+				$.getJSON("JsonServlet?Command=getFrames&topicId=" + el + "&offset=" + globalData.Topic[el].COUNT[instance.textSelection().field] + "&frameType=" + instance.textSelection().field).success(function(receivedParsedJson) {
+					$.extend(globalData.Topic[el].ITEMS[instance.textSelection().field], receivedParsedJson[el].FRAMES);
+					globalData.Topic[el].SORTING[instance.textSelection().field](globalData.Topic[el].SORTING[instance.textSelection().field]().concat(receivedParsedJson[el].SORTING));
+					globalData.Topic[el].COUNT[instance.textSelection().field] += receivedParsedJson[el].SORTING.length;
 					if(receivedParsedJson[el].SORTING.length < 20) {
-						globalData.Topic[el].FULL[instance.activeFrameType()](true);
+						globalData.Topic[el].FULL[instance.textSelection().field](true);
 					}	
 					instance.loading(false);
 					
@@ -25,21 +25,20 @@ function(ko, $) {
 			}
 		};	
 		
-		instance.activeFrameType = ko.observable();
-		var firstTopic = true;
+		
 		$.getJSON("JsonServlet?Command=getBestFrames").success(function(receivedParsedJson) {
+			var firstTopic = true;
 			for (topicId in receivedParsedJson) {
-				$.extend(globalData.Topic[topicId], receivedParsedJson[topicId]);
+				$.extend(globalData.Topic[topicId].ITEMS, receivedParsedJson[topicId].ITEMS);
 			
-				for(frameType in receivedParsedJson[topicId].FRAMES) {
-				//	instance.activeFrameType(frameType);
-					var frames = receivedParsedJson[topicId].FRAMES[frameType].SORTING;
+				for(frameType in receivedParsedJson[topicId].ITEMS) {
+					var frames = receivedParsedJson[topicId].ITEMS[frameType].SORTING;
 				
-					delete globalData.Topic[topicId].FRAMES[frameType].SORTING;
-					delete receivedParsedJson[topicId].FRAMES[frameType].SORTING;
+					delete globalData.Topic[topicId].ITEMS[frameType].SORTING;
+					delete receivedParsedJson[topicId].ITEMS[frameType].SORTING;
 					globalData.Topic[topicId].COUNT[frameType] = 0;
-					for(var i in receivedParsedJson[topicId].FRAMES[frameType]) {
-						if(receivedParsedJson[topicId].FRAMES[frameType].hasOwnProperty(i) && i != 'frameCount') {
+					for(var i in receivedParsedJson[topicId].ITEMS[frameType]) {
+						if(receivedParsedJson[topicId].ITEMS[frameType].hasOwnProperty(i) && i != 'frameCount') {
 							globalData.Topic[topicId].COUNT[frameType]++;
 						}
 					}
@@ -51,9 +50,9 @@ function(ko, $) {
 					} 
 					instance.Topic[topicId].TITLE_REPRESENTATION[frameType] = instance.Topic[topicId].TITLE_REPRESENTATION.KEYWORDS;
 					if(firstTopic) {
-						instance.bodyTemplate[frameType] = 'extenders/topic-frame';
 						instance.textSelectArray.push(new instance.TextRepresentation('Frames (' + frameType + ')' , frameType));	
 						instance.scrollCallback[frameType] = instance.frameScrollCallback;
+						instance.loadDocumentsForItem[frameType] = instance.loadDocumentsForFrames;
 					}
 
 				}
@@ -66,16 +65,6 @@ function(ko, $) {
 					}
 				}
 			});
-		});
-		
-		
-		
-		instance.textSelection.subscribe(function(newValue) {
-			if(globalData.Topic[topicId].FRAMES.hasOwnProperty(newValue.field)){
-				instance.activeFrameType(newValue.field);
-			}
-		});
-		
-			
+		});			
 	};	
 });

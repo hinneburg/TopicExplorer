@@ -16,8 +16,10 @@ function(ko, $) {
 	
 	var self = {};
 	self.scrollCallback = {};
-	self.loadDocumentsForKeywords = function (keyword, context) { 
+	self.loadDocumentsForItem = {};
+	self.loadDocumentsForItem.KEYWORDS = function (keywordId, context) { 
 		var topicId = $(context.target).parents('.topic').attr('id').split('_')[1];
+		keyword = globalData.Topic[topicId].ITEMS[self.textSelection().field][keywordId].ITEM_NAME;
 		ko.postbox.publish('openNewTab', {moduleName:"document-browse-tab", tabHeading:"Topic " + topicId + " (" + keyword + ")", data: {topicId: topicId, term: keyword, getParam: "bestDocs&TopicId=" + topicId + "&term=" + keyword}});	
 	};
 	
@@ -33,18 +35,20 @@ function(ko, $) {
 		self.Topic[i].TITLE_REPRESENTATION = new Object();
 		self.Topic[i].INFO_HIGHLIGHT = new Object();
 		self.Topic[i].INFO_HIGHLIGHT.KEYWORDS = "";
-		self.Topic[i].TITLE_REPRESENTATION.KEYWORDS = globalData.Term[globalData.Topic[i].Top_Terms[0].TermId].TERM_NAME;
+		self.Topic[i].TITLE_REPRESENTATION.KEYWORDS = globalData.Topic[i].ITEMS.KEYWORDS[globalData.Topic[i].SORTING.KEYWORDS()[0]].ITEM_NAME;
 		for(var j = 1; j < 3; j++) {
-			self.Topic[i].TITLE_REPRESENTATION.KEYWORDS += ', ' + globalData.Term[globalData.Topic[i].Top_Terms[j].TermId].TERM_NAME;
+			self.Topic[i].TITLE_REPRESENTATION.KEYWORDS += ', ' + globalData.Topic[i].ITEMS.KEYWORDS[globalData.Topic[i].SORTING.KEYWORDS()[j]].ITEM_NAME;
 		}
 	}
-	self.bodyTemplate = {};
-	self.bodyTemplate.KEYWORDS = 'extenders/topic-keyword';
+	
 	self.textSelectArray = ko.observableArray([new self.TextRepresentation('Keywords', 'KEYWORDS')]);
 	self.textSelection = ko.observable(new self.TextRepresentation('Keywords', 'KEYWORDS'));
 	self.textSelection.subscribe(function() {
 		$('#topicMenuActivator').toggleClass("rotate1 rotate2");
-		$('#topicMenu').toggle('blind');	   
+		$('#topicMenu').toggle('blind');	  
+		for(topicId in self.selectedTopics()) {
+			$('#topic_' + topicId).children('div').children('.topicElementContent').scrollTop(0);
+		}
 	});
 	
 	self.loadDocumentsForTopic = function (topicId) { 
@@ -53,6 +57,10 @@ function(ko, $) {
 	
 	self.triggerResize = function() {
 		$(window).trigger('resize');
+		$(".topicList").scrollLeft(0);
+		for(topicId in self.selectedTopics()) {
+			$('#topic_' + topicId).children('div').children('.topicElementContent').scrollTop(0);
+		}
 	};
 	
 	self.windowHeight = ko.observable(Math.max(400, $(window).height(), /* For opera: */ document.documentElement.clientHeight)).subscribeTo(
@@ -78,17 +86,23 @@ function(ko, $) {
 		if(!self.loading() && !globalData.Topic[el].FULL.KEYWORDS() && $('#topic_' + el).children('.topicElementDiv').children('.topicElementContent').height() +  $('#topic_' + el).children('div').children('.topicElementContent').scrollTop() >=  $('#topic_' + el).children('div').children('.topicElementContent')[0].scrollHeight - 35) {
 			self.loading(true);
 			$.getJSON("JsonServlet?Command=getTerms&TopicId=" + el + "&offset=" + globalData.Topic[el].COUNT.KEYWORDS).success(function(receivedParsedJson) {
-				$.extend(globalData.Term, receivedParsedJson.Term);
-				var termSorting = [];
-				if( receivedParsedJson.Topic[el].Top_Terms.length < 20) {
-					globalData.Topic[el].FULL.KEYWORDS(true);
-				} 
-				for(var j = 0; j <  receivedParsedJson.Topic[el].Top_Terms.length; j++) {
-					termSorting.push(receivedParsedJson.Topic[el].Top_Terms[j].TermId);
-					globalData.Topic[el].Top_Terms.push(receivedParsedJson.Topic[el].Top_Terms[j]);
+				var count = 0;
+				keywordSorting = [];
+				for(termId in receivedParsedJson.Topic[el].Top_Terms) {
+					count++;	
+					keywordSorting.push(receivedParsedJson.Topic[el].Top_Terms[termId].TermId);
+					globalData.Topic[el].ITEMS[self.textSelection().field][receivedParsedJson.Topic[el].Top_Terms[termId].TermId] = {};
+					globalData.Topic[el].ITEMS[self.textSelection().field][receivedParsedJson.Topic[el].Top_Terms[termId].TermId].ITEM_ID = receivedParsedJson.Topic[el].Top_Terms[termId].TermId;
+					globalData.Topic[el].ITEMS[self.textSelection().field][receivedParsedJson.Topic[el].Top_Terms[termId].TermId].ITEM_NAME = receivedParsedJson.Term[receivedParsedJson.Topic[el].Top_Terms[termId].TermId].TERM_NAME;
+					globalData.Topic[el].ITEMS[self.textSelection().field][receivedParsedJson.Topic[el].Top_Terms[termId].TermId].ITEM_COUNT = receivedParsedJson.Topic[el].Top_Terms[termId].relevance;			
 				}
-				globalData.Topic[el].SORTING.KEYWORDS(globalData.Topic[el].SORTING.KEYWORDS().concat(termSorting));
-				globalData.Topic[el].COUNT.KEYWORDS += termSorting.length;	
+				
+				if(count < 20) {
+					globalData.Topic[el].FULL[self.textSelection().field](true);
+				}
+				globalData.Topic[el].COUNT[self.textSelection().field] += count;
+				globalData.Topic[el].SORTING[self.textSelection().field](globalData.Topic[el].SORTING[self.textSelection().field]().concat(keywordSorting));
+
 				self.loading(false);				
 			});
 		}

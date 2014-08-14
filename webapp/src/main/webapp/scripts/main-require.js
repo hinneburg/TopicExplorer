@@ -26,22 +26,32 @@ require([ "knockout","jquery", "text!/JsonServlet?Command=getTopics", "knockout-
           "scripts/modules/extenders/document-browse-text",
           "scripts/modules/extenders/topic-view-time",
           "scripts/modules/extenders/topic-view-frame",
-          "scripts/modules/extenders/topic-view-wordtype"], function(ko, $, topics) {
+          "scripts/modules/extenders/topic-view-wordtype"], function(ko, $, json) {
 	var self = this;
-	self.globalData = JSON.parse(topics);
+	self.globalData = {};
+	var topics =  JSON.parse(json);
+	self.globalData.Topic = topics.Topic;
+	self.globalData.TOPIC_SORTING = topics.TOPIC_SORTING;
 	
 	for(var i in self.globalData.Topic) {
 		var termSorting = [];
 		globalData.Topic[i].FULL = {};
 		globalData.Topic[i].COUNT = {};
 		globalData.Topic[i].SORTING = {};
+		globalData.Topic[i].ITEMS = {};
+		globalData.Topic[i].ITEMS.KEYWORDS = {};
 		globalData.Topic[i].FULL.KEYWORDS = ko.observable(false);
 		if( self.globalData.Topic[i].Top_Terms.length < 20) {
 			globalData.Topic[i].FULL.KEYWORDS(true);
 		} 
 		self.globalData.Topic[i].COUNT.KEYWORDS = self.globalData.Topic[i].Top_Terms.length;
-		for(var j = 0; j <  self.globalData.Topic[i].Top_Terms.length; j++) {
-			termSorting.push(self.globalData.Topic[i].Top_Terms[j].TermId);
+		for(var j = 0; j <  topics.Topic[i].Top_Terms.length; j++) {
+			globalData.Topic[i].ITEMS.KEYWORDS[topics.Topic[i].Top_Terms[j].TermId] = {};
+			globalData.Topic[i].ITEMS.KEYWORDS[topics.Topic[i].Top_Terms[j].TermId].ITEM_ID = topics.Topic[i].Top_Terms[j].TermId;
+			globalData.Topic[i].ITEMS.KEYWORDS[topics.Topic[i].Top_Terms[j].TermId].ITEM_NAME = topics.Term[topics.Topic[i].Top_Terms[j].TermId].TERM_NAME;
+			globalData.Topic[i].ITEMS.KEYWORDS[topics.Topic[i].Top_Terms[j].TermId].ITEM_COUNT = topics.Topic[i].Top_Terms[j].relevance;			
+		
+			termSorting.push(topics.Topic[i].Top_Terms[j].TermId);
 		}
 		globalData.Topic[i].SORTING.KEYWORDS = ko.observableArray(termSorting);
 	}

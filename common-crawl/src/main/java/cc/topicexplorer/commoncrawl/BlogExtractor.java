@@ -1,7 +1,6 @@
 package cc.topicexplorer.commoncrawl;
 
 // Java classes
-import java.io.IOException;
 import java.net.URI;
 
 // Apache Project classes
@@ -16,14 +15,11 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.Job;
-import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
 import org.commoncrawl.warc.WARCFileInputFormat;
-
-import org.archive.io.ArchiveReader;
 
 /**
  * A metadata scanner for the CommonCrawl archive. Based on Chris Stephens' <chris@commoncrawl.org>
@@ -33,17 +29,6 @@ import org.archive.io.ArchiveReader;
 public class BlogExtractor extends Configured implements Tool {
 
     private static final Logger LOG = Logger.getLogger(BlogExtractor.class);
-
-    /**
-     * Implements the map function for MapReduce.
-     */
-    public static class BlogExtractorMapper extends Mapper<Text, ArchiveReader, Text, Text> {
-
-        // implement the main "map" function
-        @Override
-        public void map(Text key, ArchiveReader value, Context context) throws IOException, InterruptedException {
-        }
-    }
 
     /**
      * Implmentation of Tool.run() method, which builds and runs the Hadoop job.
@@ -117,7 +102,7 @@ public class BlogExtractor extends Configured implements Tool {
         job.setOutputValueClass(Text.class);
 
         // Set which Mapper and Reducer classes to use.
-        job.setMapperClass(BlogExtractor.BlogExtractorMapper.class);
+        job.setMapperClass(BlogExtractorMap.BlogExtractorMapper.class);
 
         return job.waitForCompletion(true) ? 0 : 1;
     }

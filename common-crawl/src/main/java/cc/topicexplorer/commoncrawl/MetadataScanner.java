@@ -17,15 +17,17 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
-import org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
+import org.commoncrawl.warc.WARCFileInputFormat;
+
+import org.archive.io.ArchiveReader;
 
 /**
  * A metadata scanner for the CommonCrawl archive. Based on Chris Stephens' <chris@commoncrawl.org>
- * ExampleMetadataDomainPageCount.java
+ * ExampleMetadataDomainPageCount.java and Stephen Merity's WARCTagCounter.java
  * @author Florian Luecke
  */
 public class MetadataScanner extends Configured implements Tool {
@@ -35,17 +37,11 @@ public class MetadataScanner extends Configured implements Tool {
     /**
      * Implements the map function for MapReduce.
      */
-    public static class MetadataScannerMapper extends Mapper<Text, Text, Text, Text> {
+    public static class MetadataScannerMapper extends Mapper<Text, ArchiveReader, Text, Text> {
 
         // implement the main "map" function
-        // TODO: reporter.getCounter -> context.getCounter
         @Override
-        public void map(Text key, Text value, Context context) throws IOException, InterruptedException {
-            try {
-                JapaneseBlog blog = new JapaneseBlog(key.toString(), value.toString(), context);
-            } catch (InvalidBlogMetadataException ex) {
-                
-            }
+        public void map(Text key, ArchiveReader value, Context context) throws IOException, InterruptedException {
         }
     }
 
@@ -84,8 +80,12 @@ public class MetadataScanner extends Configured implements Tool {
         // Creates a new job configuration for this Hadoop job.
         Job job = new Job(this.getConf());
 
-        String inputPath = "s3n://aws-publicdatasets/common-crawl/parse-output/segment/1341690166822/metadata-*";
-        inputPath = this.getConf().get("inputpath", inputPath);
+        /**
+         * TODO: make inputpath configurable
+         */
+        String inputPath = "common-crawl/crawl-data/CC-MAIN-2014-23/segments/"
+            + "1404776400583.60/warc/"
+            + "CC-MAIN-20140707234000-00000-ip-10-180-212-248.ec2.internal.warc.gz";
 
         job.setJarByClass(MetadataScanner.class);
 
@@ -108,7 +108,7 @@ public class MetadataScanner extends Configured implements Tool {
         FileOutputFormat.setCompressOutput(job, false);
 
         // Set which InputFormat class to use.
-        job.setInputFormatClass(SequenceFileInputFormat.class);
+        job.setInputFormatClass(WARCFileInputFormat.class);
 
         // Set which OutputFormat class to use.
         job.setOutputFormatClass(TextOutputFormat.class);

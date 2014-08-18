@@ -30,21 +30,20 @@ import org.archive.io.ArchiveReader;
  * ExampleMetadataDomainPageCount.java and Stephen Merity's WARCTagCounter.java
  * @author Florian Luecke
  */
-public class MetadataScanner extends Configured implements Tool {
+public class BlogExtractor extends Configured implements Tool {
 
-    private static final Logger LOG = Logger.getLogger(MetadataScanner.class);
+    private static final Logger LOG = Logger.getLogger(BlogExtractor.class);
 
     /**
      * Implements the map function for MapReduce.
      */
-    public static class MetadataScannerMapper extends Mapper<Text, ArchiveReader, Text, Text> {
+    public static class BlogExtractorMapper extends Mapper<Text, ArchiveReader, Text, Text> {
 
         // implement the main "map" function
         @Override
         public void map(Text key, ArchiveReader value, Context context) throws IOException, InterruptedException {
         }
     }
-
 
     /**
      * Implmentation of Tool.run() method, which builds and runs the Hadoop job.
@@ -87,7 +86,7 @@ public class MetadataScanner extends Configured implements Tool {
             + "1404776400583.60/warc/"
             + "CC-MAIN-20140707234000-00000-ip-10-180-212-248.ec2.internal.warc.gz";
 
-        job.setJarByClass(MetadataScanner.class);
+        job.setJarByClass(BlogExtractor.class);
 
         // Scan the provided input path for ARC files.
         LOG.info("setting input path to '"+ inputPath + "'");
@@ -118,7 +117,7 @@ public class MetadataScanner extends Configured implements Tool {
         job.setOutputValueClass(Text.class);
 
         // Set which Mapper and Reducer classes to use.
-        job.setMapperClass(MetadataScanner.MetadataScannerMapper.class);
+        job.setMapperClass(BlogExtractor.BlogExtractorMapper.class);
 
         return job.waitForCompletion(true) ? 0 : 1;
     }
@@ -128,7 +127,7 @@ public class MetadataScanner extends Configured implements Tool {
      * Hadoop job.
      */
     public static void main(String[] args) throws Exception {
-        int res = ToolRunner.run(new Configuration(), new MetadataScanner(), args);
+        int res = ToolRunner.run(new Configuration(), new BlogExtractor(), args);
         System.exit(res);
     }
 }

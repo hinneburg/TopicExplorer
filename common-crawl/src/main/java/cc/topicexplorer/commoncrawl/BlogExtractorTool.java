@@ -22,20 +22,23 @@ import org.apache.hadoop.util.ToolRunner;
 import org.commoncrawl.warc.WARCFileInputFormat;
 
 /**
- * A metadata scanner for the CommonCrawl archive. Based on Chris Stephens' <chris@commoncrawl.org>
+ * A metadata scanner for the CommonCrawl archive. Based on Chris Stephens'
+ * <chris@commoncrawl.org>
  * ExampleMetadataDomainPageCount.java and Stephen Merity's WARCTagCounter.java
+ * 
  * @author Florian Luecke
  */
-public class BlogExtractor extends Configured implements Tool {
-
-    private static final Logger LOG = Logger.getLogger(BlogExtractor.class);
+public class BlogExtractorTool extends Configured implements Tool {
+    private static final Logger LOG = Logger.getLogger(BlogExtractorTool.class);
 
     /**
      * Implmentation of Tool.run() method, which builds and runs the Hadoop job.
-     *
-     * @param  args command line parameters, less common Hadoop job parameters stripped
-     *              out and interpreted by the Tool class.
-     * @return      0 if the Hadoop job completes successfully, 1 if not.
+     * 
+     * @param args
+     *            command line parameters, less common Hadoop job parameters
+     *            stripped
+     *            out and interpreted by the Tool class.
+     * @return 0 if the Hadoop job completes successfully, 1 if not.
      */
     @Override
     public int run(String[] args) throws Exception {
@@ -44,7 +47,7 @@ public class BlogExtractor extends Configured implements Tool {
         String configFile = null;
 
         // Read the command line arguments.
-        if (args.length <  1) {
+        if (args.length < 1) {
             throw new IllegalArgumentException("Example JAR must be passed an output path.");
         }
 
@@ -56,10 +59,9 @@ public class BlogExtractor extends Configured implements Tool {
 
         // Read in any additional config parameters.
         if (configFile != null) {
-            LOG.info("adding config parameters from '"+ configFile + "'");
+            LOG.info("adding config parameters from '" + configFile + "'");
             this.getConf().addResource(configFile);
         }
-
 
         // Creates a new job configuration for this Hadoop job.
         Job job = new Job(this.getConf());
@@ -68,13 +70,13 @@ public class BlogExtractor extends Configured implements Tool {
          * TODO: make inputpath configurable
          */
         String inputPath = "common-crawl/crawl-data/CC-MAIN-2014-23/segments/"
-            + "1404776400583.60/warc/"
-            + "CC-MAIN-20140707234000-00000-ip-10-180-212-248.ec2.internal.warc.gz";
+                           + "1404776400583.60/warc/"
+                           + "CC-MAIN-20140707234000-00000-ip-10-180-212-248.ec2.internal.warc.gz";
 
-        job.setJarByClass(BlogExtractor.class);
+        job.setJarByClass(BlogExtractorTool.class);
 
         // Scan the provided input path for ARC files.
-        LOG.info("setting input path to '"+ inputPath + "'");
+        LOG.info("setting input path to '" + inputPath + "'");
         FileInputFormat.addInputPath(job, new Path(inputPath));
 
         // Delete the output path directory if it already exists.
@@ -108,12 +110,12 @@ public class BlogExtractor extends Configured implements Tool {
     }
 
     /**
-     * Main entry point that uses the {@link ToolRunner} class to run the example
+     * Main entry point that uses the {@link ToolRunner} class to run the
+     * example
      * Hadoop job.
      */
     public static void main(String[] args) throws Exception {
-        int res = ToolRunner.run(new Configuration(), new BlogExtractor(), args);
+        int res = ToolRunner.run(new Configuration(), new BlogExtractorTool(), args);
         System.exit(res);
     }
 }
-

@@ -1,0 +1,19 @@
+WARC/1.0
+WARC-Type: response
+WARC-Date: 2013-12-04T16:47:32Z
+WARC-Record-ID: 
+Content-Length: 123
+Content-Type: application/http; msgtype=response
+WARC-Warcinfo-ID: 
+WARC-Concurrent-To: 
+WARC-IP-Address: 23.0.160.82
+WARC-Target-URI: http://test.com/test123
+WARC-Payload-Digest: sha1:FXV2BZKHT6SQ4RZWNMIMP7KMFUNZMZFB
+WARC-Block-Digest: sha1:GMYFZYSACNBEGHVP3YFQNOSTV5LPXNAU
+
+HTTP/1.1 200 OK
+Server: nginx/1.6.0
+Date: Wed, 09 Jul 2014 23:30:51 GMT
+Content-Type: text/plain; charset=UTF-8
+
+12345

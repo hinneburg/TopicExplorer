@@ -8,11 +8,6 @@
   <artifactId>common-crawl</artifactId>
   <dependencies>
   	<dependency>
-  		<groupId>com.google.guava</groupId>
-  		<artifactId>guava</artifactId>
-  		<version>17.0</version>
-  	</dependency>
-  	<dependency>
   		<groupId>org.apache.hadoop</groupId>
   		<artifactId>hadoop-core</artifactId>
   		<version>1.2.1</version>
@@ -21,16 +16,6 @@
   		<groupId>junit</groupId>
   		<artifactId>junit</artifactId>
   		<version>4.11</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>com.google.code.gson</groupId>
-  		<artifactId>gson</artifactId>
-  		<version>2.2.4</version>
-  	</dependency>
-  	<dependency>
-  		<groupId>org.apache.commons</groupId>
-  		<artifactId>commons-lang3</artifactId>
-  		<version>3.3.2</version>
   	</dependency>
   	<dependency>
   		<groupId>org.apache.hadoop</groupId>

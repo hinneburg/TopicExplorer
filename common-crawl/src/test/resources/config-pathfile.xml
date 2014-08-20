@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<configuration>
+  <property>
+    <name>pathfile</name>
+    <value>/Users/florianluecke/Eclipse/workspace/TopicExplorer/common-crawl/src/test/resources/warc.path</value>
+  </property>
+</configuration>

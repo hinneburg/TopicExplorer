@@ -18,7 +18,6 @@ import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
-
 import org.commoncrawl.warc.WARCFileInputFormat;
 
 /**
@@ -60,24 +59,16 @@ public class BlogExtractorTool extends Configured implements Tool {
         // Read in any additional config parameters.
         if (configFile != null) {
             LOG.info("adding config parameters from '" + configFile + "'");
-            this.getConf().addResource(configFile);
+            this.getConf().addResource(new Path(configFile));
         }
 
         // Creates a new job configuration for this Hadoop job.
         Job job = new Job(this.getConf());
 
-        /**
-         * TODO: make inputpath configurable
-         */
-        String inputPath = "common-crawl/crawl-data/CC-MAIN-2014-23/segments/"
-                           + "1404776400583.60/warc/"
-                           + "CC-MAIN-20140707234000-00000-ip-10-180-212-248.ec2.internal.warc.gz";
-
         job.setJarByClass(BlogExtractorTool.class);
 
         // Scan the provided input path for ARC files.
-        LOG.info("setting input path to '" + inputPath + "'");
-        FileInputFormat.addInputPath(job, new Path(inputPath));
+        PathConfigurator.configureInputPaths(job, this.getConf());
 
         // Delete the output path directory if it already exists.
         LOG.info("clearing the output path at '" + outputPath + "'");

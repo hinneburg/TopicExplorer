@@ -21,7 +21,7 @@ public class RecordWrapper {
     /**
      * Extracts the body from an ArchiveRecord.
      * The body contains the full HTPP response of the server.
-     * 
+     *
      * @param record
      *            the record to extract from
      * @return the requested body
@@ -38,7 +38,7 @@ public class RecordWrapper {
 
     /**
      * Get the content of the record.
-     * 
+     *
      * @return the requested content
      */
     public String getContent() {
@@ -51,7 +51,7 @@ public class RecordWrapper {
 
     /**
      * Get only the HTTP body.
-     * 
+     *
      * @return the requested body
      */
     public String getHTTPBody() {
@@ -66,7 +66,7 @@ public class RecordWrapper {
 
     /**
      * Get only the HTTP header.
-     * 
+     *
      * @return the requested header
      */
     public String getHTTPHeader() {

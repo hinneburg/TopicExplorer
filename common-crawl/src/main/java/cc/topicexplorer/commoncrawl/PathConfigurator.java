@@ -31,7 +31,6 @@ public class PathConfigurator {
      */
     public static void configureInputPaths(Job job, Configuration config)
         throws IOException {
-        // TODO: implement
         Path[] paths = readPathsFromConfigFile(config);
         if (paths.length == 0) {
             throw new IOException("Configuration must contain input path settings.");

@@ -65,8 +65,7 @@ public class PathConfigurator {
                 paths[i] = new Path(pathStrings[i]);
             }
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            return new Path[0];
         }
 
         return paths;

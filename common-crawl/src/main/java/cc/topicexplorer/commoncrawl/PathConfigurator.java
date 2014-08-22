@@ -1,14 +1,14 @@
 package cc.topicexplorer.commoncrawl;
 
+import static cc.topicexplorer.commoncrawl.HelperUtils.loadFileAsArray;
+
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.fs.Path;
 import org.apache.log4j.Logger;
-import org.apache.commons.io.FileUtils;
 
 import java.io.IOException;
-import java.io.File;
 
 public class PathConfigurator {
     private static final Logger LOG                   = Logger.getLogger(PathConfigurator.class);
@@ -54,15 +54,12 @@ public class PathConfigurator {
             return new Path[] { inputPath };
         }
 
-        String pathfile = config.get(PATHFILE_CONFIG_NAME);
+        String pathFile = config.get(PATHFILE_CONFIG_NAME);
 
         Path[] paths = null;
 
-        String contents;
         try {
-            contents = FileUtils.readFileToString(new File(pathfile));
-            String[] pathStrings = contents.split("\n");
-
+            String[] pathStrings = loadFileAsArray(pathFile);
             paths = new Path[pathStrings.length];
             for (int i = 0; i < paths.length; i++) {
                 paths[i] = new Path(pathStrings[i]);

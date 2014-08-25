@@ -1,6 +1,5 @@
-package cc.topicexplorer.commoncrawl;
+package cc.topicexplorer.commoncrawl.test;
 
-import static cc.topicexplorer.commoncrawl.RecordWrapper.extractRecordBody;
 import static org.junit.Assert.assertEquals;
 
 import java.io.FileInputStream;
@@ -10,6 +9,8 @@ import java.io.IOException;
 import org.archive.io.ArchiveRecord;
 import org.archive.io.warc.WARCRecord;
 import org.junit.Test;
+
+import cc.topicexplorer.commoncrawl.RecordWrapper;
 
 public class RecordWrapperTest {
     private static final String TEST_RECORD_NAME = "/TestRecord.warc";
@@ -21,19 +22,7 @@ public class RecordWrapperTest {
         ArchiveRecord rec = new WARCRecord(f, "Test Record", 0);
         return rec;
     }
-
-    @Test
-    public void testExtractRecordBody() throws FileNotFoundException,
-        IOException {
-        ArchiveRecord record = makeNewRecord();
-        assertEquals(extractRecordBody(record),
-                     "HTTP/1.1 200 OK\r\n"
-                             + "Server: nginx/1.6.0\r\n"
-                             + "Date: Wed, 09 Jul 2014 23:30:51 GMT\r\n"
-                             + "Content-Type: text/plain; charset=UTF-8\r\n"
-                             + "\r\n" + "12345");
-    }
-
+    
     @Test
     public void testGetHeader() throws FileNotFoundException, IOException {
         ArchiveRecord record = makeNewRecord();

@@ -46,7 +46,7 @@ public class PathConfigurator {
         }
     }
 
-    protected static Path[] readPathsFromConfigFile(Configuration config) {
+    public static Path[] readPathsFromConfigFile(Configuration config) {
         String pathString = config.get(INPUTPATH_CONFIG_NAME);
 
         if (pathString != null) {

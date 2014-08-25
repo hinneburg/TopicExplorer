@@ -1,4 +1,4 @@
-package cc.topicexplorer.commoncrawl;
+package cc.topicexplorer.commoncrawl.test;
 
 import static cc.topicexplorer.commoncrawl.PathConfigurator.configureInputPaths;
 import static cc.topicexplorer.commoncrawl.PathConfigurator.readPathsFromConfigFile;

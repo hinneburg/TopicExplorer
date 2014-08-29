@@ -33,7 +33,7 @@
 		<module>plugin-hierarchicaltopic-webinterface</module>
 		<module>run-preprocessing</module>
 		<module>webapp</module>
-		<module>plugin-POS-preprocessing</module>
+		<module>plugin-pos-preprocessing</module>
 	</modules>
 	<dependencies>
 		<dependency>

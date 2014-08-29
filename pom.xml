@@ -4,7 +4,7 @@
 
 	<groupId>cc.topicexplorer</groupId>
 	<artifactId>topicexplorer-parent</artifactId>
-	<version>1.1-SNAPSHOT</version>
+	<version>1.1</version>
 	<url>http://topicexplorer.informatik.uni-halle.de</url>
 	<packaging>pom</packaging>
 
@@ -111,6 +111,10 @@
 		<repository>
 			<id>snapshots</id>
 			<url>https://moon.informatik.uni-halle.de/archiva/repository/snapshots-db</url>
+		</repository>
+		<repository>
+			<id>releases</id>
+			<url>https://moon.informatik.uni-halle.de/archiva/repository/releases-db</url>
 		</repository>
 	</repositories>
 

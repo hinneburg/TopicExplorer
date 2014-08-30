@@ -9,6 +9,7 @@ import org.apache.hadoop.fs.Path;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
+import java.util.List;
 
 public class PathConfigurator {
     private static final Logger LOG                   = Logger.getLogger(PathConfigurator.class);
@@ -59,10 +60,10 @@ public class PathConfigurator {
         Path[] paths = null;
 
         try {
-            String[] pathStrings = loadFileAsArray(pathFile);
-            paths = new Path[pathStrings.length];
+            List<String> pathStrings = loadFileAsArray(pathFile);
+            paths = new Path[pathStrings.size()];
             for (int i = 0; i < paths.length; i++) {
-                paths[i] = new Path(pathStrings[i]);
+                paths[i] = new Path(pathStrings.get(i));
             }
         } catch (IOException e) {
             return new Path[0];

@@ -5,6 +5,10 @@ import java.util.List;
 
 public class Function {
     public static <In, Out> List<Out> map(Function1<In, Out> f, Iterable<In> l) {
+        if (l == null) {
+            return new ArrayList<Out>();
+        }
+
         List<Out> newList = new ArrayList<Out>();
         for (In obj : l) {
             Out newObj = f.call(obj);
@@ -14,6 +18,10 @@ public class Function {
     }
     
     public static <In> List<In> filter(Function1<In, Boolean> f, Iterable<In> l) {
+        if (l == null) {
+            return new ArrayList<In>();
+        }
+
         List<In> newList = new ArrayList<In>();
         for (In in : l) {
             if (f.call(in) == true) {
@@ -24,6 +32,10 @@ public class Function {
     }
     
     public static <In, Out> Out reduce(Function2<Out, In, Out> f, Out first, Iterable<In> l) {
+        if (l == null) {
+            return first;
+        }
+
         Out current = first;
         for (In in : l) {
             current = f.call(current, in);

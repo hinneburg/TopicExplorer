@@ -11,8 +11,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
 import org.apache.hadoop.fs.GlobPattern;
-import org.apache.hadoop.io.ArrayWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.log4j.Logger;
@@ -20,6 +21,7 @@ import org.archive.io.ArchiveReader;
 
 import cc.topicexplorer.commoncrawl.statistics.StatisticsBuilder;
 
+import com.google.common.net.InternetDomainName;
 import com.rometools.rome.feed.synd.SyndContent;
 import com.rometools.rome.feed.synd.SyndEntry;
 import com.rometools.rome.feed.synd.SyndFeed;
@@ -42,7 +44,7 @@ public class BlogExtractor {
     private Pattern                 urlPattern;
     private Pattern                 titlePattern               = Pattern.compile("[\\p{InHiragana}]+");
 
-    public BlogExtractor(Mapper<Text, ArchiveReader, Text, ArrayWritable>.Context context) throws IOException {
+    public BlogExtractor(Mapper<Text, ArchiveReader, Text, Text>.Context context) throws IOException {
         // load valid URLs from config
         String validURLFile = context.getConfiguration().get(VALID_URL_FILE_CONFIG_NAME);
         List<String> lines = loadFileAsArray(validURLFile);
@@ -65,10 +67,12 @@ public class BlogExtractor {
      *             if writing to the context fails.
      */
     public void extract(RecordWrapper wrapper,
-                        Mapper<Text, ArchiveReader, Text, ArrayWritable>.Context context)
+                        Mapper<Text, ArchiveReader, Text, Text>.Context context)
         throws IOException, InterruptedException {
         String url = wrapper.getHeader().getUrl();
         if (this.urlPattern.matcher(url).matches()) {
+            InternetDomainName domainName = InternetDomainName.from(url);
+            String host = domainName.topPrivateDomain().toString();
             // the page url is valid
             StringReader reader = new StringReader(wrapper.getHTTPBody());
             SyndFeedInput in = new SyndFeedInput();
@@ -82,12 +86,21 @@ public class BlogExtractor {
                         String mainAuthor = entry.getAuthor();
                         String dateString = getPublishedDateRFC(entry);
                         String contentString = getContents(entry);
-                        ArrayWritable values = new ArrayWritable(new String[] {
-                                entryUrl, mainAuthor, dateString, contentString });
+                        String[] values = new String[] { entryUrl, mainAuthor,
+                                dateString, contentString };
+
+                        StringBuilder builder = new StringBuilder();
+                        CSVFormat format = CSVFormat.MYSQL.withHeader("entryUrl",
+                                                                      "mainAuthor",
+                                                                      "dateString",
+                                                                      "contentString");
+                        CSVPrinter printer = new CSVPrinter(builder, format);
+                        printer.printRecord((Object[])values);
 
                         if (contentString.length() != 0) {
-                            context.write(new Text(url), values);
+                            context.write(new Text(host), new Text(builder.toString()));
                         }
+                        printer.close();
                     }
                 }
                 buildStatistics(feed, context);
@@ -156,7 +169,7 @@ public class BlogExtractor {
      *            the context of the current mapper.
      */
     public void buildStatistics(SyndFeed feed,
-                                Mapper<Text, ArchiveReader, Text, ArrayWritable>.Context context) {
+                                Mapper<Text, ArchiveReader, Text, Text>.Context context) {
         for (StatisticsBuilder statisticsBuilder : this.statisticsBuilders) {
             statisticsBuilder.buildStatistics(feed, context);
         }

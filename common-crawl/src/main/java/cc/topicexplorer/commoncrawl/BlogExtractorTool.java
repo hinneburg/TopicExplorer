@@ -11,7 +11,6 @@ import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.ArrayWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.Job;
@@ -92,7 +91,7 @@ public class BlogExtractorTool extends Configured implements Tool {
 
         // Set the output data types.
         job.setOutputKeyClass(Text.class);
-        job.setOutputValueClass(ArrayWritable.class);
+        job.setOutputValueClass(Text.class);
 
         // Set which Mapper and Reducer classes to use.
         job.setMapperClass(BlogExtractorMap.BlogExtractorMapper.class);

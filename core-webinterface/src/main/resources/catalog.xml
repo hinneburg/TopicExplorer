@@ -1,21 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <catalog>
-	<command name="GetRandomDocsCoreCreate" className="cc.topicexplorer.actions.getrandomdocs.Create"/>
-	<command name="GetRandomDocsCoreCollect" className="cc.topicexplorer.actions.getrandomdocs.Collect"/>	
-	<command name="GetRandomDocsCoreGenerateSQL" className="cc.topicexplorer.actions.getrandomdocs.GenerateSQL"/>	
 	<command name="GetTopicsCoreCreate" className="cc.topicexplorer.actions.gettopics.Create"/>
-	<command name="GetTopicsCoreCollect" className="cc.topicexplorer.actions.gettopics.Collect"/>
 	<command name="GetTopicsCoreGenerateSQL" className="cc.topicexplorer.actions.gettopics.GenerateSQL"/>	
-	<command name="InitCoreCreate" className="cc.topicexplorer.actions.init.Create"/>
-	<command name="InitCoreCollect" className="cc.topicexplorer.actions.init.Collect"/>
-	<command name="InitCoreGenerateSQL" className="cc.topicexplorer.actions.init.GenerateSQL"/>	
 	<command name="ShowDocCoreCreate" className="cc.topicexplorer.actions.showdoc.Create"/>
-	<command name="ShowDocCoreCollect" className="cc.topicexplorer.actions.showdoc.Collect"/>
 	<command name="ShowDocCoreGenerateSQL" className="cc.topicexplorer.actions.showdoc.GenerateSQL"/>	
 	<command name="BestDocsCoreCreate" className="cc.topicexplorer.actions.bestdocs.Create"/>
 	<command name="BestDocsCoreGenerateSQL" className="cc.topicexplorer.actions.bestdocs.GenerateSQL"/>	
-	<command name="AllTermsCoreCreate" className="cc.topicexplorer.actions.getterms.Create"/>
-	<command name="AllTermsCoreGenerateSQL" className="cc.topicexplorer.actions.getterms.GenerateSQL"/>
+	<command name="GetTermsCoreCreate" className="cc.topicexplorer.actions.getterms.Create"/>
+	<command name="GetTermsCoreGenerateSQL" className="cc.topicexplorer.actions.getterms.GenerateSQL"/>
 	<command name="AutocompleteCoreCreate" className="cc.topicexplorer.actions.autocomplete.Create"/>
 	<command name="AutocompleteCoreGenerateSQL" className="cc.topicexplorer.actions.autocomplete.GenerateSQL"/>
 	<command name="SearchCoreCreate" className="cc.topicexplorer.actions.search.Create"/>

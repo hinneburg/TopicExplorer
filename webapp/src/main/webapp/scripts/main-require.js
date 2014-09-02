@@ -1,157 +1,83 @@
 require.config({
 	baseUrl : "./",
-	waitSeconds: 15,
 	paths : {
 		"knockout" : "scripts/lib/knockout-3.1.0",
 		"knockout-amd-helpers" : "scripts/lib/knockout-amd-helpers",
 		"knockout-postbox" : "scripts/lib/knockout-postbox",
 		"text" : "scripts/lib/text",
-		"jquery" : "scripts/lib/jquery-1.9.1.min",
-		"jquery-ui" : "scripts/lib/jquery-ui-1.10.3.custom.min",
+		"jquery" : "scripts/lib/jquery.min",
+		"jquery-ui" : "scripts/lib/jquery-ui.min",
 		"highstock" : "scripts/lib/highstock",
 		"moment": "scripts/lib/moment",
 		"filesaver": "scripts/lib/FileSaver"
+	},
+	shim: {
+		'jquery-ui': {
+            deps: ['jquery']
+        }
 	}
 });
 
-require([ "knockout","jquery", "scripts/modules/topicexplorer-view-model",
-		"knockout-amd-helpers", "knockout-postbox",
-		"text", "jquery-ui" ], function(ko, $, App) {
-	var timeoutId = null;
-	var self=this;
-	ko.bindingHandlers.module.baseDir = "scripts/modules";
-
-	// global delegates
-	$(document).delegate(".menuActivator", 'click', function(e){
-		if($(this).next().height() + 26 > $(this).parent().height()) {
-	    	$(this).next().css('max-height', $(this).parent().height() - 26);
-	    }
+require([ "knockout","jquery", "text!/JsonServlet?Command=getTopics", "knockout-amd-helpers", "knockout-postbox", "moment",	"text", "jquery-ui",
+          "scripts/modules/extenders/document-show-frames", 
+          "scripts/modules/extenders/document-show-text",
+          "scripts/modules/extenders/document-show-time",
+          "scripts/modules/extenders/document-browse-time",
+          "scripts/modules/extenders/document-browse-text",
+          "scripts/modules/extenders/topic-view-time",
+          "scripts/modules/extenders/topic-view-frame",
+          "scripts/modules/extenders/topic-view-wordtype"], function(ko, $, json) {
+	var self = this;
+	self.globalData = {};
+	var topics =  JSON.parse(json);
+	self.globalData.Topic = topics.Topic;
+	self.globalData.TOPIC_SORTING = topics.TOPIC_SORTING;
+	
+	for(var i in self.globalData.Topic) {
+		var termSorting = [];
+		globalData.Topic[i].FULL = {};
+		globalData.Topic[i].COUNT = {};
+		globalData.Topic[i].SORTING = {};
+		globalData.Topic[i].ITEMS = {};
+		globalData.Topic[i].ITEMS.KEYWORDS = {};
+		globalData.Topic[i].FULL.KEYWORDS = ko.observable(false);
+		if( self.globalData.Topic[i].Top_Terms.length < 20) {
+			globalData.Topic[i].FULL.KEYWORDS(true);
+		} 
+		self.globalData.Topic[i].COUNT.KEYWORDS = self.globalData.Topic[i].Top_Terms.length;
+		for(var j = 0; j <  topics.Topic[i].Top_Terms.length; j++) {
+			globalData.Topic[i].ITEMS.KEYWORDS[topics.Topic[i].Top_Terms[j].TermId] = {};
+			globalData.Topic[i].ITEMS.KEYWORDS[topics.Topic[i].Top_Terms[j].TermId].ITEM_ID = topics.Topic[i].Top_Terms[j].TermId;
+			globalData.Topic[i].ITEMS.KEYWORDS[topics.Topic[i].Top_Terms[j].TermId].ITEM_NAME = topics.Term[topics.Topic[i].Top_Terms[j].TermId].TERM_NAME;
+			globalData.Topic[i].ITEMS.KEYWORDS[topics.Topic[i].Top_Terms[j].TermId].ITEM_COUNT = topics.Topic[i].Top_Terms[j].relevance;			
 		
-		$(this).toggleClass("rotate1 rotate2");
-	    $(this).next().toggle('blind');
-	    	    
-	}).delegate("#invisbleTabs > span", 'click', function() {
-		$('#tabMenu').toggle('blind');
-	}).delegate("a.ui-corner-all", 'mouseover', function() {
-		$(this).addClass('ui-state-focus');
-	}).delegate("a.ui-corner-all", 'mouseout', function() {
-		$(this).removeClass('ui-state-focus');
-	}).delegate(".tab", 'mouseover', function() {
-		$(this).children('img').show();
-	}).delegate(".tab", 'mouseout', function() {
-		$(this).children('img').hide();
-	}).delegate(".documentList li", 'mouseenter', function(){
-		$(this).addClass('myHover').find(".docButtons").show();
-	}).delegate(".documentList li", 'mouseleave', function(){
-		$(this).removeClass('myHover').find(".docButtons").hide();
-	}).delegate(".ui-autocomplete .topicCircle, .topicCheckbox", "mouseover", function(){
-		var self = this;
-		if (!timeoutId) {
-	        timeoutId = window.setTimeout(function() {
-	            timeoutId = null; 
-	            moveToTopic($(self).attr('id').split('_')[1]);
-		    }, 1500);
+			termSorting.push(topics.Topic[i].Top_Terms[j].TermId);
 		}
-	}).delegate(".ui-autocomplete .topicCircle, .topicCheckbox", "mouseout", function(){
-		if (timeoutId) {
-		    window.clearTimeout(timeoutId);
-		    timeoutId = null;
-		}
-	}).delegate(".topicRect", "mouseover", function(){
-		$(this).css("height", "17px");
-		$(this).css("margin-top", "-1px");
-	}).delegate(".topicRect", "mouseout", function(){
-		$(this).css("height", "15px");
-		$(this).css("margin-top", "0px");
-	}).delegate(".topicList", "mouseenter", function(){
-		$(this).children(":first").show();
-	}).delegate("#desktop", "mouseenter", function(){
-		$(this).children(":first").show();
-		if($("#desktop").scrollTop() > 1000) {
-			$("#jumpToStart").show();
-		}
-	}).delegate("#desktop, .topicList", "mouseleave", function(){
-		$(this).children(":first").hide();
-		$(this).children(":first").next().hide();
-		$(this).children(":first").removeClass("rotate2");
-		$(this).children(":first").addClass("rotate1");
-		$("#jumpToStart").hide();
-	}).delegate("#jumpToStart", "click", function() {
-		$("#desktop").animate({
-			scrollTop: 0
-		});
-	}).delegate(".circles .topicCircle, .topicRect, .topicWord", "click", moveToTopic);
+		globalData.Topic[i].SORTING.KEYWORDS = ko.observableArray(termSorting);
+	}
 	
-	$(document).tooltip();
+	ko.bindingHandlers.module.baseDir = "scripts/modules";
 	
-	self.minHeight = 400;
-	self.minWidth = 800;
+	$(document).tooltip({ track: true });
+	
+	minHeight = 400;
+	minWidth = 800;
 
 	$(window).resize(function() {	
-		ko.postbox.publish("windowWidth",Math.max(self.minWidth, $(window).width(), /* For opera: */ document.documentElement.clientWidth));
-		ko.postbox.publish("windowHeight",Math.max(self.minHeight, $(window).height(), /* For opera: */ document.documentElement.clientHeight));
+		ko.postbox.publish("windowWidth",Math.max(minWidth, $(window).width(), /* For opera: */ document.documentElement.clientWidth));
+		ko.postbox.publish("windowHeight",Math.max(minHeight, $(window).height(), /* For opera: */ document.documentElement.clientHeight));
 	});
 	
-	setTimeout(function() {
-		ko.applyBindings(new App());
-	}, 0);
-
+	ko.applyBindings(new function() {} ());
+	
+	//fallback:
 	setTimeout(function() {
 		$(window).trigger('resize');
 	}, 3000);
-
-
+	setTimeout(function() {
+		$(window).trigger('resize');
+	}, 8000);
 });
 
-
-
-
-
-function makeMenu(el) {
-	$(el).menu({
-		select : function(event, ui) {
-			$(this).parent().parent().prev()
-				.toggleClass("rotate1 rotate2");
-			$(this).parent().parent().toggle('blind');		
-		}
-	});
-};
-
-function getScrollPositionByValue(val) {		var scroll = val;
-	var maxScrollPos = $('.topicPrevElCont').width() - $('.topicPrevSlider').width() - 8;
-	var maxScroll = $('.topicList > ul').width() - $('.topicList').width();
-	var position = Math.round(scroll*maxScrollPos/maxScroll);
-	if(position < 0)
-		position = 0;
-	if(position > maxScrollPos)
-		position = maxScrollPos;
-	return position;
-};
-
-function moveToTopic(self) {
-	
-	var topic_id = 0;	
-	if(!self.currentTarget) {
-		topic_id = self;
-	} else {
-		topic_id = $(self.currentTarget).attr('id').split("_")[1];
-	}
-	var offset = $(".topicList").width() / 2 - $("#topic" + topic_id).width() / 2;
-	$(".topicList").animate({
-		scrollLeft : ($("#topic" + topic_id).position().left - offset)
-	}, {
-		duration : 2000,
-		easing : "swing"
-	});
-	$(".topicPrevSlider").animate({
-		left : getScrollPositionByValue(($("#topic" + topic_id).position().left - offset))
-	}, {
-		duration : 2000,
-		easing : "swing"
-	});	
-	setTimeout(function() { 
-		$(".topicList > img, #topicMenu").css('left', $(".topicList").scrollLeft());	
-	}, 2000);
-};
 
 

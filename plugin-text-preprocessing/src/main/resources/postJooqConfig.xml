@@ -1,7 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <catalog>	
-  
 	<command name="Text_DocumentFill" className="cc.topicexplorer.plugin.text.preprocessing.tables.document.DocumentFill"/>
-	<command name="Text_TopicFill" className="cc.topicexplorer.plugin.text.preprocessing.tables.topic.TopicFill"/>
-	<command name="Text_TermFill" className="cc.topicexplorer.plugin.text.preprocessing.tables.term.TermFill"/>
 </catalog>

@@ -1,3 +1,3 @@
 #!/bin/sh
 
-exec java -classpath "etc:resources:lib/*:." cc.topicexplorer.Run
+exec java -Dfile.encoding=UTF-8 -classpath "etc:resources:lib/*:." cc.topicexplorer.Run

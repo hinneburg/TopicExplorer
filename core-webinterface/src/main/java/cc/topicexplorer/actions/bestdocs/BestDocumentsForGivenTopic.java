@@ -40,6 +40,31 @@ public class BestDocumentsForGivenTopic {
 		setServletWriter(out);
 		setNumberOfTopics(numberOfTopics);
 	}
+	
+	public BestDocumentsForGivenTopic(String topicId, Integer limit, Integer offset, Database db, PrintWriter out,
+			int numberOfTopics, String term) {
+		documentMap = new SelectMap();
+		documentMap.select.add("DOCUMENT.DOCUMENT_ID");
+		documentMap.select.add("DOCUMENT_TERM_TOPIC.TOPIC_ID");
+		documentMap.select.add("COUNT(*) AS DOCUMENT_COUNT");
+		documentMap.from.add("DOCUMENT");
+		documentMap.from.add("DOCUMENT_TERM_TOPIC");
+		documentMap.from.add("DOCUMENT_TOPIC");
+		documentMap.where.add("DOCUMENT.DOCUMENT_ID=DOCUMENT_TOPIC.DOCUMENT_ID");
+		documentMap.where.add("DOCUMENT.DOCUMENT_ID=DOCUMENT_TERM_TOPIC.DOCUMENT_ID");
+		documentMap.where.add("DOCUMENT_TERM_TOPIC.TOPIC_ID IN (" + topicId + ")");
+		documentMap.where.add("DOCUMENT_TERM_TOPIC.TERM IN ('" + term + "')");
+		documentMap.groupBy.add("DOCUMENT_ID");
+		documentMap.groupBy.add("DOCUMENT_TERM_TOPIC.TOPIC_ID");
+		documentMap.orderBy.add("DOCUMENT_COUNT DESC");
+		documentMap.orderBy.add("PR_DOCUMENT_GIVEN_TOPIC DESC");
+		documentMap.limit = limit;
+		documentMap.offset = offset;
+
+		setDatabase(db);
+		setServletWriter(out);
+		setNumberOfTopics(numberOfTopics);
+	}
 
 	public void setDatabase(Database database) {
 		this.database = database;
@@ -59,6 +84,7 @@ public class BestDocumentsForGivenTopic {
 
 	public void addDocumentColumn(String documentColumn, String documentColumnName) {
 		documentMap.select.add(documentColumn + " as " + documentColumnName);
+		documentMap.groupBy.add(documentColumnName);
 	}
 	
 	public void addWhereClause(String where) {
@@ -82,6 +108,7 @@ public class BestDocumentsForGivenTopic {
 
 		ArrayList<String> docColumnList = documentMap.getCleanColumnNames();
 		String docId;
+		String keywordTitle, keywordText;
 
 		try {
 			ResultSet mainQueryRS = database.executeQuery(documentMap.getSQLString());
@@ -95,11 +122,31 @@ public class BestDocumentsForGivenTopic {
 						+ " ORDER BY PR_TOPIC_GIVEN_DOCUMENT DESC LIMIT 4");
 				while (bestTopicsRS.next()) {
 					topTopic.add(bestTopicsRS.getInt("TOPIC_ID"));
-				}
+				}				
 				doc.put("TOP_TOPIC", topTopic);
+				
+				keywordTitle = "";
+				ResultSet keywordCountsRS = database.executeQuery("SELECT TERM, COUNT(TERM) FROM DOCUMENT_TERM_TOPIC WHERE DOCUMENT_ID="
+						+ docId + " GROUP BY TERM ORDER BY COUNT(TERM) DESC LIMIT 3");
+				while(keywordCountsRS.next()) {
+					keywordTitle += keywordCountsRS.getString("TERM") + " ";
+				}
+				doc.put("KEYWORD_TITLE", keywordTitle);
+				
+				keywordText = "";
+				ResultSet keywordPosRS = database.executeQuery("SELECT TERM FROM DOCUMENT_TERM_TOPIC WHERE DOCUMENT_ID="
+						+ docId + " ORDER BY POSITION_OF_TOKEN_IN_DOCUMENT LIMIT 50");
+				while(keywordPosRS.next()) {
+					keywordText += keywordPosRS.getString("TERM") + " ";
+				}
+				doc.put("KEYWORD_SNIPPET", keywordText);
+				
 				docs.put(docId, doc);
 				docSorting.add(docId);
 				topTopic.clear();
+				
+				
+				
 			}
 			all.put("DOCUMENT", docs);
 			all.put("DOCUMENT_SORTING", docSorting);

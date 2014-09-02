@@ -18,9 +18,15 @@ public class Create extends TableSelectCommand {
 		PrintWriter pw = context.get("SERVLET_WRITER", PrintWriter.class);
 		int limit = Integer.parseInt(properties.getProperty("DocBrowserLimit"));
 		int numberOfTopics = Integer.parseInt(properties.getProperty("malletNumTopics"));
-
-		BestDocumentsForGivenTopic bestDocAction = new BestDocumentsForGivenTopic(topicId, limit, offset, database, pw,
-				numberOfTopics);
+		BestDocumentsForGivenTopic bestDocAction;
+		if(context.containsKey("term")) {
+			String term = context.getString("term");
+			bestDocAction = new BestDocumentsForGivenTopic(topicId, limit, offset, database, pw,
+					numberOfTopics, term);
+		} else {
+			bestDocAction = new BestDocumentsForGivenTopic(topicId, limit, offset, database, pw,
+					numberOfTopics);
+		}
 		context.bind("BEST_DOC_ACTION", bestDocAction);
 	}
 

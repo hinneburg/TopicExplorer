@@ -1,0 +1,54 @@
+<div id="desktop" data-bind="style: {height: $parents[1].desktopHeight() + 'px'}, event: {scroll: scrollCallback}">
+	<!-- ko if: browseData[active()].sortingOptions().length > 1 || browseData[active()].textSelectArray().length > 1 -->
+		<div id="browserToolbar" style="border-bottom: 1px solid  #DCDCDC; margin: 0 0 10px 0; padding: 10px 0 10px 30px; font-size:80%">
+			<!-- ko if: browseData[active()].textSelectArray().length > 1-->
+				<select data-bind="options: browseData[active()].textSelectArray, value: browseData[active()].textSelection, optionsText: 'label'"></select>
+				<span style="padding-left: 20px"></span>
+			<!-- /ko -->
+			<!-- ko if: browseData[active()].sortingOptions().length > 1-->
+				Sorting: 
+				<!-- ko foreach: browseData[active()].sortingOptions -->
+					<input type="radio" name="mark" value="RELEVANCE" data-bind="checked: $parent.browseData[$parent.active()].selectedSorting, attr: {value: $data, id: 'sorting' + $data}" >
+					<label data-bind="attr:{for:'sorting' +$data}, text: $data"></label>
+				<!--  /ko -->
+			<!-- /ko -->
+		</div>
+	<!-- /ko -->
+	<div class="documentList" style="height: 100%;">		
+		<div class="jumpToStart" data-bind="style: {left: (windowWidth() / 2 - 14) + 'px'}, click: function() { $('#desktop').scrollTop(0) }">^</div>
+		<ul	class="browser" style="height: 100%;">	
+		<!-- ko ifnot: firstLoading --> 
+			<!-- ko foreach: {data:browseData[active()].selectedDocuments,  as: 'selectedDocument'} -->
+				<li class="documents" data-bind="attr: { 'id': 'doc_' + selectedDocument}, style: {width:$parent.documentElementWidth() + 'px'}">
+					<span data-bind="text: $index() + 1" style="float:left; font-size: xx-small; color: darkgrey"></span>
+					<div>
+						<div class="docTitle">
+							<a href="#" data-bind="click: $parent.loadDocument, attr: {id: 'doc' + selectedDocument}"><nobr data-bind="text: globalData.DOCUMENT[selectedDocument][$parent.browseData[$parent.active()].textSelection().field + 'TITLE']"></nobr></a>
+						</div>
+						<p class="docContent">
+							<!--  ko if: typeof  globalData.DOCUMENT[selectedDocument].TIME$TIME_STAMP != 'undefined'-->
+								<span style="font-size:xx-small; color: #7f7f7f" class="date" data-bind="text: moment( globalData.DOCUMENT[selectedDocument].TIME$TIME_STAMP * 1000).format('LLL');"></span><br/>
+							<!-- /ko -->
+							<span data-bind="text: globalData.DOCUMENT[selectedDocument][$parent.browseData[$parent.active()].textSelection().field + 'SNIPPET'], click: $parent.moveToTopic"></span>
+						</p>
+					</div>					
+					<div class="circles">
+						<!--  ko foreach: globalData.DOCUMENT[selectedDocument].TOP_TOPIC --> 
+						<span class="topicCheckboxCircle topicCircle" data-bind="style: {color: globalData.Topic[$data].COLOR_TOPIC$COLOR}, attr: {id: 't_' + $data, title: 'Topic ' + $data}, click: $parents[1].moveToTopic" >&#9679;</span><br/>
+						<!-- /ko -->
+					</div>
+				</li>
+			<!-- /ko -->
+			<!--  ko if: (!browseData[active()].selectedDocuments().length && !loading()) -->
+				<li style="border: 0; background-color: #f5f5f5; top: 20px;" data-bind="style: {left: (windowWidth() / 2 - 34) + 'px'}"><span>no results</span></li>
+			<!--  /ko -->
+		<!-- /ko -->
+		<!--  ko if: loading -->
+			<li data-bind="style: {width: documentElementWidth() + 'px', border: '0', backgroundColor: '#f5f5f5'}">
+				<img data-bind="style: {marginLeft: (documentElementWidth() / 2 - 16) + 'px', marginTop: '24px'}" src="images/ajax-loader.gif" alt="Loading"/>
+			</li>
+		<!-- /ko -->		
+		</ul>
+		
+	</div>
+</div>

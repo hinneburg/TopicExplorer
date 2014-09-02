@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>cc.topicexplorer</groupId>
 		<artifactId>topicexplorer-parent</artifactId>
-		<version>1.1-SNAPSHOT</version>
+		<version>1.2-SNAPSHOT</version>
 	</parent>
 	<artifactId>plugin-time-webinterface</artifactId>
 	<dependencies>
@@ -15,7 +15,7 @@
 		<dependency>
 			<groupId>cc.topicexplorer</groupId>
 			<artifactId>core-webinterface</artifactId>
-			<version>1.1-SNAPSHOT</version>
+			<version>1.2-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 	<name>plugin-time-webinterface</name>

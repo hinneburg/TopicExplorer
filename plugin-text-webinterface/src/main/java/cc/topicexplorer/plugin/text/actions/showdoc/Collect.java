@@ -3,8 +3,8 @@ package cc.topicexplorer.plugin.text.actions.showdoc;
 import java.util.Set;
 
 import cc.commandmanager.core.Context;
+import cc.topicexplorer.actions.showdoc.ShowDoc;
 import cc.topicexplorer.commands.TableSelectCommand;
-import cc.topicexplorer.database.SelectMap;
 
 import com.google.common.collect.Sets;
 
@@ -12,12 +12,12 @@ public class Collect extends TableSelectCommand {
 
 	@Override
 	public void tableExecute(Context context) {
-		SelectMap documentMap = context.get("DOCUMENT_QUERY", SelectMap.class);
+		ShowDoc showDocAction = context.get("SHOW_DOC_ACTION", ShowDoc.class);
+		
+		showDocAction.addDocumentColumn("DOCUMENT.TEXT$TITLE", "TEXT$TITLE");
+		showDocAction.addDocumentColumn("DOCUMENT.TEXT$FULLTEXT", "TEXT$FULLTEXT");
 
-		documentMap.select.add("DOCUMENT.TEXT$TITLE");
-		documentMap.select.add("DOCUMENT.TEXT$FULLTEXT");
-
-		context.rebind("DOCUMENT_QUERY", documentMap);
+		context.rebind("SHOW_DOC_ACTION", showDocAction);
 	}
 
 	@Override

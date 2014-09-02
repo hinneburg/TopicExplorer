@@ -20,12 +20,14 @@ public class BestFrames {
 
 	public BestFrames(Database database, PrintWriter pw, Logger logger) {
 		frameMap = new SelectMap();
-		frameMap.select.add("FRAME");
-		frameMap.select.add("FRAME_COUNT");
+		frameMap.select.add("FRAME AS ITEM_NAME");
+		frameMap.select.add("FRAME_COUNT AS ITEM_COUNT");
 		frameMap.select.add("TOPIC_ID");
-		frameMap.from.add("BEST_FRAMES");
+		frameMap.select.add("FRAME_TYPE");
+		frameMap.from.add("FRAME$BEST_FRAMES");
 		frameMap.orderBy.add("TOPIC_ID");
-		frameMap.orderBy.add("FRAME_COUNT DESC");
+		frameMap.orderBy.add("FRAME_TYPE");
+		frameMap.orderBy.add("ITEM_COUNT DESC");
 
 		this.setDatabase(database);
 		this.setServletWriter(pw);
@@ -51,26 +53,36 @@ public class BestFrames {
 		ArrayList<String> frameColumnList = frameMap.getCleanColumnNames();
 		
 		frameColumnList.remove("TOPIC_ID");
+		frameColumnList.remove("FRAME_TYPE");
 		
 		JSONObject topicData = new JSONObject();
 		JSONObject frameData = new JSONObject();
 		JSONObject frames = new JSONObject();
+		JSONObject frameTypes = new JSONObject();
 		JSONObject all = new JSONObject();
 		JSONArray sorting = new JSONArray();
 
 		ResultSet frameQueryRS = database.executeQuery(frameMap.getSQLString());
 		int topicId = -1;
+		String frameType = "";
 		int counter = 0;
 		while (frameQueryRS.next()) {
-			if (topicId != frameQueryRS.getInt("TOPIC_ID")) {
-				if (topicData.size() > 0) {
-					frames.put("FRAMES", topicData);
-					frames.put("SORTING", sorting);
-					all.put(topicId, frames);
+			if (!frameType.equals(frameQueryRS.getString("FRAME_TYPE"))) {
+				if (frameType.length() > 0) {
+					topicData.put("SORTING", sorting);
+					frames.put(frameType, topicData);
+					if(topicId != frameQueryRS.getInt("TOPIC_ID")) {
+						frameTypes.put("ITEMS", frames);
+						all.put(topicId, frameTypes);
+						frames = new JSONObject();
+						frameTypes = new JSONObject();
+					}
+					
 					topicData = new JSONObject();
 					sorting = new JSONArray();
 					counter = 0;
-				} 
+				}
+				frameType = frameQueryRS.getString("FRAME_TYPE");
 				topicId = frameQueryRS.getInt("TOPIC_ID");
 			} 
 			
@@ -82,10 +94,10 @@ public class BestFrames {
 			sorting.add(counter);
 			counter ++;
 		}
-		frames = new JSONObject();
-		frames.put("FRAMES", topicData);
-		frames.put("SORTING", sorting);
-		all.put(topicId, frames);
+		topicData.put("SORTING", sorting);
+		frames.put(frameType, topicData);
+		frameTypes.put("ITEMS", frames);
+		all.put(topicId, frameTypes);
 
 		outWriter.print(all.toString());
 	}

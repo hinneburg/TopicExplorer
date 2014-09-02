@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <catalog>
-	<command name="GetRandomDocsLinkCollect" className="cc.topicexplorer.plugin.link.actions.getrandomdocs.Collect"/>	
-	<command name="InitLinkCollect" className="cc.topicexplorer.plugin.link.actions.init.Collect"/>
 	<command name="BestDocsLinkCollect" className="cc.topicexplorer.plugin.link.actions.bestdocs.Collect"/>
 	<command name="SearchLinkCollect" className="cc.topicexplorer.plugin.link.actions.search.Collect"/>
+	<command name="ShowDocLinkCollect" className="cc.topicexplorer.plugin.link.actions.showdoc.Collect"/>
 </catalog>

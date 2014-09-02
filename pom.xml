@@ -4,7 +4,7 @@
 
 	<groupId>cc.topicexplorer</groupId>
 	<artifactId>topicexplorer-parent</artifactId>
-	<version>1.1-SNAPSHOT</version>
+	<version>1.2-SNAPSHOT</version>
 	<url>http://topicexplorer.informatik.uni-halle.de</url>
 	<packaging>pom</packaging>
 
@@ -14,8 +14,11 @@
 		<module>core-webinterface</module>
 		<module>distribution</module>
 		<module>plugin-text-preprocessing</module>
+		<module>plugin-text-webinterface</module>
 		<module>plugin-colortopic-preprocessing</module>
+		<module>plugin-colortopic-webinterface</module>
 		<module>plugin-hierarchicaltopic-preprocessing</module>
+		<module>plugin-hierarchicaltopic-webinterface</module>
 		<module>plugin-prune-preprocessing</module>
 		<module>plugin-category-preprocessing</module>
 		<module>plugin-duplicates-preprocessing</module>
@@ -23,14 +26,12 @@
 		<module>plugin-frame-webinterface</module>
 		<module>plugin-fulltext-preprocessing</module>
 		<module>plugin-link-preprocessing</module>
+		<module>plugin-link-webinterface</module>
 		<module>plugin-time-preprocessing</module>
+		<module>plugin-time-webinterface</module>
 		<module>plugin-wiki-preprocessing</module>
 		<module>plugin-wordtype-preprocessing</module>
-		<module>plugin-text-webinterface</module>
-		<module>plugin-link-webinterface</module>
-		<module>plugin-time-webinterface</module>
-		<module>plugin-colortopic-webinterface</module>
-		<module>plugin-hierarchicaltopic-webinterface</module>
+		<module>plugin-wordtype-webinterface</module>
 		<module>run-preprocessing</module>
 		<module>webapp</module>
 		<module>plugin-pos-preprocessing</module>
@@ -57,6 +58,7 @@
 				<configuration>
 					<source>1.6</source>
 					<target>1.6</target>
+					<encoding>UTF-8</encoding>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -87,14 +89,18 @@
 			<resource>
 				<directory>src/main/resources</directory>
 				<excludes>
-					<exclude>**/*.xml</exclude>
+					<exclude>**/preJooqConfig.xml</exclude>
+					<exclude>**/postJooqConfig.xml</exclude>
+					<exclude>**/catalog.xml</exclude>
 					<exclude>scripts/*</exclude>
 				</excludes>
 			</resource>
 			<resource>
 				<directory>src/main/resources</directory>
 				<includes>
-					<include>**/*.xml</include>
+					<include>**/preJooqConfig.xml</include>
+					<include>**/postJooqConfig.xml</include>
+					<include>**/catalog.xml</include>
 				</includes>
 				<targetPath>cc/topicexplorer/${project.artifactId}/catalog</targetPath>
 			</resource>
@@ -106,6 +112,10 @@
 		<repository>
 			<id>snapshots</id>
 			<url>https://moon.informatik.uni-halle.de/archiva/repository/snapshots-db</url>
+		</repository>
+		<repository>
+			<id>releases</id>
+			<url>https://moon.informatik.uni-halle.de/archiva/repository/releases-db</url>
 		</repository>
 	</repositories>
 

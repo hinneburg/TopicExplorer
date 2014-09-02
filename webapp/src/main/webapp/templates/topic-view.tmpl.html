@@ -1,15 +1,39 @@
 <div class="topicList" data-bind="style: { height: topicListHeight() + 'px'}">
-	<img class="menuActivator rotate1" src="images/Black_Settings.png" alt="&gt;"  style="display: none;position: absolute;z-index:3; margin: 3px 0 0 1px" />
-	<div id="topicMenu"
-		style="display: none; position: absolute; z-index: 1; top:20px; overflow:auto; left: 1px;padding: 3px 0 0 1px">
-		<div  data-bind="template: {name: 'topic-menu-view', afterRender: makeMenu}"></div>
+  	<img id="topicMenuActivator" class="menuActivator rotate1" src="images/Black_Settings.png" alt="&gt;"  style="font-size: xx-large;position: absolute;z-index:3; margin: 3px 0 0 1px"/>
+  	<div id="topicMenu"
+		style="background-color: whitesmoke; display: none; position: absolute; z-index: 1; top:20px; overflow:auto; left: 1px;padding: 3px 0 0 1px" data-bind="style: { height: (topicListHeight() - 25) + 'px'}">
+		<ul class="topicMenuclass ui-menu ui-widget ui-widget-content" style="border:0; margin: 1px;" data-bind="foreach: textSelectArray">
+			<li style="font-weight: normal" class="ui-menu-item" data-bind="text: $data.label, click: $parent.textSelection, event: {mouseover: function(data, event) { $(event.target).addClass('ui-state-focus');}, mouseout: function(data, event) { $(event.target).removeClass('ui-state-focus');} }"></li>
+		</ul>
 	</div>
-	<ul data-bind="foreach: {data: selectedTopics, as: 'selectedTopic'}, style {width: $('.topicList > ul > li').size() * 213 + 'px'}">
-		<li class="topic" data-bind="attr:{ 'id' : 'topic' + selectedTopic}, style: { height: ($parent.topicListHeight() - 14) + 'px', backgroundColor: $root.topicexplorer.data.topic[selectedTopic].COLOR_TOPIC$COLOR}">
+
+	<ul data-bind="foreach: {data: selectedTopics, as: 'selectedTopic'}, style {width: $('.topicList > ul > li').size() * 213 + 'px'}" >
+		<li class="topic" data-bind="attr:{ 'id' : 'topic_' + selectedTopic}, style: { height: ($parent.topicListHeight() - 14) + 'px', backgroundColor: globalData.Topic[selectedTopic].COLOR_TOPIC$COLOR}">
 			<div data-bind="text: selectedTopic" style="font-size: xx-small; float:left;"></div>
-			<div  class="topicElementDiv" data-bind="module: { name: $parent.topicPluginTemplate,template:$parent.topicPluginTemplate}"></div>
+			<div  class="topicElementDiv">			
+				<div class="topicElementMenu">
+					<!-- ko if: typeof $parent.loadTimeViewForTopic == 'function' -->
+						<button class="timeView" name="timeView" title="show time chart" type="button" data-bind="click: function() { $parent.loadTimeViewForTopic(selectedTopic)}"></button>
+					<!-- /ko -->
+				</div>
+				<div class="topicTitle"><a href="#" data-bind="text: $parent.Topic[selectedTopic].TITLE_REPRESENTATION[$parent.textSelection().field],click: function() { $parent.loadDocumentsForTopic(selectedTopic)}"></a></div>
+				<div class="topicElementContent" data-bind="event: {scroll: function() { $parent.scrollCallback[$parent.textSelection().field](selectedTopic)}}, attr: {title:  $parent.Topic[selectedTopic].INFO_HIGHLIGHT[$parent.textSelection().field]}, style: {height: ($parent.topicListHeight() - 33) + 'px'}">
+					<ul class="wordList">
+						<li>
+							<div class="jumpToStart" data-bind="click: function(data, event) { $(event.target).parents('.topicElementContent').scrollTop(0) }" style="left:60px;">^</div>
+						</li>
+						<!-- ko foreach: {data: globalData.Topic[selectedTopic].SORTING[$parent.textSelection().field], as: 'item'} -->
+							<li><a href="#" data-bind="text: globalData.Topic[selectedTopic].ITEMS[$parents[1].textSelection().field][item].ITEM_NAME + ' (' + globalData.Topic[selectedTopic].ITEMS[$parents[1].textSelection().field][item].ITEM_COUNT + ')', click: function(data, event) { $parents[1].loadDocumentsForItem[$parents[1].textSelection().field](item, event)}"></a></li>
+						<!-- /ko -->
+						<!-- ko if: !globalData.Topic[selectedTopic].FULL[$parent.textSelection().field]() -->
+							<li><img src="images/ajax-loader.gif" alt="Loading"/></li>
+						<!-- /ko -->
+					</ul>
+				</div>
+			</div>
 		</li>
 	</ul>
+
 </div>
 <div class="pointer">&#9650;</div>
-<div class="bottom" data-bind="module: { name: 'topic-slider-view', template: 'topic-view-slider'}"></div>
+<div class="bottom" data-bind="module: { name: 'topic-slider-view', afterRender: triggerResize}"></div>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <catalog>	
-  
-	
+	<command name="WordType_TermFill" className="cc.topicexplorer.plugin.wordtype.preprocessing.tables.term.TermFill"/> 
+	<command name="WordType_BestTermsFill" className="cc.topicexplorer.plugin.wordtype.preprocessing.tables.bestterms.BestTermsFill"/> 
 </catalog>

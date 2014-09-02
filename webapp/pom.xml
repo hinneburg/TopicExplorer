@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>cc.topicexplorer</groupId>
 		<artifactId>topicexplorer-parent</artifactId>
-		<version>1.1-SNAPSHOT</version>
+		<version>1.2-SNAPSHOT</version>
 	</parent>
 	<artifactId>webapp</artifactId>
 	<packaging>war</packaging>
@@ -26,47 +26,52 @@
 		<dependency>
 			<groupId>cc.commandmanager</groupId>
 			<artifactId>command-manager</artifactId>
-<version>1.0beta</version>
+			<version>1.0beta</version>
 		</dependency>
 		<dependency>
 			<groupId>cc.topicexplorer</groupId>
 			<artifactId>core-common</artifactId>
-			<version>1.1-SNAPSHOT</version>
+			<version>1.2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>cc.topicexplorer</groupId>
 			<artifactId>core-webinterface</artifactId>
-			<version>1.1-SNAPSHOT</version>
+			<version>1.2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>cc.topicexplorer</groupId>
 			<artifactId>plugin-link-webinterface</artifactId>
-			<version>1.1-SNAPSHOT</version>
+			<version>1.2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>cc.topicexplorer</groupId>
 			<artifactId>plugin-text-webinterface</artifactId>
-			<version>1.1-SNAPSHOT</version>
+			<version>1.2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>cc.topicexplorer</groupId>
 			<artifactId>plugin-time-webinterface</artifactId>
-			<version>1.1-SNAPSHOT</version>
+			<version>1.2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>cc.topicexplorer</groupId>
 			<artifactId>plugin-colortopic-webinterface</artifactId>
-			<version>1.1-SNAPSHOT</version>
+			<version>1.2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>cc.topicexplorer</groupId>
 			<artifactId>plugin-hierarchicaltopic-webinterface</artifactId>
-			<version>1.1-SNAPSHOT</version>
+			<version>1.2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>cc.topicexplorer</groupId>
 			<artifactId>plugin-frame-webinterface</artifactId>
-			<version>1.1-SNAPSHOT</version>
+			<version>1.2-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>cc.topicexplorer</groupId>
+			<artifactId>plugin-wordtype-webinterface</artifactId>
+			<version>1.2-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 
@@ -126,5 +131,12 @@
 			<name>Archiva Snapshot Repository on 'moon'</name>
 			<url>https://moon.informatik.uni-halle.de/archiva/repository/snapshots-db</url>
 		</snapshotRepository>
+<!-- 
+		<repository>
+			<id>releases-write</id>
+			<name>Archiva Release Repository on 'moon'</name>
+			<url>https://moon.informatik.uni-halle.de/archiva/repository/releases-db</url>
+		</repository>
+		 -->
 	</distributionManagement>
 </project>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <catalog>	
-  
 	<command name="WordType_DocumentTermTopicCreate" className="cc.topicexplorer.plugin.wordtype.preprocessing.tables.documenttermtopic.DocumentTermTopicCreate"/>
-	
+	<command name="WordType_TermCreate" className="cc.topicexplorer.plugin.wordtype.preprocessing.tables.term.TermCreate"/>
+	<command name="WordType_BestTermsCreate" className="cc.topicexplorer.plugin.wordtype.preprocessing.tables.bestterms.BestTermsCreate"/>
 </catalog>

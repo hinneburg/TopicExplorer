@@ -3,8 +3,8 @@ package cc.topicexplorer.plugin.hierarchicaltopic.actions.gettopics;
 import java.util.Set;
 
 import cc.commandmanager.core.Context;
+import cc.topicexplorer.actions.gettopics.GetTopics;
 import cc.topicexplorer.commands.TableSelectCommand;
-import cc.topicexplorer.database.SelectMap;
 
 import com.google.common.collect.Sets;
 
@@ -12,17 +12,14 @@ public class Collect extends TableSelectCommand {
 
 	@Override
 	public void tableExecute(Context context) {
+		GetTopics getTopicsAction = context.get("GET_TOPICS_ACTION", GetTopics.class);
 
-		SelectMap mainQueryMap, preQueryMap;
-
-		mainQueryMap = context.get("MAIN_QUERY", SelectMap.class);
-		mainQueryMap.select.add("TOPIC.HIERARCHICAL_TOPIC$START");
-		mainQueryMap.select.add("TOPIC.HIERARCHICAL_TOPIC$CLUSTER_MEMBERSHIP");
-		context.rebind("MAIN_QUERY", mainQueryMap);
-
-		preQueryMap = context.get("PRE_QUERY", SelectMap.class);
-		preQueryMap.where.add("TOPIC.HIERARCHICAL_TOPIC$START=TOPIC.HIERARCHICAL_TOPIC$END");
-		context.rebind("PRE_QUERY", preQueryMap);
+		getTopicsAction.addTopicColumn("TOPIC.HIERARCHICAL_TOPIC$START", "HIERARCHICAL_TOPIC$START");
+		getTopicsAction.addTopicColumn("TOPIC.HIERARCHICAL_TOPIC$CLUSTER_MEMBERSHIP", "HIERARCHICAL_TOPIC$CLUSTER_MEMBERSHIP");
+		getTopicsAction.addWhereClause("TOPIC.HIERARCHICAL_TOPIC$START=TOPIC.HIERARCHICAL_TOPIC$END");
+		getTopicsAction.addOrderBy("TOPIC.HIERARCHICAL_TOPIC$START");
+		
+		context.rebind("GET_TOPICS_ACTION", getTopicsAction);
 	}
 
 	@Override

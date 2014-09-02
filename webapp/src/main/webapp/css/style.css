@@ -189,7 +189,6 @@ html, body {
 }
 .leftBody .topicList .topicElementMenu {
 	float: right;
-	height: 25px;
 }
 .leftBody .topicList button {
 	height: 20px;
@@ -225,9 +224,8 @@ html, body {
     white-space: nowrap;
 }
 .leftBody .topicList .topicElementContent {
-	margin-left: 5%;
     overflow: auto;
-    width: 90%;
+    width: 100%;
     text-align: center;
     height: 87%;
 }
@@ -395,7 +393,7 @@ html, body {
 height: 200px;
 }
 
-#jumpToStart {
+.jumpToStart {
 	padding: 15px 15px 0; 
 	background-color: #F5F5F5; 
 	border: 1px solid #DCDCDC; 
@@ -407,7 +405,7 @@ height: 200px;
 	z-index:3;
 	color: darkgray;
 }
-#jumpToStart:hover {
+.jumpToStart:hover {
 	cursor: pointer;	
 }
 .ui-tooltip {
@@ -423,4 +421,16 @@ height: 200px;
 
 .topicWord {
 	cursor: pointer;
+}
+
+#topicMenuActivator:hover {
+	text-decoration: none;
+}
+
+a {
+	color: black;
+	text-decoration: none;
+}
+a:hover {
+	text-decoration: underline;
 }

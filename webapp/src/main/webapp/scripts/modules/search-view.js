@@ -1,15 +1,17 @@
 define(
-		[ "knockout", "jquery", "jquery-ui", "scripts/modules/tab-view" ],
+		[ "knockout", "jquery", "jquery-ui"],
 		function(ko, $) {
+			var self = this;
 			self.loadDocumentsForSearch = function() {
 				var searchWord = $('#searchField').val();
-				topicexplorerModel.newTab("Command=search&SearchWord="
-						+ searchWord, "Search: " + searchWord, 'document-view',
-						new Array());
+				ko.postbox.publish('openNewTab', {moduleName:"document-browse-tab",tabHeading:"Search " + searchWord, data: {searchWord: searchWord, getParam: "search&SearchWord=" + searchWord}});
+//				
+//				topicexplorerModel.newTab("Command=search&SearchWord="
+//						+ searchWord, "Search: " + searchWord, 'document-view',
+//						new Array());
 			};
 
-			self.windowWidth = ko.observable(
-					topicexplorerModel.view.windowWidth).subscribeTo(
+			self.windowWidth = ko.observable(1024).subscribeTo(
 					"windowWidth");
 			self.leftPadding = ko.computed(function() {
 				$('.searchBar').css('margin-left',
@@ -72,7 +74,7 @@ define(
 							+ ($('#' + boxID).width() + 20) + "px;white-space: nowrap;\">"
 							+ item.label;
 					for (var i = 0; i < item.color.length; i++) {
-						circleString += self.generateCircle(item.color[i], i);
+//						circleString += self.generateCircle(item.color[i], i);
 					}
 					circleString += "</a>";
 					return $("<li class=\"autocompleteEntry\"></li>").data(
@@ -81,20 +83,20 @@ define(
 				};
 			};
 
-			self.generateCircle = function(color, itemIdx) {
-				var topic = topicexplorerModel.data.topic[color];
-				if (!topic)
-					return "";
-				var circleString = "<span class=\"topicCircle\" id=\"t_"
-						+ color
-						+ "\" "
-						+ "style=\"color:"
-						+ topic.COLOR_TOPIC$COLOR
-						+ "\" title=\"Topic "
-						+ color
-						+ "\">&#9679;</span>";
-
-				return circleString;
-			};
+//			self.generateCircle = function(color, itemIdx) {
+//				var topic = topicexplorerModel.data.topic[color];
+//				if (!topic)
+//					return "";
+//				var circleString = "<span class=\"topicCircle\" id=\"t_"
+//						+ color
+//						+ "\" "
+//						+ "style=\"color:"
+//						+ topic.COLOR_TOPIC$COLOR
+//						+ "\" title=\"Topic "
+//						+ color
+//						+ "\">&#9679;</span>";
+//
+//				return circleString;
+//			};
 			return self;
 		});

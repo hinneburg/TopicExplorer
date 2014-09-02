@@ -2,6 +2,8 @@ package cc.topicexplorer.plugin.pos.preprocessing.dispatchers;
 
 import java.util.List;
 
+import cc.topicexplorer.plugin.pos.preprocessing.tools.Token;
+
 public class Dispatcher {
 	
 	public static final int german = 1;
@@ -33,5 +35,5 @@ public class Dispatcher {
 	
 	public void initialize(String path){}
 	public int getSentencesNumber() {return 0;}
-	public List<String[]> tokenizeSentence(int sentenceNumber) { return null;}
-}
+	public boolean getNextToken (Token token) {return false;}
+	}

@@ -6,7 +6,7 @@
 		<artifactId>topicexplorer-parent</artifactId>
 		<version>1.1-SNAPSHOT</version>
 	</parent>
-	<artifactId>plugin-POS-preprocessing</artifactId>
+	<artifactId>plugin-pos-preprocessing</artifactId>
 	<dependencies>
 		<dependency>
 			<groupId>org.apache.opennlp</groupId>
@@ -27,6 +27,12 @@
 			<groupId>net.sourceforge.javacsv</groupId>
 			<artifactId>javacsv</artifactId>
 			<version>2.0</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>cc.topicexplorer</groupId>
+			<artifactId>lucene-analyzer-treetagger</artifactId>
+			<version>1.0.0</version>
 		</dependency>
 	</dependencies>
 </project>

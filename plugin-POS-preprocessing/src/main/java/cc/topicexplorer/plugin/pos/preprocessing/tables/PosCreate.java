@@ -6,6 +6,8 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import com.google.common.collect.Sets;
+
 import cc.topicexplorer.commands.TableCreateCommand;
 
 
@@ -17,14 +19,23 @@ public class PosCreate extends TableCreateCommand {
 	@Override
 	public void createTable() {
 		try {
-			database.executeUpdateQuery(" CREATE TABLE `" + this.tableName + "` ( "
+			database.executeUpdateQuery("ALTER IGNORE TABLE `" + this.tableName
+					+ "` ADD COLUMN POS$CONTINUATION` INT(11);");
+
+			database.executeUpdateQuery("ALTER IGNORE TABLE `" + this.tableName
+					+ "` ADD COLUMN POS$CONTINUATION_POS` varchar(255) COLLATE utf8_bin;");
+
+			database.executeUpdateQuery("ALTER IGNORE TABLE `" + this.tableName
+					+ "` ADD COLUMN POS$POS` varchar(255) COLLATE utf8_bin NOT NULL;");
+			/*
+			database.executeUpdateQuery(" ALTER TABLE `" + this.tableName + "` ( "
 					+ "`DOCUMENT_ID` INT(11) NOT NULL, " 
 					+ "`POSITION_OF_TOKEN_IN_DOCUMENT` INT(11) NOT NULL, "
 					+ "`TOKEN` varchar(255) COLLATE utf8_bin NOT NULL, " 
 					+ "`TOPIC_ID` int(11) NOT NULL, "
-					+ "`POS_CONTINUATION` varchar(255) COLLATE utf8_bin NOT NULL, " 
-					+ "`CONTINUATION_POS` varchar(255) COLLATE utf8_bin NOT NULL, " 
-					+ ") ENGINE=InnoDB CHARSET=utf8 COLLATE=utf8_bin ;");
+					!!+ "`POS_CONTINUATION` varchar(255) COLLATE utf8_bin NOT NULL, " 
+					!!+ "`CONTINUATION_POS` varchar(255) COLLATE utf8_bin NOT NULL, " 
+					+ ") ENGINE=InnoDB CHARSET=utf8 COLLATE=utf8_bin ;");*/
 		} catch (SQLException e) {
 			logger.error("Column could not be added to table " + this.tableName);
 			throw new RuntimeException(e);
@@ -34,11 +45,9 @@ public class PosCreate extends TableCreateCommand {
 	private void dropColumns() {
 		try {
 			this.database.executeUpdateQuery("ALTER TABLE " + this.tableName 
-					+ " DROP COLUMN DATA.DOCUMENT_ID"
-					+ " DROP COLUMN DATA.TOKEN"
-					+ " DROP COLUMN DATA.TOPIC_ID"
-					+ " DROP COLUMN DATA.POS_CONTINUATION"
-					+ " DROP COLUMN DATA.CONTINUATION_POS");
+					+ " DROP COLUMN POS$CONTINUATION"
+					+ " DROP COLUMN POS$CONTINUATION_POS"
+					+ " DROP COLUMN POS$POS;");
 		} catch (SQLException e) {
 			if (e.getErrorCode() != 1091) { // MySQL Error code for 'Can't DROP
 				// ..; check that column/key exists
@@ -56,7 +65,7 @@ public class PosCreate extends TableCreateCommand {
 
 	@Override
 	public void setTableName() {
-		this.tableName = "DATA";
+		this.tableName = "DOCUMENT_TERM_TOPIC";
 	}
 
 	@Override
@@ -66,7 +75,7 @@ public class PosCreate extends TableCreateCommand {
 
 	@Override
 	public Set<String> getBeforeDependencies() {
-		return Collections.emptySet();
+		return Sets.newHashSet("DocumentTermTopicCreate");
 	}
 
 	@Override

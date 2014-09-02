@@ -3,6 +3,7 @@ package cc.topicexplorer.plugin.pos.preprocessing.dispatchers;
 import java.util.List;
 
 import cc.topicexplorer.plugin.pos.preprocessing.opennlp.OpenNlp;
+import cc.topicexplorer.plugin.pos.preprocessing.tools.Token;
 
 public class nlpDispatcher extends Dispatcher{
 	
@@ -11,6 +12,10 @@ public class nlpDispatcher extends Dispatcher{
 		// TODO Auto-generated constructor stub
 	}
 	OpenNlp nlp = new OpenNlp();
+	
+	private List<String[]> currentSentenceTokens;
+	private int sentenceNumber = 0;
+	private int listCounter = 0;
 	
 	@Override
 	public void initialize(String path)
@@ -25,9 +30,32 @@ public class nlpDispatcher extends Dispatcher{
 	{
 		return nlp.sentences.length;
 	}
-	@Override
-	public List<String[]> tokenizeSentence(int sentenceNumber) 
+
+	private boolean tokenizeSentence() 
 	{ 
-		return nlp.getPosTokens(sentenceNumber);
+		if(getSentencesNumber()<=sentenceNumber){
+			return false;
+		}
+		
+		currentSentenceTokens = nlp.getPosTokens(sentenceNumber);
+		sentenceNumber++;
+		return true;
 	}
+	
+	@Override
+	public boolean getNextToken (Token token)
+	{
+		if(currentSentenceTokens.size()<=listCounter)
+		{
+			if(!tokenizeSentence()){
+				token = null; 
+				return false;
+			}
+			listCounter = 0;
+		}
+		token = new Token(currentSentenceTokens.get(listCounter));
+		listCounter++;
+		return true;
+	}
+	
 }

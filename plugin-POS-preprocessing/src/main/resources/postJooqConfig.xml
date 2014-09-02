@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<catalog>	
-
+<catalog><!--  
 	<command name="PosFill" className="cc.topicexplorer.plugin.pos.preprocessing.tables.PosFill"/>
+-->
 </catalog>

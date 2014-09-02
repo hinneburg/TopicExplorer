@@ -12,6 +12,8 @@ import cc.commandmanager.core.Context;
 import cc.topicexplorer.database.Database;
 import cc.topicexplorer.plugin.pos.preprocessing.opennlp.OpenNlp;
 import cc.topicexplorer.plugin.pos.preprocessing.tables.PosCreate;
+import cc.topicexplorer.plugin.pos.preprocessing.tools.Token;
+import cc.topicexplorer.plugin.pos.preprocessing.tools.TokenStream;
 import cc.topicexplorer.utils.PropertiesUtil;
 import opennlp.tools.util.InvalidFormatException;
 
@@ -21,21 +23,7 @@ public class NLP_Tests
 	static final String PROPERTIES_KEY = "properties";
 	private static final String NO_PREFIX = "";
 	private static final String DATABASE_PREFIX = "database.";
-	/*
-}
-		@Test
-		public void testSentences() {
-			OpenNlp nlp = new OpenNlp();
-			try {
-				nlp.SentenceDetect();
-			} catch (InvalidFormatException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-*/
+	
 
 		@Test
 		public void TestNlpSentences () throws InvalidFormatException, IOException
@@ -45,9 +33,27 @@ public class NLP_Tests
 			OpenNlp nlp = new OpenNlp();
 			
 			nlp.setPath("/home/slayer/workspace/TopicExplorer/"
-					+ "plugin-POS-preprocessing/src/main/resources/opennlpResources/");
-			//System.out.println(nlp.getPath());
-			nlp.getOutputCSV();
+					+ "plugin-pos-preprocessing/src/main/resources/opennlpResources/");
+			System.out.println(nlp.getPath());
+			
+			String path = "/home/slayer/workspace/TopicExplorer/"
+					+ "plugin-pos-preprocessing/src/main/resources/opennlpResources/";
+			
+			TokenStream stream = new TokenStream();
+			stream.initialize(path, 2);
+			
+			Token token = new Token();
+			while(stream.outputStream(token))
+			{
+				for(int i=0; i<token.content.length; i++)
+					System.out.print(token.content[i]+" ");
+				System.out.println();
+			}
+				
+			
+			
+			//nlp.getOutputCSV();
+			
 			//System.out.println();
 			/*
 			Properties properties = PropertiesUtil.loadMandatoryProperties("database", DATABASE_PREFIX);

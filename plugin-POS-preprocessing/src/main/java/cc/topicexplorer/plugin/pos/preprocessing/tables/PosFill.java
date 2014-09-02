@@ -27,11 +27,13 @@ public class PosFill extends TableFillCommand {
 					+ "plugin-POS-preprocessing/src/main/resources/opennlpResources/");
 		
 		//String inFilePath = TokenTopicAssociator.TOKEN_TOPIC_ASSIGNMENT_SQL_FILE;
-		String data = "/home/slayer/workspace/TopicExplorer/"
-					+ "plugin-POS-preprocessing/src/main/resources/opennlpResources/tokens.csv";
-		String inFilePath = "";
+		//String data = "/home/slayer/workspace/TopicExplorer/"
+					//+ "plugin-POS-preprocessing/src/main/resources/opennlpResources/tokens.csv";
+		String inFilePath = "/home/slayer/workspace/TopicExplorer/"
+					+ "plugin-POS-preprocessing/src/main/resources/opennlpResources/nlpOutput.csv";
+		
 		//todo: header from .csv
-		String header = "";
+		String[] header = openNlp.getHeader();
 		logger.info("load data into table " + "DOCUMENT_TERM_TOPIC");
 
 		//inCsv = tryToInstantiateCsvReader();

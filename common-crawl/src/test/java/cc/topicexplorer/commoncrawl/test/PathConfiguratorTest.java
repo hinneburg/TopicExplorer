@@ -14,13 +14,13 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class PathConfiguratorTest {
-    private static final String PATHFILE_CONFIG_FILE_NAME = "/config-pathfile.xml";
-    private static final String PATHFILE_CONFIG_FILE_PATH = PathConfiguratorTest.class.getResource(PATHFILE_CONFIG_FILE_NAME).getPath();
+    private static final String PATHFILE_CONFIG_FILE_NAME  = "/config-pathfile.xml";
+    private static final String PATHFILE_CONFIG_FILE_PATH  = PathConfiguratorTest.class.getResource(PATHFILE_CONFIG_FILE_NAME).getPath();
     private static final String INPUTPATH_CONFIG_FILE_NAME = "/config-inputpath.xml";
     private static final String INPUTPATH_CONFIG_FILE_PATH = PathConfiguratorTest.class.getResource(INPUTPATH_CONFIG_FILE_NAME).getPath();
-    
-    private Configuration config;
-    private Job job;
+
+    private Configuration       config;
+    private Job                 job;
 
     @Before
     public void setup() throws IOException {
@@ -39,21 +39,21 @@ public class PathConfiguratorTest {
 
         assertArrayEquals(expected, actual);
     }
-    
+
     @Test
-    public void testReadPathsFromConfigFile() {
+    public void testInputPathOverridesInputPathFile() {
+        config.addResource(new Path(INPUTPATH_CONFIG_FILE_PATH));
         config.addResource(new Path(PATHFILE_CONFIG_FILE_PATH));
 
-        Path[] paths = new Path[]{new Path("file:/aws-publicdatasets/CC-MAIN-20140707234000-00000-ip-10-180-212-248.ec2.internal.warc.gz"),
-                                  new Path("file:/aws-publicdatasets/CC-MAIN-20140707234000-00001-ip-10-180-212-248.ec2.internal.warc.gz")};
+        Path[] paths = new Path[] { new Path("file:/Users/florianluecke/Eclipse/workspace/TopicExplorer/common-crawl/src/test/resources/warc.path") };
 
         assertArrayEquals(paths, readPathsFromConfigFile(config));
     }
-    
+
     @Test
     public void testConfigureInputPaths_inputpath() throws IOException {
         config.addResource(new Path(INPUTPATH_CONFIG_FILE_PATH));
-        
+
         configureInputPaths(job, config);
 
         Path[] expected = readPathsFromConfigFile(config);

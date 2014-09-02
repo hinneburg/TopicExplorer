@@ -55,7 +55,6 @@ public class PathConfigurator {
         }
     }
 
-    // TODO this can be protected or private.
     public static Path[] readPathsFromConfigFile(Configuration config) {
         // get the input path
         String pathString = config.get(INPUTPATH_CONFIG_NAME);

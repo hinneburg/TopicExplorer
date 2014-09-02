@@ -3,7 +3,6 @@ package cc.topicexplorer.commoncrawl;
 // Java classes
 import java.net.URI;
 
-
 // Apache Project classes
 import org.apache.log4j.Logger;
 
@@ -25,7 +24,7 @@ import org.commoncrawl.warc.WARCFileInputFormat;
  * A metadata scanner for the CommonCrawl archive. Based on Chris Stephens'
  * <chris@commoncrawl.org>
  * ExampleMetadataDomainPageCount.java and Stephen Merity's WARCTagCounter.java
- *
+ * 
  * @author Florian Luecke
  */
 public class BlogExtractorTool extends Configured implements Tool {
@@ -33,7 +32,7 @@ public class BlogExtractorTool extends Configured implements Tool {
 
     /**
      * Implmentation of Tool.run() method, which builds and runs the Hadoop job.
-     *
+     * 
      * @param args
      *            command line parameters, less common Hadoop job parameters
      *            stripped
@@ -103,11 +102,12 @@ public class BlogExtractorTool extends Configured implements Tool {
 
     /**
      * Main entry point that uses the {@link ToolRunner} class to run the
-     * example
      * Hadoop job.
      */
     public static void main(String[] args) throws Exception {
-        int res = ToolRunner.run(new Configuration(), new BlogExtractorTool(), args);
+        int res = ToolRunner.run(new Configuration(),
+                                 new BlogExtractorTool(),
+                                 args);
         System.exit(res);
     }
 }

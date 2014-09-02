@@ -2,6 +2,7 @@ package cc.topicexplorer.commoncrawl;
 
 import static cc.topicexplorer.commoncrawl.HelperUtils.loadFileAsArray;
 
+import org.apache.hadoop.HadoopIllegalArgumentException;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
@@ -11,6 +12,12 @@ import org.apache.log4j.Logger;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * A class for configuring input paths of a hadoop job.
+ * 
+ * @author Florian Luecke
+ * 
+ */
 public class PathConfigurator {
     private static final Logger LOG                   = Logger.getLogger(PathConfigurator.class);
     public static final String  PATHFILE_CONFIG_NAME  = "pathfile";
@@ -27,6 +34,7 @@ public class PathConfigurator {
      *            the {@link Configuration} object to read the settings from
      * @throws IOException
      *             if config does not contain input path settings
+     * @see Job
      * @see PathConfigurator#PATHFILE_CONFIG_NAME
      * @see PathConfigurator#INPUTPATH_CONFIG_NAME
      */
@@ -47,10 +55,15 @@ public class PathConfigurator {
         }
     }
 
+    // TODO this can be protected or private.
     public static Path[] readPathsFromConfigFile(Configuration config) {
+        // get the input path
         String pathString = config.get(INPUTPATH_CONFIG_NAME);
 
         if (pathString != null) {
+            // there is an input path
+            // use only the input path, ignore contents of path file if there is
+            // one
             Path inputPath = new Path(pathString);
             return new Path[] { inputPath };
         }
@@ -60,6 +73,7 @@ public class PathConfigurator {
         Path[] paths = null;
 
         try {
+            // read config file and turn lines into paths
             List<String> pathStrings = loadFileAsArray(pathFile);
             paths = new Path[pathStrings.size()];
             for (int i = 0; i < paths.length; i++) {

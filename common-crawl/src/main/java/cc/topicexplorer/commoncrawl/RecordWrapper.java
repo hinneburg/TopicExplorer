@@ -6,6 +6,13 @@ import org.apache.commons.io.IOUtils;
 import org.archive.io.ArchiveRecord;
 import org.archive.io.ArchiveRecordHeader;
 
+/**
+ * A wrapper for ArchiveRecords.
+ * Neccessary since ArchiveRecords allow reading only once.
+ * 
+ * @author Florian Luecke
+ * 
+ */
 public class RecordWrapper {
     private static final String HTTP_HEADER_START     = "HTTP/";
     private static final int    HTTP_HEADER_START_LEN = HTTP_HEADER_START.length();
@@ -19,9 +26,9 @@ public class RecordWrapper {
     }
 
     /**
-     * Extracts the body from an ArchiveRecord.
+     * Extracts the body from an {@link ArchiveRecord}.
      * The body contains the full HTPP response of the server.
-     *
+     * 
      * @param record
      *            the record to extract from
      * @return the requested body
@@ -38,20 +45,25 @@ public class RecordWrapper {
 
     /**
      * Get the content of the record.
-     *
+     * 
      * @return the requested content
      */
     public String getContent() {
         return content;
     }
 
+    /**
+     * Get the archive record header of the underlying {@link ArchiveRecord}
+     * 
+     * @return the requested {@link ArchiveRecordHeader}
+     */
     public ArchiveRecordHeader getHeader() {
         return this.header;
     }
 
     /**
      * Get only the HTTP body.
-     *
+     * 
      * @return the requested body
      */
     public String getHTTPBody() {
@@ -66,7 +78,7 @@ public class RecordWrapper {
 
     /**
      * Get only the HTTP header.
-     *
+     * 
      * @return the requested header
      */
     public String getHTTPHeader() {

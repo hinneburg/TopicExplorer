@@ -9,7 +9,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import org.apache.log4j.Logger;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.rometools.rome.feed.synd.SyndEntry;

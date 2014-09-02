@@ -2,7 +2,6 @@ package cc.topicexplorer.commoncrawl;
 
 import static cc.topicexplorer.commoncrawl.HelperUtils.loadFileAsArray;
 
-import org.apache.hadoop.HadoopIllegalArgumentException;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;

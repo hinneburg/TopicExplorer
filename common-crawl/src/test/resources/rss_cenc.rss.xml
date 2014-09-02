@@ -1,0 +1,16 @@
+<?xml version="1.0" ?>
+   <rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" >
+       <channel>
+           <title>Example</title>
+           <description>An RSS Example with Slash</description>
+           <lastBuildDate>Sun, 15 May 2005 13:02:08 -0500</lastBuildDate>
+           <link>http://www.example.com</link>
+           <item>
+               <title>A Link in Here</title>
+               <guid>d77d2e80-0487-4e8c-a35d-a93f12a0ff7d:2005/05/15/114</guid>
+               <pubDate>Sun, 15 May 05 13:02:08 -0500</pubDate>
+               <link>http://www.example.com/blog/2005/05/15/114</link>
+               <content:encoded><![CDATA[This is a test.]]></content:encoded>
+           </item>
+       </channel>
+   </rss>

@@ -34,16 +34,13 @@ public class BlogExtractorTest {
     @Test
     public void testGetPublishedDateRFC() throws FileNotFoundException,
         IllegalArgumentException, IOException, FeedException {
-        LOG.error("testGetPublishedDateRFC");
-        LOG.error("This test is flawed! The date returned by SyndFeed#getPublishedDate() is converted "
-                  + "to the default locale of the computer. There seems to be no fix for that behaviour.");
         File file = new File(RSS_ENCODED_FILE_PATH);
         SyndFeedInput in = new SyndFeedInput();
         SyndFeed feed = in.build(file);
         SyndEntry entry = feed.getEntries().get(0);
 
         String rfcDate = getPublishedDateRFC(entry);
-        assertEquals("Sun, 15 May 05 20:02:08 +0200", rfcDate);
+        assertEquals("Sun, 15 May 05 18:02:08 +0000", rfcDate);
     }
 
 }

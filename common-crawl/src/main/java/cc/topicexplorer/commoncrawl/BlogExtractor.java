@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 import java.util.regex.Pattern;
 
 import org.apache.commons.csv.CSVFormat;
@@ -154,9 +155,10 @@ public class BlogExtractor {
     }
 
     protected static String getRFCDate(Date date) {
-        // format the date according to RFC 3339
-        String dateString = new SimpleDateFormat(RFC_822_DATE_FORMAT_STRING,
-                                                 Locale.ENGLISH).format(date);
+        // format the date according to RFC 822
+        SimpleDateFormat dateFormat = new SimpleDateFormat(RFC_822_DATE_FORMAT_STRING, Locale.ENGLISH);
+        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        String dateString = dateFormat.format(date);
         return dateString;
     }
 

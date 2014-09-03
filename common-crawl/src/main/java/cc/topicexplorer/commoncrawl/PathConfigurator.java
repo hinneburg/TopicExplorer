@@ -57,7 +57,6 @@ public class PathConfigurator {
     public static Path[] readPathsFromConfigFile(Configuration config) {
         // get the input path
         String pathString = config.get(INPUTPATH_CONFIG_NAME);
-
         if (pathString != null) {
             // there is an input path
             // use only the input path, ignore contents of path file if there is
@@ -67,18 +66,18 @@ public class PathConfigurator {
         }
 
         String pathFile = config.get(PATHFILE_CONFIG_NAME);
-
         Path[] paths = null;
-
-        try {
-            // read config file and turn lines into paths
-            List<String> pathStrings = loadFileAsArray(pathFile);
-            paths = new Path[pathStrings.size()];
-            for (int i = 0; i < paths.length; i++) {
-                paths[i] = new Path(pathStrings.get(i));
+        if (pathFile != null) {
+            try {
+                // read config file and turn lines into paths
+                List<String> pathStrings = loadFileAsArray(pathFile, config);
+                paths = new Path[pathStrings.size()];
+                for (int i = 0; i < paths.length; i++) {
+                    paths[i] = new Path(pathStrings.get(i));
+                }
+            } catch (IOException e) {
+                return new Path[0];
             }
-        } catch (IOException e) {
-            return new Path[0];
         }
 
         return paths;

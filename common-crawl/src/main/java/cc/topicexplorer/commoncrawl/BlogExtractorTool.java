@@ -3,12 +3,16 @@ package cc.topicexplorer.commoncrawl;
 // Java classes
 import java.net.URI;
 
+
+
+
 // Apache Project classes
 import org.apache.log4j.Logger;
 
 // Hadoop classes
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.Text;
@@ -58,7 +62,11 @@ public class BlogExtractorTool extends Configured implements Tool {
         // Read in any additional config parameters.
         if (configFile != null) {
             LOG.info("adding config parameters from '" + configFile + "'");
-            this.getConf().addResource(new Path(configFile));
+            Path configPath = new Path(configFile);
+            LOG.info(configPath.toString());
+            FileSystem fs = configPath.getFileSystem(this.getConf());
+            FSDataInputStream stream = fs.open(configPath);
+            this.getConf().addResource(stream);
         }
 
         // Creates a new job configuration for this Hadoop job.

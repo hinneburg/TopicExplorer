@@ -1,9 +1,15 @@
 package cc.topicexplorer.commoncrawl;
 
-import java.io.File;
-import org.apache.commons.io.FileUtils;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FSDataInputStream;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
+
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -19,10 +25,17 @@ public class HelperUtils {
      *             if an error occured while reading the file
      *             TODO this could return an empty list on error
      */
-    public static List<String> loadFileAsArray(String path) throws IOException {
-        String contents = FileUtils.readFileToString(new File(path));
-        String[] lines = contents.split("\n");
-        return Arrays.asList(lines);
+    public static List<String> loadFileAsArray(String pathString, Configuration config) throws IOException {
+        Path path = new Path(pathString);
+        FileSystem fs = path.getFileSystem(config);
+        FSDataInputStream stream = fs.open(path);
+        List<String> lines = new ArrayList<String>();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+        String line = null;
+        while ((line = reader.readLine()) != null) {
+            lines.add(line);
+        }
+        return lines;
     }
 
     /**

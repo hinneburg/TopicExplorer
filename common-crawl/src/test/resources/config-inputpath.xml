@@ -2,6 +2,6 @@
 <configuration>
   <property>
     <name>inputpath</name>
-    <value>file:/Users/florianluecke/Eclipse/workspace/TopicExplorer/common-crawl/src/test/resources/warc.path</value>
+    <value>/Users/florianluecke/Eclipse/workspace/TopicExplorer/common-crawl/src/test/resources/warc.path</value>
   </property>
 </configuration>

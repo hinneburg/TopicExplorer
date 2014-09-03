@@ -47,7 +47,7 @@ public class BlogExtractor {
     public BlogExtractor(Mapper<Text, ArchiveReader, Text, Text>.Context context) throws IOException {
         // load valid URLs from config
         String validURLFile = context.getConfiguration().get(VALID_URL_FILE_CONFIG_NAME);
-        List<String> lines = loadFileAsArray(validURLFile);
+        List<String> lines = loadFileAsArray(validURLFile, context.getConfiguration());
 
         // create a globbing pattern from the configuration
         urlPattern = GlobPattern.compile("http?://{"

@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import org.apache.log4j.Logger;
 import org.junit.Test;
 
 import com.rometools.rome.feed.synd.SyndEntry;
@@ -17,7 +16,6 @@ import com.rometools.rome.io.FeedException;
 import com.rometools.rome.io.SyndFeedInput;
 
 public class BlogExtractorTest {
-    private static final Logger LOG                   = Logger.getLogger(BlogExtractorTest.class);
     private static final String RSS_ENCODED_FILE_PATH = BlogExtractorTest.class.getResource("/rss_cenc.rss.xml").getPath();
 
     @Test
@@ -42,5 +40,4 @@ public class BlogExtractorTest {
         String rfcDate = getPublishedDateRFC(entry);
         assertEquals("Sun, 15 May 05 18:02:08 +0000", rfcDate);
     }
-
 }

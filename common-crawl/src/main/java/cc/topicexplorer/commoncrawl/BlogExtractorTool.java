@@ -3,9 +3,6 @@ package cc.topicexplorer.commoncrawl;
 // Java classes
 import java.net.URI;
 
-
-
-
 // Apache Project classes
 import org.apache.log4j.Logger;
 

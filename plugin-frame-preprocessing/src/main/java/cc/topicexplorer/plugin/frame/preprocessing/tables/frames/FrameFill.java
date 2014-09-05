@@ -255,6 +255,7 @@ public final class FrameFill extends TableFillCommand {
 	private void bestFrames() {
 		int numTopics = Integer.parseInt((String) properties.get("malletNumTopics"));
 		int bestFrameCount = Integer.parseInt((String) properties.get("TopicBestItemLimit"));
+		
 		try {
 			for(String frameType: frameTypes) {
 				for (int i = 0; i < numTopics; i++) {

@@ -26,7 +26,7 @@ public class PathConfiguratorTest {
 
     @Before
     public void setup() throws IOException {
-        job = new Job();
+        job = Job.getInstance();
         config = new Configuration();
     }
 

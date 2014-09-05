@@ -57,7 +57,7 @@ public class BlogExtractorTool extends Configured implements Tool {
         }
 
         // Creates a new job configuration for this Hadoop job.
-        Job job = new Job(this.getConf());
+        Job job = Job.getInstance(this.getConf());
 
         job.setJarByClass(BlogExtractorTool.class);
 

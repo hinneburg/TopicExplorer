@@ -56,23 +56,23 @@ public class BlogExtractorTool extends Configured implements Tool {
             configFile = args[1];
         }
 
-        // Read in any additional config parameters.
-        if (configFile != null) {
-            LOG.info("adding config parameters from '" + configFile + "'");
-            Path configPath = new Path(configFile);
-            LOG.info(configPath.toString());
-            FileSystem fs = configPath.getFileSystem(this.getConf());
-            FSDataInputStream stream = fs.open(configPath);
-            this.getConf().addResource(stream);
-        }
-
         // Creates a new job configuration for this Hadoop job.
         Job job = new Job(this.getConf());
 
         job.setJarByClass(BlogExtractorTool.class);
 
         // Scan the provided input path for ARC files.
-        PathConfigurator.configureInputPaths(job, this.getConf());
+        // Read in any additional config parameters.
+        if (configFile != null) {
+            LOG.info("adding config parameters from '" + configFile + "'");
+            Path configPath = new Path(configFile);
+            FileSystem fs = FileSystem.get(new URI(configFile), this.getConf());
+            FSDataInputStream fsstream = fs.open(configPath);
+            this.getConf().addResource(fsstream, configPath.getName());
+            PathConfigurator.configureInputPaths(job, this.getConf());
+        } else {
+            return 1;
+        }
 
         // Delete the output path directory if it already exists.
         LOG.info("clearing the output path at '" + outputPath + "'");

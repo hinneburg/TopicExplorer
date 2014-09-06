@@ -96,10 +96,11 @@ public class BlogExtractor {
                                                                       "dateString",
                                                                       "contentString");
                         CSVPrinter printer = new CSVPrinter(builder, format);
-                        printer.printRecord((Object[])values);
+                        printer.printRecord((Object[]) values);
 
                         if (contentString.length() != 0) {
-                            context.write(new Text(host), new Text(builder.toString()));
+                            context.write(new Text(host),
+                                          new Text(builder.toString()));
                         }
                         printer.close();
                     }
@@ -156,7 +157,8 @@ public class BlogExtractor {
 
     protected static String getRFCDate(Date date) {
         // format the date according to RFC 822
-        SimpleDateFormat dateFormat = new SimpleDateFormat(RFC_822_DATE_FORMAT_STRING, Locale.ENGLISH);
+        SimpleDateFormat dateFormat = new SimpleDateFormat(RFC_822_DATE_FORMAT_STRING,
+                                                           Locale.ENGLISH);
         dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         String dateString = dateFormat.format(date);
         return dateString;

@@ -72,6 +72,7 @@ public class BlogExtractorTool extends Configured implements Tool {
             PathConfigurator.configureInputPaths(job);
             LOG.info("blog provider file: " + job.getConfiguration().get("validurlfile"));
         } else {
+            LOG.error("Configuration file missing. Quitting.");
             return 1;
         }
 

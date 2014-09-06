@@ -21,21 +21,19 @@ public class PathConfiguratorTest {
     private static final String INPUTPATH_CONFIG_FILE_NAME = "/config-inputpath.xml";
     private static final String INPUTPATH_CONFIG_FILE_PATH = PathConfiguratorTest.class.getResource(INPUTPATH_CONFIG_FILE_NAME).getPath();
 
-    private Configuration       config;
     private Job                 job;
 
     @Before
     public void setup() throws IOException {
         job = Job.getInstance();
-        config = new Configuration();
     }
 
     @Test
     public void testConfigureInputPaths_pathfile() throws IOException {
-        addResourceToConfiguration(PATHFILE_CONFIG_FILE_PATH, this.config);
-        configureInputPaths(this.job, this.config);
+        addResourceToConfiguration(PATHFILE_CONFIG_FILE_PATH, this.job.getConfiguration());
+        configureInputPaths(this.job);
 
-        Path[] expected = readPathsFromConfigFile(this.config);
+        Path[] expected = readPathsFromConfigFile(this.job.getConfiguration());
         Path[] actual = FileInputFormat.getInputPaths(this.job);
 
         assertArrayEquals(expected, actual);
@@ -50,21 +48,22 @@ public class PathConfiguratorTest {
 
     @Test
     public void testInputPathOverridesInputPathFile() throws IOException {
-        addResourceToConfiguration(INPUTPATH_CONFIG_FILE_PATH, this.config);
-        addResourceToConfiguration(PATHFILE_CONFIG_FILE_PATH, this.config);
+        Configuration config = new Configuration();
+        addResourceToConfiguration(INPUTPATH_CONFIG_FILE_PATH, config);
+        addResourceToConfiguration(PATHFILE_CONFIG_FILE_PATH, config);
 
         Path[] paths = new Path[] { new Path("/Users/florianluecke/Eclipse/workspace/TopicExplorer/common-crawl/src/test/resources/warc.path") };
 
-        assertArrayEquals(paths, readPathsFromConfigFile(this.config));
+        assertArrayEquals(paths, readPathsFromConfigFile(config));
     }
 
     @Test
     public void testConfigureInputPaths_inputpath() throws IOException {
-        addResourceToConfiguration(PATHFILE_CONFIG_FILE_PATH, this.config);
+        addResourceToConfiguration(PATHFILE_CONFIG_FILE_PATH, this.job.getConfiguration());
 
-        configureInputPaths(this.job, this.config);
+        configureInputPaths(this.job);
 
-        Path[] expected = readPathsFromConfigFile(this.config);
+        Path[] expected = readPathsFromConfigFile(this.job.getConfiguration());
         Path[] actual = FileInputFormat.getInputPaths(this.job);
 
         assertArrayEquals(expected, actual);

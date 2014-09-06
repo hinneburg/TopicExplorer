@@ -37,9 +37,9 @@ public class PathConfigurator {
      * @see PathConfigurator#PATHFILE_CONFIG_NAME
      * @see PathConfigurator#INPUTPATH_CONFIG_NAME
      */
-    public static void configureInputPaths(Job job, Configuration config)
+    public static void configureInputPaths(Job job)
         throws IOException {
-        Path[] paths = readPathsFromConfigFile(config);
+        Path[] paths = readPathsFromConfigFile(job.getConfiguration());
         if (paths.length == 0) {
             throw new IOException("Configuration must contain input path settings.");
         }

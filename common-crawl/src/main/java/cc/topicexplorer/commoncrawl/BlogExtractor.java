@@ -38,7 +38,7 @@ import com.rometools.rome.io.SyndFeedInput;
 public class BlogExtractor {
     private static final Logger     LOG                        = Logger.getLogger(BlogExtractor.class);
     private static final String     RFC_822_DATE_FORMAT_STRING = "E', 'd' 'MMM' 'yy' 'HH':'mm':'ss' 'Z";
-    private static final String     VALID_URL_FILE_CONFIG_NAME = "validurlfile";
+    public static final String      VALID_URL_FILE_CONFIG_NAME = "validurlfile";
 
     private List<StatisticsBuilder> statisticsBuilders         = new ArrayList<StatisticsBuilder>();
 

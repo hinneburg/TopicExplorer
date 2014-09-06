@@ -22,7 +22,7 @@ public class RecordWrapperTest {
         ArchiveRecord rec = new WARCRecord(f, "Test Record", 0);
         return rec;
     }
-    
+
     @Test
     public void testGetHeader() throws FileNotFoundException, IOException {
         ArchiveRecord record = makeNewRecord();

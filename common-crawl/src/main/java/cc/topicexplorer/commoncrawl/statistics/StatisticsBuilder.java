@@ -7,5 +7,6 @@ import org.archive.io.ArchiveReader;
 import com.rometools.rome.feed.synd.SyndFeed;
 
 public interface StatisticsBuilder {
-    public void buildStatistics(SyndFeed feed, Mapper<Text, ArchiveReader, Text, Text>.Context context);
+    public void buildStatistics(SyndFeed feed,
+                                Mapper<Text, ArchiveReader, Text, Text>.Context context);
 }

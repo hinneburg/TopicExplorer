@@ -66,11 +66,13 @@ public class BlogExtractorTool extends Configured implements Tool {
         if (configFile != null) {
             LOG.info("adding config parameters from '" + configFile + "'");
             Path configPath = new Path(configFile);
-            FileSystem fs = FileSystem.get(new URI(configFile), job.getConfiguration());
+            FileSystem fs = FileSystem.get(new URI(configFile),
+                                           job.getConfiguration());
             FSDataInputStream fsstream = fs.open(configPath);
             job.getConfiguration().addResource(fsstream, configPath.getName());
             PathConfigurator.configureInputPaths(job);
-            LOG.info("blog provider file: " + job.getConfiguration().get("validurlfile"));
+            LOG.info("blog provider file: "
+                     + job.getConfiguration().get("validurlfile"));
         } else {
             LOG.error("Configuration file missing. Quitting.");
             return 1;
@@ -79,7 +81,8 @@ public class BlogExtractorTool extends Configured implements Tool {
         // Delete the output path directory if it already exists.
         LOG.info("clearing the output path at '" + outputPath + "'");
 
-        FileSystem fs = FileSystem.get(new URI(outputPath), job.getConfiguration());
+        FileSystem fs = FileSystem.get(new URI(outputPath),
+                                       job.getConfiguration());
 
         if (fs.exists(new Path(outputPath))) {
             fs.delete(new Path(outputPath), true);

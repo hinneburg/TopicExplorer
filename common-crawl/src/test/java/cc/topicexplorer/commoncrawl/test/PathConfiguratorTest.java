@@ -30,7 +30,8 @@ public class PathConfiguratorTest {
 
     @Test
     public void testConfigureInputPaths_pathfile() throws IOException {
-        addResourceToConfiguration(PATHFILE_CONFIG_FILE_PATH, this.job.getConfiguration());
+        addResourceToConfiguration(PATHFILE_CONFIG_FILE_PATH,
+                                   this.job.getConfiguration());
         configureInputPaths(this.job);
 
         Path[] expected = readPathsFromConfigFile(this.job.getConfiguration());
@@ -38,8 +39,10 @@ public class PathConfiguratorTest {
 
         assertArrayEquals(expected, actual);
     }
-    
-    private static void addResourceToConfiguration(String path, Configuration config) throws IOException {
+
+    private static void addResourceToConfiguration(String path,
+                                                   Configuration config)
+        throws IOException {
         Path configPath = new Path(path);
         FileSystem fs = configPath.getFileSystem(config);
         FSDataInputStream stream = fs.open(configPath);
@@ -59,7 +62,8 @@ public class PathConfiguratorTest {
 
     @Test
     public void testConfigureInputPaths_inputpath() throws IOException {
-        addResourceToConfiguration(PATHFILE_CONFIG_FILE_PATH, this.job.getConfiguration());
+        addResourceToConfiguration(PATHFILE_CONFIG_FILE_PATH,
+                                   this.job.getConfiguration());
 
         configureInputPaths(this.job);
 

@@ -8,6 +8,8 @@ import org.archive.io.ArchiveReader;
 import org.archive.io.ArchiveRecord;
 
 public class BlogExtractorMap {
+    public static final String WARC_RESPONSE_CONTENT_TYPE = "application/http; msgtype=response";
+
     // Implements the map function for MapReduce.
     public static class BlogExtractorMapper extends
         Mapper<Text, ArchiveReader, Text, Text> {
@@ -20,7 +22,12 @@ public class BlogExtractorMap {
             for (ArchiveRecord record : value) {
                 // wrap the record so it's easier to use
                 RecordWrapper wrapper = new RecordWrapper(record);
-                extractor.extract(wrapper, context);
+
+                if (record.getHeader().getMimetype().equals(WARC_RESPONSE_CONTENT_TYPE)) {
+                    // filter out requests and crawler metadata
+                    // (crawler metadata != page metadata)
+                    extractor.extract(wrapper, context);
+                }
             }
         }
     }

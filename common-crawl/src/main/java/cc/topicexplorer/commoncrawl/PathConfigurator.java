@@ -9,6 +9,7 @@ import org.apache.hadoop.fs.Path;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -38,8 +39,8 @@ public class PathConfigurator {
      * @see PathConfigurator#INPUTPATH_CONFIG_NAME
      */
     public static void configureInputPaths(Job job) throws IOException {
-        Path[] paths = readPathsFromConfigFile(job.getConfiguration());
-        if (paths.length == 0) {
+        List<Path> paths = readPathsFromConfigFile(job.getConfiguration());
+        if (paths.size() == 0) {
             throw new IOException("Configuration must contain input path settings.");
         }
 
@@ -53,29 +54,31 @@ public class PathConfigurator {
         }
     }
 
-    public static Path[] readPathsFromConfigFile(Configuration config) {
+    public static List<Path> readPathsFromConfigFile(Configuration config) {
         // get the input path
         String pathString = config.get(INPUTPATH_CONFIG_NAME);
+        List<Path> paths = new ArrayList<Path>();
         if (pathString != null) {
             // there is an input path
             // use only the input path, ignore contents of path file if there is
             // one
             Path inputPath = new Path(pathString);
-            return new Path[] { inputPath };
+            paths.add(inputPath);
+            return paths;
         }
 
         String pathFile = config.get(PATHFILE_CONFIG_NAME);
-        Path[] paths = null;
         if (pathFile != null) {
             try {
                 // read config file and turn lines into paths
                 List<String> pathStrings = loadFileAsArray(pathFile, config);
-                paths = new Path[pathStrings.size()];
-                for (int i = 0; i < paths.length; i++) {
-                    paths[i] = new Path(pathStrings.get(i));
+                for (String string : pathStrings) {
+                    if (! string.equals("")) {
+                        paths.add(new Path(string));
+                    }
                 }
             } catch (IOException e) {
-                return new Path[0];
+                return paths;
             }
         }
 

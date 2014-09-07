@@ -2,9 +2,11 @@ package cc.topicexplorer.commoncrawl.test;
 
 import static cc.topicexplorer.commoncrawl.PathConfigurator.configureInputPaths;
 import static cc.topicexplorer.commoncrawl.PathConfigurator.readPathsFromConfigFile;
-import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataInputStream;
@@ -34,10 +36,11 @@ public class PathConfiguratorTest {
                                    this.job.getConfiguration());
         configureInputPaths(this.job);
 
-        Path[] expected = readPathsFromConfigFile(this.job.getConfiguration());
+        List<Path> expected = readPathsFromConfigFile(this.job.getConfiguration());
         Path[] actual = FileInputFormat.getInputPaths(this.job);
+        List<Path> actualList = Arrays.asList(actual);
 
-        assertArrayEquals(expected, actual);
+        assertEquals(expected, actualList);
     }
 
     private static void addResourceToConfiguration(String path,
@@ -56,8 +59,9 @@ public class PathConfiguratorTest {
         addResourceToConfiguration(PATHFILE_CONFIG_FILE_PATH, config);
 
         Path[] paths = new Path[] { new Path("/Users/florianluecke/Eclipse/workspace/TopicExplorer/common-crawl/src/test/resources/warc.path") };
+        List<Path> pathList = Arrays.asList(paths);
 
-        assertArrayEquals(paths, readPathsFromConfigFile(config));
+        assertEquals(pathList, readPathsFromConfigFile(config));
     }
 
     @Test
@@ -67,9 +71,10 @@ public class PathConfiguratorTest {
 
         configureInputPaths(this.job);
 
-        Path[] expected = readPathsFromConfigFile(this.job.getConfiguration());
+        List<Path> expected = readPathsFromConfigFile(this.job.getConfiguration());
         Path[] actual = FileInputFormat.getInputPaths(this.job);
+        List<Path> actualList = Arrays.asList(actual);
 
-        assertArrayEquals(expected, actual);
+        assertEquals(expected, actualList);
     }
 }

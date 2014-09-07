@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.csv.CSVFormat;
@@ -58,8 +59,9 @@ public class BlogExtractor {
                                              context.getConfiguration());
 
         // create a globbing pattern from the configuration
-        urlPattern = GlobPattern.compile("http?://{"
-                                         + HelperUtils.join(lines, ",") + "}");
+        String pattern = "http?://{" + HelperUtils.join(lines, ",") + "}";
+        this.urlPattern = GlobPattern.compile(pattern);
+        LOG.info("Compiled pattern: " + this.urlPattern);
     }
 
     /**
@@ -77,19 +79,43 @@ public class BlogExtractor {
     public void extract(RecordWrapper wrapper,
                         Mapper<Text, ArchiveReader, Text, Text>.Context context)
         throws IOException, InterruptedException {
+        // precondition: urlPattern != null, titlePattern != null
+        if (this.urlPattern == null || this.titlePattern == null) {
+            throw new IllegalStateException("URL Pattern should not be null");
+        }
+
         String url = wrapper.getHeader().getUrl();
-        if (this.urlPattern.matcher(url).matches()) {
+        if (url == null) {
+            // this should not happen as we filter out eveything but responses,
+            // which always have a url
+            throw new RuntimeException("URL should not be null");
+        }
+        Matcher urlMatcher = this.urlPattern.matcher(url);
+        if (urlMatcher == null) {
+            throw new RuntimeException("Can't create matcher for url: " + url);
+        }
+
+        if (urlMatcher.matches()) {
+            // the page url is valid
+
             InternetDomainName domainName = InternetDomainName.from(url);
             String host = domainName.topPrivateDomain().toString();
-            // the page url is valid
             StringReader reader = new StringReader(wrapper.getHTTPBody());
             SyndFeedInput in = new SyndFeedInput();
             try {
                 SyndFeed feed = in.build(reader);
                 for (SyndEntry entry : feed.getEntries()) {
-                    // get all interesting data about the post
+
                     String title = entry.getTitle();
-                    if (this.titlePattern.matcher(title).matches()) {
+                    if (title == null) {
+                        title = "";
+                    }
+                    Matcher titleMatcher = this.titlePattern.matcher(title);
+                    if (titleMatcher == null) {
+                        throw new RuntimeException("Can't create matcher for title: " + title);
+                    }
+
+                    if (titleMatcher.matches()) {
                         String entryUrl = entry.getLink();
                         String mainAuthor = entry.getAuthor();
                         String dateString = getPublishedDateRFC(entry);
@@ -110,14 +136,18 @@ public class BlogExtractor {
                                           new Text(builder.toString()));
                         }
                         printer.close();
+                    } else {
+                        LOG.info("Invalid title: " + title);
                     }
                 }
                 buildStatistics(feed, context);
             } catch (IllegalArgumentException e) {
-                LOG.info("No valid feed: " + url);
+                LOG.info("No valid feed type at " + url);
             } catch (FeedException e) {
                 LOG.error("Feed could not be parsed: " + url);
             }
+        } else {
+            LOG.info("Invalid URL: " + url);
         }
     }
 

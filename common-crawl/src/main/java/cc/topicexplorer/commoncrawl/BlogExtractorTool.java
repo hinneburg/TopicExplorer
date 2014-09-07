@@ -71,8 +71,6 @@ public class BlogExtractorTool extends Configured implements Tool {
             FSDataInputStream fsstream = fs.open(configPath);
             job.getConfiguration().addResource(fsstream, configPath.getName());
             PathConfigurator.configureInputPaths(job);
-            LOG.info("blog provider file: "
-                     + job.getConfiguration().get("validurlfile"));
         } else {
             LOG.error("Configuration file missing. Quitting.");
             return 1;

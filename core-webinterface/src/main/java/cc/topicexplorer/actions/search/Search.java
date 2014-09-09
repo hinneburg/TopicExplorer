@@ -81,6 +81,8 @@ public class Search {
 
 		ArrayList<String> docColumnList = searchMap.getCleanColumnNames();
 		String docId;
+		
+		String keywordTitle, keywordText;
 
 		logger.info("QUERY will be executed: " + searchMap.getSQLString());
 		ResultSet mainQueryRS = database.executeQuery(searchMap.getSQLString());
@@ -111,6 +113,23 @@ public class Search {
 			}
 
 			doc.put("TOP_TOPIC", topTopic);
+			
+			keywordTitle = "";
+			ResultSet keywordCountsRS = database.executeQuery("SELECT TERM, COUNT(TERM) FROM DOCUMENT_TERM_TOPIC WHERE DOCUMENT_ID="
+					+ docId + " GROUP BY TERM ORDER BY COUNT(TERM) DESC LIMIT 3");
+			while(keywordCountsRS.next()) {
+				keywordTitle += keywordCountsRS.getString("TERM") + " ";
+			}
+			doc.put("KEYWORD_TITLE", keywordTitle);
+			
+			keywordText = "";
+			ResultSet keywordPosRS = database.executeQuery("SELECT TERM FROM DOCUMENT_TERM_TOPIC WHERE DOCUMENT_ID="
+					+ docId + " ORDER BY POSITION_OF_TOKEN_IN_DOCUMENT LIMIT 50");
+			while(keywordPosRS.next()) {
+				keywordText += keywordPosRS.getString("TERM") + " ";
+			}
+			doc.put("KEYWORD_SNIPPET", keywordText);
+			
 			docs.put(docId, doc);
 			topTopic.clear();
 		}

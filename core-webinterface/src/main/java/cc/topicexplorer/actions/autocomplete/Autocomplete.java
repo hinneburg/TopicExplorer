@@ -52,7 +52,7 @@ public class Autocomplete {
 
 	public void executeQuery() throws SQLException {
 		JSONArray topicList = new JSONArray();
-		JSONObject all = new JSONObject();
+		JSONArray all = new JSONArray();
 		JSONObject term = new JSONObject();
 
 		ArrayList<String> fieldList = autocompleteMap.getCleanColumnNames();
@@ -65,7 +65,7 @@ public class Autocomplete {
 			if (termId != autocompleteQueryRS.getInt("TERM_ID")) {
 				if (term.size() > 0) {
 					term.put("TOP_TOPIC", topicList);
-					all.put(termId, term);
+					all.add(term);
 					term.clear();
 					topicList.clear();
 				}
@@ -78,7 +78,7 @@ public class Autocomplete {
 		}
 		if (term.size() > 0) {
 			term.put("TOP_TOPIC", topicList);
-			all.put(termId, term);
+			all.add(term);
 		}
 		this.outWriter.print(all.toString());
 	}

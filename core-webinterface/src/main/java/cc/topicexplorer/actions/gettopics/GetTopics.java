@@ -51,7 +51,7 @@ public class GetTopics {
 		topicMap.orderBy.add(orderBy);
 	}
 	
-	public void executeQueriesAndWriteOutTopics() {
+	public void executeQueriesAndWriteOutTopics(int topicBestItemLimit) {
 		ArrayList<String> topicColumnList = topicMap.getCleanColumnNames();
 		ArrayList<Integer> termList = new ArrayList<Integer>();
 
@@ -77,7 +77,8 @@ public class GetTopics {
 				ResultSet topicTermRS = database
 						.executeQuery("SELECT TERM_ID, NUMBER_OF_DOCUMENT_TOPIC FROM TERM_TOPIC WHERE TOPIC_ID="
 								+ topicRS.getString("TOPIC_ID")
-								+ " ORDER BY NUMBER_OF_DOCUMENT_TOPIC DESC LIMIT 20");
+								+ " ORDER BY NUMBER_OF_DOCUMENT_TOPIC DESC LIMIT " 
+								+ topicBestItemLimit);
 	//			@formatter:on
 				while (topicTermRS.next()) {
 					topTerm.put("TermId", topicTermRS.getString("TERM_ID"));

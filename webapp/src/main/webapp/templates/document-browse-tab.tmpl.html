@@ -26,7 +26,7 @@
 							<a href="#" data-bind="click: $parent.loadDocument, attr: {id: 'doc' + selectedDocument}"><nobr data-bind="text: globalData.DOCUMENT[selectedDocument][$parent.browseData[$parent.active()].textSelection().field + 'TITLE']"></nobr></a>
 						</div>
 						<p class="docContent">
-							<!--  ko if: typeof  globalData.DOCUMENT[selectedDocument].TIME$TIME_STAMP != 'undefined'-->
+							<!--  ko if: globalData.PLUGINS.indexOf('time') > -1-->
 								<span style="font-size:xx-small; color: #7f7f7f" class="date" data-bind="text: moment( globalData.DOCUMENT[selectedDocument].TIME$TIME_STAMP * 1000).format('LLL');"></span><br/>
 							<!-- /ko -->
 							<span data-bind="text: globalData.DOCUMENT[selectedDocument][$parent.browseData[$parent.active()].textSelection().field + 'SNIPPET'], click: $parent.moveToTopic"></span>

@@ -1,8 +1,16 @@
-<div class="searchBar" data-bind="searchbarHandler: {}, style: {marginLeft: leftPadding()}">
-	<form method="post" action="" id="searchForm" data-bind="submit: loadDocumentsForSearch">
+<div class="searchBar" data-bind="searchbarHandler: {}, style: {marginLeft: leftPadding() + 'px'}">
+	<form method="post" action="" id="searchForm" data-bind="submit: loadDocumentsForSearch" autocomplete="off">
 		<fieldset>						
-			<input id="searchField" type="text" name="search" style="float: left;" data-bind="autoCompleteHandler: {}"/>
+			<input id="searchField" type="text" name="search" style="float: left;" data-bind="jqAuto: { value: searchWord, source:autocomplete, inputProp: 'TERM_NAME', labelProp: 'TERM_NAME', valueProp: 'TERM_ID',template: 'autocomplete'}"/>
 			<button class="button gradientGray" style="width: 82px;" type="submit"><span>Search</span></button>
 		</fieldset>
 	</form>
 </div>
+<script id="autocomplete" type="text/html">
+<div style="width: 100%;overflow:hidden;text-overflow: ellipsis; white-space: nowrap;" data-bind="event:{mouseover:$parent.changeSearchWord}">
+<a href="#" data-bind="text: TERM_NAME"></a>
+<!-- ko foreach: TOP_TOPIC -->
+	<span class="topicCheckboxCircle topicCircle autocompleteTopic" data-bind="style: {color: globalData.Topic[$data].COLOR_TOPIC$COLOR}, attr: {id: 'acT_' + $data, title: 'Topic ' + $data}, click: $parents[1].moveToTopic">●</span>
+<!-- /ko -->
+</div>
+</script>

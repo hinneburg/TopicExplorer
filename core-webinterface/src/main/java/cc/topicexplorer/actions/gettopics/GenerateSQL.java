@@ -11,7 +11,7 @@ public class GenerateSQL extends TableSelectCommand {
 	@Override
 	public void tableExecute(Context context) {
 		GetTopics getTopicsAction = context.get("GET_TOPICS_ACTION", GetTopics.class);
-		getTopicsAction.executeQueriesAndWriteOutTopics((Integer) properties.get("TopicBestItemLimit"));
+		getTopicsAction.executeQueriesAndWriteOutTopics(Integer.parseInt((String) properties.get("TopicBestItemLimit")));
 	}
 
 	@Override

@@ -265,10 +265,13 @@ public final class FrameFill extends TableFillCommand {
 
 	private void bestFrames(String frameType) {
 		int numTopics = Integer.parseInt((String) properties.get("malletNumTopics"));
-		try {	
+
+		int bestFrameCount = Integer.parseInt((String) properties.get("TopicBestItemLimit"));
+		try {
 			for (int i = 0; i < numTopics; i++) {
-				database.executeUpdateQueryForUpdate("INSERT INTO FRAME$BEST_FRAMES SELECT FRAME, TOPIC_ID, COUNT(DISTINCT DOCUMENT_ID) AS FRAME_COUNT, FRAME_TYPE FROM " + 
-						this.tableName + " WHERE FRAME_TYPE='" + frameType + "' AND TOPIC_ID="	+ i + " AND ACTIVE=1 GROUP BY FRAME ORDER BY FRAME_COUNT DESC LIMIT 10");
+				database.executeUpdateQueryForUpdate("INSERT INTO FRAME$BEST_FRAMES SELECT FRAME, TOPIC_ID, COUNT(DISTINCT DOCUMENT_ID) AS FRAME_COUNT, FRAME_TYPE FROM " 
+					+ this.tableName + " WHERE FRAME_TYPE='" + frameType + "' AND TOPIC_ID="	+ i + " AND ACTIVE=1 GROUP BY FRAME ORDER BY FRAME_COUNT DESC LIMIT "
+					+ bestFrameCount);
 			}
 		} catch (SQLException e) {
 			logger.error("Exception while creating bestFrames table.");

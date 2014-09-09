@@ -11,7 +11,7 @@
 <!-- /ko -->
 
 <!-- ko foreach: {data:visibleTabs} -->
-<p class="reiter button gradientGray tab" data-bind="attr: { id: $data}" style="cursor: default;">
+<p class="reiter button gradientGray tab" data-bind="attr: { id: $data, title: $parent.allTabs[$data].tabHeading}" style="cursor: default; overflow:hidden; text-overflow:ellipsis;">
 	<img data-bind="click: $parent.deleteTab" style="cursor: pointer; position:absolute; top:5px; right: 5px; display: none;" width="12px" height="12px" class="close" src="images/delete_24.png" alt="close"/>
 	<span style="cursor: pointer; overflow:hidden;text-overflow: ellipsis; white-space: nowrap;" data-bind="text: $parent.allTabs[$data].tabHeading, click: $parent.switchActive"></span>	
 </p>

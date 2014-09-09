@@ -12,7 +12,7 @@
 			<div data-bind="text: selectedTopic" style="font-size: xx-small; float:left;"></div>
 			<div  class="topicElementDiv">			
 				<div class="topicElementMenu">
-					<!-- ko if: typeof $parent.loadTimeViewForTopic == 'function' -->
+					<!-- ko if: globalData.PLUGINS.indexOf('time') > -1 -->
 						<button class="timeView" name="timeView" title="show time chart" type="button" data-bind="click: function() { $parent.loadTimeViewForTopic(selectedTopic)}"></button>
 					<!-- /ko -->
 				</div>

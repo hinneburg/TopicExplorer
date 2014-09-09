@@ -6,19 +6,20 @@ require.config({
 		"knockout-postbox" : "scripts/lib/knockout-postbox",
 		"text" : "scripts/lib/text",
 		"jquery" : "scripts/lib/jquery.min",
-		"jquery-ui" : "scripts/lib/jquery-ui.min",
+		"jquery.ui" : "scripts/lib/jquery-ui.min",
+		"knockout-autocomplete" : "scripts/lib/knockout-jqAutocomplete.min",
 		"highstock" : "scripts/lib/highstock",
 		"moment": "scripts/lib/moment",
 		"filesaver": "scripts/lib/FileSaver"
 	},
 	shim: {
-		'jquery-ui': {
+		'jquery.ui': {
             deps: ['jquery']
         }
 	}
 });
 
-require([ "knockout","jquery", "text!/JsonServlet?Command=getTopics", "knockout-amd-helpers", "knockout-postbox", "moment",	"text", "jquery-ui",
+require([ "knockout","jquery", "text!/JsonServlet?Command=getTopics", "text!/JsonServlet?Command=getActivePlugins", "knockout-amd-helpers", "knockout-postbox", "moment",	"text", "jquery.ui","knockout-autocomplete",
           "scripts/modules/extenders/document-show-frames", 
           "scripts/modules/extenders/document-show-text",
           "scripts/modules/extenders/document-show-time",
@@ -26,10 +27,12 @@ require([ "knockout","jquery", "text!/JsonServlet?Command=getTopics", "knockout-
           "scripts/modules/extenders/document-browse-text",
           "scripts/modules/extenders/topic-view-time",
           "scripts/modules/extenders/topic-view-frame",
-          "scripts/modules/extenders/topic-view-wordtype"], function(ko, $, json) {
+          "scripts/modules/extenders/topic-view-wordtype"], function(ko, $, topicJson, pluginJson) {
 	var self = this;
 	self.globalData = {};
-	var topics =  JSON.parse(json);
+	var topics =  JSON.parse(topicJson);
+	var plugins = JSON.parse(pluginJson);
+	self.globalData.PLUGINS = plugins.PLUGINS;
 	self.globalData.Topic = topics.Topic;
 	self.globalData.TOPIC_SORTING = topics.TOPIC_SORTING;
 	

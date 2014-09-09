@@ -19,7 +19,7 @@ public class BestTermsFill extends TableFillCommand {
 	@Override
 	public void fillTable() {
 		int numTopics = Integer.parseInt((String) properties.get("malletNumTopics"));
-		int bestTermCount = 10;
+		int bestTermCount = Integer.parseInt((String) properties.get("TopicBestItemLimit"));
 		try {	
 			ResultSet wordtypeRS = database.executeQuery("SELECT DISTINCT WORDTYPE$WORDTYPE FROM TERM");
 			List<String> wordtypes = new ArrayList<String>();

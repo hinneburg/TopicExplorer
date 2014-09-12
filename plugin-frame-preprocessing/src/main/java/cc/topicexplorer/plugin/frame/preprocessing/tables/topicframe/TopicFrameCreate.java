@@ -32,7 +32,7 @@ public class TopicFrameCreate extends TableCreateCommand {
 
 	@Override
 	public Set<String> getAfterDependencies() {
-		return Sets.newHashSet("TopicFrameFill");
+		return Sets.newHashSet("Frame_TopicFrameFill");
 	}
 
 	@Override

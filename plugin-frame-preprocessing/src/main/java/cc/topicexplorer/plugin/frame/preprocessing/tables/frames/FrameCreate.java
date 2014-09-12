@@ -35,7 +35,7 @@ public final class FrameCreate extends TableCreateCommand {
 
 	@Override
 	public Set<String> getAfterDependencies() {
-		return Sets.newHashSet();
+		return Sets.newHashSet("Frame_FrameFill");
 	}
 
 	@Override

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <catalog>	
   
-	<command name="FrameFill" className="cc.topicexplorer.plugin.frame.preprocessing.tables.frames.FrameFill"/>
-	<command name="TopicFrameFill" className="cc.topicexplorer.plugin.frame.preprocessing.tables.topicframe.TopicFrameFill"/>
+	<command name="Frame_FrameFill" className="cc.topicexplorer.plugin.frame.preprocessing.tables.frames.FrameFill"/>
+	<command name="Frame_TopicFrameFill" className="cc.topicexplorer.plugin.frame.preprocessing.tables.topicframe.TopicFrameFill"/>
 </catalog>

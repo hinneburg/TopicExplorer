@@ -50,7 +50,7 @@ public class TopicFrameFill extends TableFillCommand {
 
 	@Override
 	public Set<String> getBeforeDependencies() {
-		return Sets.newHashSet("TopicFill", "TopicMetaData", "FrameFill", "TopicFrameCreate");
+		return Sets.newHashSet("TopicFill", "TopicMetaData", "Frame_FrameFill", "Frame_TopicFrameCreate");
 	}
 
 	@Override

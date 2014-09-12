@@ -49,7 +49,7 @@ public final class FrameFill extends TableFillCommand {
 
 	@Override
 	public Set<String> getBeforeDependencies() {
-		return Sets.newHashSet("TermFill", "TermTopicFill", "DocumentTermTopicFill", "FrameCreate");
+		return Sets.newHashSet("TermFill", "TermTopicFill", "DocumentTermTopicFill", "Frame_FrameCreate", "WordType_TermFill");
 	}
 
 	@Override
@@ -74,8 +74,6 @@ public final class FrameFill extends TableFillCommand {
 			startWordTypes.length == endWordTypeLimits.length && 
 			startWordTypes.length == maxFrameSizes.length) {
 		
-			fillWordtypeColumnOfTableTerm();
-			
 			try {
 				database.executeUpdateQuery("DROP TABLE IF EXISTS FRAME$BEST_FRAMES");
 				database.executeUpdateQuery("CREATE TABLE FRAME$BEST_FRAMES (FRAME VARCHAR(255), TOPIC_ID INT,  FRAME_COUNT INT, FRAME_TYPE VARCHAR(255))");
@@ -100,12 +98,6 @@ public final class FrameFill extends TableFillCommand {
 				dropTemporaryTables();
 				
 			}
-			try {
-				database.executeUpdateQuery("alter table TERM drop column WORDTYPE");
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 			
 			logger.info(String.format("Table %s is filled.", this.tableName));
 		} else {
@@ -114,22 +106,12 @@ public final class FrameFill extends TableFillCommand {
 		}
 	}
 
-	private void fillWordtypeColumnOfTableTerm() {
-		try {
-			database.executeUpdateQueryForUpdate("alter table TERM add column WORDTYPE VARCHAR(255) COLLATE utf8_bin");
-			database.executeUpdateQueryForUpdate("update TERM, DOCUMENT_TERM_TOPIC "
-					+ "SET TERM.WORDTYPE=DOCUMENT_TERM_TOPIC.WORDTYPE$WORDTYPE WHERE DOCUMENT_TERM_TOPIC.TERM=TERM.TERM_NAME");
-		} catch (SQLException e) {
-			logger.error("Table TERM could not be altered.");
-			throw new RuntimeException(e);
-		}
-	}
 
 	private void createAndFillTableTopTerms(String startWordType, String startWordTypeLimit, String endWordType, String endWordTypeLimit) {
 		try {
 			database.executeUpdateQuery("create table TopTerms ENGINE = MEMORY DEFAULT CHARSET=utf8 COLLATE=utf8_bin "
-					+ "select TERM_NAME, TOPIC_ID, PR_TERM_GIVEN_TOPIC from TERM_TOPIC join TERM using (TERM_ID) "
-					+ "where TOPIC_ID=0 AND WORDTYPE='" + startWordType
+					+ "select TERM_NAME, WORDTYPE$WORDTYPE, TOPIC_ID, PR_TERM_GIVEN_TOPIC from TERM_TOPIC join TERM using (TERM_ID) "
+					+ "where TOPIC_ID=0 AND WORDTYPE$WORDTYPE='" + startWordType
 					+ "' order by PR_TERM_GIVEN_TOPIC desc limit "
 					+ startWordTypeLimit + ";");
 			database.executeUpdateQuery("alter table TopTerms add index (TOPIC_ID,TERM_NAME)");
@@ -139,9 +121,9 @@ public final class FrameFill extends TableFillCommand {
 			// best 20 nouns of best 20 topics
 			for (int i = 1; i < numTopics; i++) {
 				database.executeUpdateQueryForUpdate("insert into TopTerms "
-					+ "select TERM_NAME, TOPIC_ID, PR_TERM_GIVEN_TOPIC from TERM_TOPIC join TERM "
+					+ "select TERM_NAME, WORDTYPE$WORDTYPE, TOPIC_ID, PR_TERM_GIVEN_TOPIC from TERM_TOPIC join TERM "
 					+ "using (TERM_ID) where TOPIC_ID=" + i
-					+ " AND WORDTYPE='" + startWordType
+					+ " AND WORDTYPE$WORDTYPE='" + startWordType
 					+ "' order by PR_TERM_GIVEN_TOPIC desc limit "
 					+ startWordTypeLimit + ";");
 			}
@@ -149,9 +131,9 @@ public final class FrameFill extends TableFillCommand {
 			// best 20 verbs of best 20 topics
 			for (int i = 0; i < numTopics; i++) {
 				database.executeUpdateQueryForUpdate("insert into TopTerms "
-					+ "select TERM_NAME, TOPIC_ID, PR_TERM_GIVEN_TOPIC from TERM_TOPIC join TERM "
+					+ "select TERM_NAME, WORDTYPE$WORDTYPE, TOPIC_ID, PR_TERM_GIVEN_TOPIC from TERM_TOPIC join TERM "
 					+ "using (TERM_ID) where TOPIC_ID=" + i
-					+ " AND WORDTYPE='" + endWordType
+					+ " AND  WORDTYPE$WORDTYPE='" + endWordType
 					+ "' order by PR_TERM_GIVEN_TOPIC desc limit "
 					+ endWordTypeLimit + ";");
 			}
@@ -166,7 +148,8 @@ public final class FrameFill extends TableFillCommand {
 			database.executeUpdateQuery("create table TOP_TERMS_DOC_SAME_TOPIC ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin "
 					+ "select DOCUMENT_TERM_TOPIC.DOCUMENT_ID, TopTerms.TOPIC_ID, "
 					+ "DOCUMENT_TERM_TOPIC.POSITION_OF_TOKEN_IN_DOCUMENT, DOCUMENT_TERM_TOPIC.TERM, DOCUMENT_TERM_TOPIC.WORDTYPE$WORDTYPE "
-					+ "from DOCUMENT_TERM_TOPIC join TopTerms on (DOCUMENT_TERM_TOPIC.TERM=TopTerms.TERM_NAME and DOCUMENT_TERM_TOPIC.TOPIC_ID=TopTerms.TOPIC_ID) "
+					+ "from DOCUMENT_TERM_TOPIC join TopTerms on (DOCUMENT_TERM_TOPIC.TERM=TopTerms.TERM_NAME and "
+					+ "DOCUMENT_TERM_TOPIC.TOPIC_ID=TopTerms.TOPIC_ID and DOCUMENT_TERM_TOPIC.WORDTYPE$WORDTYPE=TopTerms.WORDTYPE$WORDTYPE) "
 					+ "order by DOCUMENT_TERM_TOPIC.DOCUMENT_ID asc, TopTerms.TOPIC_ID asc,	DOCUMENT_TERM_TOPIC.POSITION_OF_TOKEN_IN_DOCUMENT asc");
 		} catch (SQLException e) {
 			logger.error("Exception while handling temporary table TOP_TERMS_DOC_SAME_TOPIC.");

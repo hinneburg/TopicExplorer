@@ -70,7 +70,7 @@ public class BestTermsFill extends TableFillCommand {
 
 	@Override
 	public Set<String> getOptionalBeforeDependencies() {
-		return Sets.newHashSet();
+		return Sets.newHashSet("HierarchicalTopic_TopicFill", "HierarchicalTopic_TermTopicFill");
 	}
 
 }

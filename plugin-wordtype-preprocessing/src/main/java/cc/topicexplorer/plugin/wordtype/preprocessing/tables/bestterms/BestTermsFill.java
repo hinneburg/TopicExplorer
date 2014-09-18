@@ -18,7 +18,6 @@ public class BestTermsFill extends TableFillCommand {
 
 	@Override
 	public void fillTable() {
-		int numTopics = Integer.parseInt((String) properties.get("malletNumTopics"));
 		int bestTermCount = Integer.parseInt((String) properties.get("TopicBestItemLimit"));
 		try {	
 			ResultSet wordtypeRS = database.executeQuery("SELECT DISTINCT WORDTYPE$WORDTYPE FROM TERM");
@@ -26,15 +25,19 @@ public class BestTermsFill extends TableFillCommand {
 			while(wordtypeRS.next()) {
 				wordtypes.add(wordtypeRS.getString("WORDTYPE$WORDTYPE"));
 			}
-			
-			for (int i = 0; i < numTopics; i++) {
+			ResultSet topipcIdsRs = database.executeQuery("SELECT TOPIC_ID FROM TOPIC");
+			List<Integer> topicIds = new ArrayList<Integer>();
+			while(topipcIdsRs.next()){
+				topicIds.add(topipcIdsRs.getInt("TOPIC_ID"));
+			}
+			for (int topicId : topicIds) {
 				for(String wordtype : wordtypes) {
 					database.executeUpdateQueryForUpdate("INSERT INTO " + this.tableName 
 							+ "(TERM_ID, TERM_NAME, TOPIC_ID, NUMBER_OF_DOCUMENT_TOPIC, "
 							+ "WORDTYPE) SELECT TERM.TERM_ID, TERM.TERM_NAME, " 
-							+ i + ", TERM_TOPIC.NUMBER_OF_DOCUMENT_TOPIC, " 
+							+ topicId + ", TERM_TOPIC.NUMBER_OF_DOCUMENT_TOPIC, " 
 							+ "TERM.WORDTYPE$WORDTYPE FROM TERM, TERM_TOPIC "
-							+ "WHERE TERM.TERM_ID=TERM_TOPIC.TERM_ID AND TOPIC_ID=" + i 
+							+ "WHERE TERM.TERM_ID=TERM_TOPIC.TERM_ID AND TOPIC_ID=" + topicId 
 							+ " AND TERM.WORDTYPE$WORDTYPE='" + wordtype +"' "
 							+ "ORDER BY NUMBER_OF_DOCUMENT_TOPIC DESC LIMIT " + bestTermCount);
 				}

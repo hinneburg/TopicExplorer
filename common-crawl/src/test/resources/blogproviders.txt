@@ -1,7 +1,7 @@
 blog.goo.ne.jp/*
 blogs.yahoo.co.jp/*
 d.hatena.ne.jp/*
-minkara.carview.co.jp/userid/*/blog/*
+minkara.carview.co.jp/*
 ameblo.jp/*
 shinshu.fm/MHz/*
 *.cocolog-nifty.com/*

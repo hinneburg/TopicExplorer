@@ -30,3 +30,8 @@ blogs.dion.ne.jp/*
 *.doorblog.jp/*
 *.2chblog.jp/*
 *.hatenablog.com/*
+*.blogspot.com/*
+*.blog.fc2.com/*
+*.exblog.jp/*
+*.wordpress.com/*
+blog.excite.co.jp/*

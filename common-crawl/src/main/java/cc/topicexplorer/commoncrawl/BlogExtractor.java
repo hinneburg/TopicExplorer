@@ -59,7 +59,7 @@ public class BlogExtractor {
                                              context.getConfiguration());
 
         // create a globbing pattern from the configuration
-        String pattern = "http?://{" + HelperUtils.join(lines, ",") + "}";
+        String pattern = "{http,https}://{" + HelperUtils.join(lines, ",") + "}";
         this.urlPattern = GlobPattern.compile(pattern);
         LOG.info("Compiled pattern: " + this.urlPattern);
     }

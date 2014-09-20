@@ -4,6 +4,7 @@ import static cc.topicexplorer.commoncrawl.HelperUtils.loadFileAsArray;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -23,7 +24,6 @@ import org.archive.io.ArchiveReader;
 
 import cc.topicexplorer.commoncrawl.statistics.StatisticsBuilder;
 
-import com.google.common.net.InternetDomainName;
 import com.rometools.rome.feed.synd.SyndContent;
 import com.rometools.rome.feed.synd.SyndEntry;
 import com.rometools.rome.feed.synd.SyndFeed;
@@ -98,8 +98,7 @@ public class BlogExtractor {
         if (urlMatcher.matches()) {
             // the page url is valid
 
-            InternetDomainName domainName = InternetDomainName.from(url);
-            String host = domainName.topPrivateDomain().toString();
+            String host = new URL(url).getHost();
             StringReader reader = new StringReader(wrapper.getHTTPBody());
             SyndFeedInput in = new SyndFeedInput();
             try {

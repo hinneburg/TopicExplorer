@@ -4,12 +4,9 @@ import static cc.topicexplorer.commoncrawl.HelperUtils.loadFileAsArray;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
-import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -37,7 +34,6 @@ import com.rometools.rome.io.SyndFeedInput;
  */
 public class BlogExtractor {
     private static final Logger     LOG                        = Logger.getLogger(BlogExtractor.class);
-    private static final String     RFC_822_DATE_FORMAT_STRING = "E', 'd' 'MMM' 'yy' 'HH':'mm':'ss' 'Z";
     public static final String      VALID_URL_FILE_CONFIG_NAME = "validurlfile";
 
     private List<StatisticsBuilder> statisticsBuilders         = new ArrayList<StatisticsBuilder>();
@@ -187,16 +183,7 @@ public class BlogExtractor {
      */
     public static String getPublishedDateRFC(SyndEntry entry) {
         Date publishedDate = entry.getPublishedDate();
-        return getRFCDate(publishedDate);
-    }
-
-    protected static String getRFCDate(Date date) {
-        // format the date according to RFC 822
-        SimpleDateFormat dateFormat = new SimpleDateFormat(RFC_822_DATE_FORMAT_STRING,
-                                                           Locale.ENGLISH);
-        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-        String dateString = dateFormat.format(date);
-        return dateString;
+        return RFC822DateFormatter.getRFCDate(publishedDate);
     }
 
     /**

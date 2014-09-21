@@ -9,7 +9,11 @@ import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.log4j.Logger;
 
+import com.google.common.net.InternetDomainName;
+
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -65,5 +69,22 @@ public class HelperUtils {
         }
 
         return builder.toString();
+    }
+
+    /**
+     * Get the top private domain from a url.
+     *
+     * @param urlString the url of which to return the top private domain
+     * @return the requested top private domain
+     */
+    public static String getTopPrivateDomain(String urlString) {
+        String host;
+        try {
+            host = new URL(urlString).getHost();
+            System.out.println(host);
+        } catch (MalformedURLException e) {
+            return"";
+        }
+        return InternetDomainName.from(host).topPrivateDomain().toString();
     }
 }

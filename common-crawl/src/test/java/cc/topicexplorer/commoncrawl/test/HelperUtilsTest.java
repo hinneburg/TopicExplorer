@@ -27,4 +27,14 @@ public class HelperUtilsTest {
         assertEquals("", joinedString);
     }
 
+    @Test
+    public void testGetTopPrivateDomain() {
+        String url = "https://images.google.com/?gws_rd=ssl";
+        String domain = HelperUtils.getTopPrivateDomain(url);
+        assertEquals("google.com", domain);
+
+        url = "http://docs.oracle.com/javase/6/docs/api/java/net/URL.html#getHost()";
+        domain = HelperUtils.getTopPrivateDomain(url);
+        assertEquals("oracle.com", domain);
+    }
 }

@@ -4,7 +4,6 @@ import static cc.topicexplorer.commoncrawl.HelperUtils.loadFileAsArray;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -98,7 +97,7 @@ public class BlogExtractor {
         if (urlMatcher.matches()) {
             // the page url is valid
 
-            String host = new URL(url).getHost();
+            String host = HelperUtils.getTopPrivateDomain(url);
             StringReader reader = new StringReader(wrapper.getHTTPBody());
             SyndFeedInput in = new SyndFeedInput();
             try {

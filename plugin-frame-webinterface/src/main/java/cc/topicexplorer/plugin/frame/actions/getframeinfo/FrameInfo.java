@@ -49,7 +49,7 @@ public class FrameInfo {
 	}
 
 	public void getFrameInfo() throws SQLException {
-ArrayList<String> frameColumnList = frameMap.getCleanColumnNames();
+		ArrayList<String> frameColumnList = frameMap.getCleanColumnNames();
 		
 		frameColumnList.remove("TOPIC_ID");
 		
@@ -62,22 +62,20 @@ ArrayList<String> frameColumnList = frameMap.getCleanColumnNames();
 		int topicId = -1;
 		String frameType = "";
 		while (frameQueryRS.next()) {
-			if(!frameType.equals(frameQueryRS.getString("FRAME_TYPE"))) {
-				if(!frameType.isEmpty()) {
-					frameTypes.put(frameType, frameData);
-					if (topicId != frameQueryRS.getInt("TOPIC_ID")) {
-						if(topicId > -1) {
-							frames.put("FRAMES", frameTypes);
-							all.put(topicId, frames);
-							frames = new JSONObject();
-							frameTypes = new JSONObject();
-						}
-						topicId = frameQueryRS.getInt("TOPIC_ID");
-					}			
-				}
-				frameType = frameQueryRS.getString("FRAME_TYPE");
+			if(!frameType.isEmpty()) {
+				frameTypes.put(frameType, frameData);						
 			}
+			frameType = frameQueryRS.getString("FRAME_TYPE");
 			
+			if (topicId != frameQueryRS.getInt("TOPIC_ID")) {
+				if(topicId > -1) {
+					frames.put("FRAMES", frameTypes);
+					all.put(topicId, frames);
+					frames = new JSONObject();
+					frameTypes = new JSONObject();
+				}
+				topicId = frameQueryRS.getInt("TOPIC_ID");
+			}	
 			frameData = new JSONObject();
 			for (int i = 0; i < frameColumnList.size(); i++) {
 				frameData.put(frameColumnList.get(i), frameQueryRS.getString(frameColumnList.get(i)));

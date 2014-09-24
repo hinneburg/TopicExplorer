@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -25,6 +26,12 @@ public class TopicFill extends TableFillCommand {
 	public void fillTable() {
 		try {
 			this.prepareMetaDataAndFillTable();
+			if(Arrays.asList(properties.get("plugins").toString().split(",")).contains("colortopic")) {
+				database.executeUpdateQueryForUpdate("UPDATE TOPIC t1, TOPIC t2 "
+						+ "set t1.COLOR_TOPIC$COLOR=t2.COLOR_TOPIC$COLOR "
+						+ "WHERE t1.HIERARCHICAL_TOPIC$START=t2.HIERARCHICAL_TOPIC$START "
+						+ "AND t2.HIERARCHICAL_TOPIC$START=t2.HIERARCHICAL_TOPIC$END");
+			}
 		} catch (IOException ioEx) {
 			logger.error("Problems occured while reading temp/topic_order.csv");
 			throw new RuntimeException(ioEx);
@@ -250,7 +257,7 @@ public class TopicFill extends TableFillCommand {
 
 	@Override
 	public Set<String> getOptionalBeforeDependencies() {
-		return Sets.newHashSet();
+		return Sets.newHashSet("ColorTopic_TopicFill");
 	}
 
 }

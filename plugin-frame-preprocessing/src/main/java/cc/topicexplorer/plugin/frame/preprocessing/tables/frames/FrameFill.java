@@ -136,7 +136,7 @@ public final class FrameFill extends TableFillCommand {
 			while(topipcIdsRs.next()){
 				topicIds.add(topipcIdsRs.getInt("TOPIC_ID"));
 			}
-			for (int i = 0; i < topicIds.size(); i++) {
+			for (int i: topicIds) {
 				if(first) {
 					database.executeUpdateQuery("create table TopTerms ENGINE=MEMORY DEFAULT CHARSET=utf8 COLLATE=utf8_bin "
 							+ "select TERM_NAME, WORDTYPE$WORDTYPE, TOPIC_ID, PR_TERM_GIVEN_TOPIC from TERM_TOPIC join TERM using (TERM_ID) "
@@ -157,7 +157,7 @@ public final class FrameFill extends TableFillCommand {
 				}
 			}
 
-			for (int i = 0; i < topicIds.size(); i++) {
+			for (int i : topicIds) {
 				database.executeUpdateQueryForUpdate("insert into TopTerms "
 					+ "select TERM_NAME, WORDTYPE$WORDTYPE, TOPIC_ID, PR_TERM_GIVEN_TOPIC from TERM_TOPIC join TERM "
 					+ "using (TERM_ID) where TOPIC_ID=" + i	+ " AND WORDTYPE$WORDTYPE='" + endWordType

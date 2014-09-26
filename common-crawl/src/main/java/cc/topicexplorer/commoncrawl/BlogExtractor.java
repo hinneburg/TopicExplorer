@@ -1,7 +1,5 @@
 package cc.topicexplorer.commoncrawl;
 
-import static cc.topicexplorer.commoncrawl.HelperUtils.loadFileAsArray;
-
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
@@ -12,7 +10,6 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
-import org.apache.hadoop.fs.GlobPattern;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.log4j.Logger;
@@ -34,31 +31,12 @@ import com.rometools.rome.io.SyndFeedInput;
  */
 public class BlogExtractor {
     private static final Logger     LOG                        = Logger.getLogger(BlogExtractor.class);
-    public static final String      VALID_URL_FILE_CONFIG_NAME = "validurlfile";
 
     private List<StatisticsBuilder> statisticsBuilders         = new ArrayList<StatisticsBuilder>();
 
-    private Pattern                 urlPattern;
     private Pattern                 titlePattern               = Pattern.compile("[\\p{InHiragana}]+");
 
-    public BlogExtractor(Mapper<Text, ArchiveReader, Text, Text>.Context context) throws IOException {
-        // load valid URLs from config
-        String validURLFile = context.getConfiguration().get(VALID_URL_FILE_CONFIG_NAME);
-        if (validURLFile != null) {
-            LOG.debug("Found blog provider list in: " + validURLFile);
-        } else {
-            LOG.warn("No blog provider list found!");
-            throw new IOException("No blog provider list found!");
-        }
-
-        List<String> lines = loadFileAsArray(validURLFile,
-                                             context.getConfiguration());
-
-        // create a globbing pattern from the configuration
-        String pattern = "{http,https}://{" + HelperUtils.join(lines, ",") + "}";
-        LOG.debug("Glob pattern: " + pattern);
-        this.urlPattern = GlobPattern.compile(pattern);
-        LOG.debug("Compiled pattern: " + this.urlPattern);
+    public BlogExtractor() {
     }
 
     /**
@@ -72,80 +50,62 @@ public class BlogExtractor {
      *             if writing to the context fails.
      * @throws InterruptedException
      *             if writing to the context fails.
+     * TODO rueckgabe true falls wert extrahiert
      */
     public void extract(RecordWrapper wrapper,
                         Mapper<Text, ArchiveReader, Text, Text>.Context context)
         throws IOException, InterruptedException {
-        // precondition: urlPattern != null, titlePattern != null
-        if (this.urlPattern == null || this.titlePattern == null) {
-            throw new IllegalStateException("URL Pattern should not be null");
-        }
 
         String url = wrapper.getHeader().getUrl();
-        if (url == null) {
-            // this should not happen as we filter out eveything but responses,
-            // which always have a url
-            throw new RuntimeException("URL should not be null");
-        }
-        Matcher urlMatcher = this.urlPattern.matcher(url);
-        if (urlMatcher == null) {
-            throw new RuntimeException("Can't create matcher for url: " + url);
-        }
+        String host = HelperUtils.getTopPrivateDomain(url);
+        StringReader reader = new StringReader(wrapper.getHTTPBody());
+        SyndFeedInput in = new SyndFeedInput();
+        try {
+            SyndFeed feed = in.build(reader);
+            for (SyndEntry entry : feed.getEntries()) {
 
-        if (urlMatcher.matches()) {
-            // the page url is valid
-
-            String host = HelperUtils.getTopPrivateDomain(url);
-            StringReader reader = new StringReader(wrapper.getHTTPBody());
-            SyndFeedInput in = new SyndFeedInput();
-            try {
-                SyndFeed feed = in.build(reader);
-                for (SyndEntry entry : feed.getEntries()) {
-
-                    String title = entry.getTitle();
-                    if (title == null) {
-                        title = "";
-                    }
-                    Matcher titleMatcher = this.titlePattern.matcher(title);
-                    if (titleMatcher == null) {
-                        throw new RuntimeException("Can't create matcher for title: " + title);
-                    }
-
-                    if (titleMatcher.matches()) {
-                        String entryUrl = entry.getLink();
-                        String mainAuthor = entry.getAuthor();
-                        String dateString = getPublishedDateRFC(entry);
-                        String contentString = getContents(entry);
-                        String[] values = new String[] { entryUrl, mainAuthor,
-                                dateString, contentString };
-
-                        StringBuilder builder = new StringBuilder();
-                        CSVFormat format = CSVFormat.MYSQL.withHeader("entryUrl",
-                                                                      "mainAuthor",
-                                                                      "dateString",
-                                                                      "contentString");
-                        CSVPrinter printer = new CSVPrinter(builder, format);
-                        printer.printRecord((Object[]) values);
-
-                        if (contentString.length() != 0) {
-                            context.write(new Text(host),
-                                          new Text(builder.toString()));
-                        } else {
-                            LOG.debug("Empty post: " + entryUrl);
-                        }
-                        printer.close();
-                    } else {
-                        LOG.debug("Invalid title: " + title);
-                    }
+                String title = entry.getTitle();
+                if (title == null) {
+                    title = "";
                 }
-                buildStatistics(feed, context);
-            } catch (IllegalArgumentException e) {
-                LOG.error("No valid feed type at " + url);
-            } catch (FeedException e) {
-                LOG.error("Feed could not be parsed: " + url);
+                Matcher titleMatcher = this.titlePattern.matcher(title);
+                if (titleMatcher == null) {
+                    throw new RuntimeException("Can't create matcher for title: "
+                                               + title);
+                }
+
+                if (titleMatcher.matches()) {
+                    String entryUrl = entry.getLink();
+                    String mainAuthor = entry.getAuthor();
+                    String dateString = getPublishedDateRFC(entry);
+                    String contentString = getContents(entry);
+                    String[] values = new String[] { entryUrl, mainAuthor,
+                            dateString, contentString };
+
+                    StringBuilder builder = new StringBuilder();
+                    CSVFormat format = CSVFormat.MYSQL.withHeader("entryUrl",
+                                                                  "mainAuthor",
+                                                                  "dateString",
+                                                                  "contentString");
+                    CSVPrinter printer = new CSVPrinter(builder, format);
+                    printer.printRecord((Object[]) values);
+
+                    if (contentString.length() != 0) {
+                        context.write(new Text(host),
+                                      new Text(builder.toString()));
+                    } else {
+                        LOG.debug("Empty post: " + entryUrl);
+                    }
+                    printer.close();
+                } else {
+                    LOG.debug("Invalid title: " + title);
+                }
             }
-        } else {
-            LOG.debug("Invalid URL: " + url);
+            buildStatistics(feed, context);
+        } catch (IllegalArgumentException e) {
+            LOG.error("No valid feed type at " + url);
+        } catch (FeedException e) {
+            LOG.error("Feed could not be parsed: " + url);
         }
     }
 

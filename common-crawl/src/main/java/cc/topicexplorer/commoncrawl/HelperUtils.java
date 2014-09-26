@@ -85,6 +85,16 @@ public class HelperUtils {
         } catch (MalformedURLException e) {
             return"";
         }
-        return InternetDomainName.from(host).topPrivateDomain().toString();
+
+        // some domains are not recognized as valid
+        // use host as top private domain for them
+        String topPrivateDomain;
+        try {
+            topPrivateDomain = InternetDomainName.from(host).topPrivateDomain().toString();
+        } catch (IllegalStateException e) {
+            return host;
+        }
+
+        return topPrivateDomain;
     }
 }

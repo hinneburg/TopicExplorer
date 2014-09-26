@@ -16,7 +16,8 @@ import com.rometools.rome.io.FeedException;
 import com.rometools.rome.io.SyndFeedInput;
 
 public class BlogExtractorTest {
-    private static final String RSS_ENCODED_FILE_PATH = BlogExtractorTest.class.getResource("/rss_cenc.rss.xml").getPath();
+    private static final String RSS_ENCODED_FILE_NAME = "/rss_cenc.rss.xml";
+    private static final String RSS_ENCODED_FILE_PATH = BlogExtractorTest.class.getResource(RSS_ENCODED_FILE_NAME).getPath();
 
     @Test
     public void testGetAllContents_rss() throws FileNotFoundException,

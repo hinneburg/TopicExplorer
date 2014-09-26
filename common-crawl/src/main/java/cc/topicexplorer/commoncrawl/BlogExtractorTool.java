@@ -1,10 +1,12 @@
 package cc.topicexplorer.commoncrawl;
 
 // Java classes
+import java.io.InputStream;
 import java.net.URI;
 
 // Apache Project classes
 import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 
 // Hadoop classes
 import org.apache.hadoop.conf.Configured;
@@ -112,6 +114,8 @@ public class BlogExtractorTool extends Configured implements Tool {
      * Hadoop job.
      */
     public static void main(String[] args) throws Exception {
+        InputStream propertiesFiles = BlogExtractorTool.class.getResourceAsStream("/log4j.properties");
+        PropertyConfigurator.configure(propertiesFiles);
         int res = ToolRunner.run(new Configuration(),
                                  new BlogExtractorTool(),
                                  args);

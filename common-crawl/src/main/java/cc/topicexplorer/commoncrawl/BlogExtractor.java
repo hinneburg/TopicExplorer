@@ -45,18 +45,20 @@ public class BlogExtractor {
         // load valid URLs from config
         String validURLFile = context.getConfiguration().get(VALID_URL_FILE_CONFIG_NAME);
         if (validURLFile != null) {
-            LOG.info("Found blog provider list in: " + validURLFile);
+            LOG.debug("Found blog provider list in: " + validURLFile);
         } else {
             LOG.warn("No blog provider list found!");
             throw new IOException("No blog provider list found!");
         }
+
         List<String> lines = loadFileAsArray(validURLFile,
                                              context.getConfiguration());
 
         // create a globbing pattern from the configuration
         String pattern = "{http,https}://{" + HelperUtils.join(lines, ",") + "}";
+        LOG.debug("Glob pattern: " + pattern);
         this.urlPattern = GlobPattern.compile(pattern);
-        LOG.info("Compiled pattern: " + this.urlPattern);
+        LOG.debug("Compiled pattern: " + this.urlPattern);
     }
 
     /**
@@ -128,20 +130,22 @@ public class BlogExtractor {
                         if (contentString.length() != 0) {
                             context.write(new Text(host),
                                           new Text(builder.toString()));
+                        } else {
+                            LOG.debug("Empty post: " + entryUrl);
                         }
                         printer.close();
                     } else {
-                        LOG.info("Invalid title: " + title);
+                        LOG.debug("Invalid title: " + title);
                     }
                 }
                 buildStatistics(feed, context);
             } catch (IllegalArgumentException e) {
-                LOG.info("No valid feed type at " + url);
+                LOG.error("No valid feed type at " + url);
             } catch (FeedException e) {
                 LOG.error("Feed could not be parsed: " + url);
             }
         } else {
-            LOG.info("Invalid URL: " + url);
+            LOG.debug("Invalid URL: " + url);
         }
     }
 

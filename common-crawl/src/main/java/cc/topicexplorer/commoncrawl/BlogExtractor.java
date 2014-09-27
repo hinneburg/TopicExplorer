@@ -5,8 +5,6 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
@@ -33,8 +31,6 @@ public class BlogExtractor {
     private static final Logger     LOG                        = Logger.getLogger(BlogExtractor.class);
 
     private List<StatisticsBuilder> statisticsBuilders         = new ArrayList<StatisticsBuilder>();
-
-    private Pattern                 titlePattern               = Pattern.compile("[\\p{InHiragana}]+");
 
     public BlogExtractor() {
     }
@@ -65,16 +61,8 @@ public class BlogExtractor {
             for (SyndEntry entry : feed.getEntries()) {
 
                 String title = entry.getTitle();
-                if (title == null) {
-                    title = "";
-                }
-                Matcher titleMatcher = this.titlePattern.matcher(title);
-                if (titleMatcher == null) {
-                    throw new RuntimeException("Can't create matcher for title: "
-                                               + title);
-                }
 
-                if (titleMatcher.matches()) {
+                if (StringFilter.containsJapaneseCharacters(title)) {
                     String entryUrl = entry.getLink();
                     String mainAuthor = entry.getAuthor();
                     String dateString = getPublishedDateRFC(entry);

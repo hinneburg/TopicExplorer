@@ -67,21 +67,22 @@ public class BlogExtractor extends DataExtractor {
                     String[] values = new String[] { entryUrl, mainAuthor,
                             dateString, contentString };
 
-                    StringBuilder builder = new StringBuilder();
-                    CSVFormat format = CSVFormat.MYSQL.withHeader("entryUrl",
-                                                                  "mainAuthor",
-                                                                  "dateString",
-                                                                  "contentString");
-                    CSVPrinter printer = new CSVPrinter(builder, format);
-                    printer.printRecord((Object[]) values);
-
                     if (contentString.length() != 0) {
+                        StringBuilder builder = new StringBuilder();
+                        CSVFormat format = CSVFormat.MYSQL.withHeader("entryUrl",
+                                                                      "mainAuthor",
+                                                                      "dateString",
+                                                                      "contentString");
+                        CSVPrinter printer = new CSVPrinter(builder, format);
+                        printer.printRecord((Object[]) values);
+
                         context.write(new Text(host),
                                       new Text(builder.toString()));
+
+                        printer.close();
                     } else {
                         LOG.debug("Empty post: " + entryUrl);
                     }
-                    printer.close();
                 } else {
                     LOG.debug("Invalid title: " + title);
                 }

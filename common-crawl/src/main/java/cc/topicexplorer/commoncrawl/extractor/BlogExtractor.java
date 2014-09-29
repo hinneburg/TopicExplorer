@@ -1,4 +1,4 @@
-package cc.topicexplorer.commoncrawl;
+package cc.topicexplorer.commoncrawl.extractor;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -12,6 +12,11 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.log4j.Logger;
 import org.archive.io.ArchiveReader;
+
+import cc.topicexplorer.commoncrawl.HelperUtils;
+import cc.topicexplorer.commoncrawl.RFC822DateFormatter;
+import cc.topicexplorer.commoncrawl.RecordWrapper;
+import cc.topicexplorer.commoncrawl.StringFilter;
 
 import com.rometools.rome.feed.synd.SyndContent;
 import com.rometools.rome.feed.synd.SyndEntry;

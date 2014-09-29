@@ -1,7 +1,7 @@
 package cc.topicexplorer.commoncrawl.test;
 
-import static cc.topicexplorer.commoncrawl.BlogExtractor.getContents;
-import static cc.topicexplorer.commoncrawl.BlogExtractor.getPublishedDateRFC;
+import static cc.topicexplorer.commoncrawl.extractor.BlogExtractor.getContents;
+import static cc.topicexplorer.commoncrawl.extractor.BlogExtractor.getPublishedDateRFC;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;

@@ -1,4 +1,4 @@
-package cc.topicexplorer.commoncrawl;
+package cc.topicexplorer.commoncrawl.extractor;
 
 import java.io.IOException;
 
@@ -9,6 +9,8 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+
+import cc.topicexplorer.commoncrawl.RecordWrapper;
 
 public class BlogURLExtractor extends DataExtractor {
     private static final Text   BLOG_LINK_OUTPUT_KEY = new Text("BLOG_LINK");

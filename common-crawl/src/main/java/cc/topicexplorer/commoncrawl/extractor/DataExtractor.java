@@ -1,10 +1,12 @@
-package cc.topicexplorer.commoncrawl;
+package cc.topicexplorer.commoncrawl.extractor;
 
 import java.io.IOException;
 
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.archive.io.ArchiveReader;
+
+import cc.topicexplorer.commoncrawl.RecordWrapper;
 
 public abstract class DataExtractor {
     protected DataExtractor next;

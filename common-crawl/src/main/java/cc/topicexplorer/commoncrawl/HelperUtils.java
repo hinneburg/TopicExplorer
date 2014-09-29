@@ -20,31 +20,58 @@ import java.util.List;
 
 public class HelperUtils {
     private static final Logger LOG = Logger.getLogger(HelperUtils.class);
-
+    
     /**
      * Load the contents of a file as List of strings.
      * 
-     * @param path
+     * Defaults to UTF-8 encoding and an empty configuration.
+     * @param pathString
      *            the path to the file
      * @return a list of all the lines in the file
      * @throws IOException
      *             if an error occured while reading the file
-     *             TODO this could return an empty list on error
+     * @see HelperUtils#loadFileAsArray(String, Configuration)
+     * @see HelperUtils#loadFileAsArray(String, Configuration, String)
+     */
+    public static List<String> loadFileAsArray(String pathString)
+        throws IOException {
+        return loadFileAsArray(pathString, new Configuration(), "UTF-8");
+    }
+
+    /**
+     * Load the contents of a file as List of strings.
+     * 
+     * Defaults to UTF-8 encoding.
+     * @param pathString
+     *            the path to the file
+     * @param config
+     *            a Configuration object to use for accessing the file system
+     * @return a list of all the lines in the file
+     * @throws IOException
+     *             if an error occured while reading the file
+     * @see HelperUtils#loadFileAsArray(String)
+     * @see HelperUtils#loadFileAsArray(String, Configuration, String)
      */
     public static List<String> loadFileAsArray(String pathString,
                                                Configuration config)
         throws IOException {
         return loadFileAsArray(pathString, config, "UTF-8");
     }
+
     /**
      * Load the contents of a file as List of strings.
      * 
-     * @param path
+     * @param pathString
      *            the path to the file
+     * @param config
+     *            a Configuration object to use for accessing the file system
+     * @param charset
+     *            the name of the charset to use for decoding the file
      * @return a list of all the lines in the file
      * @throws IOException
      *             if an error occured while reading the file
-     *             TODO this could return an empty list on error
+     * @see HelperUtils#loadFileAsArray(String)
+     * @see HelperUtils#loadFileAsArray(String, Configuration)
      */
     public static List<String> loadFileAsArray(String pathString,
                                                Configuration config,

@@ -13,8 +13,6 @@ import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.log4j.Logger;
 import org.archive.io.ArchiveReader;
 
-import cc.topicexplorer.commoncrawl.statistics.StatisticsBuilder;
-
 import com.rometools.rome.feed.synd.SyndContent;
 import com.rometools.rome.feed.synd.SyndEntry;
 import com.rometools.rome.feed.synd.SyndFeed;
@@ -29,8 +27,6 @@ import com.rometools.rome.io.SyndFeedInput;
  */
 public class BlogExtractor {
     private static final Logger     LOG                        = Logger.getLogger(BlogExtractor.class);
-
-    private List<StatisticsBuilder> statisticsBuilders         = new ArrayList<StatisticsBuilder>();
 
     public BlogExtractor() {
     }
@@ -89,7 +85,6 @@ public class BlogExtractor {
                     LOG.debug("Invalid title: " + title);
                 }
             }
-            buildStatistics(feed, context);
         } catch (IllegalArgumentException e) {
             LOG.error("No valid feed type at " + url);
         } catch (FeedException e) {
@@ -136,40 +131,5 @@ public class BlogExtractor {
     public static String getPublishedDateRFC(SyndEntry entry) {
         Date publishedDate = entry.getPublishedDate();
         return RFC822DateFormatter.getRFCDate(publishedDate);
-    }
-
-    /**
-     * Notify statistics builders of a new feed.
-     * 
-     * @param feed
-     *            the new Feed.
-     * @param context
-     *            the context of the current mapper.
-     */
-    public void buildStatistics(SyndFeed feed,
-                                Mapper<Text, ArchiveReader, Text, Text>.Context context) {
-        for (StatisticsBuilder statisticsBuilder : this.statisticsBuilders) {
-            statisticsBuilder.buildStatistics(feed, context);
-        }
-    }
-
-    /**
-     * Add a statistics builder for feeds to the extractor.
-     * 
-     * @param sb
-     *            the new statistics builder.
-     */
-    public void addStatisticsBuilder(StatisticsBuilder sb) {
-        statisticsBuilders.add(sb);
-    }
-
-    /**
-     * Remove a statistics builder from the extractor.
-     * 
-     * @param sb
-     *            the statistics builder which to remove.
-     */
-    public void removeStatisticsBuilder(StatisticsBuilder sb) {
-        statisticsBuilders.remove(sb);
     }
 }

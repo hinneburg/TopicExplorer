@@ -34,5 +34,11 @@ public class BlogURLExtractor extends DataExtractor {
             String href = element.attr(HREF_ATTRIBUTE_NAME);
             context.write(BLOG_LINK_OUTPUT_KEY, new Text(href));
         }
+
+        if (feeds.size() > 0) {
+            return;
+        } else {
+            this.callNext(wrapper, context);
+        }
     }
 }

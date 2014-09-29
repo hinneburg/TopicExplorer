@@ -67,6 +67,8 @@ public class BlogExtractor extends DataExtractor {
                     String[] values = new String[] { entryUrl, mainAuthor,
                             dateString, contentString };
 
+
+
                     if (contentString.length() != 0) {
                         StringBuilder builder = new StringBuilder();
                         CSVFormat format = CSVFormat.MYSQL.withHeader("entryUrl",
@@ -80,6 +82,7 @@ public class BlogExtractor extends DataExtractor {
                                       new Text(builder.toString()));
 
                         printer.close();
+                        return;
                     } else {
                         LOG.debug("Empty post: " + entryUrl);
                     }
@@ -92,6 +95,8 @@ public class BlogExtractor extends DataExtractor {
         } catch (FeedException e) {
             LOG.error("Feed could not be parsed: " + url);
         }
+
+        this.next.callNext(wrapper, context);
     }
 
     /**

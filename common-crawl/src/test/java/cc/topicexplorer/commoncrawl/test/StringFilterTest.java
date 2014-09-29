@@ -14,6 +14,7 @@ import cc.topicexplorer.commoncrawl.StringFilter;
 public class StringFilterTest {
     private static final String JAPANESE_STRING_FILE_NAME = "/JapaneseStrings.txt";
     private static final String JAPANESE_STRING_FILE_PATH = StringFilterTest.class.getResource(JAPANESE_STRING_FILE_NAME).getPath();
+
     @Test
     public void testContainsJapaneseCharacters() throws IOException {
         List<String> testStrings = HelperUtils.loadFileAsArray(JAPANESE_STRING_FILE_PATH);

@@ -31,7 +31,7 @@ import com.rometools.rome.io.SyndFeedInput;
  * @author Florian Luecke
  */
 public class BlogExtractor extends DataExtractor {
-    private static final Logger     LOG                        = Logger.getLogger(BlogExtractor.class);
+    private static final Logger LOG = Logger.getLogger(BlogExtractor.class);
 
     public BlogExtractor() {
     }
@@ -47,7 +47,7 @@ public class BlogExtractor extends DataExtractor {
      *             if writing to the context fails.
      * @throws InterruptedException
      *             if writing to the context fails.
-     * TODO rueckgabe true falls wert extrahiert
+     *             TODO rueckgabe true falls wert extrahiert
      */
     @Override
     public void extract(RecordWrapper wrapper,
@@ -71,8 +71,6 @@ public class BlogExtractor extends DataExtractor {
                     String contentString = getContents(entry);
                     String[] values = new String[] { entryUrl, mainAuthor,
                             dateString, contentString };
-
-
 
                     if (contentString.length() != 0) {
                         StringBuilder builder = new StringBuilder();

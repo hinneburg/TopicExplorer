@@ -10,10 +10,11 @@ public class URLFilter {
     protected Pattern urlPattern;
 
     public URLFilter(List<String> urlList) {
-        String pattern = "{http,https}://{" + HelperUtils.join(urlList, ",") + "}";
+        String pattern = "{http,https}://{"
+                         + HelperUtils.join(urlList, ",") + "}";
         this.urlPattern = GlobPattern.compile(pattern);
     }
-    
+
     public boolean filter(String url) {
         Matcher m = urlPattern.matcher(url);
         return m.matches();

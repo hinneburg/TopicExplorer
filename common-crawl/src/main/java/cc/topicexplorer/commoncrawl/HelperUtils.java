@@ -20,11 +20,12 @@ import java.util.List;
 
 public class HelperUtils {
     private static final Logger LOG = Logger.getLogger(HelperUtils.class);
-    
+
     /**
      * Load the contents of a file as List of strings.
      * 
      * Defaults to UTF-8 encoding and an empty configuration.
+     * 
      * @param pathString
      *            the path to the file
      * @return a list of all the lines in the file
@@ -42,6 +43,7 @@ public class HelperUtils {
      * Load the contents of a file as List of strings.
      * 
      * Defaults to UTF-8 encoding.
+     * 
      * @param pathString
      *            the path to the file
      * @param config
@@ -81,7 +83,8 @@ public class HelperUtils {
         Path path = new Path(pathString);
         FileSystem fs = path.getFileSystem(config);
         FSDataInputStream stream = fs.open(path);
-        BufferedReader reader = new BufferedReader(new InputStreamReader(stream, charset));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(stream,
+                                                                         charset));
         List<String> lines = new ArrayList<String>();
         String line = null;
         while ((line = reader.readLine()) != null) {
@@ -116,8 +119,9 @@ public class HelperUtils {
 
     /**
      * Get the top private domain from a url.
-     *
-     * @param urlString the url of which to return the top private domain
+     * 
+     * @param urlString
+     *            the url of which to return the top private domain
      * @return the requested top private domain
      */
     public static String getTopPrivateDomain(String urlString) {
@@ -126,7 +130,7 @@ public class HelperUtils {
             host = new URL(urlString).getHost();
             System.out.println(host);
         } catch (MalformedURLException e) {
-            return"";
+            return "";
         }
 
         // some domains are not recognized as valid

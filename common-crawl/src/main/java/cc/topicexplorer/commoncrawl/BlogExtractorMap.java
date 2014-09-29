@@ -11,9 +11,11 @@ import org.apache.log4j.Logger;
 import org.archive.io.ArchiveReader;
 import org.archive.io.ArchiveRecord;
 
+import cc.topicexplorer.commoncrawl.extractor.BlogExtractor;
+
 public class BlogExtractorMap {
     public static final String VALID_URL_FILE_CONFIG_NAME = "validurlfile";
-    public static final String WARC_TYPE_HEADER_NAME = "WARC-Type";
+    public static final String WARC_TYPE_HEADER_NAME      = "WARC-Type";
 
     // Implements the map function for MapReduce.
     public static class BlogExtractorMapper extends
@@ -43,7 +45,8 @@ public class BlogExtractorMap {
             }
         }
 
-        protected static List<String> getValidURLs(Context context) throws IOException {
+        protected static List<String> getValidURLs(Context context)
+            throws IOException {
             String validURLFile = context.getConfiguration().get(VALID_URL_FILE_CONFIG_NAME);
             if (validURLFile != null) {
                 LOG.debug("Found blog provider list in: " + validURLFile);

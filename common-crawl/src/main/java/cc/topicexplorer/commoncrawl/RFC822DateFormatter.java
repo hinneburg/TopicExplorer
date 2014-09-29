@@ -10,7 +10,7 @@ public class RFC822DateFormatter {
 
     /**
      * Return an RFC 822 formatted representation of a date.
-     *
+     * 
      * @param date
      *            the date to format
      * @param timeZone
@@ -30,7 +30,7 @@ public class RFC822DateFormatter {
     /**
      * Return an RFC 822 formatted representation of a date.
      * Time is normalized to UTC
-     *
+     * 
      * @param date
      *            the date to format
      * @return the requested date representation

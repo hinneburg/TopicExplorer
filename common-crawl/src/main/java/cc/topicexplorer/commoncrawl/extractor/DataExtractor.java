@@ -27,13 +27,16 @@ public abstract class DataExtractor {
         return this.next;
     }
 
-    protected void callNext(RecordWrapper wrapper, Mapper<Text, ArchiveReader, Text, Text>.Context context) throws IOException, InterruptedException {
+    protected void callNext(RecordWrapper wrapper,
+                            Mapper<Text, ArchiveReader, Text, Text>.Context context)
+        throws IOException, InterruptedException {
         if (this.next != null) {
             this.next.extract(wrapper, context);
         }
     }
 
-    public abstract void extract(RecordWrapper wrapper, Mapper<Text, ArchiveReader, Text, Text>.Context context)
+    public abstract void extract(RecordWrapper wrapper,
+                                 Mapper<Text, ArchiveReader, Text, Text>.Context context)
         throws IOException, InterruptedException;
 
 }

@@ -73,7 +73,7 @@ public class PathConfigurator {
                 // read config file and turn lines into paths
                 List<String> pathStrings = loadFileAsArray(pathFile, config);
                 for (String string : pathStrings) {
-                    if (! string.equals("")) {
+                    if (!string.equals("")) {
                         paths.add(new Path(string));
                     }
                 }

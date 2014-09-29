@@ -128,6 +128,7 @@ public class GetTopics {
 			logger.error("JSON Object could not be filled properly, due to database problems.");
 			throw new RuntimeException(e);
 		}
+		all.put("TopicBestItemLimit", topicBestItemLimit);
 		outWriter.print(all.toString());
 	}
 

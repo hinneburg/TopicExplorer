@@ -45,7 +45,7 @@ function(ko, $) {
 					globalData.Topic[topicId].SORTING[frameType] = ko.observableArray(frames);
 					
 					globalData.Topic[topicId].FULL[frameType] = ko.observable(false);
-					if(globalData.Topic[topicId].COUNT[frameType] < 10) {
+					if(globalData.Topic[topicId].COUNT[frameType] < self.globalData.TopicBestItemLimit) {
 						globalData.Topic[topicId].FULL[frameType](true);
 					} 
 					instance.Topic[topicId].TITLE_REPRESENTATION[frameType] = instance.Topic[topicId].TITLE_REPRESENTATION.KEYWORDS;

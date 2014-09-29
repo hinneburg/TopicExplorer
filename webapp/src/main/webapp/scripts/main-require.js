@@ -35,6 +35,7 @@ require([ "knockout","jquery", "text!/JsonServlet?Command=getTopics", "text!/Jso
 	self.globalData.PLUGINS = plugins.PLUGINS;
 	self.globalData.Topic = topics.Topic;
 	self.globalData.TOPIC_SORTING = topics.TOPIC_SORTING;
+	self.globalData.TopicBestItemLimit = topics.TopicBestItemLimit;
 	
 	for(var i in self.globalData.Topic) {
 		var termSorting = [];
@@ -44,7 +45,7 @@ require([ "knockout","jquery", "text!/JsonServlet?Command=getTopics", "text!/Jso
 		globalData.Topic[i].ITEMS = {};
 		globalData.Topic[i].ITEMS.KEYWORDS = {};
 		globalData.Topic[i].FULL.KEYWORDS = ko.observable(false);
-		if( self.globalData.Topic[i].Top_Terms.length < 20) {
+		if( self.globalData.Topic[i].Top_Terms.length < self.globalData.TopicBestItemLimit) {
 			globalData.Topic[i].FULL.KEYWORDS(true);
 		} 
 		self.globalData.Topic[i].COUNT.KEYWORDS = self.globalData.Topic[i].Top_Terms.length;

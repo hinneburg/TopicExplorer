@@ -34,6 +34,11 @@ public class BlogExtractor extends DataExtractor {
     private static final Logger LOG = Logger.getLogger(BlogExtractor.class);
 
     public BlogExtractor() {
+        super();
+    }
+
+    public BlogExtractor(DataExtractor next) {
+        super(next);
     }
 
     /**

@@ -19,6 +19,14 @@ public class BlogURLExtractor extends DataExtractor {
     public static final String  ATOM_FEED_MIMETYPE   = "application/atom+xml";
     public static final String  RSS_FEED_MIMETYPE    = "application/rss+xml";
 
+    public BlogURLExtractor() {
+        super();
+    }
+
+    public BlogURLExtractor(DataExtractor next) {
+        super(next);
+    }
+
     @Override
     public void extract(RecordWrapper wrapper,
                         Mapper<Text, ArchiveReader, Text, Text>.Context context)

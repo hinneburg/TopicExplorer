@@ -5,7 +5,6 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.util.List;
 
-import org.apache.hadoop.conf.Configuration;
 import org.junit.Test;
 
 import cc.topicexplorer.commoncrawl.HelperUtils;
@@ -19,9 +18,8 @@ public class URLFilterTest {
 
     @Test
     public void testFilter() throws IOException {
-        Configuration conf = new Configuration();
-        List<String> validURLs = HelperUtils.loadFileAsArray(VALID_URL_FILE_PATH, conf);
-        List<String> sampleURLs = HelperUtils.loadFileAsArray(SAMPLE_URL_FILE_PATH, conf);
+        List<String> validURLs = HelperUtils.loadFileAsArray(VALID_URL_FILE_PATH);
+        List<String> sampleURLs = HelperUtils.loadFileAsArray(SAMPLE_URL_FILE_PATH);
         
         URLFilter filter = new URLFilter(validURLs);
         for (String url : sampleURLs) {

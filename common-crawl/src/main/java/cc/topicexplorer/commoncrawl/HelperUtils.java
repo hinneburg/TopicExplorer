@@ -34,11 +34,27 @@ public class HelperUtils {
     public static List<String> loadFileAsArray(String pathString,
                                                Configuration config)
         throws IOException {
+        return loadFileAsArray(pathString, config, "UTF-8");
+    }
+    /**
+     * Load the contents of a file as List of strings.
+     * 
+     * @param path
+     *            the path to the file
+     * @return a list of all the lines in the file
+     * @throws IOException
+     *             if an error occured while reading the file
+     *             TODO this could return an empty list on error
+     */
+    public static List<String> loadFileAsArray(String pathString,
+                                               Configuration config,
+                                               String charset)
+        throws IOException {
         LOG.info("Trying to read " + pathString);
         Path path = new Path(pathString);
         FileSystem fs = path.getFileSystem(config);
         FSDataInputStream stream = fs.open(path);
-        BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+        BufferedReader reader = new BufferedReader(new InputStreamReader(stream, charset));
         List<String> lines = new ArrayList<String>();
         String line = null;
         while ((line = reader.readLine()) != null) {

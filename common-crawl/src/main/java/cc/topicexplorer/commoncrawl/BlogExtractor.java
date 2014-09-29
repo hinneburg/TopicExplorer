@@ -25,7 +25,7 @@ import com.rometools.rome.io.SyndFeedInput;
  * 
  * @author Florian Luecke
  */
-public class BlogExtractor {
+public class BlogExtractor extends DataExtractor {
     private static final Logger     LOG                        = Logger.getLogger(BlogExtractor.class);
 
     public BlogExtractor() {
@@ -44,6 +44,7 @@ public class BlogExtractor {
      *             if writing to the context fails.
      * TODO rueckgabe true falls wert extrahiert
      */
+    @Override
     public void extract(RecordWrapper wrapper,
                         Mapper<Text, ArchiveReader, Text, Text>.Context context)
         throws IOException, InterruptedException {

@@ -7,11 +7,16 @@
 		</ul>
 	</div>
 
-	<ul data-bind="foreach: {data: selectedTopics, as: 'selectedTopic'}, style {width: $('.topicList > ul > li').size() * 213 + 'px'}" >
-		<li class="topic" data-bind="attr:{ 'id' : 'topic_' + selectedTopic}, style: { height: ($parent.topicListHeight() - 14) + 'px', backgroundColor: globalData.Topic[selectedTopic].COLOR_TOPIC$COLOR}">
+	<ul style="position:relative" data-bind="foreach: {data: selectedTopics, as: 'selectedTopic'}, style {width: topicListWidth() + 'px'}" >		
+		<li class="topic" data-bind="attr:{ 'id' : 'topic_' + selectedTopic}, style: {width: (globalData.PLUGINS.indexOf('hierarchicaltopic') > -1) ? 201 + (globalData.Topic[selectedTopic].HIERARCHICAL_TOPIC$END - globalData.Topic[selectedTopic].HIERARCHICAL_TOPIC$START) * 213 - 1 + 'px': '200px', height: ($parent.topicListHeight() - 14) + 'px', backgroundColor: globalData.Topic[selectedTopic].COLOR_TOPIC$COLOR}">
 			<div data-bind="text: selectedTopic" style="font-size: xx-small; float:left;"></div>
 			<div  class="topicElementDiv">			
 				<div class="topicElementMenu">
+					<!-- ko if: globalData.PLUGINS.indexOf('hierarchicaltopic') > -1 -->
+						<!-- ko if: parseInt(globalData.Topic[selectedTopic].HIERARCHICAL_TOPIC$END) > parseInt(globalData.Topic[selectedTopic].HIERARCHICAL_TOPIC$START) -->
+							<button class="divideTopic" name="divideTopic" title="divide topic" type="button" data-bind="click: $parent.explodeTopic"></button>
+						<!-- /ko -->
+					<!-- /ko -->
 					<!-- ko if: globalData.PLUGINS.indexOf('time') > -1 -->
 						<button class="timeView" name="timeView" title="show time chart" type="button" data-bind="click: function() { $parent.loadTimeViewForTopic(selectedTopic)}"></button>
 					<!-- /ko -->
@@ -31,9 +36,13 @@
 					</ul>
 				</div>
 			</div>
+			<!-- ko if: globalData.PLUGINS.indexOf('hierarchicaltopic') > -1 -->
+				<!-- ko if: $index() + 1 < $parent.selectedTopics().length -->
+					<div style="position: absolute; width: 20px; cursor: col-resize; left: 200px; top:0; padding: 0" data-bind="style: {left: 201 + (globalData.Topic[selectedTopic].HIERARCHICAL_TOPIC$END - globalData.Topic[selectedTopic].HIERARCHICAL_TOPIC$START) * 213 - 1 + 'px', height: ($parent.topicListHeight() - 4) + 'px'}, click: $parent.implodeTopics, event:{mouseover: $parent.markParentNode, mouseout: $parent.unmarkParentNode}"></div>
+				<!-- /ko -->	
+			<!-- /ko -->	
 		</li>
 	</ul>
-
 </div>
 <div class="pointer">&#9650;</div>
 <div class="bottom" data-bind="module: { name: 'topic-slider-view', afterRender: triggerResize}"></div>

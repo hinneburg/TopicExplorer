@@ -12,7 +12,7 @@ function(ko, $) {
 	    $(this).next().toggle('blind');	    	    
 	});
 	
-	var extend = new Array("scripts/modules/extenders/topic-view-time", "scripts/modules/extenders/topic-view-wordtype", "scripts/modules/extenders/topic-view-frame");
+	var extend = new Array("scripts/modules/extenders/topic-view-time", "scripts/modules/extenders/topic-view-wordtype", "scripts/modules/extenders/topic-view-frame", "scripts/modules/extenders/topic-view-hierarchical");
 	
 	var self = {};
 	self.scrollCallback = {};
@@ -29,8 +29,7 @@ function(ko, $) {
 	};
 	self.selectedTopics = ko.observableArray(globalData.TOPIC_SORTING);
 	self.Topic = new Array(self.selectedTopics().length);
-	
-	for(var i=0; i<self.selectedTopics().length; i++) {
+	for(i in globalData.Topic) {
 		self.Topic[i] = new Object();
 		self.Topic[i].TITLE_REPRESENTATION = new Object();
 		self.Topic[i].INFO_HIGHLIGHT = new Object();
@@ -69,6 +68,10 @@ function(ko, $) {
 	self.topicListHeight = ko.computed (function() {
 		return(self.windowHeight() - 154) * 0.3;
 	});	
+	
+	self.topicListWidth  = ko.computed (function() {
+		return self.selectedTopics().length * 213 ;
+	});
 	
 	self.loading = ko.observable(false);
 	

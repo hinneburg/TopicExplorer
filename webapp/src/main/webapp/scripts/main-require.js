@@ -27,7 +27,8 @@ require([ "knockout","jquery", "text!/JsonServlet?Command=getTopics", "text!/Jso
           "scripts/modules/extenders/document-browse-text",
           "scripts/modules/extenders/topic-view-time",
           "scripts/modules/extenders/topic-view-frame",
-          "scripts/modules/extenders/topic-view-wordtype"], function(ko, $, topicJson, pluginJson) {
+          "scripts/modules/extenders/topic-view-wordtype",
+          "scripts/modules/extenders/topic-view-hierarchical"], function(ko, $, topicJson, pluginJson) {
 	var self = this;
 	self.globalData = {};
 	var topics =  JSON.parse(topicJson);

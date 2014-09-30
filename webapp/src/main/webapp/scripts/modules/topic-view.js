@@ -27,7 +27,7 @@ function(ko, $) {
 		this.label = label;
 		this.field = field;
 	};
-	self.selectedTopics = ko.observableArray(globalData.TOPIC_SORTING);
+	self.selectedTopics = ko.observableArray(globalData.TOPIC_SORTING).publishOn("selectedTopics");
 	self.Topic = new Array(self.selectedTopics().length);
 	for(i in globalData.Topic) {
 		self.Topic[i] = new Object();

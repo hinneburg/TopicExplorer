@@ -1,6 +1,7 @@
 package cc.topicexplorer.actions.bestdocs;
 
 import java.io.PrintWriter;
+import java.util.Arrays;
 import java.util.Set;
 
 import cc.commandmanager.core.Context;
@@ -17,15 +18,12 @@ public class Create extends TableSelectCommand {
 		int offset = context.getInteger("OFFSET");
 		PrintWriter pw = context.get("SERVLET_WRITER", PrintWriter.class);
 		int limit = Integer.parseInt(properties.getProperty("DocBrowserLimit"));
-		int numberOfTopics = Integer.parseInt(properties.getProperty("malletNumTopics"));
 		BestDocumentsForGivenTopic bestDocAction;
 		if(context.containsKey("term")) {
 			String term = context.getString("term");
-			bestDocAction = new BestDocumentsForGivenTopic(topicId, limit, offset, database, pw,
-					numberOfTopics, term);
+			bestDocAction = new BestDocumentsForGivenTopic(topicId, limit, offset, database, pw, term, Arrays.asList(properties.get("plugins").toString().split(",")).contains("hierarchicaltopic"));
 		} else {
-			bestDocAction = new BestDocumentsForGivenTopic(topicId, limit, offset, database, pw,
-					numberOfTopics);
+			bestDocAction = new BestDocumentsForGivenTopic(topicId, limit, offset, database, pw);
 		}
 		context.bind("BEST_DOC_ACTION", bestDocAction);
 	}

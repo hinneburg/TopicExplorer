@@ -17,7 +17,15 @@ function(ko, $) {
 		self.browseData= new Object();
 		
 		self.loading = ko.observable(false);
+		
 		self.firstLoading = ko.observable(false);
+		
+		self.selectedTopics = ko.observableArray(globalData.TOPIC_SORTING).subscribeTo("selectedTopics");
+
+		self.selectedTopics.subscribe(function(newValue) {
+			setTopTopics(self.browseData[self.active()].selectedDocuments(), false);
+		});
+		
 		
 		self.scrollCallback = function(el) {
 			$("#desktop").children(".documentList").children(".jumpToStart").css('top',($("#desktop").scrollTop() - 10) + 'px');
@@ -44,6 +52,9 @@ function(ko, $) {
 						self.browseData[self.active()].documentsFull(false);
 					}
 					$.extend(globalData.DOCUMENT, receivedParsedJson.DOCUMENT);
+					
+					setTopTopics(receivedParsedJson.DOCUMENT_SORTING, true);
+					
 					self.browseData[self.active()].selectedDocuments(receivedParsedJson.DOCUMENT_SORTING);
 					for (var i=0;i<extend.length;i++) {
 			 			var extender = require(extend[i]);
@@ -70,6 +81,9 @@ function(ko, $) {
 						self.browseData[self.active()].documentsFull(true);
 					}
 					$.extend(globalData.DOCUMENT, receivedParsedJson.DOCUMENT);
+					
+					setTopTopics(receivedParsedJson.DOCUMENT_SORTING, true);
+					
 					self.browseData[self.active()].selectedDocuments(self.browseData[self.active()].selectedDocuments().concat(receivedParsedJson.DOCUMENT_SORTING));
 					for (var i=0;i<extend.length;i++) {
 			 			var extender = require(extend[i]);
@@ -116,6 +130,7 @@ function(ko, $) {
 						self.browseData[self.active()].documentsFull = ko.observable(false);
 					}
 					$.extend(globalData.DOCUMENT, receivedParsedJson.DOCUMENT);
+					setTopTopics(receivedParsedJson.DOCUMENT_SORTING, true);
 					self.browseData[self.active()].selectedDocuments(receivedParsedJson.DOCUMENT_SORTING);
 					self.browseData[self.active()].textSelectArray.push(new self.TextRepresentation('Keywords', 'KEYWORD_'));
 					self.browseData[self.active()].textSelection(new self.TextRepresentation('Keywords', 'KEYWORD_'));
@@ -139,6 +154,27 @@ function(ko, $) {
 			var docDeskRatio = Math.floor((self.windowWidth() - 10) / documentWidth);
 			return ((self.windowWidth() - 10) / docDeskRatio) - 32;
 		});
+		
+		function setTopTopics(documents, isNew) {
+			for(docIndex in documents) {	
+				docId = documents[docIndex];
+				bestTopics = [];
+				count = 0;
+				for(topicIndex in globalData.DOCUMENT[docId].TOP_TOPIC) {
+					topicId = globalData.DOCUMENT[docId].TOP_TOPIC[topicIndex];
+					if(self.selectedTopics.indexOf(topicId) > -1) {
+						bestTopics.push(topicId);
+						count++;
+						if(count > 3) break;
+					}
+				}
+				if(isNew) {
+					globalData.DOCUMENT[docId].topTopics = ko.observableArray(bestTopics);
+				} else {
+					globalData.DOCUMENT[docId].topTopics(bestTopics);
+				}
+			}	
+		} 
 		
 		return self;
 	};

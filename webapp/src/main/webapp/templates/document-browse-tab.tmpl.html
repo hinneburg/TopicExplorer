@@ -33,8 +33,8 @@
 						</p>
 					</div>					
 					<div class="circles">
-						<!--  ko foreach: globalData.DOCUMENT[selectedDocument].TOP_TOPIC --> 
-						<span class="topicCheckboxCircle topicCircle" data-bind="style: {color: globalData.Topic[$data].COLOR_TOPIC$COLOR}, attr: {id: 't_' + $data, title: 'Topic ' + $data}, click: $parents[1].moveToTopic" >&#9679;</span><br/>
+						<!--  ko foreach: globalData.DOCUMENT[selectedDocument].topTopics() --> 
+							<span class="topicCheckboxCircle topicCircle" data-bind="style: {color: globalData.Topic[$data].COLOR_TOPIC$COLOR}, attr: {id: 't_' + $data, title: 'Topic ' + $data}, click: $parents[1].moveToTopic" >&#9679;</span><br/>
 						<!-- /ko -->
 					</div>
 				</li>

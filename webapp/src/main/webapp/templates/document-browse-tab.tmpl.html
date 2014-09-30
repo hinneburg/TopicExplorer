@@ -15,7 +15,7 @@
 		</div>
 	<!-- /ko -->
 	<div class="documentList" style="height: 100%;">		
-		<div class="jumpToStart" data-bind="style: {left: (windowWidth() / 2 - 14) + 'px'}, click: function() { $('#desktop').scrollTop(0) }">^</div>
+		<div class="jumpToStart" data-bind="style: {left: (windowWidth() / 2 - 14) + 'px'}, click: function() { $('#desktop').animate({scrollTop:0}) }">^</div>
 		<ul	class="browser" style="height: 100%;">	
 		<!-- ko ifnot: firstLoading --> 
 			<!-- ko foreach: {data:browseData[active()].selectedDocuments,  as: 'selectedDocument'} -->

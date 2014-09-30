@@ -25,7 +25,7 @@
 				<div class="topicElementContent" data-bind="event: {scroll: function() { $parent.scrollCallback[$parent.textSelection().field](selectedTopic)}}, attr: {title:  $parent.Topic[selectedTopic].INFO_HIGHLIGHT[$parent.textSelection().field]}, style: {height: ($parent.topicListHeight() - 33) + 'px'}">
 					<ul class="wordList">
 						<li>
-							<div class="jumpToStart" data-bind="click: function(data, event) { $(event.target).parents('.topicElementContent').scrollTop(0) }" style="left:60px;">^</div>
+							<div class="jumpToStart" data-bind="click: function(data, event) { $(event.target).parents('.topicElementContent').animate({scrollTop:0}) }" style="left:60px;">^</div>
 						</li>
 						<!-- ko foreach: {data: globalData.Topic[selectedTopic].SORTING[$parent.textSelection().field], as: 'item'} -->
 							<li><a href="#" data-bind="text: globalData.Topic[selectedTopic].ITEMS[$parents[1].textSelection().field][item].ITEM_NAME + ' (' + globalData.Topic[selectedTopic].ITEMS[$parents[1].textSelection().field][item].ITEM_COUNT + ')', click: function(data, event) { $parents[1].loadDocumentsForItem[$parents[1].textSelection().field](item, event)}"></a></li>

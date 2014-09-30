@@ -65,8 +65,8 @@ function(ko, $) {
 						}
 						$('#topic_' + instance.selectedTopics()[remTopicId]).css('background-color', color);
 						$('#topic_' + instance.selectedTopics()[remTopicId]).css('border-right-color', color);
-						$('.topicRect:eq(' + remTopicId + ')').css('background-color', color);
-						$('.topicRect:eq(' + remTopicId + ')').css('border-right-color', color);	
+						$('#sliderTopic_' + instance.selectedTopics()[remTopicId]).css('background-color', color);
+						$('#sliderTopic_' + instance.selectedTopics()[remTopicId]).css('border-right-color', color);	
 						lastIndex = remTopicId;
 					}
 				}
@@ -74,19 +74,12 @@ function(ko, $) {
 				$('.topicRect:eq(' + lastIndex + ')').css('border-right-color', 'black');
 			};
 			instance.unmarkParentNode = function(topicId) {
-				var index = instance.selectedTopics().indexOf(parseInt(topicId));
-				newTopicId = getParentNode(index);
-				if(newTopicId == -1) return;
 				for(remTopicId in instance.selectedTopics()) {
-					if(parseInt(globalData.Topic[newTopicId].HIERARCHICAL_TOPIC$START) <= parseInt(globalData.Topic[remTopicId].HIERARCHICAL_TOPIC$START)
-						&& parseInt(globalData.Topic[newTopicId].HIERARCHICAL_TOPIC$END) >= parseInt(globalData.Topic[remTopicId].HIERARCHICAL_TOPIC$END)) {
-							$('#topic_' + remTopicId).css('background-color', globalData.Topic[remTopicId].COLOR_TOPIC$COLOR);
-							$('#topic_' + remTopicId).css('border-color', 'black');
-							$('.topicRect:eq(' + instance.selectedTopics().indexOf(parseInt(remTopicId)) + ')').css('background-color', globalData.Topic[remTopicId].COLOR_TOPIC$COLOR);
-							$('.topicRect:eq(' + instance.selectedTopics().indexOf(parseInt(remTopicId)) + ')').css('border-right-color', 'black');
-					}
-				}
-				
+					$('#topic_' + instance.selectedTopics()[remTopicId]).css('background-color', globalData.Topic[instance.selectedTopics()[remTopicId]].COLOR_TOPIC$COLOR);
+					$('#topic_' + instance.selectedTopics()[remTopicId]).css('border-color', 'black');
+					$('#sliderTopic_' + instance.selectedTopics()[remTopicId]).css('background-color', globalData.Topic[instance.selectedTopics()[remTopicId]].COLOR_TOPIC$COLOR);
+					$('#sliderTopic_' + instance.selectedTopics()[remTopicId]).css('border-right-color', 'black');	
+				}	
 			};
 			
 			function getParentNode(index) {

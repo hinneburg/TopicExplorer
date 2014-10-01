@@ -10,7 +10,9 @@
 <div style="width: 100%;overflow:hidden;text-overflow: ellipsis; white-space: nowrap;" data-bind="event:{mouseover:$parent.changeSearchWord}">
 <a href="#" data-bind="text: TERM_NAME"></a>
 <!-- ko foreach: TOP_TOPIC -->
-	<span class="topicCheckboxCircle topicCircle autocompleteTopic" data-bind="style: {color: globalData.Topic[$data].COLOR_TOPIC$COLOR}, attr: {id: 'acT_' + $data, title: 'Topic ' + $data}, click: $parents[1].moveToTopic">●</span>
+	<!-- ko if: $parents[1].selectedTopics.indexOf($data) > -1 -->
+		<span class="topicCheckboxCircle topicCircle autocompleteTopic" data-bind="style: {color: globalData.Topic[$data].COLOR_TOPIC$COLOR}, attr: {id: 'acT_' + $data, title: 'Topic ' + $data}, click: $parents[1].moveToTopic">●</span>
+	<!-- /ko -->
 <!-- /ko -->
 </div>
 </script>

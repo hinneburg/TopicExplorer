@@ -5,13 +5,21 @@
 </p>
 
 <ul id="invisbleTabMenu" class="ui-menu ui-widget ui-widget-content" data-bind="foreach: {data: invisibleTabs}"  style="display: none; position: absolute; z-index: 3; margin: 20px 0 0 5px;">
-	<li style="font-weight: normal" class="ui-menu-item" data-bind="text: $parent.allTabs[$data].tabHeading, click: $parent.switchActive, event: {mouseover: function(data, event) { $(event.target).addClass('ui-state-focus');},mouseout: function(data, event) { $(event.target).removeClass('ui-state-focus');} }"></li>
+	<!-- ko if: $parent.allTabs[$data].data.hasOwnProperty('topicId') && $parent.selectedTopics.indexOf(parseInt($parent.allTabs[$data].data.topicId)) == -1 -->
+		<li style="font-weight: normal; background-image:url(images/error.png); background-repeat: no-repeat; background-position: 3px; padding-left: 23px;" class="ui-menu-item" title="the referenced topic isn't visible atm." data-bind="text: $parent.allTabs[$data].tabHeading, click: $parent.switchActive, event: {mouseover: function(data, event) { $(event.target).addClass('ui-state-focus');},mouseout: function(data, event) { $(event.target).removeClass('ui-state-focus');} }"></li>
+	<!-- /ko -->
+	<!-- ko if: !$parent.allTabs[$data].data.hasOwnProperty('topicId') || $parent.selectedTopics.indexOf(parseInt($parent.allTabs[$data].data.topicId)) > -1 -->
+		<li style="font-weight: normal; padding-left: 23px;" class="ui-menu-item" data-bind="text: $parent.allTabs[$data].tabHeading, click: $parent.switchActive, event: {mouseover: function(data, event) { $(event.target).addClass('ui-state-focus');},mouseout: function(data, event) { $(event.target).removeClass('ui-state-focus');} }"></li>
+	<!-- /ko -->
 </ul>
 
 <!-- /ko -->
 
 <!-- ko foreach: {data:visibleTabs} -->
 <p class="reiter button gradientGray tab" data-bind="attr: { id: $data, title: $parent.allTabs[$data].tabHeading}" style="cursor: default; overflow:hidden; text-overflow:ellipsis;">
+	<!-- ko if: $parent.allTabs[$data].data.hasOwnProperty('topicId') && $parent.selectedTopics.indexOf(parseInt($parent.allTabs[$data].data.topicId)) == -1 -->
+		<img style="position:absolute; left:5px; top: 2px;" src="images/error.png" alt="!" title="the referenced topic isn't visible atm."/>
+	<!-- /ko -->
 	<img data-bind="click: $parent.deleteTab" style="cursor: pointer; position:absolute; top:5px; right: 5px; display: none;" width="12px" height="12px" class="close" src="images/delete_24.png" alt="close"/>
 	<span style="cursor: pointer; overflow:hidden;text-overflow: ellipsis; white-space: nowrap;" data-bind="text: $parent.allTabs[$data].tabHeading, click: $parent.switchActive"></span>	
 </p>

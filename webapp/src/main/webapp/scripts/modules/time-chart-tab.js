@@ -144,11 +144,26 @@ function(ko, $, moment) {
        		self.timeData[self.active()].lastRenderedTopics = newValue.slice();;
     	};
     	
+    	self.changeTopics = function(newValue) {
+    		renderedTopics = self.timeData[self.active()].renderedTopics.slice();
+    		for(topicIndex in renderedTopics) {
+    			topicId = renderedTopics[topicIndex];
+    			if(newValue.indexOf(topicId) == -1) {
+    				renderedTopics.splice(topicIndex, 1);
+    			}
+    		}
+    		if(newValue.indexOf(self.timeData[self.active()].topicId()) > -1 && renderedTopics.indexOf(self.timeData[self.active()].topicId()) == -1) {
+    			renderedTopics.push(self.timeData[self.active()].topicId());
+    		}
+    		self.timeData[self.active()].renderedTopics(renderedTopics);
+    	};
+    	
 		self.setData = function (data) { 
 			self.active = ko.observable(data.topicId);
 			if (!self.timeData[self.active()]) {
 				self.timeData[self.active()] = {};
-				self.timeData[self.active()].allTopics = ko.observableArray(globalData.TOPIC_SORTING);
+				self.timeData[self.active()].allTopics = ko.observableArray(globalData.TOPIC_SORTING).subscribeTo("selectedTopics");
+				self.timeData[self.active()].allTopics.subscribe(self.changeTopics);
 				self.timeData[self.active()].renderedTopics = ko.observableArray([data.topicId]);
 				self.timeData[self.active()].lastRenderedTopics = [data.topicId];
 				self.timeData[self.active()].renderedTopics.subscribe(self.changeCharts);

@@ -260,24 +260,12 @@ public class WordsPerTopicPerWeekFill extends TableFillCommand {
 			ResultSet bestWordsQueryRS;
 			database.executeUpdateQuery("ALTER TABLE `TIME$WORDS_PER_TOPIC_PER_WEEK`"
 					+ " ADD `BEST_WORDS` TEXT NOT NULL");
-		//	if(!Arrays.asList(properties.get("plugins").toString().split(",")).contains("hierarchicaltopic")) {
+		
 			Statement stmt = database.getConnection().createStatement(java.sql.ResultSet.TYPE_FORWARD_ONLY, java.sql.ResultSet.CONCUR_READ_ONLY);
 			stmt.setFetchSize(Integer.MIN_VALUE);	
 			bestWordsQueryRS = stmt.executeQuery("select distinct TERM_NAME,"
 					+ "TOPIC_ID,TIME$WEEK,TIME$PR_TERM_GIVEN_TOPIC_WEEK from TIME$TERM_TOPIC_WEEK "
 					+ "order by TOPIC_ID,TIME$WEEK,TIME$PR_TERM_GIVEN_TOPIC_WEEK desc");
-//			} else {
-//				Statement stmt = database.getConnection().createStatement(java.sql.ResultSet.TYPE_FORWARD_ONLY, java.sql.ResultSet.CONCUR_READ_ONLY);
-//				stmt.setFetchSize(Integer.MIN_VALUE);
-//				
-//				bestWordsQueryRS = stmt.executeQuery("select distinct TERM_NAME,t1.TOPIC_ID,TIME$WEEK,"
-//						+ "AVG(TIME$PR_TERM_GIVEN_TOPIC_WEEK) from TIME$TERM_TOPIC_WEEK, TOPIC t1, TOPIC t2 "
-//						+ "where  t2.TOPIC_ID=TIME$TERM_TOPIC_WEEK.TOPIC_ID AND "
-//						+ "t1.HIERARCHICAL_TOPIC$START <= t2.HIERARCHICAL_TOPIC$START AND "
-//						+ "t1.HIERARCHICAL_TOPIC$END >= t2.HIERARCHICAL_TOPIC$END "
-//						+ "GROUP BY t1.TOPIC_ID, TIME$WEEK, TERM_NAME "
-//						+ "order by t1.TOPIC_ID,TIME$WEEK,AVG(TIME$PR_TERM_GIVEN_TOPIC_WEEK) desc");
-//			}
 
 			int topicId = -1;
 			int count = 0;

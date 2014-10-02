@@ -28,6 +28,10 @@ function(ko, $) {
 		this.field = field;
 	};
 	self.selectedTopics = ko.observableArray(globalData.TOPIC_SORTING).publishOn("selectedTopics");
+	self.selectedTopics.subscribe(function(newValue){
+		globalData.TOPIC_SORTING = newValue;
+	});
+	
 	self.Topic = new Array(self.selectedTopics().length);
 	for(i in globalData.Topic) {
 		self.Topic[i] = new Object();

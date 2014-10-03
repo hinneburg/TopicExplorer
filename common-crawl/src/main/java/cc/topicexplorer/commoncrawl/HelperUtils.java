@@ -128,7 +128,6 @@ public class HelperUtils {
         String host;
         try {
             host = new URL(urlString).getHost();
-            System.out.println(host);
         } catch (MalformedURLException e) {
             return "";
         }

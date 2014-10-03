@@ -104,7 +104,7 @@ public class BlogExtractor extends DataExtractor {
             LOG.error("Feed could not be parsed: " + url);
         }
 
-        this.next.callNext(wrapper, context);
+        this.callNext(wrapper, context);
     }
 
     /**

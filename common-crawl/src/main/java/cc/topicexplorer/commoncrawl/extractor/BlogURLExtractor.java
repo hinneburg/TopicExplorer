@@ -11,6 +11,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import cc.topicexplorer.commoncrawl.RecordWrapper;
+import cc.topicexplorer.commoncrawl.StringFilter;
 
 public class BlogURLExtractor extends DataExtractor {
     private static final Text   BLOG_LINK_OUTPUT_KEY = new Text("BLOG_LINK");
@@ -34,6 +35,12 @@ public class BlogURLExtractor extends DataExtractor {
         String html = wrapper.getHTTPBody();
         Document d = Jsoup.parse(html);
         Element head = d.head();
+        String title = d.title();
+
+        if (!StringFilter.containsJapaneseCharacters(title)) {
+            return;
+        }
+
         Elements feeds = head.getElementsByAttributeValue(TYPE_ATTRIBUTE_NAME,
                                                           RSS_FEED_MIMETYPE);
         Elements atomFeeds = head.getElementsByAttributeValue(TYPE_ATTRIBUTE_NAME,

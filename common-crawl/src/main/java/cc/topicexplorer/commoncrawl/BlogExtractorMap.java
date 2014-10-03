@@ -12,6 +12,7 @@ import org.archive.io.ArchiveReader;
 import org.archive.io.ArchiveRecord;
 
 import cc.topicexplorer.commoncrawl.extractor.BlogExtractor;
+import cc.topicexplorer.commoncrawl.extractor.BlogURLExtractor;
 
 public class BlogExtractorMap {
     public static final String VALID_URL_FILE_CONFIG_NAME = "validurlfile";
@@ -27,7 +28,8 @@ public class BlogExtractorMap {
         public void map(Text key, ArchiveReader value, Context context)
             throws IOException, InterruptedException {
             List<String> validULs = getValidURLs(context);
-            BlogExtractor extractor = new BlogExtractor();
+            BlogURLExtractor urlExtractor = new BlogURLExtractor();
+            BlogExtractor blogExtractor = new BlogExtractor(urlExtractor);
             URLFilter filter = new URLFilter(validULs);
 
             for (ArchiveRecord record : value) {
@@ -39,7 +41,7 @@ public class BlogExtractorMap {
                     // (crawler metadata != page metadata)
                     String url = wrapper.getHeader().getUrl();
                     if (filter.filter(url)) {
-                        extractor.extract(wrapper, context);
+                        blogExtractor.extract(wrapper, context);
                     }
                 }
             }

@@ -23,9 +23,9 @@ public class HelperUtils {
 
     /**
      * Load the contents of a file as list of strings.
-     * 
+     *
      * Defaults to UTF-8 encoding and an empty configuration.
-     * 
+     *
      * @param pathString
      *            the path to the file
      * @return a list of all the lines in the file
@@ -41,9 +41,9 @@ public class HelperUtils {
 
     /**
      * Load the contents of a file as list of strings.
-     * 
+     *
      * Defaults to UTF-8 encoding.
-     * 
+     *
      * @param pathString
      *            the path to the file
      * @param config
@@ -62,7 +62,7 @@ public class HelperUtils {
 
     /**
      * Load the contents of a file as list of strings.
-     * 
+     *
      * @param pathString
      *            the path to the file
      * @param config
@@ -96,7 +96,7 @@ public class HelperUtils {
 
     /**
      * Join a string iterable into a string.
-     * 
+     *
      * @param i
      *            the iterable which to join
      * @param separator
@@ -119,7 +119,7 @@ public class HelperUtils {
 
     /**
      * Get the top private domain from a url.
-     * 
+     *
      * @param urlString
      *            the url of which to return the top private domain
      * @return the requested top private domain

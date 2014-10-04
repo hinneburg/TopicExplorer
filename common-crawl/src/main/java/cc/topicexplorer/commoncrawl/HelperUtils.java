@@ -22,7 +22,7 @@ public class HelperUtils {
     private static final Logger LOG = Logger.getLogger(HelperUtils.class);
 
     /**
-     * Load the contents of a file as List of strings.
+     * Load the contents of a file as list of strings.
      * 
      * Defaults to UTF-8 encoding and an empty configuration.
      * 
@@ -40,7 +40,7 @@ public class HelperUtils {
     }
 
     /**
-     * Load the contents of a file as List of strings.
+     * Load the contents of a file as list of strings.
      * 
      * Defaults to UTF-8 encoding.
      * 
@@ -61,7 +61,7 @@ public class HelperUtils {
     }
 
     /**
-     * Load the contents of a file as List of strings.
+     * Load the contents of a file as list of strings.
      * 
      * @param pathString
      *            the path to the file

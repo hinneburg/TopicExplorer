@@ -158,12 +158,14 @@ function(ko, $, moment) {
     		self.timeData[self.active()].renderedTopics(renderedTopics);
     	};
     	
+    	self.timeData.allTopics = ko.observableArray(globalData.TOPIC_SORTING).subscribeTo("selectedTopics");
+		self.timeData.allTopics.subscribe(self.changeTopics);
+    	
 		self.setData = function (data) { 
 			self.active = ko.observable(data.topicId);
 			if (!self.timeData[self.active()]) {
 				self.timeData[self.active()] = {};
-				self.timeData[self.active()].allTopics = ko.observableArray(globalData.TOPIC_SORTING).subscribeTo("selectedTopics");
-				self.timeData[self.active()].allTopics.subscribe(self.changeTopics);
+				
 				self.timeData[self.active()].renderedTopics = ko.observableArray([data.topicId]);
 				self.timeData[self.active()].lastRenderedTopics = [data.topicId];
 				self.timeData[self.active()].renderedTopics.subscribe(self.changeCharts);

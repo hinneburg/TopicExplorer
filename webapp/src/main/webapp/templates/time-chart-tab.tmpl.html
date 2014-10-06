@@ -1,6 +1,6 @@
 <div id="desktop" data-bind="style: {height: $parents[1].desktopHeight() + 'px'}">
 	<div style="padding-left: 30px;" id="topicCheckboxes">
-		<!-- ko foreach: {data: timeData[active()].allTopics,  as: 'selectedTopic'} -->
+		<!-- ko foreach: {data: timeData.allTopics,  as: 'selectedTopic'} -->
 		<span data-bind="attr:{ title: 'Topic ' + selectedTopic}" style="cursor: progress" class="topicCheckbox">
 			<input  style="cursor: progress" type="checkbox" name="timeTopic" data-bind="attr: {value: selectedTopic, id: 'topicCheckbox_' + selectedTopic}, disable: selectedTopic == $parent.timeData[$parent.active()].topicId(), checkedValue: selectedTopic, checked: $parent.timeData[$parent.active()].renderedTopics" />
 			<label data-bind="attr:{id: 'topicCheckboxLabel_' + selectedTopic, for: 'topicCheckbox_' + selectedTopic}, style: {color: globalData.Topic[selectedTopic].COLOR_TOPIC$COLOR} " style="cursor: progress; margin:0 -7px 0 -5px;" class="topicCircle">&#9679;</label>

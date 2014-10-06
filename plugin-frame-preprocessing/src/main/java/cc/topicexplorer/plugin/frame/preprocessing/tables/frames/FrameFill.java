@@ -84,7 +84,7 @@ public final class FrameFill extends TableFillCommand {
 				findFrames(Integer.parseInt(maxFrameSizes[i]), startWordTypes[i], frameType);
 				logger.info(i + 1 + ". frametype filled");
 
-				dropTemporaryTables();
+				dropTopTermTable();
 				
 			}
 			try {
@@ -93,7 +93,7 @@ public final class FrameFill extends TableFillCommand {
 				logger.error("Exception while creating frames indezes.");
 				throw new RuntimeException(e);
 			}
-			createAndFillTableFrameDelimiterPos();
+			processFrameDelimiter();
 			logger.info("frames deactivated");
 			logger.info(String.format("Table %s is filled.", this.tableName));
 		} else {
@@ -102,7 +102,7 @@ public final class FrameFill extends TableFillCommand {
 		}
 	}
 	
-	private void createAndFillTableFrameDelimiterPos() {
+	private void processFrameDelimiter() {
 		if( Boolean.parseBoolean(properties.getProperty("Frame_frameDelimiter")) == true) {
 			if(properties.getProperty("Frame_frameDelimiterFile").length() < 1) {
 				logger.error("frameDelimiterFile not set - there will be no inactive frames");
@@ -118,6 +118,7 @@ public final class FrameFill extends TableFillCommand {
 					database.executeUpdateQuery("ALTER TABLE FRAME_DELIMITER_POS ADD KEY IDX0 (DOCUMENT_ID, POSITION) ");
 					database.executeUpdateQuery("UPDATE " + this.tableName + ",FRAME_DELIMITER_POS SET ACTIVE=0 WHERE " 
 							+ "FRAME_DELIMITER_POS.DOCUMENT_ID=FRAME$FRAMES.DOCUMENT_ID AND START_POSITION<POSITION AND END_POSITION>POSITION");
+					database.dropTable("FRAME_DELIMITER_POS");
 				} catch (SQLException e) {
 					logger.error("Exception while deactivating frames.");
 					throw new RuntimeException(e);
@@ -236,7 +237,7 @@ public final class FrameFill extends TableFillCommand {
 			int endPos;
 			
 			while (topTerms.next()) {
-				if (documentId != topTerms.getInt("DOCUMENT_ID")// || topicId != topTerms.getInt("TOPIC_ID")
+				if (documentId != topTerms.getInt("DOCUMENT_ID") || topicId != topTerms.getInt("TOPIC_ID")
 						|| topTerms.getInt("POSITION_OF_TOKEN_IN_DOCUMENT") - position > maxFrameSize
 						|| topTerms.getString("WORDTYPE$WORDTYPE").equals(startWordType)) {
 					documentId = topTerms.getInt("DOCUMENT_ID");
@@ -263,10 +264,10 @@ public final class FrameFill extends TableFillCommand {
 		} 
 	}
 
-	private void dropTemporaryTables() {
+	private void dropTopTermTable() {
 		try {
 			database.dropTable("TopTerms");
-			database.dropTable("FRAME_DELIMITER_POS");
+			
 		} catch (SQLException e) {
 			logger.warn("At least one temporarely created table or column could not be dropped.", e);
 		}

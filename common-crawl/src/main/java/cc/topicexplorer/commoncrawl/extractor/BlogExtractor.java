@@ -16,7 +16,7 @@ import org.archive.io.ArchiveReader;
 import cc.topicexplorer.commoncrawl.HelperUtils;
 import cc.topicexplorer.commoncrawl.RFC822DateFormatter;
 import cc.topicexplorer.commoncrawl.RecordWrapper;
-import cc.topicexplorer.commoncrawl.StringFilter;
+import cc.topicexplorer.commoncrawl.JapaneseCharacterDetector;
 
 import com.rometools.rome.feed.synd.SyndContent;
 import com.rometools.rome.feed.synd.SyndEntry;
@@ -69,7 +69,7 @@ public class BlogExtractor extends DataExtractor {
 
                 String title = entry.getTitle();
 
-                if (StringFilter.containsJapaneseCharacters(title)) {
+                if (JapaneseCharacterDetector.containsJapaneseCharacters(title)) {
                     String entryUrl = entry.getLink();
                     String mainAuthor = entry.getAuthor();
                     String dateString = getPublishedDateRFC(entry);

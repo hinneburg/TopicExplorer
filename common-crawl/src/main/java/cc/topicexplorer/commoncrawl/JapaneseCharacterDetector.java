@@ -3,7 +3,7 @@ package cc.topicexplorer.commoncrawl;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class StringFilter {
+public class JapaneseCharacterDetector {
     private static final Pattern JAPANESE_CHARACTER_PATTERN = Pattern.compile("[\\p{InHiragana}]+");
 
     public static boolean containsJapaneseCharacters(String string) {

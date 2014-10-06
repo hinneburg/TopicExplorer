@@ -9,11 +9,11 @@ import java.util.List;
 import org.junit.Test;
 
 import cc.topicexplorer.commoncrawl.HelperUtils;
-import cc.topicexplorer.commoncrawl.StringFilter;
+import cc.topicexplorer.commoncrawl.JapaneseCharacterDetector;
 
-public class StringFilterTest {
+public class JapaneseCharacterDetectorTest {
     private static final String JAPANESE_STRING_FILE_NAME = "/JapaneseStrings.txt";
-    private static final String JAPANESE_STRING_FILE_PATH = StringFilterTest.class.getResource(JAPANESE_STRING_FILE_NAME).getPath();
+    private static final String JAPANESE_STRING_FILE_PATH = JapaneseCharacterDetectorTest.class.getResource(JAPANESE_STRING_FILE_NAME).getPath();
 
     @Test
     public void testContainsJapaneseCharacters() throws IOException {
@@ -22,7 +22,7 @@ public class StringFilterTest {
         System.setOut(stdout);
         for (String testString : testStrings) {
             assertTrue("Assert " + testString + " contains japanese characters",
-                       StringFilter.containsJapaneseCharacters(testString));
+                       JapaneseCharacterDetector.containsJapaneseCharacters(testString));
         }
     }
 }

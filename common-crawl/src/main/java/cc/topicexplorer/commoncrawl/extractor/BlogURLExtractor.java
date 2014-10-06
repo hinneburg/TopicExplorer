@@ -11,7 +11,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import cc.topicexplorer.commoncrawl.RecordWrapper;
-import cc.topicexplorer.commoncrawl.StringFilter;
+import cc.topicexplorer.commoncrawl.JapaneseCharacterDetector;
 
 public class BlogURLExtractor extends DataExtractor {
     private static final Text   BLOG_LINK_OUTPUT_KEY = new Text("BLOG_LINK");
@@ -37,7 +37,7 @@ public class BlogURLExtractor extends DataExtractor {
         Element head = d.head();
         String title = d.title();
 
-        if (!StringFilter.containsJapaneseCharacters(title)) {
+        if (!JapaneseCharacterDetector.containsJapaneseCharacters(title)) {
             return;
         }
 

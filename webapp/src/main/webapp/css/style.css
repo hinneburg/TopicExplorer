@@ -210,6 +210,11 @@ html, body {
 	background-position: center center;
     background-size: contain;
 }
+.leftBody .topicList .divideTopic {
+	background-image: url("../images/arrow_divide.png");
+	background-position: center center;
+    background-size: contain;
+}
 .leftBody .topicList .topicTitle {
 	background-color: whitesmoke;
     border-bottom: 1px solid silver;
@@ -433,4 +438,13 @@ a {
 }
 a:hover {
 	text-decoration: underline;
+}
+
+.timeTopicSpan {
+	white-space: nowrap;
+	display: inline-block;
+	overflow: hidden;
+	width: 33px;
+	margin-right: -9px;
+	
 }

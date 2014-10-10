@@ -49,7 +49,7 @@ function(ko, $) {
 					
 					globalData.Topic[topicId].FULL[wordType] = ko.observable(false);
 					
-					if(globalData.Topic[topicId].COUNT[wordType] < 10) {
+					if(globalData.Topic[topicId].COUNT[wordType] < self.globalData.TopicBestItemLimit) {
 						globalData.Topic[topicId].FULL[wordType](true);
 					} 
 					

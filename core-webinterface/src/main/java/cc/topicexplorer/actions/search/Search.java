@@ -21,9 +21,8 @@ public class Search {
 	private Database database;
 	private PrintWriter outWriter;
 	private String searchWord;
-	private int numberOfTopics;
-
-	public Search(String searchWord, Database db, PrintWriter out, int limit, int offset, int numberOfTopics) {
+	
+	public Search(String searchWord, Database db, PrintWriter out, int limit, int offset) {
 		searchMap = new SelectMap();
 		searchMap.select.add("DOCUMENT.DOCUMENT_ID");
 		searchMap.from.add("DOCUMENT");
@@ -33,7 +32,6 @@ public class Search {
 		setDatabase(db);
 		setServletWriter(out);
 		setSearchWord(searchWord);
-		setNumberOfTopics(numberOfTopics);
 	}
 
 	private void setSearchWord(String searchWord) {
@@ -64,14 +62,6 @@ public class Search {
 		searchMap.orderBy = orderBy;
 	}
 
-	public void setNumberOfTopics(Integer numberOfTopics) {
-		this.numberOfTopics = numberOfTopics;
-	}
-
-	private Integer getNumberOfTopics() {
-		return this.numberOfTopics;
-	}
-
 	public void executeQuery() throws SQLException {
 		JSONArray topTopic = new JSONArray();
 		JSONArray docSorting = new JSONArray();
@@ -95,9 +85,8 @@ public class Search {
 				doc.put(docColumnList.get(i), mainQueryRS.getString(docColumnList.get(i)));
 			}
 
-			String secondQuery = "SELECT TOPIC_ID FROM DOCUMENT_TOPIC WHERE TOPIC_ID < "
-					+ getNumberOfTopics().toString() + " AND DOCUMENT_ID= " + docId
-					+ " ORDER BY PR_TOPIC_GIVEN_DOCUMENT DESC LIMIT 4";
+			String secondQuery = "SELECT TOPIC_ID FROM DOCUMENT_TOPIC WHERE DOCUMENT_ID= " + docId
+					+ " ORDER BY PR_TOPIC_GIVEN_DOCUMENT DESC";
 			logger.info("QUERY will be executed: " + secondQuery);
 			ResultSet bestTopicsRS = database.executeQuery(secondQuery);
 
@@ -105,12 +94,11 @@ public class Search {
 				topTopic.add(bestTopicsRS.getInt("TOPIC_ID"));
 			}
 
-			ResultSet reverseDocTopicRS = database.executeQuery("SELECT TOPIC_ID FROM DOCUMENT_TOPIC WHERE TOPIC_ID < "
-					+ getNumberOfTopics().toString() + " AND DOCUMENT_ID=" + mainQueryRS.getInt("DOCUMENT_ID")
-					+ " ORDER BY PR_DOCUMENT_GIVEN_TOPIC DESC LIMIT 1");
-			if (reverseDocTopicRS.next()) {
-				doc.put("TOPIC_ID", reverseDocTopicRS.getInt("TOPIC_ID"));
-			}
+//			ResultSet reverseDocTopicRS = database.executeQuery("SELECT TOPIC_ID FROM DOCUMENT_TOPIC WHERE DOCUMENT_ID=" + mainQueryRS.getInt("DOCUMENT_ID")
+//					+ " ORDER BY PR_DOCUMENT_GIVEN_TOPIC DESC LIMIT 1");
+//			if (reverseDocTopicRS.next()) {
+//				doc.put("TOPIC_ID", reverseDocTopicRS.getInt("TOPIC_ID"));
+//			}
 
 			doc.put("TOP_TOPIC", topTopic);
 			

@@ -16,7 +16,7 @@ import cc.topicexplorer.database.Database;
 import cc.topicexplorer.database.SelectMap;
 
 public class GetTopics {
-	private final SelectMap topicMap;
+	private final SelectMap topicMap, selectedTopicsMap;
 	private PrintWriter outWriter;
 	private Database database;
 	
@@ -27,6 +27,10 @@ public class GetTopics {
 		topicMap.select.add("TOPIC.TOPIC_ID");
 		topicMap.from.add("TOPIC");
 
+		selectedTopicsMap = new SelectMap();
+		selectedTopicsMap.select.add("TOPIC.TOPIC_ID");
+		selectedTopicsMap.from.add("TOPIC");
+		
 		setDatabase(db);
 		setServletWriter(out);
 	}
@@ -47,11 +51,19 @@ public class GetTopics {
 		topicMap.where.add(where);
 	}
 	
+	public void addSelectedTopicWhereClause(String where) {
+		selectedTopicsMap.where.add(where);
+	}
+	
 	public void addOrderBy(String orderBy) {
 		topicMap.orderBy.add(orderBy);
 	}
 	
-	public void executeQueriesAndWriteOutTopics(int topicBestItemLimit) {
+	public void addSelectedTopicOrderBy(String orderBy) {
+		selectedTopicsMap.orderBy.add(orderBy);
+	}
+	
+	public void executeQueriesAndWriteOutTopics(int topicBestItemLimit, boolean hierarchicalTopicsEnabled) {
 		ArrayList<String> topicColumnList = topicMap.getCleanColumnNames();
 		ArrayList<Integer> termList = new ArrayList<Integer>();
 
@@ -89,7 +101,13 @@ public class GetTopics {
 				topic.put("Top_Terms", topTerms);
 				topTerms.clear();
 				topics.put(topicRS.getInt("TOPIC.TOPIC_ID"), topic);
-				topicSorting.add(topicRS.getInt("TOPIC.TOPIC_ID"));
+				
+				
+			}
+			
+			ResultSet selectedTopicRS = database.executeQuery(selectedTopicsMap.getSQLString());
+			while (selectedTopicRS.next()) {
+				topicSorting.add(selectedTopicRS.getInt("TOPIC.TOPIC_ID"));
 			}
 			all.put("Topic", topics);
 			all.put("TOPIC_SORTING", topicSorting);
@@ -110,6 +128,7 @@ public class GetTopics {
 			logger.error("JSON Object could not be filled properly, due to database problems.");
 			throw new RuntimeException(e);
 		}
+		all.put("TopicBestItemLimit", topicBestItemLimit);
 		outWriter.print(all.toString());
 	}
 

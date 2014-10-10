@@ -7,12 +7,12 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.log4j.Logger;
 
 import cc.topicexplorer.commands.TableFillCommand;
@@ -36,6 +36,7 @@ import com.google.common.collect.Sets;
 public final class FrameFill extends TableFillCommand {
 
 	private static final Logger logger = Logger.getLogger(FrameFill.class);
+	private List<String> frameTypes = new ArrayList<String>();
 
 	@Override
 	public void setTableName() {
@@ -49,7 +50,7 @@ public final class FrameFill extends TableFillCommand {
 
 	@Override
 	public Set<String> getBeforeDependencies() {
-		return Sets.newHashSet("TermFill", "TermTopicFill", "DocumentTermTopicFill", "FrameCreate");
+		return Sets.newHashSet("TermFill", "TermTopicFill", "DocumentTermTopicFill", "Frame_FrameCreate", "WordType_TermFill");
 	}
 
 	@Override
@@ -59,7 +60,7 @@ public final class FrameFill extends TableFillCommand {
 
 	@Override
 	public Set<String> getOptionalBeforeDependencies() {
-		return Sets.newHashSet();
+		return Sets.newHashSet("HierarchicalTopic_TermTopicFill");
 	}
 
 	@Override
@@ -74,84 +75,93 @@ public final class FrameFill extends TableFillCommand {
 			startWordTypes.length == endWordTypeLimits.length && 
 			startWordTypes.length == maxFrameSizes.length) {
 		
-			fillWordtypeColumnOfTableTerm();
-			
-			try {
-				database.executeUpdateQuery("DROP TABLE IF EXISTS FRAME$BEST_FRAMES");
-				database.executeUpdateQuery("CREATE TABLE FRAME$BEST_FRAMES (FRAME VARCHAR(255), TOPIC_ID INT,  FRAME_COUNT INT, FRAME_TYPE VARCHAR(255))");
-			} catch (SQLException e) {
-				logger.error("Exception while creating bestFrames table.");
-				throw new RuntimeException(e);
-			}
-			
-			
 			for(int i = 0; i < startWordTypes.length; i++) {
 				createAndFillTableTopTerms(startWordTypes[i], startWordTypeLimits[i], endWordTypes[i], endWordTypeLimits[i]);
-				createAndFillTableTopTermsDocSameTopic();
-				try {
-					String frameType = startWordTypes[i] + "_" + startWordTypeLimits[i] + "_" + endWordTypes[i] + "_" 
-							+ endWordTypeLimits[i] + "_" + maxFrameSizes[i];
-					fillTableFrames(Integer.parseInt(maxFrameSizes[i]), startWordTypes[i], frameType);
-					bestFrames(frameType);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				dropTemporaryTables();
+				logger.info(i + 1 + ". frame: topTerms filled");
+				String frameType = startWordTypes[i] + "_" + startWordTypeLimits[i] + "_" + endWordTypes[i] + "_" 
+						+ endWordTypeLimits[i] + "_" + maxFrameSizes[i];
+				frameTypes.add(frameType);
+				findFrames(Integer.parseInt(maxFrameSizes[i]), startWordTypes[i], frameType);
+				logger.info(i + 1 + ". frametype filled");
+
+				dropTopTermTable();
 				
 			}
 			try {
-				database.executeUpdateQuery("alter table TERM drop column WORDTYPE");
+				database.executeUpdateQuery("ALTER TABLE " + this.tableName + " ADD KEY IDX0 (DOCUMENT_ID,TOPIC_ID,START_POSITION,END_POSITION) ");
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				logger.error("Exception while creating frames indezes.");
+				throw new RuntimeException(e);
 			}
-			
+			processFrameDelimiter();
+			logger.info("frames deactivated");
 			logger.info(String.format("Table %s is filled.", this.tableName));
 		} else {
 			logger.error("Sizes of frame property fields do not match");
 			throw new RuntimeException();
 		}
 	}
+	
+	private void processFrameDelimiter() {
+		if( Boolean.parseBoolean(properties.getProperty("Frame_frameDelimiter")) == true) {
+			if(properties.getProperty("Frame_frameDelimiterFile").length() < 1) {
+				logger.error("frameDelimiterFile not set - there will be no inactive frames");
+				throw new RuntimeException();
+			} else if(this.getClass().getResource(properties.getProperty("Frame_frameDelimiterPosCSV")) != null){
+				logger.warn("frameDelimiterCSV not found - there will be no inactive frames");
+				throw new RuntimeException();
+			} else {
+				try {
+					database.executeUpdateQuery("create table FRAME_DELIMITER_POS (DOCUMENT_ID INT, POSITION INT) ENGINE=MEMORY");  
+					database.executeUpdateQuery("LOAD DATA LOCAL INFILE '" + properties.getProperty("Frame_frameDelimiterPosCSV") 
+							+ "' INTO TABLE FRAME_DELIMITER_POS CHARACTER SET utf8 FIELDS TERMINATED BY ';' ENCLOSED BY '\"' IGNORE 1 LINES");
+					database.executeUpdateQuery("ALTER TABLE FRAME_DELIMITER_POS ADD KEY IDX0 (DOCUMENT_ID, POSITION) ");
+					database.executeUpdateQuery("UPDATE " + this.tableName + ",FRAME_DELIMITER_POS SET ACTIVE=0 WHERE " 
+							+ "FRAME_DELIMITER_POS.DOCUMENT_ID=FRAME$FRAMES.DOCUMENT_ID AND START_POSITION<POSITION AND END_POSITION>POSITION");
+					database.dropTable("FRAME_DELIMITER_POS");
+				} catch (SQLException e) {
+					logger.error("Exception while deactivating frames.");
+					throw new RuntimeException(e);
+				} 
 
-	private void fillWordtypeColumnOfTableTerm() {
-		try {
-			database.executeUpdateQueryForUpdate("alter table TERM add column WORDTYPE VARCHAR(255) COLLATE utf8_bin");
-			database.executeUpdateQueryForUpdate("update TERM, DOCUMENT_TERM_TOPIC "
-					+ "SET TERM.WORDTYPE=DOCUMENT_TERM_TOPIC.WORDTYPE$WORDTYPE WHERE DOCUMENT_TERM_TOPIC.TERM=TERM.TERM_NAME");
-		} catch (SQLException e) {
-			logger.error("Table TERM could not be altered.");
-			throw new RuntimeException(e);
+			}
 		}
 	}
 
 	private void createAndFillTableTopTerms(String startWordType, String startWordTypeLimit, String endWordType, String endWordTypeLimit) {
 		try {
-			database.executeUpdateQuery("create table TopTerms ENGINE = MEMORY DEFAULT CHARSET=utf8 COLLATE=utf8_bin "
-					+ "select TERM_NAME, TOPIC_ID, PR_TERM_GIVEN_TOPIC from TERM_TOPIC join TERM using (TERM_ID) "
-					+ "where TOPIC_ID=0 AND WORDTYPE='" + startWordType
-					+ "' order by PR_TERM_GIVEN_TOPIC desc limit "
-					+ startWordTypeLimit + ";");
-			database.executeUpdateQuery("alter table TopTerms add index (TOPIC_ID,TERM_NAME)");
-			database.executeUpdateQuery("alter table TopTerms add index (TERM_NAME)");
-			int numTopics = Integer.parseInt((String) properties.get("malletNumTopics"));
+			boolean first = true;
+			List<Integer> topicIds = new ArrayList<Integer>();
+			
+			ResultSet topipcIdsRs = database.executeQuery("SELECT TOPIC_ID FROM TOPIC");
+			while(topipcIdsRs.next()){
+				topicIds.add(topipcIdsRs.getInt("TOPIC_ID"));
+			}
+			for (int i: topicIds) {
+				if(first) {
+					database.executeUpdateQuery("create table TopTerms ENGINE=MEMORY DEFAULT CHARSET=utf8 COLLATE=utf8_bin "
+							+ "select TERM_NAME, WORDTYPE$WORDTYPE, TOPIC_ID, PR_TERM_GIVEN_TOPIC from TERM_TOPIC join TERM using (TERM_ID) "
+							+ "where TOPIC_ID=" + i + " AND WORDTYPE$WORDTYPE='" + startWordType
+							+ "' order by PR_TERM_GIVEN_TOPIC desc limit "
+							+ startWordTypeLimit + ";");
+					database.executeUpdateQuery("alter table TopTerms add index (TOPIC_ID,TERM_NAME)");
+					database.executeUpdateQuery("alter table TopTerms add index (TERM_NAME)");
 
-			// best 20 nouns of best 20 topics
-			for (int i = 1; i < numTopics; i++) {
-				database.executeUpdateQueryForUpdate("insert into TopTerms "
-					+ "select TERM_NAME, TOPIC_ID, PR_TERM_GIVEN_TOPIC from TERM_TOPIC join TERM "
-					+ "using (TERM_ID) where TOPIC_ID=" + i
-					+ " AND WORDTYPE='" + startWordType
-					+ "' order by PR_TERM_GIVEN_TOPIC desc limit "
-					+ startWordTypeLimit + ";");
+					first = false;
+				}
+				else {
+					database.executeUpdateQueryForUpdate("insert into TopTerms "
+						+ "select TERM_NAME, WORDTYPE$WORDTYPE, TOPIC_ID, PR_TERM_GIVEN_TOPIC from TERM_TOPIC join TERM "
+						+ "using (TERM_ID) where TOPIC_ID=" + i	+ " AND WORDTYPE$WORDTYPE='" + startWordType
+						+ "' order by PR_TERM_GIVEN_TOPIC desc limit "
+						+ startWordTypeLimit + ";");
+				}
 			}
 
-			// best 20 verbs of best 20 topics
-			for (int i = 0; i < numTopics; i++) {
+			for (int i : topicIds) {
 				database.executeUpdateQueryForUpdate("insert into TopTerms "
-					+ "select TERM_NAME, TOPIC_ID, PR_TERM_GIVEN_TOPIC from TERM_TOPIC join TERM "
-					+ "using (TERM_ID) where TOPIC_ID=" + i
-					+ " AND WORDTYPE='" + endWordType
+					+ "select TERM_NAME, WORDTYPE$WORDTYPE, TOPIC_ID, PR_TERM_GIVEN_TOPIC from TERM_TOPIC join TERM "
+					+ "using (TERM_ID) where TOPIC_ID=" + i	+ " AND WORDTYPE$WORDTYPE='" + endWordType
 					+ "' order by PR_TERM_GIVEN_TOPIC desc limit "
 					+ endWordTypeLimit + ";");
 			}
@@ -161,29 +171,65 @@ public final class FrameFill extends TableFillCommand {
 		}
 	}
 
-	private void createAndFillTableTopTermsDocSameTopic() {
+	private void findFrames(int maxFrameSize, String startWordType, String frameType) {
 		try {
-			database.executeUpdateQuery("create table TOP_TERMS_DOC_SAME_TOPIC ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin "
-					+ "select DOCUMENT_TERM_TOPIC.DOCUMENT_ID, TopTerms.TOPIC_ID, "
-					+ "DOCUMENT_TERM_TOPIC.POSITION_OF_TOKEN_IN_DOCUMENT, DOCUMENT_TERM_TOPIC.TERM, DOCUMENT_TERM_TOPIC.WORDTYPE$WORDTYPE "
-					+ "from DOCUMENT_TERM_TOPIC join TopTerms on (DOCUMENT_TERM_TOPIC.TERM=TopTerms.TERM_NAME and DOCUMENT_TERM_TOPIC.TOPIC_ID=TopTerms.TOPIC_ID) "
-					+ "order by DOCUMENT_TERM_TOPIC.DOCUMENT_ID asc, TopTerms.TOPIC_ID asc,	DOCUMENT_TERM_TOPIC.POSITION_OF_TOKEN_IN_DOCUMENT asc");
-		} catch (SQLException e) {
-			logger.error("Exception while handling temporary table TOP_TERMS_DOC_SAME_TOPIC.");
-			throw new RuntimeException(e);
-		}
-	}
-
-	private void fillTableFrames(int maxFrameSize, String startWordType, String frameType) throws IOException {
-		try {
+			ResultSet topTerms;
+			Statement stmt;
 			File fileTemp = new File("temp/frames.sql.csv");
 	        if (fileTemp.exists()) {
 	        	fileTemp.delete();
 	        }  
 			BufferedWriter frameCSVWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("temp/frames.sql.csv", true), "UTF-8"));
-			ResultSet topTerms = database
-					.executeQuery("SELECT * FROM TOP_TERMS_DOC_SAME_TOPIC order by DOCUMENT_ID asc, TOPIC_ID asc, POSITION_OF_TOKEN_IN_DOCUMENT asc");
+			
+			
+			
+			if (Arrays.asList(properties.get("plugins").toString().split(",")).contains("hierarchicaltopic")) {
+				List<Integer> docIds = new ArrayList<Integer>();
+				
+				ResultSet docIdsRS = database.executeQuery("SELECT DISTINCT DOCUMENT_ID FROM DOCUMENT");
+				while(docIdsRS.next()) {
+					docIds.add(docIdsRS.getInt("DOCUMENT_ID"));
+				}
+				stmt = database.getConnection().createStatement(java.sql.ResultSet.TYPE_FORWARD_ONLY, java.sql.ResultSet.CONCUR_READ_ONLY);
+				stmt.setFetchSize(Integer.MIN_VALUE);
+				for(int docId : docIds) {
+					topTerms = stmt.executeQuery("select DOCUMENT_TERM_TOPIC.DOCUMENT_ID, TopTerms.TOPIC_ID, "
+							+ "DOCUMENT_TERM_TOPIC.POSITION_OF_TOKEN_IN_DOCUMENT, DOCUMENT_TERM_TOPIC.TERM, DOCUMENT_TERM_TOPIC.WORDTYPE$WORDTYPE "
+							+ "from DOCUMENT_TERM_TOPIC, TopTerms, TOPIC t1, TOPIC t2 WHERE DOCUMENT_TERM_TOPIC.TERM=TopTerms.TERM_NAME and "
+							+ "DOCUMENT_TERM_TOPIC.TOPIC_ID=t1.TOPIC_ID AND t1.HIERARCHICAL_TOPIC$START >= t2.HIERARCHICAL_TOPIC$START AND "
+							+ "t1.HIERARCHICAL_TOPIC$END <= t2.HIERARCHICAL_TOPIC$END AND t2.TOPIC_ID=TopTerms.TOPIC_ID "
+							+ "and DOCUMENT_TERM_TOPIC.WORDTYPE$WORDTYPE=TopTerms.WORDTYPE$WORDTYPE AND DOCUMENT_TERM_TOPIC.DOCUMENT_ID=" + docId
+							+ " order by TopTerms.TOPIC_ID asc,	DOCUMENT_TERM_TOPIC.POSITION_OF_TOKEN_IN_DOCUMENT asc");
+					checkForFrames(maxFrameSize, startWordType, frameType, topTerms, frameCSVWriter);
+				}
+					
+			} else {
+				topTerms = database.executeQuery("select DOCUMENT_TERM_TOPIC.DOCUMENT_ID, TopTerms.TOPIC_ID, "
+						+ "DOCUMENT_TERM_TOPIC.POSITION_OF_TOKEN_IN_DOCUMENT, DOCUMENT_TERM_TOPIC.TERM, DOCUMENT_TERM_TOPIC.WORDTYPE$WORDTYPE "
+						+ "from DOCUMENT_TERM_TOPIC, TopTerms WHERE DOCUMENT_TERM_TOPIC.TERM=TopTerms.TERM_NAME and "
+						+ "DOCUMENT_TERM_TOPIC.TOPIC_ID=TopTerms.TOPIC_ID "
+						+ "and DOCUMENT_TERM_TOPIC.WORDTYPE$WORDTYPE=TopTerms.WORDTYPE$WORDTYPE "
+						+ "order by DOCUMENT_TERM_TOPIC.DOCUMENT_ID asc, TopTerms.TOPIC_ID asc,	DOCUMENT_TERM_TOPIC.POSITION_OF_TOKEN_IN_DOCUMENT asc");
+				checkForFrames(maxFrameSize, startWordType, frameType, topTerms, frameCSVWriter);
+			}
+			
+			
+			frameCSVWriter.flush();
+			frameCSVWriter.close();
 
+			database.executeUpdateQuery("LOAD DATA LOCAL INFILE 'temp/frames.sql.csv' IGNORE INTO TABLE "
+					+ tableName + " CHARACTER SET utf8 FIELDS TERMINATED BY ',' ENCLOSED BY '\"' (DOCUMENT_ID, TOPIC_ID, FRAME, START_POSITION, END_POSITION, FRAME_TYPE);");
+		} catch (SQLException e) {
+			logger.error("Exception while handling temporary table TOP_TERMS_DOC_SAME_TOPIC.");
+			throw new RuntimeException(e);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+	}
+
+	private void checkForFrames(int maxFrameSize, String startWordType, String frameType, ResultSet topTerms, BufferedWriter frameCSVWriter) {
+		try {
 			int documentId = 0;
 			int position = 0;
 			int topicId = 0;
@@ -201,6 +247,7 @@ public final class FrameFill extends TableFillCommand {
 					wordType = topTerms.getString("WORDTYPE$WORDTYPE");
 				} else {
 					if (wordType.equals(startWordType)) {
+						
 						endPos = topTerms.getInt("POSITION_OF_TOKEN_IN_DOCUMENT") + topTerms.getString("TERM").length();
 						frameCSVWriter.write("\"" + documentId + "\",\"" + topicId + "\",\"" + term + "," 
 						+ topTerms.getString("TERM") + "\",\"" + position + "\",\""  + endPos + "\",\""  + frameType + "\"\n");
@@ -208,81 +255,19 @@ public final class FrameFill extends TableFillCommand {
 					position = 0 - maxFrameSize;
 				}
 			}
-			frameCSVWriter.flush();
-			frameCSVWriter.close();
-
-			database.executeUpdateQuery("LOAD DATA LOCAL INFILE 'temp/frames.sql.csv' IGNORE INTO TABLE "
-					+ tableName + " CHARACTER SET utf8 FIELDS TERMINATED BY ',' ENCLOSED BY '\"' (DOCUMENT_ID, TOPIC_ID, FRAME, START_POSITION, END_POSITION, FRAME_TYPE);");
-			if( Boolean.parseBoolean(properties.getProperty("Frame_frameDelimiter")) == true) {
-				if(properties.getProperty("Frame_frameDelimiterFile").length() < 1) {
-					logger.error("frameDelimiterFile not set - there will be no inactive frames");
-					throw new RuntimeException();
-				} else if(this.getClass().getResource(properties.getProperty("Frame_frameDelimiterFile")) != null){
-					logger.warn("frameDelimiterFile not found - there will be no inactive frames");
-					throw new RuntimeException();
-				} else {
-	
-					XMLConfiguration delimiterConfig = new XMLConfiguration(properties.getProperty("Frame_frameDelimiterFile"));
-					@SuppressWarnings("unchecked")
-					List<String> delimiterList = delimiterConfig.getList("delimiter");
-					ArrayList<String> cleanDelimiterList = new ArrayList<String>();
-					for (String s : delimiterList)
-					    if (!s.equals(""))
-					        cleanDelimiterList.add(s);
-					String subQuery = null;
-					String[] delimiterArray = cleanDelimiterList.toArray(new String[cleanDelimiterList.size()]);
-					if(delimiterArray.length > 0) {
-						subQuery = "SELECT '%" + delimiterArray[0] + "%' PATTERN FROM DUAL";
-						for(int i = 1; i < delimiterArray.length; i++) {
-						  	subQuery += " UNION ALL SELECT '%" + delimiterArray[i] + "%' PATTERN FROM DUAL";
-						}	
-					} else {
-					   logger.error("No frame delimiter found - there will be no inactive frames");
-					   throw new RuntimeException();
-					}
-	
-					// Set inactive
-					database.executeUpdateQuery("UPDATE " + this.tableName
-							+ ", (SELECT DISTINCT DOCUMENT_ID,TOPIC_ID,FRAME,START_POSITION"
-							+ " FROM " + this.tableName + " JOIN DOCUMENT USING (DOCUMENT_ID)," + "(" + subQuery + ") X "
-							+ "WHERE SUBSTRING(TEXT$FULLTEXT,START_POSITION+1,END_POSITION-START_POSITION) LIKE X.PATTERN) Y "
-							+ "SET " + this.tableName + ".ACTIVE=0 WHERE Y.DOCUMENT_ID=" + this.tableName + ".DOCUMENT_ID AND "
-							+ "Y.TOPIC_ID=" + this.tableName + ".TOPIC_ID AND " + "Y.FRAME=" + this.tableName + ".FRAME AND "
-							+ "Y.START_POSITION=" + this.tableName + ".START_POSITION");
-				}
-			} else {
-				logger.warn("frameDelimiter not activated - there will be no inactive frames");
-			}
 		} catch (SQLException e) {
-			logger.error("Table could not be filled properly.");
+			logger.error("Error getting potential frame data.");
 			throw new RuntimeException(e);
-		} catch (ConfigurationException e) {
-			// TODO Auto-generated catch block
-			logger.error("Error opening FrameDelimiter document");
+		} catch (IOException e) {
+			logger.error("Error writing frame input stream.");
 			throw new RuntimeException(e);
-		}
+		} 
 	}
 
-	private void bestFrames(String frameType) {
-		int numTopics = Integer.parseInt((String) properties.get("malletNumTopics"));
-
-		int bestFrameCount = Integer.parseInt((String) properties.get("TopicBestItemLimit"));
-		try {
-			for (int i = 0; i < numTopics; i++) {
-				database.executeUpdateQueryForUpdate("INSERT INTO FRAME$BEST_FRAMES SELECT FRAME, TOPIC_ID, COUNT(DISTINCT DOCUMENT_ID) AS FRAME_COUNT, FRAME_TYPE FROM " 
-					+ this.tableName + " WHERE FRAME_TYPE='" + frameType + "' AND TOPIC_ID="	+ i + " AND ACTIVE=1 GROUP BY FRAME ORDER BY FRAME_COUNT DESC LIMIT "
-					+ bestFrameCount);
-			}
-		} catch (SQLException e) {
-			logger.error("Exception while creating bestFrames table.");
-			throw new RuntimeException(e);
-		}
-	}
-
-	private void dropTemporaryTables() {
+	private void dropTopTermTable() {
 		try {
 			database.dropTable("TopTerms");
-			database.dropTable("TOP_TERMS_DOC_SAME_TOPIC");
+			
 		} catch (SQLException e) {
 			logger.warn("At least one temporarely created table or column could not be dropped.", e);
 		}

@@ -4,6 +4,7 @@ import java.io.PrintWriter;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -61,9 +62,16 @@ public class BestFrames {
 		JSONObject frameTypes = new JSONObject();
 		JSONObject all = new JSONObject();
 		JSONArray sorting = new JSONArray();
+		
+		List<String> existingFrameTypes = new ArrayList<String>();
 
+		ResultSet exsitingFramesQueryRS = database.executeQuery("SELECT DISTINCT FRAME_TYPE FROM FRAME$FRAMES");
+		while (exsitingFramesQueryRS.next()) {
+			existingFrameTypes.add(exsitingFramesQueryRS.getString("FRAME_TYPE"));
+		}
+		
 		ResultSet frameQueryRS = database.executeQuery(frameMap.getSQLString());
-		int topicId = -1;
+		Integer topicId = -1;
 		String frameType = "";
 		int counter = 0;
 		while (frameQueryRS.next()) {
@@ -71,20 +79,31 @@ public class BestFrames {
 				if (frameType.length() > 0) {
 					topicData.put("SORTING", sorting);
 					frames.put(frameType, topicData);
-					if(topicId != frameQueryRS.getInt("TOPIC_ID")) {
-						frameTypes.put("ITEMS", frames);
-						all.put(topicId, frameTypes);
-						frames = new JSONObject();
-						frameTypes = new JSONObject();
-					}
+					
 					
 					topicData = new JSONObject();
 					sorting = new JSONArray();
 					counter = 0;
 				}
 				frameType = frameQueryRS.getString("FRAME_TYPE");
-				topicId = frameQueryRS.getInt("TOPIC_ID");
+				
 			} 
+			if(topicId != frameQueryRS.getInt("TOPIC_ID")) {
+				if(topicId > -1) {
+					for(String frametype: existingFrameTypes) {
+						if(!frames.containsKey(frametype)) {
+							topicData = new JSONObject();
+							topicData.put("SORTING", new JSONArray());
+							frames.put(frametype, topicData);
+						}
+					}
+					frameTypes.put("ITEMS", frames);
+					all.put(topicId, frameTypes);
+					frames = new JSONObject();
+					frameTypes = new JSONObject();
+				}
+				topicId = frameQueryRS.getInt("TOPIC_ID");
+			}
 			
 			frameData = new JSONObject();
 			for (int i = 0; i < frameColumnList.size(); i++) {
@@ -96,9 +115,33 @@ public class BestFrames {
 		}
 		topicData.put("SORTING", sorting);
 		frames.put(frameType, topicData);
+		for(String frametype: existingFrameTypes) {
+			if(!frames.containsKey(frametype)) {
+				topicData = new JSONObject();
+				topicData.put("SORTING", new JSONArray());
+				frames.put(frametype, topicData);
+			}
+		}
 		frameTypes.put("ITEMS", frames);
 		all.put(topicId, frameTypes);
 
+		// fill missing topicIds
+		ResultSet topicIdsRS = database.executeQuery("SELECT DISTINCT TOPIC_ID FROM TOPIC");
+		while(topicIdsRS.next()) {
+			topicId = topicIdsRS.getInt("TOPIC_ID");
+			if(!all.containsKey(topicId.toString())) {
+				for(String frametype: existingFrameTypes) {
+					topicData = new JSONObject();
+					topicData.put("SORTING", new JSONArray());
+					frames.put(frametype, topicData);
+				}
+				frameTypes = new JSONObject();		
+				frameTypes.put("ITEMS", frames);
+				all.put(topicId, frameTypes);
+							
+			}
+		}
+		
 		outWriter.print(all.toString());
 	}
 }

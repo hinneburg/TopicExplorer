@@ -17,13 +17,13 @@ function(ko, $) {
 	
 	self.setTopicSlider = function() {	
 		var slider = $('.topicPrevSlider');	
-		var maxListWidth = $('.topicList > ul').width();
+		var maxListWidth = $('.topicList > ul').width();		
 		var topicDivWidth = $('.topicList').width();
 		var bottomDivWidth = $('.topicBottomSliderDiv').width();
 		
 		slider.width((topicDivWidth*bottomDivWidth)/ maxListWidth);
 		$('.topicPrevSlider > span').css('margin-left', (topicDivWidth * bottomDivWidth) / (maxListWidth * 2) - ($('.topicPrevSlider > span').width() / 2));	
-		var maxScrollPos = $('.topicBottomSliderDiv').width() - $('.topicPrevSlider').width();	
+		var maxScrollPos = bottomDivWidth - $('.topicPrevSlider').width();	
 		$( ".topicPrevSlider" ).draggable({ 
 			axis: "x", 
 			containment: [ 4, 0, maxScrollPos, 0 ],
@@ -37,8 +37,8 @@ function(ko, $) {
 	};
 	
 	self.sliderElWidth = ko.computed (function() {
-		self.setTopicSlider();
-   		return (self.windowWidth() - 8) / $('.topicList > ul > li').size() - 1;
+		self.setTopicSlider();			
+		return (self.windowWidth() - 8) / $('.topicList > ul > li').size() - 1;
 	});
 	
 	return self;

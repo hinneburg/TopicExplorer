@@ -17,9 +17,8 @@ public class Create extends TableSelectCommand {
 		PrintWriter pw = context.get("SERVLET_WRITER", PrintWriter.class);
 
 		int limit = Integer.parseInt(properties.getProperty("DocBrowserLimit"));
-		int numberOfTopics = Integer.parseInt(properties.getProperty("malletNumTopics"));
-
-		Search searchAction = new Search(searchWord, database, pw, limit, offset, numberOfTopics);
+		
+		Search searchAction = new Search(searchWord, database, pw, limit, offset);
 		context.bind("SEARCH_ACTION", searchAction);
 	}
 

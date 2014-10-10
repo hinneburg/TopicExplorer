@@ -15,7 +15,7 @@
 		</div>
 	<!-- /ko -->
 	<div class="documentList" style="height: 100%;">		
-		<div class="jumpToStart" data-bind="style: {left: (windowWidth() / 2 - 14) + 'px'}, click: function() { $('#desktop').scrollTop(0) }">^</div>
+		<div class="jumpToStart" data-bind="style: {left: (windowWidth() / 2 - 14) + 'px'}, click: function() { $('#desktop').animate({scrollTop:0}) }">^</div>
 		<ul	class="browser" style="height: 100%;">	
 		<!-- ko ifnot: firstLoading --> 
 			<!-- ko foreach: {data:browseData[active()].selectedDocuments,  as: 'selectedDocument'} -->
@@ -33,8 +33,8 @@
 						</p>
 					</div>					
 					<div class="circles">
-						<!--  ko foreach: globalData.DOCUMENT[selectedDocument].TOP_TOPIC --> 
-						<span class="topicCheckboxCircle topicCircle" data-bind="style: {color: globalData.Topic[$data].COLOR_TOPIC$COLOR}, attr: {id: 't_' + $data, title: 'Topic ' + $data}, click: $parents[1].moveToTopic" >&#9679;</span><br/>
+						<!--  ko foreach: globalData.DOCUMENT[selectedDocument].topTopics() --> 
+							<span class="topicCheckboxCircle topicCircle" data-bind="style: {color: globalData.Topic[$data].COLOR_TOPIC$COLOR}, attr: {id: 't_' + $data, title: 'Topic ' + $data}, click: $parents[1].moveToTopic" >&#9679;</span><br/>
 						<!-- /ko -->
 					</div>
 				</li>

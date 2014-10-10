@@ -23,7 +23,8 @@ function(ko, $) {
 
 	self.active = ko.observable("tab0");
 	self.nextTabIndex = 1;
-	
+	self.selectedTopics = ko.observableArray(globalData.TOPIC_SORTING).subscribeTo("selectedTopics");
+
 	
 	ko.postbox.subscribe("openNewTab", function(newTabData) {
 		// Here we could test, whether newTab conforms to some interface that we require for new tabs

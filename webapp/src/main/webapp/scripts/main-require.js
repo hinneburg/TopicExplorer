@@ -27,7 +27,8 @@ require([ "knockout","jquery", "text!/JsonServlet?Command=getTopics", "text!/Jso
           "scripts/modules/extenders/document-browse-text",
           "scripts/modules/extenders/topic-view-time",
           "scripts/modules/extenders/topic-view-frame",
-          "scripts/modules/extenders/topic-view-wordtype"], function(ko, $, topicJson, pluginJson) {
+          "scripts/modules/extenders/topic-view-wordtype",
+          "scripts/modules/extenders/topic-view-hierarchical"], function(ko, $, topicJson, pluginJson) {
 	var self = this;
 	self.globalData = {};
 	var topics =  JSON.parse(topicJson);
@@ -35,6 +36,7 @@ require([ "knockout","jquery", "text!/JsonServlet?Command=getTopics", "text!/Jso
 	self.globalData.PLUGINS = plugins.PLUGINS;
 	self.globalData.Topic = topics.Topic;
 	self.globalData.TOPIC_SORTING = topics.TOPIC_SORTING;
+	self.globalData.TopicBestItemLimit = topics.TopicBestItemLimit;
 	
 	for(var i in self.globalData.Topic) {
 		var termSorting = [];
@@ -44,7 +46,7 @@ require([ "knockout","jquery", "text!/JsonServlet?Command=getTopics", "text!/Jso
 		globalData.Topic[i].ITEMS = {};
 		globalData.Topic[i].ITEMS.KEYWORDS = {};
 		globalData.Topic[i].FULL.KEYWORDS = ko.observable(false);
-		if( self.globalData.Topic[i].Top_Terms.length < 20) {
+		if( self.globalData.Topic[i].Top_Terms.length < self.globalData.TopicBestItemLimit) {
 			globalData.Topic[i].FULL.KEYWORDS(true);
 		} 
 		self.globalData.Topic[i].COUNT.KEYWORDS = self.globalData.Topic[i].Top_Terms.length;
@@ -73,13 +75,14 @@ require([ "knockout","jquery", "text!/JsonServlet?Command=getTopics", "text!/Jso
 	
 	ko.applyBindings(new function() {} ());
 	
-	//fallback:
+	//slow machine fallback:
 	setTimeout(function() {
 		$(window).trigger('resize');
-	}, 3000);
-	setTimeout(function() {
-		$(window).trigger('resize');
-	}, 8000);
+		setTimeout(function() {
+			$(window).trigger('resize');
+		}, 6000);
+	}, 6000);
+	
 });
 
 

@@ -15,9 +15,11 @@ public class Collect extends TableSelectCommand {
 		GetTopics getTopicsAction = context.get("GET_TOPICS_ACTION", GetTopics.class);
 
 		getTopicsAction.addTopicColumn("TOPIC.HIERARCHICAL_TOPIC$START", "HIERARCHICAL_TOPIC$START");
+		getTopicsAction.addTopicColumn("TOPIC.HIERARCHICAL_TOPIC$END", "HIERARCHICAL_TOPIC$END");
+		getTopicsAction.addTopicColumn("TOPIC.HIERARCHICAL_TOPIC$DEPTH", "HIERARCHICAL_TOPIC$DEPTH");
 		getTopicsAction.addTopicColumn("TOPIC.HIERARCHICAL_TOPIC$CLUSTER_MEMBERSHIP", "HIERARCHICAL_TOPIC$CLUSTER_MEMBERSHIP");
-		getTopicsAction.addWhereClause("TOPIC.HIERARCHICAL_TOPIC$START=TOPIC.HIERARCHICAL_TOPIC$END");
-		getTopicsAction.addOrderBy("TOPIC.HIERARCHICAL_TOPIC$START");
+		getTopicsAction.addSelectedTopicWhereClause("TOPIC.HIERARCHICAL_TOPIC$START=TOPIC.HIERARCHICAL_TOPIC$END");
+		getTopicsAction.addSelectedTopicOrderBy("TOPIC.HIERARCHICAL_TOPIC$START");
 		
 		context.rebind("GET_TOPICS_ACTION", getTopicsAction);
 	}

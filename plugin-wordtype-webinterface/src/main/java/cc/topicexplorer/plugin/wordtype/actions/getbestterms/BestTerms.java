@@ -17,7 +17,7 @@ public class BestTerms {
 	private final SelectMap bestTermsMap;
 	private PrintWriter outWriter;
 	private Database database;
-
+	
 	public BestTerms(Database database, PrintWriter pw, Logger logger, String wordtypes[]) {
 		String wordtypeInString = "WORDTYPE IN ('" + wordtypes[0] + "'";
 		for(int i = 1; i < wordtypes.length; i++) {
@@ -56,7 +56,7 @@ public class BestTerms {
 		bestTermsMap.select.add(bestTermsColumn + " as " + bestTermsColumnName);
 	}
 
-	public void getBestTerms() throws SQLException {
+	public void getBestTerms(String enabledWordTypes[]) throws SQLException {
 		ArrayList<String> bestTermsColumnList = bestTermsMap.getCleanColumnNames();
 		
 		bestTermsColumnList.remove("TOPIC_ID");
@@ -70,26 +70,37 @@ public class BestTerms {
 		JSONArray sorting = new JSONArray();
 
 		ResultSet termQueryRS = database.executeQuery(bestTermsMap.getSQLString());
-		int topicId = -1;
+		Integer topicId = -1;
 		String wordType = "";
 		while (termQueryRS.next()) {
 			if (!wordType.equals(termQueryRS.getString("WORDTYPE"))) {
 				if (wordType.length() > 0) {
 					topicData.put("SORTING", sorting);
 					bestTerms.put(wordType, topicData);
-					if(topicId != termQueryRS.getInt("TOPIC_ID")) {
-						wordTypes.put("ITEMS", bestTerms);
-						all.put(topicId, wordTypes);
-						bestTerms = new JSONObject();
-						wordTypes = new JSONObject();
-					}
+					
 					
 					topicData = new JSONObject();
 					sorting = new JSONArray();
 				}
-				wordType = termQueryRS.getString("WORDTYPE");
+				wordType = termQueryRS.getString("WORDTYPE");	
+			}
+			
+			if(topicId != termQueryRS.getInt("TOPIC_ID")) {
+				if(topicId > -1) {
+					for(String wordtype: enabledWordTypes) {
+						if(!bestTerms.containsKey(wordtype)) {
+							topicData = new JSONObject();
+							topicData.put("SORTING", new JSONArray());
+							bestTerms.put(wordtype, topicData);
+						}
+					}
+					wordTypes.put("ITEMS", bestTerms);
+					all.put(topicId, wordTypes);
+					bestTerms = new JSONObject();
+					wordTypes = new JSONObject();
+				}
 				topicId = termQueryRS.getInt("TOPIC_ID");
-			} 
+			}
 			
 			bestTermsData = new JSONObject();
 			for (int i = 0; i < bestTermsColumnList.size(); i++) {
@@ -100,8 +111,32 @@ public class BestTerms {
 		}
 		topicData.put("SORTING", sorting);
 		bestTerms.put(wordType, topicData);
+		for(String wordtype: enabledWordTypes) {
+			if(!bestTerms.containsKey(wordtype)) {
+				topicData = new JSONObject();
+				topicData.put("SORTING", new JSONArray());
+				bestTerms.put(wordtype, topicData);
+			}
+		}
 		wordTypes.put("ITEMS", bestTerms);
 		all.put(topicId, wordTypes);
+		
+		// fill missing topicIds
+		ResultSet topicIdsRS = database.executeQuery("SELECT DISTINCT TOPIC_ID FROM TOPIC");
+		while(topicIdsRS.next()) {
+			topicId = topicIdsRS.getInt("TOPIC_ID");
+			if(!all.containsKey(topicId.toString())) {
+				for(String wordtype: enabledWordTypes) {
+					topicData = new JSONObject();
+					topicData.put("SORTING", new JSONArray());
+					bestTerms.put(wordtype, topicData);
+				}
+				wordTypes = new JSONObject();
+				wordTypes.put("ITEMS", bestTerms);
+				all.put(topicId, wordTypes);
+				
+			}
+		}
 
 		outWriter.print(all.toString());
 	}

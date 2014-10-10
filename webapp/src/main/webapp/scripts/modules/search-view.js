@@ -7,6 +7,8 @@ define(
 				ko.postbox.publish('openNewTab', {moduleName:"document-browse-tab",tabHeading:"Search " + searchWord, data: {searchWord: searchWord, getParam: "search&SearchWord=" + searchWord}});
 			};
 
+			self.selectedTopics = ko.observableArray(globalData.TOPIC_SORTING).subscribeTo("selectedTopics");
+			
 			self.windowWidth = ko.observable(1024).subscribeTo(
 					"windowWidth");
 			self.leftPadding = ko.computed(function() {

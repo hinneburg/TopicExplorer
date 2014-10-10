@@ -18,12 +18,10 @@ public class BestDocumentsForGivenTopic {
 	private static final Logger logger = Logger.getLogger(BestDocumentsForGivenTopic.class);
 
 	private final SelectMap documentMap;
-	private int numberOfTopics;
 	private PrintWriter outWriter;
 	private Database database;
 
-	public BestDocumentsForGivenTopic(String topicId, Integer limit, Integer offset, Database db, PrintWriter out,
-			int numberOfTopics) {
+	public BestDocumentsForGivenTopic(String topicId, Integer limit, Integer offset, Database db, PrintWriter out) {
 		documentMap = new SelectMap();
 		documentMap.select.add("DISTINCT DOCUMENT.DOCUMENT_ID");
 		documentMap.select.add("DOCUMENT_TOPIC.PR_DOCUMENT_GIVEN_TOPIC");
@@ -38,11 +36,10 @@ public class BestDocumentsForGivenTopic {
 
 		setDatabase(db);
 		setServletWriter(out);
-		setNumberOfTopics(numberOfTopics);
+		
 	}
 	
-	public BestDocumentsForGivenTopic(String topicId, Integer limit, Integer offset, Database db, PrintWriter out,
-			int numberOfTopics, String term) {
+	public BestDocumentsForGivenTopic(String topicId, Integer limit, Integer offset, Database db, PrintWriter out, String term, boolean hierarchicalTopicEnabled) {		
 		documentMap = new SelectMap();
 		documentMap.select.add("DOCUMENT.DOCUMENT_ID");
 		documentMap.select.add("DOCUMENT_TERM_TOPIC.TOPIC_ID");
@@ -52,7 +49,22 @@ public class BestDocumentsForGivenTopic {
 		documentMap.from.add("DOCUMENT_TOPIC");
 		documentMap.where.add("DOCUMENT.DOCUMENT_ID=DOCUMENT_TOPIC.DOCUMENT_ID");
 		documentMap.where.add("DOCUMENT.DOCUMENT_ID=DOCUMENT_TERM_TOPIC.DOCUMENT_ID");
-		documentMap.where.add("DOCUMENT_TERM_TOPIC.TOPIC_ID IN (" + topicId + ")");
+		if(hierarchicalTopicEnabled) {
+
+				String where = "DOCUMENT_TERM_TOPIC.TOPIC_ID IN ("
+					+ "SELECT t1.TOPIC_ID FROM TOPIC t1, TOPIC t2 "
+					+ "WHERE t1.HIERARCHICAL_TOPIC$START=t1.HIERARCHICAL_TOPIC$END AND "
+					+ "t1.HIERARCHICAL_TOPIC$START>=t2.HIERARCHICAL_TOPIC$START AND "
+					+ "t1.HIERARCHICAL_TOPIC$END<=t2.HIERARCHICAL_TOPIC$END AND "
+					+ "t2.TOPIC_ID=" + topicId;
+				
+					where += ")";
+				
+				documentMap.where.add(where);
+			
+		} else {
+			documentMap.where.add("DOCUMENT_TERM_TOPIC.TOPIC_ID IN (" + topicId + ")");
+		}
 		documentMap.where.add("DOCUMENT_TERM_TOPIC.TERM IN ('" + term + "')");
 		documentMap.groupBy.add("DOCUMENT_ID");
 		documentMap.groupBy.add("DOCUMENT_TERM_TOPIC.TOPIC_ID");
@@ -63,20 +75,12 @@ public class BestDocumentsForGivenTopic {
 
 		setDatabase(db);
 		setServletWriter(out);
-		setNumberOfTopics(numberOfTopics);
 	}
 
 	public void setDatabase(Database database) {
 		this.database = database;
 	}
 
-	public void setNumberOfTopics(Integer numberOfTopics) {
-		this.numberOfTopics = numberOfTopics;
-	}
-
-	private Integer getNumberOfTopics() {
-		return this.numberOfTopics;
-	}
 
 	public void setServletWriter(PrintWriter servletWriter) {
 		this.outWriter = servletWriter;
@@ -117,9 +121,8 @@ public class BestDocumentsForGivenTopic {
 				for (int i = 0; i < docColumnList.size(); i++) {
 					doc.put(docColumnList.get(i), mainQueryRS.getString(docColumnList.get(i)));
 				}
-				ResultSet bestTopicsRS = database.executeQuery("SELECT TOPIC_ID FROM DOCUMENT_TOPIC WHERE TOPIC_ID < "
-						+ getNumberOfTopics().toString() + " AND DOCUMENT_ID= " + docId
-						+ " ORDER BY PR_TOPIC_GIVEN_DOCUMENT DESC LIMIT 4");
+				ResultSet bestTopicsRS = database.executeQuery("SELECT TOPIC_ID FROM DOCUMENT_TOPIC WHERE DOCUMENT_ID= " + docId
+						+ " ORDER BY PR_TOPIC_GIVEN_DOCUMENT DESC");
 				while (bestTopicsRS.next()) {
 					topTopic.add(bestTopicsRS.getInt("TOPIC_ID"));
 				}				

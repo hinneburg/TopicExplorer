@@ -1,5 +1,6 @@
 package cc.topicexplorer.actions.gettopics;
 
+import java.util.Arrays;
 import java.util.Set;
 
 import cc.commandmanager.core.Context;
@@ -11,7 +12,7 @@ public class GenerateSQL extends TableSelectCommand {
 	@Override
 	public void tableExecute(Context context) {
 		GetTopics getTopicsAction = context.get("GET_TOPICS_ACTION", GetTopics.class);
-		getTopicsAction.executeQueriesAndWriteOutTopics(Integer.parseInt((String) properties.get("TopicBestItemLimit")));
+		getTopicsAction.executeQueriesAndWriteOutTopics(Integer.parseInt((String) properties.get("TopicBestItemLimit")), Arrays.asList(properties.get("plugins").toString().split(",")).contains("hierarchicaltopic"));
 	}
 
 	@Override

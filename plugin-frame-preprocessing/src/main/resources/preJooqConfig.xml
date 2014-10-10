@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <catalog>	
-
-	<command name="FrameCreate" className="cc.topicexplorer.plugin.frame.preprocessing.tables.frames.FrameCreate"/>
-	<command name="TopicFrameCreate" className="cc.topicexplorer.plugin.frame.preprocessing.tables.topicframe.TopicFrameCreate"/>
+	<command name="Frame_FrameCreate" className="cc.topicexplorer.plugin.frame.preprocessing.tables.frames.FrameCreate"/>
+	<command name="Frame_TopicFrameCreate" className="cc.topicexplorer.plugin.frame.preprocessing.tables.topicframe.TopicFrameCreate"/>
+	<command name="Frame_BestFrameCreate" className="cc.topicexplorer.plugin.frame.preprocessing.tables.bestframes.BestFrameCreate"/>
 </catalog>

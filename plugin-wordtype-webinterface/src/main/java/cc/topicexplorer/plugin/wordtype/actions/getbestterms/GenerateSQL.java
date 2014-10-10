@@ -18,7 +18,7 @@ public class GenerateSQL extends TableSelectCommand {
 	public void tableExecute(Context context) {
 		try {
 			BestTerms bestTermsAction = context.get("BEST_TERMS_ACTION", BestTerms.class);
-			bestTermsAction.getBestTerms();
+			bestTermsAction.getBestTerms(((String) properties.get("Wordtype_wordtypes")).split(","));
 		} catch (SQLException sqlEx) {
 			logger.error("A problem occured while executing the query.");
 			throw new RuntimeException(sqlEx);

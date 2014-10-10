@@ -1,29 +1,28 @@
 define([ "knockout", "jquery", "moment", "highstock", "filesaver"],
 function(ko, $, moment) {
 	var instance;
-    function Singleton (data) {    	
+    function Singleton (data) {  
+    	var self = {};
     	var timeoutId = null;
-    	$(document).delegate(".topicCheckbox", "mouseover", function(){
-    		var self = this;
+
+    	self.moveToTopic = function(topicId, event){
     		if (!timeoutId) {
-    		//	$(self).css('cursor', 'progress').children('*').css('cursor', 'progress');
-    	        timeoutId = window.setTimeout(function() {
+    		    timeoutId = window.setTimeout(function() {
     	            timeoutId = null; 
-    	            $(self).css('cursor', 'pointer').children('*').css('cursor', 'pointer');
-    	            ko.postbox.publish('moveToTopic',$(self).children('input').attr('id').split('_')[1]);
+    	            $(event.currentTarget).css('cursor', 'pointer').children('*').css('cursor', 'pointer');
+    	            ko.postbox.publish('moveToTopic',topicId);
     		    }, 1500);
     		}
-    	}).delegate(".topicCheckbox", "mouseout", function(){
+    	};
+  
+    	self.stopMoveToTopic = function(topicId, event){
     		if (timeoutId) {
-    			$(this).css('cursor', 'progress').children('*').css('cursor', 'progress');
+    			$(event.currentTarget).css('cursor', 'progress').children('*').css('cursor', 'progress');
     		    window.clearTimeout(timeoutId);
     		    timeoutId = null;
     		}
-    	});
-    	
-    	
-    	var self = {};
-    	
+    	};
+     	
     	self.windowHeight = ko.observable(Math.max(400, $(window).height(), /* For opera: */ document.documentElement.clientHeight)).subscribeTo("windowHeight");
     	self.windowHeight.subscribe(function(newValue) {
     		self.chart.setSize($('#desktop').width(),((newValue - 184) * 0.7) - ($('#topicCheckboxes').height() + 32.0 * $('#getcsv').size()), false);
@@ -88,7 +87,7 @@ function(ko, $, moment) {
     		self.chart = new Highcharts.StockChart({
 		   	    chart: {
 		    	   renderTo: 'chart',
-		    	   height: $('#desktop').height() - ($('#topicCheckboxes').height() + 32.0 * $('#getcsv').size())
+		    	   height: $('#desktop').height() + 10 - ($('#topicCheckboxes').height() + 32.0 * $('#getcsv').size())
 		    	},
 		    	tooltip: {
 		            formatter: function() {
@@ -148,7 +147,7 @@ function(ko, $, moment) {
     		renderedTopics = self.timeData[self.active()].renderedTopics.slice();
     		for(topicIndex in renderedTopics) {
     			topicId = renderedTopics[topicIndex];
-    			if(newValue.indexOf(topicId) == -1) {
+    			if(newValue.indexOf(topicId) < 0) {
     				renderedTopics.splice(topicIndex, 1);
     			}
     		}
@@ -156,10 +155,27 @@ function(ko, $, moment) {
     			renderedTopics.push(self.timeData[self.active()].topicId());
     		}
     		self.timeData[self.active()].renderedTopics(renderedTopics);
+    		self.oldTopics=self.newTopics.slice();
+    		self.newTopics=newValue.slice();
     	};
     	
+    	self.oldTopics = globalData.TOPIC_SORTING;
+    	self.newTopics = globalData.TOPIC_SORTING;
+  
     	self.timeData.allTopics = ko.observableArray(globalData.TOPIC_SORTING).subscribeTo("selectedTopics");
 		self.timeData.allTopics.subscribe(self.changeTopics);
+		self.addTopic = function(elem, addedIndezes) {
+			if($(self.oldTopics).not(self.newTopics).get().length < $(self.newTopics).not(self.oldTopics).get().length) {
+				$(elem).filter('span').css('width', '5px').animate({width: '33px'}, 500);
+			}
+		};
+		self.removeTopic = function(elem, deletedIndezes) {
+			if($(self.oldTopics).not(self.newTopics).get().length > $(self.newTopics).not(self.oldTopics).get().length) {
+				$(elem).filter('span').css('opacity', '0').animate({width: '5px'}, 500, function() {$(this).remove();});
+			} else {
+				$(elem).remove();
+			}
+		};
     	
 		self.setData = function (data) { 
 			self.active = ko.observable(data.topicId);

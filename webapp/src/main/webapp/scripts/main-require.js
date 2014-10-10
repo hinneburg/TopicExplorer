@@ -75,13 +75,14 @@ require([ "knockout","jquery", "text!/JsonServlet?Command=getTopics", "text!/Jso
 	
 	ko.applyBindings(new function() {} ());
 	
-	//fallback:
+	//slow machine fallback:
 	setTimeout(function() {
 		$(window).trigger('resize');
-	}, 3000);
-	setTimeout(function() {
-		$(window).trigger('resize');
-	}, 8000);
+		setTimeout(function() {
+			$(window).trigger('resize');
+		}, 6000);
+	}, 6000);
+	
 });
 
 

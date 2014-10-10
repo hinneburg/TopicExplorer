@@ -439,3 +439,12 @@ a {
 a:hover {
 	text-decoration: underline;
 }
+
+.timeTopicSpan {
+	white-space: nowrap;
+	display: inline-block;
+	overflow: hidden;
+	width: 33px;
+	margin-right: -9px;
+	
+}

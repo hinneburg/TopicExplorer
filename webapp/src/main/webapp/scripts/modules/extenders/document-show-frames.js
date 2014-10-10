@@ -71,9 +71,9 @@ function(ko, $) {
 					instance.singleData[instance.active()].textSelectArray.push(new instance.TextRepresentation('Text with Frames of type ' + frameType, 'TEXT_ACTIVE_FRAMES_' + frameType));
 				}
 				if(textInactive) {
-					instance.singleData[instance.active()].TITLE_REPRESENTATION['TEXT_ACTIVE_FRAMES_' + frameType] = instance.singleData[instance.active()].DOCUMENT.TEXT$TITLE;
-					instance.singleData[instance.active()].TEXT_REPRESENTATION['TEXT_ACTIVE_FRAMES_' + frameType] = text2;
-					instance.singleData[instance.active()].textSelectArray.push(new instance.TextRepresentation('Text with inactive Frames of type ' + frameType, 'TEXT_ACTIVE_FRAMES_' + frameType));
+					instance.singleData[instance.active()].TITLE_REPRESENTATION['TEXT_INACTIVE_FRAMES_' + frameType] = instance.singleData[instance.active()].DOCUMENT.TEXT$TITLE;
+					instance.singleData[instance.active()].TEXT_REPRESENTATION['TEXT_INACTIVE_FRAMES_' + frameType] = text2;
+					instance.singleData[instance.active()].textSelectArray.push(new instance.TextRepresentation('Text with inactive Frames of type ' + frameType, 'TEXT_INACTIVE_FRAMES_' + frameType));
 				}
 				if(textTopic) {
 					instance.singleData[instance.active()].TITLE_REPRESENTATION['TEXT_TOPIC_FRAMES_' + frameType] = instance.singleData[instance.active()].DOCUMENT.TEXT$TITLE;

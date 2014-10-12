@@ -5,12 +5,17 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
+/**
+ * A class to construct a RFC 822 formatted string representation of a date
+ *
+ * @author Florian Luecke
+ */
 public class RFC822DateFormatter {
     public static final String RFC_822_DATE_FORMAT_STRING = "E', 'dd' 'MMM' 'yy' 'HH':'mm':'ss' 'Z";
 
     /**
      * Return an RFC 822 formatted representation of a date.
-     * 
+     *
      * @param date
      *            the date to format
      * @param timeZone
@@ -30,7 +35,7 @@ public class RFC822DateFormatter {
     /**
      * Return an RFC 822 formatted representation of a date.
      * Time is normalized to UTC
-     * 
+     *
      * @param date
      *            the date to format
      * @return the requested date representation

@@ -26,7 +26,7 @@ import org.commoncrawl.warc.WARCFileInputFormat;
  * A metadata scanner for the CommonCrawl archive. Based on Chris Stephens'
  * <chris@commoncrawl.org>
  * ExampleMetadataDomainPageCount.java and Stephen Merity's WARCTagCounter.java
- * 
+ *
  * @author Florian Luecke
  */
 public class BlogExtractorTool extends Configured implements Tool {
@@ -34,7 +34,7 @@ public class BlogExtractorTool extends Configured implements Tool {
 
     /**
      * Implmentation of Tool.run() method, which builds and runs the Hadoop job.
-     * 
+     *
      * @param args
      *            command line parameters, less common Hadoop job parameters
      *            stripped

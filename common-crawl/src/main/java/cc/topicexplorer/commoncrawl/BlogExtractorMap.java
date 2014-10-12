@@ -47,6 +47,15 @@ public class BlogExtractorMap {
             }
         }
 
+        /**
+         * Load valid URLs from a configuration file
+         *
+         * @param context
+         *            a context element that contains information on where to
+         *            find the configuration file
+         * @return a list of valid URL schemes
+         * @throws IOException
+         */
         protected static List<String> getValidURLs(Context context)
             throws IOException {
             String validURLFile = context.getConfiguration().get(VALID_URL_FILE_CONFIG_NAME);

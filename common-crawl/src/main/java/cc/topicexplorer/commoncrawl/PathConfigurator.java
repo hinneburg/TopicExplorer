@@ -54,31 +54,37 @@ public class PathConfigurator {
         }
     }
 
-    public static List<Path> readPathsFromConfigFile(Configuration config) {
+    /**
+     * Read the input settings from the file stored in configuration.
+     * 
+     * @param configuration
+     *            a configuration that contains input settings
+     * @return a list of input paths
+     */
+    public static List<Path> readPathsFromConfigFile(Configuration configuration) {
         // get the input path
-        String pathString = config.get(INPUTPATH_CONFIG_NAME);
+        String pathString = configuration.get(INPUTPATH_CONFIG_NAME);
         List<Path> paths = new ArrayList<Path>();
         if (pathString != null) {
             // there is an input path
-            // use only the input path, ignore contents of path file if there is
-            // one
+            // use only the input path, ignore contents of path file if it exists
             Path inputPath = new Path(pathString);
             paths.add(inputPath);
             return paths;
         }
 
-        String pathFile = config.get(PATHFILE_CONFIG_NAME);
+        String pathFile = configuration.get(PATHFILE_CONFIG_NAME);
         if (pathFile != null) {
             try {
-                // read config file and turn lines into paths
-                List<String> pathStrings = loadFileAsArray(pathFile, config);
+                // read configuration file and turn lines into paths
+                List<String> pathStrings = loadFileAsArray(pathFile, configuration);
                 for (String string : pathStrings) {
                     if (!string.equals("")) {
                         paths.add(new Path(string));
                     }
                 }
             } catch (IOException e) {
-                return paths;
+                return paths; // return null;
             }
         }
 

@@ -50,7 +50,7 @@ public final class FrameFill extends TableFillCommand {
 
 	@Override
 	public Set<String> getBeforeDependencies() {
-		return Sets.newHashSet("TermFill", "TermTopicFill", "DocumentTermTopicFill", "Frame_FrameCreate", "WordType_TermFill");
+		return Sets.newHashSet("TermFill", "TermTopicFill", "DocumentTermTopicFill", "Frame_FrameCreate", "WordType_TermFill", "Frame_DelimiterPositionsFill");
 	}
 
 	@Override
@@ -104,27 +104,13 @@ public final class FrameFill extends TableFillCommand {
 	
 	private void processFrameDelimiter() {
 		if( Boolean.parseBoolean(properties.getProperty("Frame_frameDelimiter")) == true) {
-			if(properties.getProperty("Frame_frameDelimiterFile").length() < 1) {
-				logger.error("frameDelimiterFile not set - there will be no inactive frames");
-				throw new RuntimeException();
-			} else if(this.getClass().getResource(properties.getProperty("Frame_frameDelimiterPosCSV")) != null){
-				logger.warn("frameDelimiterCSV not found - there will be no inactive frames");
-				throw new RuntimeException();
-			} else {
-				try {
-					database.executeUpdateQuery("create table FRAME_DELIMITER_POS (DOCUMENT_ID INT, POSITION INT) ENGINE=MEMORY");  
-					database.executeUpdateQuery("LOAD DATA LOCAL INFILE '" + properties.getProperty("Frame_frameDelimiterPosCSV") 
-							+ "' INTO TABLE FRAME_DELIMITER_POS CHARACTER SET utf8 FIELDS TERMINATED BY ';' ENCLOSED BY '\"' IGNORE 1 LINES");
-					database.executeUpdateQuery("ALTER TABLE FRAME_DELIMITER_POS ADD KEY IDX0 (DOCUMENT_ID, POSITION) ");
-					database.executeUpdateQuery("UPDATE " + this.tableName + ",FRAME_DELIMITER_POS SET ACTIVE=0 WHERE " 
-							+ "FRAME_DELIMITER_POS.DOCUMENT_ID=FRAME$FRAMES.DOCUMENT_ID AND START_POSITION<POSITION AND END_POSITION>POSITION");
-					database.dropTable("FRAME_DELIMITER_POS");
-				} catch (SQLException e) {
-					logger.error("Exception while deactivating frames.");
-					throw new RuntimeException(e);
-				} 
-
-			}
+			try {
+				database.executeUpdateQuery("UPDATE " + this.tableName + ",FRAME$DELIMITER_POSITIONS SET ACTIVE=0 WHERE " 
+						+ "FRAME$DELIMITER_POSITIONS.DOCUMENT_ID=FRAME$FRAMES.DOCUMENT_ID AND START_POSITION<POSITION AND END_POSITION>POSITION");
+			} catch (SQLException e) {
+				logger.error("Exception while deactivating frames.");
+				throw new RuntimeException(e);
+			} 
 		}
 	}
 
@@ -266,8 +252,7 @@ public final class FrameFill extends TableFillCommand {
 
 	private void dropTopTermTable() {
 		try {
-			database.dropTable("TopTerms");
-			
+			database.dropTable("TopTerms");			
 		} catch (SQLException e) {
 			logger.warn("At least one temporarely created table or column could not be dropped.", e);
 		}

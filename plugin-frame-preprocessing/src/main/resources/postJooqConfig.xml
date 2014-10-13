@@ -3,4 +3,5 @@
 	<command name="Frame_FrameFill" className="cc.topicexplorer.plugin.frame.preprocessing.tables.frames.FrameFill"/>
 	<command name="Frame_TopicFrameFill" className="cc.topicexplorer.plugin.frame.preprocessing.tables.topicframe.TopicFrameFill"/>
 	<command name="Frame_BestFrameFill" className="cc.topicexplorer.plugin.frame.preprocessing.tables.bestframes.BestFrameFill"/>
+	<command name="Frame_DelimiterPositionsFill" className="cc.topicexplorer.plugin.frame.preprocessing.tables.delimiterpositions.DelimiterPositionsFill"/>
 </catalog>

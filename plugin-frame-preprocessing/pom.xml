@@ -12,7 +12,7 @@
 		<dependency>
 			<groupId>cc.commandmanager</groupId>
 			<artifactId>command-manager</artifactId>
-<version>1.0beta</version>
+			<version>1.0beta</version>
 		</dependency>
 		<dependency>
 			<groupId>cc.topicexplorer</groupId>
@@ -44,6 +44,10 @@
 			<artifactId>powermock-api-mockito</artifactId>
 			<version>1.5.1</version>
 		</dependency>
-		
+		<dependency>
+			<groupId>commons-configuration</groupId>
+			<artifactId>commons-configuration</artifactId>
+			<version>1.6</version>
+		</dependency>
 	</dependencies>
 </project>

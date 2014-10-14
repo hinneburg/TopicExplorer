@@ -101,7 +101,7 @@ function(ko, $, moment) {
 				            	+ '</span>: ' + globalData.Topic[self.timeData[self.active()].renderedTopics()[i]].TIME$WORDS_PER_WEEK[this.x].WORD_COUNT
 				            	+ '<br/>';
 		            	}
-		            	html += '<span style="color: #7f7f7f;font-size:xx-small">click to open best documents for topic ' + self.timeData[self.active()].renderedTopics()[0] + ' from ' + moment(this.x).format('LL') + ' to ' + moment(this.x).add('d', 6).format('LL');
+		            	html += '<span style="color: #7f7f7f;font-size:xx-small">click to open best documents for topic ' + self.timeData[self.active()].topicId() + ' from ' + moment(this.x).format('LL') + ' to ' + moment(this.x).add('d', 6).format('LL');
 		            	return html;
 		            }
 		    	}

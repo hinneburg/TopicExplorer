@@ -133,22 +133,23 @@ function(ko, $, moment) {
     	};
 		
     	self.changeCharts = function(newValue) { 		
-       		if(self.timeData[self.active()].lastRenderedTopics.length > newValue.length) {
-       			var diff = $(self.timeData[self.active()].lastRenderedTopics).not(newValue).get();	
-       			self.chart.get('topicChart' + diff[0]).remove();
-			} else if(self.timeData[self.active()].lastRenderedTopics.length < newValue.length) {
-				var diff = $(newValue).not(self.timeData[self.active()].lastRenderedTopics).get();
-				self.addChart(diff[0]);
+   			var diff = $(self.timeData[self.active()].lastRenderedTopics).not(newValue).get();	
+   			for(var i = diff.length - 1; i >= 0; i--) {
+   				self.chart.get('topicChart' + diff[i]).remove();
+   			}
+			var diff = $(newValue).not(self.timeData[self.active()].lastRenderedTopics).get();
+			for(var i = diff.length - 1; i >= 0; i--) {
+				self.addChart(diff[i]);
 			}
        		self.timeData[self.active()].lastRenderedTopics = newValue.slice();;
     	};
     	
     	self.changeTopics = function(newValue) {
     		renderedTopics = self.timeData[self.active()].renderedTopics.slice();
-    		for(topicIndex in renderedTopics) {
-    			topicId = renderedTopics[topicIndex];
+    		for(var i = renderedTopics.length - 1; i >= 0; i--) {
+    			topicId = renderedTopics[i];
     			if(newValue.indexOf(topicId) < 0) {
-    				renderedTopics.splice(topicIndex, 1);
+    				renderedTopics.splice(i, 1);
     			}
     		}
     		if(newValue.indexOf(self.timeData[self.active()].topicId()) > -1 && renderedTopics.indexOf(self.timeData[self.active()].topicId()) == -1) {

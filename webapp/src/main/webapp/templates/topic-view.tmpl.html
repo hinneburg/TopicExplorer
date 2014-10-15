@@ -38,7 +38,7 @@
 			</div>
 			<!-- ko if: globalData.PLUGINS.indexOf('hierarchicaltopic') > -1 -->
 				<!-- ko if: $index() + 1 < $parent.selectedTopics().length -->
-					<div style="position: absolute; width: 20px; cursor: col-resize; left: 190px; top:0; padding: 0" data-bind="style: {left: 201 + (globalData.Topic[selectedTopic].HIERARCHICAL_TOPIC$END - globalData.Topic[selectedTopic].HIERARCHICAL_TOPIC$START) * 213 - 1 + 'px', height: ($parent.topicListHeight() - 4) + 'px'}, click: $parent.implodeTopics, event:{mouseover: $parent.markParentNode, mouseout: $parent.unmarkParentNode}"></div>
+					<div style="position: absolute; width: 20px; cursor: col-resize; top:0; padding: 0" data-bind="style: {left: 191 + (globalData.Topic[selectedTopic].HIERARCHICAL_TOPIC$END - globalData.Topic[selectedTopic].HIERARCHICAL_TOPIC$START) * 213 - 1 + 'px', height: ($parent.topicListHeight() - 4) + 'px'}, click: $parent.implodeTopics, event:{mouseover: $parent.markParentNode, mouseout: $parent.unmarkParentNode}"></div>
 				<!-- /ko -->	
 			<!-- /ko -->	
 		</li>

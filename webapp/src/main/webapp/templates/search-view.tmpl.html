@@ -3,6 +3,11 @@
 		<fieldset>						
 			<input id="searchField" type="text" name="search" style="float: left;" data-bind="jqAuto: { value: searchWord, source:autocomplete, inputProp: 'TERM_NAME', labelProp: 'TERM_NAME', valueProp: 'TERM_ID',template: 'autocomplete'}"/>
 			<button class="button gradientGray" style="width: 82px;" type="submit"><span>Search</span></button>
+			<!-- ko if: multiWords -->
+				<div id="searchStrictDiv">
+					<input type="checkbox" id="searchStrict"><span style="font-size: small;">strict (every word must be in the document)</span>
+				</div>
+			<!-- /ko -->
 		</fieldset>
 	</form>
 </div>

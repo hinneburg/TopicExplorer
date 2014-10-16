@@ -16,7 +16,11 @@ public class Collect extends TableSelectCommand {
 		
 		showDocAction.addDocumentColumn("DOCUMENT.TEXT$TITLE", "TEXT$TITLE");
 		showDocAction.addDocumentColumn("DOCUMENT.TEXT$FULLTEXT", "TEXT$FULLTEXT");
-
+		if (properties.getProperty("plugins").contains("fulltext")) {
+			showDocAction.addDocumentColumn("CONCAT(' ', DOCUMENT.FULLTEXT$FULLTEXT, ' ')",  "SEARCH_TEXT");
+		} else {
+			showDocAction.addDocumentColumn("DOCUMENT.TEXT$FULLTEXT", "SEARCH_TEXT");
+		}
 		context.rebind("SHOW_DOC_ACTION", showDocAction);
 	}
 

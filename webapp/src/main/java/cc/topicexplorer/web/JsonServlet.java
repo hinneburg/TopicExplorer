@@ -67,6 +67,7 @@ public class JsonServlet extends HttpServlet {
 				startCommands.add("AutocompleteCoreCreate");
 			} else if (command.contains("search")) {
 				context.bind("SEARCH_WORD", request.getParameter("SearchWord"));
+				context.bind("SEARCH_STRICT", request.getParameter("SearchStrict"));
 				context.bind("OFFSET", offset);
 
 				startCommands.add("SearchCoreCreate");

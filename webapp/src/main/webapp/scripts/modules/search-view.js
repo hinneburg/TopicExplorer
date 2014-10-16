@@ -4,7 +4,12 @@ define(
 			var self = this;
 			self.loadDocumentsForSearch = function() {
 				var searchWord = $('#searchField').val();
-				ko.postbox.publish('openNewTab', {moduleName:"document-browse-tab",tabHeading:"Search " + searchWord, data: {searchWord: searchWord, getParam: "search&SearchWord=" + searchWord}});
+				var strict = $('#searchStrict').is(':checked');
+				var suffix = "";
+				if(strict) suffix = " !";
+				self.searchWord("");
+				self.multiWords(false);
+				ko.postbox.publish('openNewTab', {moduleName:"document-browse-tab",tabHeading:"Search " + searchWord + suffix, data: {searchWord: searchWord, getParam: "search&SearchWord=" + searchWord + "&SearchStrict=" + strict}});
 			};
 
 			self.selectedTopics = ko.observableArray(globalData.TOPIC_SORTING).subscribeTo("selectedTopics");
@@ -44,6 +49,9 @@ define(
 			};
 
 			self.searchWord = ko.observable("");
+			
+			self.multiWords = ko.observable(false);
+			
 			self.autocompleteItems = ko.observableArray([]);
 			
 			self.autocomplete = function(newValue, callback){
@@ -61,6 +69,15 @@ define(
 				} else {
 					self.autocompleteItems([]);
 				}
+				
+				var partCount = 0;
+				parts = newValue.split(" ");
+				for(id in parts) {
+					if(parts[id].length > 0) {
+						partCount++;
+					}
+				}
+				self.multiWords(partCount > 1);
 			};
 			
 			self.moveToTopic = function(topic) {

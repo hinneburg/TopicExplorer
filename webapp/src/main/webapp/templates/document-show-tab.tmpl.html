@@ -13,8 +13,19 @@
 			<nobr data-bind="text: singleData[active()].TITLE_REPRESENTATION[singleData[active()].textSelection().field]"></nobr>
 		</span>
 		<!-- ko if: typeof singleData[active()].DOCUMENT.TIME$TIME_STAMP != 'undefined' -->
-		<span style="font-size:xx-small; color: #7f7f7f" class="date" data-bind="text:moment(singleData[active()].DOCUMENT.TIME$TIME_STAMP * 1000).format('LLL')"></span><br/>
+			<span style="font-size:xx-small; color: #7f7f7f" class="date" data-bind="text:moment(singleData[active()].DOCUMENT.TIME$TIME_STAMP * 1000).format('LLL')"></span>
 		<!-- /ko -->
+		<!--  ko if:singleData[active()].data.searchWord != undefined-->
+			<span style="font-size:xx-small; color: #7f7f7f">Search: </span>
+			<!-- ko foreach: singleData[active()].data.searchWord.split(" ") -->
+				<!--  ko if: $parent.singleData[$parent.active()].DOCUMENT.SEARCH_TEXT.indexOf(' ' + $data + ' ') > -1 -->
+					<span style="font-size:xx-small; color: #7f7f7f;" data-bind="text: $data + '(' + $parent.singleData[$parent.active()].DOCUMENT.SEARCH_TEXT.match(new RegExp(' ' + $data + ' ','g')).length + ')' + ' '"></span>
+				<!-- /ko -->
+				<!--  ko if: $parent.singleData[$parent.active()].DOCUMENT.SEARCH_TEXT.indexOf(' ' + $data + ' ') < 0 -->
+					<span style="font-size:xx-small; color: #7f7f7f; text-decoration: line-through" data-bind="text: $data + ' '"></span>
+				<!-- /ko -->
+			<!-- /ko -->
+		<!-- /ko --><br/>
 		<p class="docContent" style="margin: 10px;" data-bind="style: {lineHeight: lineHeight() + '%'}" >
 			<span data-bind="html: singleData[active()].TEXT_REPRESENTATION[singleData[active()].textSelection().field]"></span>
 		</p>		

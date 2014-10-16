@@ -69,7 +69,12 @@ public class JsonServlet extends HttpServlet {
 				context.bind("SEARCH_WORD", request.getParameter("SearchWord"));
 				context.bind("SEARCH_STRICT", request.getParameter("SearchStrict"));
 				context.bind("OFFSET", offset);
-
+				@SuppressWarnings("unchecked")
+				Enumeration<String> parameterNames = request.getParameterNames();
+				while (parameterNames.hasMoreElements()) {
+					String paramName = parameterNames.nextElement();
+					context.bind(paramName, request.getParameter(paramName));
+				}
 				startCommands.add("SearchCoreCreate");
 			} else if (command.contains("getBestFrames")) {
 				startCommands.add("BestFrameCreate");

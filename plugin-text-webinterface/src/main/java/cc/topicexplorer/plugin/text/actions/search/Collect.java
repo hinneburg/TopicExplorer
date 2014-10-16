@@ -1,5 +1,6 @@
 package cc.topicexplorer.plugin.text.actions.search;
 
+import java.util.ArrayList;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -27,29 +28,38 @@ public class Collect extends TableSelectCommand {
 		if(searchStrict.equals("true")) {
 			searchString = "+" + StringUtils.join(searchStringParts, " +");
 		}
-		
+		String searchColumn = "";
 		if (properties.getProperty("plugins").contains("fulltext")) {
-			searchAction.addSearchColumn("(LENGTH(DOCUMENT.FULLTEXT$FULLTEXT) + 2 "
-					+ "- LENGTH(REPLACE(CONCAT(' ', DOCUMENT.FULLTEXT$FULLTEXT, ' '), ' " + searchStringParts[0] + " ', ''))) / " 
-					+ (searchStringParts[0].length() + 2), "COUNT0");
-			for(int i = 1; i < searchStringParts.length; i++) {
-				searchAction.addSearchColumn("(LENGTH(DOCUMENT.FULLTEXT$FULLTEXT) + 2 "
-						+ "- LENGTH(REPLACE(CONCAT(' ', DOCUMENT.FULLTEXT$FULLTEXT, ' '), ' " + searchStringParts[i] + " ', ''))) / " 
-						+ (searchStringParts[i].length() + 2), "COUNT" + i);				
+			searchColumn = "DOCUMENT.FULLTEXT$FULLTEXT";
+		}else {
+			searchColumn = "DOCUMENT.TEXT$FULLTEXT";
+		}
+		searchAction.addSearchColumn("(LENGTH(" + searchColumn + ") + 2 "
+				+ "- LENGTH(REPLACE(CONCAT(' ', " + searchColumn + ", ' '), ' " + searchStringParts[0] + " ', ''))) / " 
+				+ (searchStringParts[0].length() + 2), "COUNT0");
+		for(int i = 1; i < searchStringParts.length; i++) {
+			searchAction.addSearchColumn("(LENGTH(" + searchColumn + ") + 2 "
+					+ "- LENGTH(REPLACE(CONCAT(' ', " + searchColumn + ", ' '), ' " + searchStringParts[i] + " ', ''))) / " 
+					+ (searchStringParts[i].length() + 2), "COUNT" + i);				
+		}
+		searchAction.addWhereClause("MATCH(" + searchColumn + ") AGAINST ('" + searchString
+				+ "' IN BOOLEAN MODE)");
+		
+		if(context.containsKey("sorting")) {
+			String sorting = context.getString("sorting");
+			if (sorting.equals("RELEVANCE")) {
+				searchAction.addSearchColumn("MATCH(" + searchColumn + ") AGAINST ('" + searchString + "')", 
+						"RELEVANCE");
+				ArrayList<String> orderBy = new ArrayList<String>();
+				orderBy.add("RELEVANCE DESC");
+				searchAction.setOrderBy(orderBy);
 			}
-			searchAction.addWhereClause("MATCH(DOCUMENT.FULLTEXT$FULLTEXT) AGAINST ('" + searchString
-					+ "' IN BOOLEAN MODE)");
 		} else {
-			searchAction.addSearchColumn("(LENGTH(DOCUMENT.TEXT$FULLTEXT) "
-					+ "- LENGTH(REPLACE(DOCUMENT.TEXT$FULLTEXT, ' " + searchStringParts[0] + " ', ''))) / " 
-					+ (searchStringParts[0].length() + 2), "COUNT0");
-			for(int i = 0; i < searchStringParts.length; i++) {
-				searchAction.addSearchColumn("(LENGTH(DOCUMENT.TEXT$FULLTEXT) "
-						+ "- LENGTH(REPLACE(DOCUMENT.TEXT$FULLTEXT, ' " + searchStringParts[i] + " ', ''))) / " 
-						+ (searchStringParts[i].length() + 2), "COUNT" + i);
-			}
-			searchAction.addWhereClause("MATCH(DOCUMENT.TEXT$FULLTEXT) AGAINST ('" + searchString
-					+ "' IN BOOLEAN MODE)");
+			searchAction.addSearchColumn("MATCH(" + searchColumn + ") AGAINST ('" + searchString + "')", 
+					"RELEVANCE");
+			ArrayList<String> orderBy = new ArrayList<String>();
+			orderBy.add("RELEVANCE DESC");
+			searchAction.setOrderBy(orderBy);
 		}
 		
 		context.rebind("SEARCH_ACTION", searchAction);

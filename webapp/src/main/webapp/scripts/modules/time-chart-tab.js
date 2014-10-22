@@ -93,8 +93,8 @@ function(ko, $, moment) {
 		            formatter: function() {
 		            	var html ="";		  
 		            	for(var i = 0; i < self.timeData[self.active()].renderedTopics().length; i++ ) {
-				            html += '<span style="font-size: x-large; font-family: Helvetica, Arial, sans-serif;text-shadow: -0.5px 0 black, 0 0.5px black, 0.5px 0 black, 0 -0.5px black;color: ' 
-				            	+ globalData.Topic[self.timeData[self.active()].renderedTopics()[i]].COLOR_TOPIC$COLOR	+ '">● </span><span>'; 
+				            html += '<span style="font-size: 80%; font-family: Helvetica, Arial, sans-serif;text-shadow: -0.5px 0 black, 0 0.5px black, 0.5px 0 black, 0 -0.5px black;color: ' 
+				            	+ globalData.Topic[self.timeData[self.active()].renderedTopics()[i]].COLOR_TOPIC$COLOR	+ '">⬤ </span><span>'; 
 				            if(self.timeData[self.active()].renderedTopics()[i] != 'average')
 				            	html += self.timeData[self.active()].renderedTopics()[i] + ": "; 
 				            html +=  globalData.Topic[self.timeData[self.active()].renderedTopics()[i]].TIME$WORDS_PER_WEEK[this.x].LABEL 

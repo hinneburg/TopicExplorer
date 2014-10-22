@@ -16,7 +16,7 @@
 <a href="#" data-bind="text: TERM_NAME"></a>
 <!-- ko foreach: TOP_TOPIC -->
 	<!-- ko if: $parents[1].selectedTopics.indexOf($data) > -1 -->
-		<span class="topicCheckboxCircle topicCircle autocompleteTopic" data-bind="style: {color: globalData.Topic[$data].COLOR_TOPIC$COLOR}, attr: {id: 'acT_' + $data, title: 'Topic ' + $data}, click: $parents[1].moveToTopic">●</span>
+		<span style="font-size: x-large;" class="topicCheckboxCircle topicCircle autocompleteTopic" data-bind="style: {color: globalData.Topic[$data].COLOR_TOPIC$COLOR}, attr: {id: 'acT_' + $data, title: 'Topic ' + $data}, click: $parents[1].moveToTopic">●</span>
 	<!-- /ko -->
 <!-- /ko -->
 </div>

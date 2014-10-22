@@ -418,7 +418,7 @@ height: 200px;
 }
 
 .topicCircle, .topicCircleNotMove {
-	font-size: x-large;
+	font-size: 60%;
 	font-family: Helvetica, Arial, sans-serif;
 	cursor: pointer;
 	text-shadow: -0.5px 0 black, 0 0.5px black, 0.5px 0 black, 0 -0.5px black;

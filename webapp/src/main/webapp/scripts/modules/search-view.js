@@ -71,7 +71,7 @@ define(
 				}
 				
 				var partCount = 0;
-				parts = newValue.split(" ");
+				parts = newValue.match(/\S+/g);
 				for(id in parts) {
 					if(parts[id].length > 0) {
 						partCount++;

@@ -26,7 +26,7 @@
 							<a href="#" data-bind="click: $parent.loadDocument, attr: {id: 'doc' + selectedDocument}"><nobr data-bind="text: globalData.DOCUMENT[selectedDocument][$parent.browseData[$parent.active()].textSelection().field + 'TITLE']"></nobr></a>
 							<!--  ko if:$parent.browseData[$parent.active()].data.searchWord != undefined-->
 								<span style="font-size:xx-small; color: #7f7f7f">Search: </span>
-								<!-- ko foreach: $parent.browseData[$parent.active()].data.searchWord.split(" ") -->
+								<!-- ko foreach: $parent.browseData[$parent.active()].data.searchWord.match(/\S+/g) -->
 									<!--  ko if: globalData.DOCUMENT[selectedDocument]['COUNT' + $index()] >= 1 -->
 										<span style="font-size:xx-small; color: #7f7f7f;" data-bind="text: $data + ' ' + '(' + parseInt(globalData.DOCUMENT[selectedDocument]['COUNT' + $index()]) + ')' + ' '"></span>
 									<!-- /ko -->

@@ -1,6 +1,6 @@
 package cc.topicexplorer.plugin.pos.preprocessing.dispatchers;
 
-import cc.topicexplorer.plugin.japanesepos.preprocessing.implementation.postagger.JPOSMeCab;
+import cc.topicexplorer.plugin.pos.preprocessing.implementation.postagger.JPOSMeCab;
 
 public class meCabDispatcher extends Dispatcher {
 

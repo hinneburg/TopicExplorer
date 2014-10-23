@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>cc.topicexplorer</groupId>
 		<artifactId>topicexplorer-parent</artifactId>
-		<version>1.1-SNAPSHOT</version>
+		<version>1.2-SNAPSHOT</version>
 	</parent>
 	<artifactId>plugin-pos-preprocessing</artifactId>
 	<dependencies>
@@ -16,7 +16,7 @@
 		<dependency>
 			<groupId>cc.topicexplorer</groupId>
 			<artifactId>core-common</artifactId>
-			<version>1.1-SNAPSHOT</version>
+			<version>1.2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -30,9 +30,10 @@
 		</dependency>
 		
 		<dependency>
-			<groupId>cc.topicexplorer</groupId>
-			<artifactId>lucene-analyzer-treetagger</artifactId>
-			<version>1.0.0</version>
+			<groupId>org.chasen.mecab</groupId>
+			<artifactId>mecab-java</artifactId>
+			<version>0.993</version>
 		</dependency>
+		
 	</dependencies>
 </project>

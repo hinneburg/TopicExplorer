@@ -1,9 +1,13 @@
 package cc.topicexplorer.plugin.pos.preprocessing.tools;
 
-import cc.topicexplorer.plugin.japanesepos.preprocessing.implementation.postagger.JPOSToken;
+import cc.topicexplorer.plugin.pos.preprocessing.implementation.postagger.JPOSToken;
 
 public class Token 
 {
+	public String token = "";
+	public String term ="";
+	
+	
 	public String[] content = null;
 	
 	public Token(String[] content){

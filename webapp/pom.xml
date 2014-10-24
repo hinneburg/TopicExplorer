@@ -4,7 +4,7 @@
 	<parent>
 		<groupId>cc.topicexplorer</groupId>
 		<artifactId>topicexplorer-parent</artifactId>
-		<version>1.2.1-SNAPSHOT</version>
+		<version>1.2.1</version>
 	</parent>
 	<artifactId>webapp</artifactId>
 	<packaging>war</packaging>
@@ -31,47 +31,47 @@
 		<dependency>
 			<groupId>cc.topicexplorer</groupId>
 			<artifactId>core-common</artifactId>
-			<version>1.2.1-SNAPSHOT</version>
+			<version>1.2.1</version>
 		</dependency>
 		<dependency>
 			<groupId>cc.topicexplorer</groupId>
 			<artifactId>core-webinterface</artifactId>
-			<version>1.2.1-SNAPSHOT</version>
+			<version>1.2.1</version>
 		</dependency>
 		<dependency>
 			<groupId>cc.topicexplorer</groupId>
 			<artifactId>plugin-link-webinterface</artifactId>
-			<version>1.2.1-SNAPSHOT</version>
+			<version>1.2.1</version>
 		</dependency>
 		<dependency>
 			<groupId>cc.topicexplorer</groupId>
 			<artifactId>plugin-text-webinterface</artifactId>
-			<version>1.2.1-SNAPSHOT</version>
+			<version>1.2.1</version>
 		</dependency>
 		<dependency>
 			<groupId>cc.topicexplorer</groupId>
 			<artifactId>plugin-time-webinterface</artifactId>
-			<version>1.2.1-SNAPSHOT</version>
+			<version>1.2.1</version>
 		</dependency>
 		<dependency>
 			<groupId>cc.topicexplorer</groupId>
 			<artifactId>plugin-colortopic-webinterface</artifactId>
-			<version>1.2.1-SNAPSHOT</version>
+			<version>1.2.1</version>
 		</dependency>
 		<dependency>
 			<groupId>cc.topicexplorer</groupId>
 			<artifactId>plugin-hierarchicaltopic-webinterface</artifactId>
-			<version>1.2.1-SNAPSHOT</version>
+			<version>1.2.1</version>
 		</dependency>
 		<dependency>
 			<groupId>cc.topicexplorer</groupId>
 			<artifactId>plugin-frame-webinterface</artifactId>
-			<version>1.2.1-SNAPSHOT</version>
+			<version>1.2.1</version>
 		</dependency>
 		<dependency>
 			<groupId>cc.topicexplorer</groupId>
 			<artifactId>plugin-wordtype-webinterface</artifactId>
-			<version>1.2.1-SNAPSHOT</version>
+			<version>1.2.1</version>
 		</dependency>
 	</dependencies>
 

@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>cc.topicexplorer</groupId>
 		<artifactId>topicexplorer-parent</artifactId>
-		<version>1.2</version>
+		<version>1.2.1-SNAPSHOT</version>
 	</parent>
 	<artifactId>plugin-colortopic-preprocessing</artifactId>
 	<name>plugin-colortopic-preprocessing</name>
@@ -16,7 +16,7 @@
 		<dependency>
 			<groupId>cc.topicexplorer</groupId>
 			<artifactId>core-preprocessing</artifactId>
-			<version>1.2</version>
+			<version>1.2.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>log4j</groupId>

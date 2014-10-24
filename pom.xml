@@ -4,7 +4,7 @@
 
 	<groupId>cc.topicexplorer</groupId>
 	<artifactId>topicexplorer-parent</artifactId>
-	<version>1.2</version>
+	<version>1.2.1-SNAPSHOT</version>
 	<url>http://topicexplorer.informatik.uni-halle.de</url>
 	<packaging>pom</packaging>
 

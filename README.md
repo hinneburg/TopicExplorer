@@ -132,8 +132,7 @@ Create file `~/.m2/settings.xml`.
  	</servers>
  </settings>
 ```
-The password for `db-devRead` must be left empty.
-Ask the project manager about the password for `db-devWrite`.
+Ask the project manager about the passwords of  `db-devRead` and `db-devWrite`.
 
 ####Build the project
 Mouse right click on TopicExplorer -> Run as -> Maven Build (at first time input goals: clean install)

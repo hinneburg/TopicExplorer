@@ -1,12 +1,20 @@
 package cc.topicexplorer.plugin.japanesepos.preprocessing.tools;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.List;
+
+import org.junit.Ignore;
 import org.junit.Test;
 
 import cc.topicexplorer.plugin.japanesepos.preprocessing.implementation.postagger.JPOSMeCab;
 
-public class test_JPOSMeCab {
+public class Test_JPOSMeCab {
 
-	@Test
+	@Ignore @Test
 	public void testDuplicates() throws Exception
 	{
 		String inFilePath = "";
@@ -21,7 +29,6 @@ public class test_JPOSMeCab {
 		if (i==6) inFilePath = this.getClass().getResource("/wiki_shibata.txt").getFile();
 		if (i==7) inFilePath = this.getClass().getResource("/wiki_vancouver.txt").getFile();
 		
-		
 		JPOSMeCab jpos = new JPOSMeCab();
 
 //		jpos.setUseWordClass("MISC", false);
@@ -34,8 +41,29 @@ public class test_JPOSMeCab {
 //		jpos.setUseWordClass("VERB", true);
 //		jpos.setUseWordClass("ADV", true);
 //		jpos.setUseWordClass("NOUN", true);
+		
+		String content = "";
+		   File file = new File(inFilePath); //for ex foo.txt
+		   try {
+			   BufferedReader reader = new BufferedReader(
+					   new InputStreamReader(new FileInputStream(file), "UTF-8"));
+			   String str;
+			   
+				while ((str = reader.readLine()) != null) {
+				   content= content + str;
+				}
+		       reader.close();
+		         System.out.println(content.length());
+		       List<String> csvList = jpos.parseString(0, content);
+				
+		       for (String csvEntry : csvList) {
+		    	   System.out.println(csvEntry);
+		       }
+		   } catch (IOException e) {
+		       e.printStackTrace();
+		   }
 
-		jpos.parse(inFilePath, "");
+		
 		
 		
 		System.out.println("the end");

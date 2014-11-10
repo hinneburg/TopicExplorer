@@ -32,6 +32,7 @@
 				<include>cc.topicexplorer:plugin-time-preprocessing</include>
 				<include>cc.topicexplorer:plugin-wiki-preprocessing</include>
 				<include>cc.topicexplorer:plugin-wordtype-preprocessing</include>
+				<include>cc.topicexplorer:plugin-mecab-preprocessing</include>
 				<include>cc.topicexplorer:run-preprocessing</include>
 			</includes>
 			<sources>

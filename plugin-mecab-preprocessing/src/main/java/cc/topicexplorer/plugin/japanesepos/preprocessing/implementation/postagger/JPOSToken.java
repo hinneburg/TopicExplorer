@@ -77,8 +77,8 @@ public class JPOSToken
 	
 	public String csvString()
 	{
-		return "\"" + this.documentID + "\";\"" + this.posOfTokenInDocument + "\";\""
-				+ this.term + "\";\"" + this.token + "\";\"" + this.posID + "\";\"" + this.continuation + "\"";
+		return "\"" + this.documentID + "\",\"" + this.posOfTokenInDocument + "\",\""
+				+ this.term + "\",\"" + this.token + "\",\"" + this.posID + "\",\"" + this.continuation + "\"";
 	}
 	
 }

@@ -15,7 +15,7 @@ public class Collect extends TableSelectCommand {
 	public void tableExecute(Context context) {
 		BestDocumentsForGivenTopic bestDocAction = context.get("BEST_DOC_ACTION", BestDocumentsForGivenTopic.class);
 
-		bestDocAction.addDocumentColumn("DOCUMENT.TIME$TIME_STAMP", "TIME$TIME_STAMP");
+		bestDocAction.addDocumentColumn("DOCUMENT.TIME$TIME_STAMP", "TIME$TIME_STAMP", context.containsKey("term"));
 		if(context.containsKey("week")) {
 			int startTstamp = Integer.valueOf(context.getString("week"));
 			int endTstamp = startTstamp + 604800;

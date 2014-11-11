@@ -14,9 +14,9 @@ public class Collect extends TableSelectCommand {
 	public void tableExecute(Context context) {
 		BestDocumentsForGivenTopic bestDocAction = context.get("BEST_DOC_ACTION", BestDocumentsForGivenTopic.class);
 
-		bestDocAction.addDocumentColumn("DOCUMENT.TEXT$TITLE", "TEXT$TITLE");
+		bestDocAction.addDocumentColumn("DOCUMENT.TEXT$TITLE", "TEXT$TITLE", context.containsKey("term"));
 		bestDocAction.addDocumentColumn("CONCAT(SUBSTRING(DOCUMENT.TEXT$FULLTEXT FROM 1 FOR 150), '...')",
-				"TEXT$SNIPPET");
+				"TEXT$SNIPPET", context.containsKey("term"));
 
 		context.rebind("BEST_DOC_ACTION", bestDocAction);
 	}

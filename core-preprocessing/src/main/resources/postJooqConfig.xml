@@ -5,6 +5,7 @@
 
 	<command name="TopicFill" className="cc.topicexplorer.database.tables.topic.TopicFill"/>
 	<command name="DocumentFill" className="cc.topicexplorer.database.tables.document.DocumentFill"/>
+	<command name="DocumentUpdate" className="cc.topicexplorer.database.tables.document.DocumentUpdate"/>
 	
 	<command name="DocumentTopicFill" className="cc.topicexplorer.database.tables.documenttopic.DocumentTopicFill"/>
 	

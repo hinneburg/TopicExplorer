@@ -17,7 +17,8 @@ public class DocumentCreate extends TableCreateCommand {
 	public void createTable() {
 		try {
 			database.executeUpdateQuery("create table `" + this.tableName + "` ("
-					+ "DOCUMENT_ID INTEGER(11) NOT NULL PRIMARY KEY, " + "NUMBER_OF_TOKENS INTEGER(11) NOT NULL) "
+					+ "DOCUMENT_ID INTEGER(11) NOT NULL PRIMARY KEY, NUMBER_OF_TOKENS INTEGER(11) NOT NULL, "
+					+ "TITLE text, TEXT text, BEST_TOPICS text) "
 					+ "ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;");
 		} catch (SQLException e) {
 			logger.error("Table " + this.tableName + " could not be created.");

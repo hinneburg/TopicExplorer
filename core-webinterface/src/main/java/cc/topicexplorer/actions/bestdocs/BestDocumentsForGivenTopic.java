@@ -26,6 +26,9 @@ public class BestDocumentsForGivenTopic {
 		documentMap.select.add("DOCUMENT.DOCUMENT_ID");
 		documentMap.select.add("DOCUMENT_TOPIC.PR_DOCUMENT_GIVEN_TOPIC");
 		documentMap.select.add("DOCUMENT_TOPIC.TOPIC_ID");
+		documentMap.select.add("SUBSTR(DOCUMENT.TEXT, 150) AS KEYWORD_SNIPPET");
+		documentMap.select.add("DOCUMENT.TITLE AS KEYWORD_TITLE");
+		documentMap.select.add("CONCAT('[',DOCUMENT.BEST_TOPICS,']') AS TOP_TOPIC");
 		documentMap.from.add("DOCUMENT");
 		documentMap.from.add("DOCUMENT_TOPIC");
 		documentMap.where.add("DOCUMENT.DOCUMENT_ID=DOCUMENT_TOPIC.DOCUMENT_ID");
@@ -44,6 +47,9 @@ public class BestDocumentsForGivenTopic {
 		documentMap.select.add("DOCUMENT.DOCUMENT_ID");
 		documentMap.select.add("DOCUMENT_TERM_TOPIC.TOPIC_ID");
 		documentMap.select.add("COUNT(*) AS DOCUMENT_COUNT");
+		documentMap.select.add("SUBSTR(DOCUMENT.TEXT, 150) AS KEYWORD_SNIPPET");
+		documentMap.select.add("DOCUMENT.TITLE AS KEYWORD_TITLE");
+		documentMap.select.add("CONCAT('[',DOCUMENT.BEST_TOPICS,']') AS TOP_TOPIC");
 		documentMap.from.add("DOCUMENT");
 		documentMap.from.add("DOCUMENT_TERM_TOPIC");
 		documentMap.from.add("DOCUMENT_TOPIC");
@@ -106,7 +112,6 @@ public class BestDocumentsForGivenTopic {
 	}
 	
 	public void executeQueriesAndWriteOutBestDocumentsForGivenTopic() {
-		JSONArray topTopic = new JSONArray();
 		JSONArray docSorting = new JSONArray();
 		JSONObject doc = new JSONObject();
 		JSONObject docs = new JSONObject();
@@ -114,8 +119,7 @@ public class BestDocumentsForGivenTopic {
 
 		ArrayList<String> docColumnList = documentMap.getCleanColumnNames();
 		String docId;
-		String keywordTitle, keywordText;
-
+		
 		try {
 			ResultSet mainQueryRS = database.executeQuery(documentMap.getSQLString());
 			while (mainQueryRS.next()) {
@@ -123,35 +127,8 @@ public class BestDocumentsForGivenTopic {
 				for (int i = 0; i < docColumnList.size(); i++) {
 					doc.put(docColumnList.get(i), mainQueryRS.getString(docColumnList.get(i)));
 				}
-				ResultSet bestTopicsRS = database.executeQuery("SELECT TOPIC_ID FROM DOCUMENT_TOPIC WHERE DOCUMENT_ID= " + docId
-						+ " ORDER BY PR_TOPIC_GIVEN_DOCUMENT DESC");
-				while (bestTopicsRS.next()) {
-					topTopic.add(bestTopicsRS.getInt("TOPIC_ID"));
-				}				
-				doc.put("TOP_TOPIC", topTopic);
-				
-				keywordTitle = "";
-				ResultSet keywordCountsRS = database.executeQuery("SELECT TERM, COUNT(TERM) FROM DOCUMENT_TERM_TOPIC WHERE DOCUMENT_ID="
-						+ docId + " GROUP BY TERM ORDER BY COUNT(TERM) DESC LIMIT 3");
-				while(keywordCountsRS.next()) {
-					keywordTitle += keywordCountsRS.getString("TERM") + " ";
-				}
-				doc.put("KEYWORD_TITLE", keywordTitle);
-				
-				keywordText = "";
-				ResultSet keywordPosRS = database.executeQuery("SELECT TERM FROM DOCUMENT_TERM_TOPIC WHERE DOCUMENT_ID="
-						+ docId + " ORDER BY POSITION_OF_TOKEN_IN_DOCUMENT LIMIT 50");
-				while(keywordPosRS.next()) {
-					keywordText += keywordPosRS.getString("TERM") + " ";
-				}
-				doc.put("KEYWORD_SNIPPET", keywordText);
-				
 				docs.put(docId, doc);
-				docSorting.add(docId);
-				topTopic.clear();
-				
-				
-				
+				docSorting.add(docId);				
 			}
 			all.put("DOCUMENT", docs);
 			all.put("DOCUMENT_SORTING", docSorting);

@@ -25,6 +25,9 @@ public class Search {
 	public Search(String searchWord, Database db, PrintWriter out, int limit, int offset) {
 		searchMap = new SelectMap();
 		searchMap.select.add("DOCUMENT.DOCUMENT_ID");
+		searchMap.select.add("SUBSTR(DOCUMENT.TEXT, 150) AS KEYWORD_SNIPPET");
+		searchMap.select.add("DOCUMENT.TITLE AS KEYWORD_TITLE");
+		searchMap.select.add("CONCAT('[',DOCUMENT.BEST_TOPICS,']') AS TOP_TOPIC");
 		searchMap.from.add("DOCUMENT");
 		searchMap.limit = limit;
 		searchMap.offset = offset;
@@ -63,7 +66,6 @@ public class Search {
 	}
 
 	public void executeQuery() throws SQLException {
-		JSONArray topTopic = new JSONArray();
 		JSONArray docSorting = new JSONArray();
 		JSONObject doc = new JSONObject();
 		JSONObject docs = new JSONObject();
@@ -72,8 +74,6 @@ public class Search {
 		ArrayList<String> docColumnList = searchMap.getCleanColumnNames();
 		String docId;
 		
-		String keywordTitle, keywordText;
-
 		logger.info("QUERY will be executed: " + searchMap.getSQLString());
 		ResultSet mainQueryRS = database.executeQuery(searchMap.getSQLString());
 
@@ -84,42 +84,7 @@ public class Search {
 			for (int i = 0; i < docColumnList.size(); i++) {
 				doc.put(docColumnList.get(i), mainQueryRS.getString(docColumnList.get(i)));
 			}
-
-			String secondQuery = "SELECT TOPIC_ID FROM DOCUMENT_TOPIC WHERE DOCUMENT_ID= " + docId
-					+ " ORDER BY PR_TOPIC_GIVEN_DOCUMENT DESC";
-			logger.info("QUERY will be executed: " + secondQuery);
-			ResultSet bestTopicsRS = database.executeQuery(secondQuery);
-
-			while (bestTopicsRS.next()) {
-				topTopic.add(bestTopicsRS.getInt("TOPIC_ID"));
-			}
-
-//			ResultSet reverseDocTopicRS = database.executeQuery("SELECT TOPIC_ID FROM DOCUMENT_TOPIC WHERE DOCUMENT_ID=" + mainQueryRS.getInt("DOCUMENT_ID")
-//					+ " ORDER BY PR_DOCUMENT_GIVEN_TOPIC DESC LIMIT 1");
-//			if (reverseDocTopicRS.next()) {
-//				doc.put("TOPIC_ID", reverseDocTopicRS.getInt("TOPIC_ID"));
-//			}
-
-			doc.put("TOP_TOPIC", topTopic);
-			
-			keywordTitle = "";
-			ResultSet keywordCountsRS = database.executeQuery("SELECT TERM, COUNT(TERM) FROM DOCUMENT_TERM_TOPIC WHERE DOCUMENT_ID="
-					+ docId + " GROUP BY TERM ORDER BY COUNT(TERM) DESC LIMIT 3");
-			while(keywordCountsRS.next()) {
-				keywordTitle += keywordCountsRS.getString("TERM") + " ";
-			}
-			doc.put("KEYWORD_TITLE", keywordTitle);
-			
-			keywordText = "";
-			ResultSet keywordPosRS = database.executeQuery("SELECT TERM FROM DOCUMENT_TERM_TOPIC WHERE DOCUMENT_ID="
-					+ docId + " ORDER BY POSITION_OF_TOKEN_IN_DOCUMENT LIMIT 50");
-			while(keywordPosRS.next()) {
-				keywordText += keywordPosRS.getString("TERM") + " ";
-			}
-			doc.put("KEYWORD_SNIPPET", keywordText);
-			
 			docs.put(docId, doc);
-			topTopic.clear();
 		}
 
 		all.put("DOCUMENT", docs);

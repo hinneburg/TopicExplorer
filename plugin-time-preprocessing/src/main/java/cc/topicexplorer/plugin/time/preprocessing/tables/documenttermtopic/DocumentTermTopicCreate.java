@@ -19,27 +19,35 @@ public class DocumentTermTopicCreate extends TableCreateCommand {
 	 */
 	@Override
 	public void createTable() {
-		try {
-			database.executeUpdateQuery("ALTER IGNORE TABLE `" + this.tableName
-					+ "` ADD COLUMN TIME$WEEK INT(11) NOT NULL DEFAULT 1");
-		} catch (SQLException e) {
-			logger.error(String
-					.format("Table %s could not be altered. Column TIME$WEEK was not added.", this.tableName));
-			throw new RuntimeException(e);
+		if(!properties.get("newTopics").toString().equalsIgnoreCase("true")) {
+			logger.info("Skip: Take the previous DOCUMENT_TERM_TOPIC table");
+		} else {
+			try {
+				database.executeUpdateQuery("ALTER IGNORE TABLE `" + this.tableName
+						+ "` ADD COLUMN TIME$WEEK INT(11) NOT NULL DEFAULT 1");
+			} catch (SQLException e) {
+				logger.error(String
+						.format("Table %s could not be altered. Column TIME$WEEK was not added.", this.tableName));
+				throw new RuntimeException(e);
+			}
 		}
 	}
 
 	@Override
 	public void dropTable() {
-		try {
-			this.database.executeUpdateQuery("ALTER TABLE " + this.tableName + " DROP COLUMN TIME$WEEK");
-		} catch (SQLException e) {
-			if (e.getErrorCode() != 1091) { // MySQL Error code for 'Can't DROP
-											// ..; check that column/key exists
-				logger.error("DocumentTermTopic.dropColumns: Cannot drop column.");
-				throw new RuntimeException(e);
-			} else {
-				logger.info("dropColumns: ignored SQL-Exception with error code 1091.");
+		if(!properties.get("newTopics").toString().equalsIgnoreCase("true")) {
+			logger.info("Skip: Take the previous DOCUMENT_TERM_TOPIC table");
+		} else {
+			try {
+				this.database.executeUpdateQuery("ALTER TABLE " + this.tableName + " DROP COLUMN TIME$WEEK");
+			} catch (SQLException e) {
+				if (e.getErrorCode() != 1091) { // MySQL Error code for 'Can't DROP
+												// ..; check that column/key exists
+					logger.error("DocumentTermTopic.dropColumns: Cannot drop column.");
+					throw new RuntimeException(e);
+				} else {
+					logger.info("dropColumns: ignored SQL-Exception with error code 1091.");
+				}
 			}
 		}
 	}

@@ -15,12 +15,16 @@ public class DocumentTermTopicCreate extends TableCreateCommand {
 
 	@Override
 	public void createTable() {
-		try {
-			database.executeUpdateQuery("ALTER IGNORE TABLE `" + this.tableName
+		if(!properties.get("newTopics").toString().equalsIgnoreCase("true")) {
+			logger.info("Skip: Take the previous DOCUMENT_TERM_TOPIC table");
+		} else {
+			try {
+				database.executeUpdateQuery("ALTER IGNORE TABLE `" + this.tableName
 					+ "` ADD COLUMN WIKI$POSITION int(11) NOT NULL;");
-		} catch (SQLException e) {
-			logger.error("Column WIKI$POSITION could not be added to table " + this.tableName);
-			throw new RuntimeException(e);
+			} catch (SQLException e) {
+				logger.error("Column WIKI$POSITION could not be added to table " + this.tableName);
+				throw new RuntimeException(e);
+			}
 		}
 	}
 

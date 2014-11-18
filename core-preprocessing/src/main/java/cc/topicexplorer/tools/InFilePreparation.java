@@ -48,19 +48,23 @@ public class InFilePreparation implements Command {
 
 	@Override
 	public void execute(Context context) {
-
-		logger.info("[ " + getClass() + " ] - " + "preparing the in-file for mallet");
-
 		properties = (Properties) context.get("properties");
-		database = (Database) context.get("database");
-		String inFile = properties.getProperty("InCSVFile");
-
-		if (checkHeader(inFile)) {
-			writeMalletInFile("temp/malletinput.txt");
-			logger.info("[ " + getClass() + " ] - " + "the in-file for mallet successfully prepared");
-			inCsv.close();
+		
+		if(!properties.get("newTopics").toString().equalsIgnoreCase("true")) {
+			logger.info("Skip: Take the previous DOCUMENT_TERM_TOPIC table");
 		} else {
-			throw new IllegalArgumentException("Missing CSV header in table DOCUMENT_TERM_TOPIC");
+			logger.info("preparing the in-file for mallet");
+	
+			database = (Database) context.get("database");
+			String inFile = properties.getProperty("InCSVFile");
+	
+			if (checkHeader(inFile)) {
+				writeMalletInFile("temp/malletinput.txt");
+				logger.info("[ " + getClass() + " ] - " + "the in-file for mallet successfully prepared");
+				inCsv.close();
+			} else {
+				throw new IllegalArgumentException("Missing CSV header in table DOCUMENT_TERM_TOPIC");
+			}
 		}
 	}
 

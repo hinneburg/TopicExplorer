@@ -133,31 +133,35 @@ public class TokenTopicAssociator implements Command {
 	}
 
 	@Override
-	public void execute(Context context) {
+	public void execute(Context context) {		
 		properties = context.get("properties", Properties.class);
-
-		String stateFile = "temp/out.topic-state.gz";
-		String inFile = properties.getProperty("InCSVFile");
-
-		deleteOldTFile();
-
-		try {
-			readAndWriteBlockwise(inFile, stateFile);
-		} catch (UnsupportedEncodingException encEx) {
-			logger.error("Charset encoding problems occured while trying to read and write blockwise");
-			throw new RuntimeException(encEx);
-		} catch (FileNotFoundException fnfEx) {
-			logger.error("Required file could not be found for reading and writing blockwise");
-			throw new RuntimeException(fnfEx);
-		} catch (SQLException sqlEx) {
-			logger.error("A database access error occured while trying to read and write blockwise");
-			throw new RuntimeException(sqlEx);
-		} catch (IOException ioEx) {
-			logger.error("File stream problems occured while trying to read and write blockwise");
-			throw new RuntimeException(ioEx);
+		
+		if(!properties.get("newTopics").toString().equalsIgnoreCase("true")) {
+			logger.info("Skip: Take the previous DOCUMENT_TERM_TOPIC table");
+		} else {
+			String stateFile = "temp/out.topic-state.gz";
+			String inFile = properties.getProperty("InCSVFile");
+	
+			deleteOldTFile();
+	
+			try {
+				readAndWriteBlockwise(inFile, stateFile);
+			} catch (UnsupportedEncodingException encEx) {
+				logger.error("Charset encoding problems occured while trying to read and write blockwise");
+				throw new RuntimeException(encEx);
+			} catch (FileNotFoundException fnfEx) {
+				logger.error("Required file could not be found for reading and writing blockwise");
+				throw new RuntimeException(fnfEx);
+			} catch (SQLException sqlEx) {
+				logger.error("A database access error occured while trying to read and write blockwise");
+				throw new RuntimeException(sqlEx);
+			} catch (IOException ioEx) {
+				logger.error("File stream problems occured while trying to read and write blockwise");
+				throw new RuntimeException(ioEx);
+			}
+	
+			logger.info("TokenTopicAssignment finshed!");
 		}
-
-		logger.info("TokenTopicAssignment finshed!");
 	}
 
 	@Override

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <catalog>	
-
+	<command name="DocumentTermTopicPreCheck" className="cc.topicexplorer.database.tables.documenttermtopic.PreCheck"/>
+	
 	<command name="DocumentTermTopicCreate" className="cc.topicexplorer.database.tables.documenttermtopic.DocumentTermTopicCreate"/>
 
 	<command name="TopicCreate" className="cc.topicexplorer.database.tables.topic.TopicCreate"/>

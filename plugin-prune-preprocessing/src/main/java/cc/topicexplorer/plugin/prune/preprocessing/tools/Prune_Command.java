@@ -21,23 +21,29 @@ public class Prune_Command implements Command {
 
 	@Override
 	public void execute(Context context) {
-		logger.info("[ " + getClass() + " ] - " + "pruning vocabular");
-
 		properties = context.get("properties", Properties.class);
-
-		float upperBoundPercent = Float.parseFloat(properties.getProperty("Prune_upperBound"));
-		float lowerBoundPercent = Float.parseFloat(properties.getProperty("Prune_lowerBound"));
-		prune.setLowerAndUpperBoundPercent(lowerBoundPercent, upperBoundPercent);
-
-		prune.setLogger(logger);
-		String inFilePath = properties.getProperty("InCSVFile");
-		prune.setInFilePath(inFilePath);
-
-		try {
-			prune.prune();
-		} catch (IOException e) {
-			logger.error("During prune a file stream problem occured. Input file path: " + inFilePath);
-			throw new RuntimeException(e);
+		
+		if(!properties.get("newTopics").toString().equalsIgnoreCase("true")) {
+			logger.info("Skip: Take the previous DOCUMENT_TERM_TOPIC table");
+		} else {
+			logger.info("pruning vocabular");
+	
+			
+	
+			float upperBoundPercent = Float.parseFloat(properties.getProperty("Prune_upperBound"));
+			float lowerBoundPercent = Float.parseFloat(properties.getProperty("Prune_lowerBound"));
+			prune.setLowerAndUpperBoundPercent(lowerBoundPercent, upperBoundPercent);
+	
+			prune.setLogger(logger);
+			String inFilePath = properties.getProperty("InCSVFile");
+			prune.setInFilePath(inFilePath);
+	
+			try {
+				prune.prune();
+			} catch (IOException e) {
+				logger.error("During prune a file stream problem occured. Input file path: " + inFilePath);
+				throw new RuntimeException(e);
+			}
 		}
 	}
 

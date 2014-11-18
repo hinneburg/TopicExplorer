@@ -22,26 +22,29 @@ public class Mallet implements Command {
 
 	@Override
 	public void execute(Context context) {
-
-		logger.info("[ " + getClass() + " ] - " + "run mallet");
-
 		properties = context.get("properties", Properties.class);
-
-		try {
-			importFile();
-		} catch (FileNotFoundException e1) {
-			logger.error("Import file could not be found.");
-			throw new RuntimeException(e1);
-		} catch (IOException e2) {
-			logger.error("During file import a file stream problem occured.");
-			throw new RuntimeException(e2);
-		}
-
-		try {
-			trainTopics(properties.getProperty("malletNumTopics"));
-		} catch (IOException e3) {
-			logger.error("During topic training a file stream problem occured.");
-			throw new RuntimeException(e3);
+		
+		if(!properties.get("newTopics").toString().equalsIgnoreCase("true")) {
+			logger.info("Skip: Take the previous DOCUMENT_TERM_TOPIC table");
+		} else {
+			logger.info("run mallet");
+	
+			try {
+				importFile();
+			} catch (FileNotFoundException e1) {
+				logger.error("Import file could not be found.");
+				throw new RuntimeException(e1);
+			} catch (IOException e2) {
+				logger.error("During file import a file stream problem occured.");
+				throw new RuntimeException(e2);
+			}
+	
+			try {
+				trainTopics(properties.getProperty("malletNumTopics"));
+			} catch (IOException e3) {
+				logger.error("During topic training a file stream problem occured.");
+				throw new RuntimeException(e3);
+			}
 		}
 	}
 

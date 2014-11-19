@@ -33,15 +33,16 @@ function(ko, $, moment) {
 			$.getJSON("JsonServlet?Command=getDates").success(function(receivedParsedJson) {
 				var avg = new Object();
 				
-				for (key in receivedParsedJson) {
+				for (key in globalData.Topic) {
 					$.extend(globalData.Topic[key], receivedParsedJson[key]);
-				    $.each(receivedParsedJson[key].TIME$WORDS_PER_WEEK, function(index, value) {
-			    		if(avg[index] == null) avg[index] = 0;
-			    		avg[index] += value.WORD_COUNT;
-	
-				    });
+					if($.inArray(parseInt(key), self.timeData.allTopics()) > -1) {
+					    $.each(receivedParsedJson[key].TIME$WORDS_PER_WEEK, function(index, value) {
+				    		if(avg[index] == null) avg[index] = 0;
+				    		avg[index] += value.WORD_COUNT;
+					    });
+					}
 				}
-				var topicCount = Object.keys(globalData.Topic).length;
+				var topicCount = self.timeData.allTopics().length;
 				
 				globalData.Topic.average = new Object();
 				globalData.Topic.average.COLOR_TOPIC$COLOR = "#000000";
@@ -148,9 +149,9 @@ function(ko, $, moment) {
     		renderedTopics = self.timeData[self.active()].renderedTopics.slice();
     		for(var i = renderedTopics.length - 1; i >= 0; i--) {
     			topicId = renderedTopics[i];
-    			if(newValue.indexOf(topicId) < 0) {
+    			if(newValue.indexOf(topicId) < 0 && topicId != 'average') {
     				renderedTopics.splice(i, 1);
-    			}
+    			} 
     		}
     		if(newValue.indexOf(self.timeData[self.active()].topicId()) > -1 && renderedTopics.indexOf(self.timeData[self.active()].topicId()) == -1) {
     			renderedTopics.push(self.timeData[self.active()].topicId());
@@ -158,6 +159,29 @@ function(ko, $, moment) {
     		self.timeData[self.active()].renderedTopics(renderedTopics);
     		self.oldTopics=self.newTopics.slice();
     		self.newTopics=newValue.slice();
+    		
+    		var avg = new Object();
+			
+			for (key in newValue) {
+				$.each(globalData.Topic[key].TIME$WORDS_PER_WEEK, function(index, value) {
+		    		if(avg[index] == null) avg[index] = 0;
+		    		avg[index] += value.WORD_COUNT;
+
+			    });
+			}
+			var topicCount = self.timeData.allTopics().length;
+			var averageData = new Array();
+			$.each(avg , function(weekStamp, value) {
+				var averageAtWeek = Math.round(value / topicCount);
+				globalData.Topic.average.TIME$WORDS_PER_WEEK[weekStamp] = {'WORD_COUNT': averageAtWeek, 'LABEL': 'Average'};
+				averageData.push(averageAtWeek);
+			});
+			
+			if($.inArray('average', newValue) > -1) {
+				self.chart.get('topicChartaverage').setData(averageData);
+			}
+			
+			
     	};
     	
     	self.oldTopics = globalData.TOPIC_SORTING;

@@ -99,7 +99,14 @@ function(ko, $) {
 			var postData = $.extend({}, self.browseData[self.active()].data);
 			delete(postData.getParam);
 			postData.documentId = docId;
-			ko.postbox.publish('openNewTab', {moduleName:"document-show-tab", tabHeading:"Show Document " + docId, data:postData});
+			var meta = "";
+			if(postData.hasOwnProperty('topicId')) {
+				meta += " Topic " + postData.topicId;
+			}
+			if(postData.hasOwnProperty('frame')) {
+				meta += " (" + postData.frame + ")";
+			}
+			ko.postbox.publish('openNewTab', {moduleName:"document-show-tab", tabHeading: docId + meta, data:postData});
 		};
 		
 		self.moveToTopic = function(topic) {

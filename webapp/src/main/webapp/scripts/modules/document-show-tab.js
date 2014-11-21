@@ -28,10 +28,13 @@ function(ko, $) {
 		});
 		
 		self.setData = function (data) { 
-			self.active = ko.observable(data.documentId);
+			
+			self.active = ko.observable(JSON.stringify(data));
+		//	if (!self.singleData[self.active()]) {
+			
 			if (!self.singleData[self.active()]) {
 				self.loading(true);
-				$.getJSON("JsonServlet?Command=getDoc&DocId=" + self.active())
+				$.getJSON("JsonServlet?Command=getDoc&DocId=" + data.documentId)
 				.success(function(receivedParsedJson) {
 					self.singleData[self.active()] = receivedParsedJson;
 					self.singleData[self.active()].TEXT_REPRESENTATION = new Object();
@@ -41,17 +44,27 @@ function(ko, $) {
 					for(var i = 1; i < receivedParsedJson.DOCUMENT.WORD_LIST.length; i++) {
 						self.singleData[self.active()].TEXT_REPRESENTATION.KEYWORDS += ' ' + receivedParsedJson.DOCUMENT.WORD_LIST[i].TOKEN;
 					}
-					self.singleData[self.active()].TITLE_REPRESENTATION.KEYWORDS = globalData.DOCUMENT[self.active()].KEYWORD_TITLE;
+					self.singleData[self.active()].TITLE_REPRESENTATION.KEYWORDS = globalData.DOCUMENT[data.documentId].KEYWORD_TITLE;
 					self.singleData[self.active()].textSelectArray = ko.observableArray([new self.TextRepresentation('Keywords', 'KEYWORDS')]);
 					self.singleData[self.active()].textSelection = ko.observable(new self.TextRepresentation('Keywords', 'KEYWORDS'));
 					self.singleData[self.active()].data = data;
 					for (var i=0;i<extend.length;i++) {
-			 			var extender = require(extend[i]);
+						var extender = require(extend[i]);
 						extender(self);
 					}
 					self.loading(false);
 				});
 			}
+//			} else {
+//				self.singleData[self.active()].data = data;
+//				for (var i=0;i<extend.length;i++) {
+//					var extender = require(extend[i]);
+//					extender(self);
+//				}
+//				self.loading(false);
+//			}
+//			
+				
 		};
 		self.getData = function () { return self.active(); };
 		self.setData(data);

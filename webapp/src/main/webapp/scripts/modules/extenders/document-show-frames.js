@@ -9,11 +9,12 @@ function(ko, $) {
 			for(frameType in instance.frameSingleData.frameTypes) {
 				var frames = instance.singleData[instance.active()].DOCUMENT.FRAME_LIST[frameType];
 				
-				var text = instance.singleData[instance.active()].DOCUMENT.TEXT$FULLTEXT; // text with all frames
+				var text = instance.singleData[instance.active()].DOCUMENT.TEXT$FULLTEXT; // originale text
+				var text1 = text; // text with all frames
 				var text2 = text; // text with all inactive frames
 				var text3 = text; // text with all frames of topic x
 				var text4 = text; // text with all frames of topic x and type y
-				var lastStart = text.length;
+				var lastStart1 = text.length;
 				var lastStart2  = text.length;
 				var lastStart3  = text.length;
 				var lastStart4  = text.length;
@@ -33,9 +34,9 @@ function(ko, $) {
 							+ text.substring(frames[key].START_POSITION, frames[key].END_POSITION)
 							+ '</span>';
 						if(frames[key].ACTIVE == 1) {
-							if(parseInt(frames[key].END_POSITION) < lastStart) { // avoid covering each other
-								text = frameSpan + text.substring(parseInt(frames[key].END_POSITION));
-								lastStart = parseInt(frames[key].START_POSITION);
+							if(parseInt(frames[key].END_POSITION) < lastStart1) { // avoid covering each other
+								text1 = frameSpan + text1.substring(parseInt(frames[key].END_POSITION));
+								lastStart1 = parseInt(frames[key].START_POSITION);
 								textActive = true;
 							} 
 							if(typeof instance.singleData[instance.active()].data.topicId != 'undefined') {
@@ -67,7 +68,7 @@ function(ko, $) {
 				} 
 				if(textActive) {
 					instance.singleData[instance.active()].TITLE_REPRESENTATION['TEXT_ACTIVE_FRAMES_' + frameType] = instance.singleData[instance.active()].DOCUMENT.TEXT$TITLE;
-					instance.singleData[instance.active()].TEXT_REPRESENTATION['TEXT_ACTIVE_FRAMES_' + frameType] = text;
+					instance.singleData[instance.active()].TEXT_REPRESENTATION['TEXT_ACTIVE_FRAMES_' + frameType] = text1;
 					instance.singleData[instance.active()].textSelectArray.push(new instance.TextRepresentation('Text with Frames of type ' + frameType, 'TEXT_ACTIVE_FRAMES_' + frameType));
 				}
 				if(textInactive) {

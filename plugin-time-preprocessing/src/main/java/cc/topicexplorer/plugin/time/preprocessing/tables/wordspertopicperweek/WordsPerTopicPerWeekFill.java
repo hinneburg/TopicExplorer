@@ -30,6 +30,7 @@ public class WordsPerTopicPerWeekFill extends TableFillCommand {
 	@Override
 	public void fillTable() {
 		if (timePluginIsActivated()) {
+			this.deleteTempTables(true);
 			/**
 			 * MIT-JOOQ-START database.executeUpdateQuery("INSERT INTO " + TIME$WORDS_PER_TOPIC_PER_WEEK.getName() + "("
 			 * + TIME$WORDS_PER_TOPIC_PER_WEEK.WEEK.getName() + ", " + TIME$WORDS_PER_TOPIC_PER_WEEK.TOPIC_ID.getName()
@@ -89,7 +90,7 @@ public class WordsPerTopicPerWeekFill extends TableFillCommand {
 				logger.info("WORDS_PER_TOPIC_PER_WEEK done");
 				
 				updateBestWords();
-				deleteTempTables();	
+				deleteTempTables(false);	
 				logger.info("deleteing temps done");
 				// @formatter:on
 			} catch (SQLException e) {
@@ -309,15 +310,21 @@ public class WordsPerTopicPerWeekFill extends TableFillCommand {
 		}
 	}
 
-	private void deleteTempTables() {
+	private void deleteTempTables(boolean optional) {
 		try {
-			database.executeUpdateQuery("DROP TABLE TIME$WEEK");
-			database.executeUpdateQuery("DROP TABLE TIME$TERM_WEEK");
-			database.executeUpdateQuery("DROP TABLE TIME$TOPIC_WEEK");
-			database.executeUpdateQuery("DROP TABLE TIME$TERM_TOPIC_WEEK");
+			String queryAdd = "";
+			if(optional) {
+				queryAdd = "IF EXISTS ";
+			}
+			database.executeUpdateQuery("DROP TABLE " + queryAdd + "TIME$WEEK");
+			database.executeUpdateQuery("DROP TABLE " + queryAdd + "TIME$TERM_WEEK");
+			database.executeUpdateQuery("DROP TABLE " + queryAdd + "TIME$TOPIC_WEEK");
+			database.executeUpdateQuery("DROP TABLE " + queryAdd + "TIME$TERM_TOPIC_WEEK");
 		} catch (SQLException e) {
-			logger.error("Error deleting temporary tables.");
-			throw new RuntimeException(e);
+			if(!optional) {
+				logger.error("Error deleting temporary tables");
+				throw new RuntimeException(e);
+			}
 		}
 	}
 

@@ -29,9 +29,9 @@ function(ko, $) {
 			containment: [ 4, 0, maxScrollPos, 0 ],
 			drag: function( event, ui ) {	
 				var maxScroll = (maxListWidth - topicDivWidth);	
-				var scroll = ((ui.position.left) / maxScrollPos) * maxScroll ;
+				var scroll = Math.round(((ui.position.left) / maxScrollPos) * maxScroll );
 				$('.topicList').scrollLeft(scroll);	
-				$('#topicMenuActivator, #topicMenu').css('left', scroll);
+				$('#topicMenuActivatorDiv, #topicMenu').css('left', scroll);
 			}
 		});
 	};

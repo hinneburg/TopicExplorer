@@ -1,14 +1,16 @@
 define(["knockout", "jquery"],
 function(ko, $) { 	
 	$(document).delegate(".topicList", "mouseenter", function(){
-		$(this).children("#topicMenuActivator").show();
+		$(this).children().children("#topicMenuActivator").show();
+		$(this).children('#topicMenuActivatorDiv').show();
 	}).delegate(".topicList", "mouseleave", function(){
-		$(this).children("#topicMenuActivator").hide();
-		$(this).children("#topicMenuActivator").next().hide();
-		$(this).children("#topicMenuActivator").removeClass("rotate2");
-		$(this).children("#topicMenuActivator").addClass("rotate1");
-	}).delegate("#topicMenuActivator", 'click', function(e){
-		$(this).toggleClass("rotate1 rotate2");
+		$(this).children('div').hide();
+		$(this).children().children("#topicMenuActivator").hide();
+		$(this).children('#topicMenuActivatorDiv').next().hide();
+		$(this).children().children("#topicMenuActivator").removeClass("rotate2");
+		$(this).children().children("#topicMenuActivator").addClass("rotate1");
+	}).delegate("#topicMenuActivatorDiv", 'click', function(e){
+		$(this).children().toggleClass("rotate1 rotate2");
 	    $(this).next().toggle('blind');	    	    
 	});
 	
@@ -148,7 +150,7 @@ function(ko, $) {
 			duration : 2000,
 			easing : "swing"
 		});	
-		$("#topicMenuActivator, #topicMenu").css(
+		$("#topicMenuActivatorDiv, #topicMenu").css(
 			'left', Math.min(Math.max(0, $("#topic_" + topic_id).position().left - offset), $('.topicList > ul').width() -  $('.topicList').width())
 		);
 	});

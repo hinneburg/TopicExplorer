@@ -75,7 +75,7 @@ public class DocumentTermTopicFill extends TableFillCommand {
 						+ "`,`" + "TOPIC_ID" + "`,`" + "POSITION_OF_TOKEN_IN_DOCUMENT" + "`), " + " ADD KEY IDX1 (`"
 						+ "DOCUMENT_ID" + "`), " + " ADD KEY IDX2 (`" + "TERM" + "`), " + " ADD KEY IDX3 (`"
 						+ "DOCUMENT_ID" + "`,`" + "TERM" + "`,`" + "TOPIC_ID" + "`), " + " ADD KEY IDX4 (`" + "DOCUMENT_ID"
-						+ "`,`" + "TOPIC_ID" + "`), " + " ADD KEY IDX5 (`" + "TERM" + "`,`" + "TOPIC_ID" + "`) ");
+						+ "`,`" + "TOPIC_ID" + "`), " + " ADD KEY IDX5 (`" + "TERM" + "`,`" + "TOPIC_ID" + "`,`" + "DOCUMENT_ID" + "`) ");
 	
 				logger.info("load data into table " + this.tableName + " done.");
 			} catch (IOException ioEx) {

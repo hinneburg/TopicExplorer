@@ -2,15 +2,15 @@ define(["knockout", "jquery"],
 function(ko, $) { 	
 	$(document).delegate(".topicList", "mouseenter", function(){
 		$(this).children().children("#topicMenuActivator").show();
-		$(this).children('#topicMenuActivatorDiv').show();
+		$(this).children('#topicMenuActivatorDiv').show('fast');
 	}).delegate(".topicList", "mouseleave", function(){
-		$(this).children('div').hide();
-		$(this).children().children("#topicMenuActivator").hide();
+		$(this).children('#topicMenuActivatorDiv').hide('fast');
+		$(this).children('#topicMenuActivatorDiv').children("#topicMenuActivator").hide();
 		$(this).children('#topicMenuActivatorDiv').next().hide();
-		$(this).children().children("#topicMenuActivator").removeClass("rotate2");
-		$(this).children().children("#topicMenuActivator").addClass("rotate1");
+		$(this).children('#topicMenuActivatorDiv').children("#topicMenuActivator").removeClass("rotate2");
+		$(this).children('#topicMenuActivatorDiv').children("#topicMenuActivator").addClass("rotate1");
 	}).delegate("#topicMenuActivatorDiv", 'click', function(e){
-		$(this).children().toggleClass("rotate1 rotate2");
+		$(this).children("#topicMenuActivator").toggleClass("rotate1 rotate2");
 	    $(this).next().toggle('blind');	    	    
 	});
 	

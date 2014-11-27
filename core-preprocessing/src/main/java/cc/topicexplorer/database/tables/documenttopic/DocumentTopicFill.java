@@ -75,9 +75,7 @@ public class DocumentTopicFill extends TableFillCommand {
 				+ "from DOCUMENT_TERM_TOPIC "
 				+ "group by DOCUMENT_TERM_TOPIC.DOCUMENT_ID, DOCUMENT_TERM_TOPIC.TOPIC_ID) X "
 				+ "join DOCUMENT on (X.DOCUMENT_ID = DOCUMENT.DOCUMENT_ID) "
-				+ "join TOPIC on (X.TOPIC_ID = TOPIC.TOPIC_ID) "
-				+ "group by "
-				+ "DOCUMENT.NUMBER_OF_TOKENS, TOPIC.NUMBER_OF_TOKENS";
+				+ "join TOPIC on (X.TOPIC_ID = TOPIC.TOPIC_ID) ";
 		//@formatter:on
 
 		try {

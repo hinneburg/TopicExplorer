@@ -5,7 +5,12 @@
   	<div id="topicMenu"
 		style="background-color: whitesmoke; display: none; position: absolute; z-index: 2; top:25px; overflow:auto; padding: 3px 0 0 0" data-bind="style: { height: (topicListHeight() - 30) + 'px'}">
 		<ul class="topicMenuclass ui-menu ui-widget ui-widget-content" style="border:0; margin: 1px;" data-bind="foreach: textSelectArray">
-			<li style="font-weight: normal" class="ui-menu-item" data-bind="text: $data.label, click: $parent.textSelection, event: {mouseover: function(data, event) { $(event.target).addClass('ui-state-focus');}, mouseout: function(data, event) { $(event.target).removeClass('ui-state-focus');} }"></li>
+		<!-- ko if: $data.label==$parent.textSelection().label -->
+			<li style="list-style: inside url('images/tick.png'); font-weight:normal;font-size: small;white-space: nowrap;" class="ui-menu-item" data-bind="text: $data.label, click: $parent.textSelection, event: {mouseover: function(data, event) { $(event.target).addClass('ui-state-focus');}, mouseout: function(data, event) { $(event.target).removeClass('ui-state-focus');} }"></li>
+		<!-- /ko -->
+		<!-- ko if: $data.label!=$parent.textSelection().label -->
+			<li style="padding-left: 28px; font-weight:normal;font-size: small;white-space: nowrap;" class="ui-menu-item" data-bind="text: $data.label, click: $parent.textSelection, event: {mouseover: function(data, event) { $(event.target).addClass('ui-state-focus');}, mouseout: function(data, event) { $(event.target).removeClass('ui-state-focus');} }"></li>
+		<!-- /ko -->
 		</ul>
 	</div>
 

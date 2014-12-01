@@ -25,15 +25,16 @@
 						<div class="docTitle">
 							<a href="#" data-bind="click: $parent.loadDocument, attr: {id: 'doc' + selectedDocument}"><nobr data-bind="text: globalData.DOCUMENT[selectedDocument][$parent.browseData[$parent.active()].textSelection().field + 'TITLE']"></nobr></a>
 							<!--  ko if:$parent.browseData[$parent.active()].data.searchWord != undefined-->
-								<span style="font-size:xx-small; color: #7f7f7f">Search: </span>
+								<span style="font-size:xx-small; color: #7f7f7f">Search:
 								<!-- ko foreach: $parent.browseData[$parent.active()].data.searchWord.match(/\S+/g) -->
 									<!--  ko if: globalData.DOCUMENT[selectedDocument]['COUNT' + $index()] >= 1 -->
-										<span style="font-size:xx-small; color: #7f7f7f;" data-bind="text: $data + ' ' + '(' + parseInt(globalData.DOCUMENT[selectedDocument]['COUNT' + $index()]) + ')' + ' '"></span>
+										<span data-bind="text: $data + ' ' + '(' + parseInt(globalData.DOCUMENT[selectedDocument]['COUNT' + $index()]) + ')' + ' '"></span>
 									<!-- /ko -->
 									<!--  ko if: globalData.DOCUMENT[selectedDocument]['COUNT' + $index()] < 1 -->
-										<span style="font-size:xx-small; color: #7f7f7f; text-decoration: line-through" data-bind="text: $data + ' '"></span>
+										<span style="text-decoration: line-through" data-bind="text: $data + ' '"></span>
 									<!-- /ko -->
 								<!-- /ko -->
+								 </span>
 							<!-- /ko --><br/>
 						
 						</div>

@@ -15,7 +15,7 @@ import cc.topicexplorer.commands.TableFillCommand;
 
 public class DocumentUpdate extends TableFillCommand {
 
-	private static final Logger logger = Logger.getLogger(DocumentFill.class);
+	private static final Logger logger = Logger.getLogger(DocumentUpdate.class);
 	private ArrayList<Integer> documentList = new ArrayList<Integer>();
 	
 	@Override

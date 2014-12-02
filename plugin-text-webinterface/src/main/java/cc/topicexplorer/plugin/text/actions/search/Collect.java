@@ -49,7 +49,7 @@ public class Collect extends TableSelectCommand {
 			if (sorting.equals("RELEVANCE")) {
 				searchAction.addSearchColumn("MATCH(" + searchColumn + ") AGAINST ('" + searchString + "')", 
 						"RELEVANCE");
-				ArrayList<String> orderBy = new ArrayList<String>();
+				ArrayList<String> orderBy = searchAction.getOrderBy();
 				orderBy.add("RELEVANCE DESC");
 				searchAction.setOrderBy(orderBy);
 			}

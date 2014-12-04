@@ -1,7 +1,15 @@
 package cc.topicexplorer.plugin.time.actions.search;
 
+import java.util.Date;
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Set;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import cc.commandmanager.core.Context;
 import cc.topicexplorer.actions.search.Search;
@@ -23,6 +31,39 @@ public class Collect extends TableSelectCommand {
 				searchAction.setOrderBy(orderBy);
 			}
 		}
+		
+		if(context.containsKey("filter")) {
+			JSONObject filter;
+			try {
+				DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+				filter = new JSONObject(context.getString("filter"));
+				if(filter.has("firstDate")) {
+					String firstDate = filter.getString("firstDate");
+					if(!firstDate.isEmpty()) {
+						Date date = dateFormat.parse(firstDate);
+						long time = date.getTime();
+						new Timestamp(time);
+						searchAction.addWhereClause("DOCUMENT.TIME$TIME_STAMP > " + (time / 1000));
+					}
+				}
+				if(filter.has("lastDate")) {
+					String lastDate = filter.getString("lastDate");
+					if(!lastDate.isEmpty()) {
+						Date date = dateFormat.parse(lastDate);
+						long time = date.getTime();
+						new Timestamp(time);
+						searchAction.addWhereClause("DOCUMENT.TIME$TIME_STAMP < " + time / 1000);
+					}
+				}
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
 		context.rebind("SEARCH_ACTION", searchAction);
 	}
 

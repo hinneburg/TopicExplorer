@@ -93,6 +93,8 @@ public class JsonServlet extends HttpServlet {
 				startCommands.add("FrameCreate");
 			} else if (command.contains("getDates")) {
 				startCommands.add("GetDatesTimeCreate");
+			} else if (command.contains("getDateRange")) {
+				startCommands.add("GetDateRange");
 			}
 			WebChainManagement.executeCommands(WebChainManagement.getOrderedCommands(startCommands), context);
 		} else {

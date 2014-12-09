@@ -163,25 +163,25 @@ function(ko, $, moment) {
     		var avg = new Object();
 			
 			for (key in newValue) {
-				$.each(globalData.Topic[key].TIME$WORDS_PER_WEEK, function(index, value) {
+				$.each(globalData.Topic[newValue[key]].TIME$WORDS_PER_WEEK, function(index, value) {
 		    		if(avg[index] == null) avg[index] = 0;
 		    		avg[index] += value.WORD_COUNT;
 
 			    });
 			}
+			
 			var topicCount = self.timeData.allTopics().length;
 			var averageData = new Array();
 			$.each(avg , function(weekStamp, value) {
 				var averageAtWeek = Math.round(value / topicCount);
 				globalData.Topic.average.TIME$WORDS_PER_WEEK[weekStamp] = {'WORD_COUNT': averageAtWeek, 'LABEL': 'Average'};
 				averageData.push(averageAtWeek);
+				
 			});
-			
-			if($.inArray('average', newValue) > -1) {
+			if($.inArray('average', self.timeData[self.active()].renderedTopics()) > -1) {
 				self.chart.get('topicChartaverage').setData(averageData);
+				console.log(averageData);
 			}
-			
-			
     	};
     	
     	self.oldTopics = globalData.TOPIC_SORTING;

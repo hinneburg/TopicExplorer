@@ -23,14 +23,6 @@ public class Collect extends TableSelectCommand {
 	public void tableExecute(Context context) {
 		Search searchAction = context.get("SEARCH_ACTION", Search.class);
 		searchAction.addSearchColumn("DOCUMENT.TIME$TIME_STAMP", "TIME$TIME_STAMP");
-		if(context.containsKey("sorting")) {
-			String sorting = context.getString("sorting");
-			if (sorting.equals("TIME")) {
-				ArrayList<String> orderBy = new ArrayList<String>();
-				orderBy.add("DOCUMENT.TIME$TIME_STAMP");
-				searchAction.setOrderBy(orderBy);
-			}
-		}
 		
 		if(context.containsKey("filter")) {
 			JSONObject filter;
@@ -64,6 +56,10 @@ public class Collect extends TableSelectCommand {
 			}
 		}
 		
+		ArrayList<String> orderBy = searchAction.getOrderBy();
+		orderBy.add("DOCUMENT.TIME$TIME_STAMP");
+		searchAction.setOrderBy(orderBy);
+		
 		context.rebind("SEARCH_ACTION", searchAction);
 	}
 
@@ -84,7 +80,7 @@ public class Collect extends TableSelectCommand {
 
 	@Override
 	public Set<String> getOptionalBeforeDependencies() {
-		return Sets.newHashSet();
+		return Sets.newHashSet("SearchTextCollect");
 	}
 
 }

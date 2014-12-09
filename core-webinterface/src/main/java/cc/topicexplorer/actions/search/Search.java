@@ -64,6 +64,10 @@ public class Search {
 	public void setOrderBy(ArrayList<String> orderBy) {
 		searchMap.orderBy = orderBy;
 	}
+	
+	public ArrayList<String> getOrderBy() {
+		return searchMap.orderBy;
+	}
 
 	public void executeQuery() throws SQLException {
 		JSONArray docSorting = new JSONArray();

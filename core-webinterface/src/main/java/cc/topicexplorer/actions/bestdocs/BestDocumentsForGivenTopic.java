@@ -26,7 +26,7 @@ public class BestDocumentsForGivenTopic {
 		documentMap.select.add("DOCUMENT.DOCUMENT_ID");
 		documentMap.select.add("DOCUMENT_TOPIC.PR_DOCUMENT_GIVEN_TOPIC");
 		documentMap.select.add("DOCUMENT_TOPIC.TOPIC_ID");
-		documentMap.select.add("SUBSTR(DOCUMENT.TEXT, 150) AS KEYWORD_SNIPPET");
+		documentMap.select.add("SUBSTR(DOCUMENT.TEXT, 1, 150) AS KEYWORD_SNIPPET");
 		documentMap.select.add("DOCUMENT.TITLE AS KEYWORD_TITLE");
 		documentMap.select.add("CONCAT('[',DOCUMENT.BEST_TOPICS,']') AS TOP_TOPIC");
 		documentMap.from.add("DOCUMENT");
@@ -47,7 +47,7 @@ public class BestDocumentsForGivenTopic {
 		documentMap.select.add("DOCUMENT.DOCUMENT_ID");
 		documentMap.select.add("DOCUMENT_TERM_TOPIC.TOPIC_ID");
 		documentMap.select.add("COUNT(*) AS DOCUMENT_COUNT");
-		documentMap.select.add("SUBSTR(DOCUMENT.TEXT, 150) AS KEYWORD_SNIPPET");
+		documentMap.select.add("SUBSTR(DOCUMENT.TEXT, 1, 150) AS KEYWORD_SNIPPET");
 		documentMap.select.add("DOCUMENT.TITLE AS KEYWORD_TITLE");
 		documentMap.select.add("CONCAT('[',DOCUMENT.BEST_TOPICS,']') AS TOP_TOPIC");
 		documentMap.from.add("DOCUMENT");

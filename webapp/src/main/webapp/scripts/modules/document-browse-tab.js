@@ -38,12 +38,18 @@ function(ko, $) {
 			}
 		};
 		
-		self.changeSorting = function(newValue) {
+		self.change = function() {
 			if(!self.loading()) {
 				self.browseData[self.active()].documentsFull(false);
 				self.loading(true);
+				
+				filter = {};
+				for(key in self.browseData[self.active()].filter){
+					filter[key] = self.browseData[self.active()].activeFilter[key]();
+				}
+				
 				self.browseData[self.active()].selectedDocuments([]);
-				$.getJSON("JsonServlet?Command=" + self.active() + "&sorting=" + newValue)
+				$.getJSON("JsonServlet?Command=" + self.active() + "&sorting=" + self.browseData[self.active()].selectedSorting().toUpperCase() + "&filter=" + JSON.stringify(filter))
 				.success(function(receivedParsedJson) {
 					self.browseData[self.active()].nextOffset = self.documentLimit;
 					if(receivedParsedJson.DOCUMENT_SORTING.length < self.documentLimit) {
@@ -65,6 +71,20 @@ function(ko, $) {
 			}
 		};
 		
+		self.changeFilters = function() {
+			for(key in self.browseData[self.active()].filter){
+				self.browseData[self.active()].activeFilter[key](self.browseData[self.active()].filter[key]());	
+			}
+			self.change();
+			
+		}
+		
+		self.deleteFilter = function(filter) {
+			self.browseData[self.active()].activeFilter[filter]("");
+			self.browseData[self.active()].filter[filter]("");
+			self.change();
+		}
+		
 		self.checkSize = function() {
 			if($(".browser").length > 0 ) {
 				self.loadMoreDocuments();
@@ -74,7 +94,13 @@ function(ko, $) {
 		self.loadMoreDocuments = function() {
 			if(!self.loading() && !self.browseData[self.active()].documentsFull() && $("#desktop").scrollTop() + $("#desktop").height() + 90 >= $("#desktop")[0].scrollHeight) {
 				self.loading(true);
-				$.getJSON("JsonServlet?Command=" + self.active() + "&offset=" + self.browseData[self.active()].nextOffset + "&sorting=" + self.browseData[self.active()].selectedSorting())
+				
+				filter = {};
+				for(key in self.browseData[self.active()].filter){
+					filter[key] = self.browseData[self.active()].activeFilter[key]();
+				}
+				
+				$.getJSON("JsonServlet?Command=" + self.active() + "&offset=" + self.browseData[self.active()].nextOffset + "&sorting=" + self.browseData[self.active()].selectedSorting().toUpperCase() + "&filter=" + JSON.stringify(filter))
 				.success(function(receivedParsedJson) {
 					self.browseData[self.active()].nextOffset += self.documentLimit;
 					if(receivedParsedJson.DOCUMENT_SORTING.length < self.documentLimit) {
@@ -121,10 +147,17 @@ function(ko, $) {
 				self.loading(true);
 				self.firstLoading(true);
 				self.browseData[self.active()] = {};
+				
+				self.browseData[self.active()].activeFilter = {};
+				self.browseData[self.active()].activeFilter.word = ko.observable("");
+				
+				self.browseData[self.active()].filter = {};
+				self.browseData[self.active()].filter.word = ko.observable("");
+				
 				self.browseData[self.active()].data = data;
-				self.browseData[self.active()].sortingOptions = ko.observableArray(['RELEVANCE']);
-				self.browseData[self.active()].selectedSorting = ko.observable('RELEVANCE');
-				self.browseData[self.active()].selectedSorting.subscribe(self.changeSorting);
+				self.browseData[self.active()].sortingOptions = ko.observableArray(['Relevance']);
+				self.browseData[self.active()].selectedSorting = ko.observable('Relevance');
+				self.browseData[self.active()].selectedSorting.subscribe(self.change);
 				self.browseData[self.active()].selectedDocuments = ko.observableArray([]);
 				self.browseData[self.active()].textSelectArray = ko.observableArray([]);
 				self.browseData[self.active()].textSelection = ko.observable();

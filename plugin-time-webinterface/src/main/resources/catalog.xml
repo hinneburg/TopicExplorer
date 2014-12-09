@@ -5,4 +5,5 @@
 	<command name="BestDocsTimeCollect" className="cc.topicexplorer.plugin.time.actions.bestdocs.Collect"/>
 	<command name="SearchTimeCollect" className="cc.topicexplorer.plugin.time.actions.search.Collect"/>
 	<command name="ShowDocTimeCollect" className="cc.topicexplorer.plugin.time.actions.showdoc.Collect"/>
+	<command name="GetDateRange" className="cc.topicexplorer.plugin.time.actions.getdaterange.GetDateRangeCommand"/>
 </catalog>

@@ -6,11 +6,40 @@
 				<span style="padding-left: 20px"></span>
 			<!-- /ko -->
 			<!-- ko if: browseData[active()].sortingOptions().length > 1-->
-				Sorting: 
+				<span style="font-weight: bold">Sorting: </span>
 				<!-- ko foreach: browseData[active()].sortingOptions -->
 					<input type="radio" name="mark" value="RELEVANCE" data-bind="checked: $parent.browseData[$parent.active()].selectedSorting, attr: {value: $data, id: 'sorting' + $data}" >
 					<label data-bind="attr:{for:'sorting' +$data}, text: $data"></label>
 				<!--  /ko -->
+			<!-- /ko -->
+			<!-- ko ifnot: firstLoading --> 
+				<span style="font-weight: bold; margin-left: 20px;">Filter: </span>
+				<!-- ko if: typeof browseData[active()].activeFilter != undefined && browseData[active()].activeFilter.word().length == 0 -->
+					<input type="text" id="filterWord" name="filterWord" title="filterWord" data-bind="value: browseData[active()].filter.word">
+				<!-- /ko -->
+				<!-- ko if: typeof browseData[active()].activeFilter != undefined && browseData[active()].activeFilter.word().length > 0 -->
+					<span data-bind="text: browseData[active()].activeFilter.word()"></span>
+					<img style="cursor:pointer;width:8px; height:8px;" src="images/delete_24.png" alt="delete filter" title="delete filter" data-bind="click: function() { deleteFilter('word'); }"/>
+				<!-- /ko -->
+				<!-- ko if: typeof browseData[active()].activeFilter != undefined && globalData.PLUGINS.indexOf('time') > -1 -->
+					Date:
+					<!-- ko if: browseData[active()].activeFilter.firstDate().length == 0 --> 
+						<input type="text" class="datepicker" id="firstDate" title="firstDate" data-bind="value: browseData[active()].filter.firstDate">
+					<!-- /ko -->
+					<!-- ko if: browseData[active()].activeFilter.firstDate().length > 0 --> 
+						<span data-bind="text: browseData[active()].activeFilter.firstDate()"></span>
+						<img style="cursor:pointer;width:8px; height:8px;" src="images/delete_24.png" alt="delete filter" title="delete filter" data-bind="click: function() { deleteFilter('firstDate'); }" />
+					<!-- /ko -->
+					-
+					<!-- ko if: browseData[active()].activeFilter.lastDate().length == 0 -->
+						<input type="text" class="datepicker" id="lastDate" title="lastDate" data-bind="value: browseData[active()].filter.lastDate">
+					<!-- /ko -->
+					<!-- ko if: browseData[active()].activeFilter.lastDate().length > 0 -->
+						<span data-bind="text: browseData[active()].activeFilter.lastDate()"></span>
+						<img style="cursor:pointer;width:8px; height:8px;" src="images/delete_24.png" alt="delete filter" title="delete filter" data-bind="click: function() { deleteFilter('lastDate'); }" />
+					<!-- /ko -->
+				<!-- /ko -->
+				<button  data-bind="click: changeFilters">Accept Filter</button>
 			<!-- /ko -->
 		</div>
 	<!-- /ko -->
@@ -25,15 +54,16 @@
 						<div class="docTitle">
 							<a href="#" data-bind="click: $parent.loadDocument, attr: {id: 'doc' + selectedDocument}"><nobr data-bind="text: globalData.DOCUMENT[selectedDocument][$parent.browseData[$parent.active()].textSelection().field + 'TITLE']"></nobr></a>
 							<!--  ko if:$parent.browseData[$parent.active()].data.searchWord != undefined-->
-								<span style="font-size:xx-small; color: #7f7f7f">Search: </span>
+								<span style="font-size:xx-small; color: #7f7f7f">Search:
 								<!-- ko foreach: $parent.browseData[$parent.active()].data.searchWord.match(/\S+/g) -->
 									<!--  ko if: globalData.DOCUMENT[selectedDocument]['COUNT' + $index()] >= 1 -->
-										<span style="font-size:xx-small; color: #7f7f7f;" data-bind="text: $data + ' ' + '(' + parseInt(globalData.DOCUMENT[selectedDocument]['COUNT' + $index()]) + ')' + ' '"></span>
+										<span data-bind="text: $data + ' ' + '(' + parseInt(globalData.DOCUMENT[selectedDocument]['COUNT' + $index()]) + ')' + ' '"></span>
 									<!-- /ko -->
 									<!--  ko if: globalData.DOCUMENT[selectedDocument]['COUNT' + $index()] < 1 -->
-										<span style="font-size:xx-small; color: #7f7f7f; text-decoration: line-through" data-bind="text: $data + ' '"></span>
+										<span style="text-decoration: line-through" data-bind="text: $data + ' '"></span>
 									<!-- /ko -->
 								<!-- /ko -->
+								 </span>
 							<!-- /ko --><br/>
 						
 						</div>

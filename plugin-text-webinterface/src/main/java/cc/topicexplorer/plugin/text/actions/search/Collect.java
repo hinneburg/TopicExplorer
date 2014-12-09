@@ -3,6 +3,8 @@ package cc.topicexplorer.plugin.text.actions.search;
 import java.util.ArrayList;
 import java.util.Set;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 
 import cc.commandmanager.core.Context;
@@ -59,6 +61,21 @@ public class Collect extends TableSelectCommand {
 			ArrayList<String> orderBy = new ArrayList<String>();
 			orderBy.add("RELEVANCE DESC");
 			searchAction.setOrderBy(orderBy);
+		}
+		if(context.containsKey("filter")) {
+			JSONObject filter;
+			try {
+				filter = new JSONObject(context.getString("filter"));
+				if(filter.has("word")) {
+					String word = filter.getString("word");
+					if(!word.isEmpty()) {
+						searchAction.addWhereClause("MATCH(" + searchColumn + ") AGAINST ('" + word	+ "' IN BOOLEAN MODE)");
+					}
+				}
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		
 		context.rebind("SEARCH_ACTION", searchAction);

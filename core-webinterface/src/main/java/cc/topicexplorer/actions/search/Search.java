@@ -25,7 +25,7 @@ public class Search {
 	public Search(String searchWord, Database db, PrintWriter out, int limit, int offset) {
 		searchMap = new SelectMap();
 		searchMap.select.add("DOCUMENT.DOCUMENT_ID");
-		searchMap.select.add("SUBSTR(DOCUMENT.TEXT, 150) AS KEYWORD_SNIPPET");
+		searchMap.select.add("SUBSTR(DOCUMENT.TEXT, 1, 150) AS KEYWORD_SNIPPET");
 		searchMap.select.add("DOCUMENT.TITLE AS KEYWORD_TITLE");
 		searchMap.select.add("CONCAT('[',DOCUMENT.BEST_TOPICS,']') AS TOP_TOPIC");
 		searchMap.from.add("DOCUMENT");

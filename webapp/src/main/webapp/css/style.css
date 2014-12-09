@@ -104,6 +104,8 @@ html, body {
     margin: 0px 0px 0px 20px;
     text-overflow: ellipsis;	
     text-decoration: none;    
+	overflow: hidden;
+	white-space: nowrap;
 }
 .leftBody .documentList .docContent {
 	float: right;

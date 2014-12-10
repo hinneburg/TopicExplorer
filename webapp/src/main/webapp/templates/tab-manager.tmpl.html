@@ -16,12 +16,12 @@
 <!-- /ko -->
 
 <!-- ko foreach: {data:visibleTabs} -->
-<p class="reiter button gradientGray tab" data-bind="attr: { id: $data, title: $parent.allTabs[$data].tabHeading}" style="cursor: default; overflow:hidden; text-overflow:ellipsis;">
+<p class="reiter button gradientGray tab" data-bind="attr: { id: $data, title: $parent.allTabs[$data].tabHeading}, click: $parent.switchActive" style="cursor: pointer; overflow:hidden; text-overflow:ellipsis;">
 	<!-- ko if: $parent.allTabs[$data].data.hasOwnProperty('topicId') && $parent.selectedTopics.indexOf(parseInt($parent.allTabs[$data].data.topicId)) == -1 -->
 		<img style="position:absolute; left:5px; top: 2px;" src="images/error.png" alt="!" title="the referenced topic isn't visible atm."/>
 	<!-- /ko -->
 	<img data-bind="click: $parent.deleteTab" style="cursor: pointer; position:absolute; top:5px; right: 5px; display: none;" width="12px" height="12px" class="close" src="images/delete_24.png" alt="close"/>
-	<span style="cursor: pointer; overflow:hidden;text-overflow: ellipsis; white-space: nowrap;" data-bind="text: $parent.allTabs[$data].tabHeading, click: $parent.switchActive"></span>	
+	<span style="overflow:hidden;text-overflow: ellipsis; white-space: nowrap;" data-bind="text: $parent.allTabs[$data].tabHeading"></span>	
 </p>
 <!-- /ko -->
 

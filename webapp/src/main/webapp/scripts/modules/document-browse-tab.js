@@ -12,7 +12,7 @@ function(ko, $) {
     		this.field = field;
     	};
 		
-		self.documentLimit = 20;
+		self.documentLimit = globalData.DocBrowserLimit;
 		
 		self.browseData= new Object();
 		
@@ -29,7 +29,7 @@ function(ko, $) {
 		
 		self.scrollCallback = function(el) {
 			$("#desktop").children(".documentList").children(".jumpToStart").css('top',($("#desktop").scrollTop() - 10) + 'px');
-			self.loadMoreDocuments();
+			self.loadUntilFull();
 			
 			if($("#desktop").scrollTop() > 1000) {
 				$("#desktop").children(".documentList").children(".jumpToStart").show();
@@ -91,35 +91,47 @@ function(ko, $) {
 			}
 		};
 		
+		self.reloadTimer = false;
+		
 		self.loadMoreDocuments = function() {
-			if(!self.loading() && !self.browseData[self.active()].documentsFull() && $("#desktop").scrollTop() + $("#desktop").height() + 90 >= $("#desktop")[0].scrollHeight) {
-				self.loading(true);
-				
-				filter = {};
-				for(key in self.browseData[self.active()].filter){
-					filter[key] = self.browseData[self.active()].activeFilter[key]();
+			if(!self.loading()) {
+				if(!self.browseData[self.active()].documentsFull() && $("#desktop").scrollTop() + $("#desktop").height() + 90 >= $("#desktop")[0].scrollHeight) {
+					self.loading(true);
+					
+					filter = {};
+					for(key in self.browseData[self.active()].filter){
+						filter[key] = self.browseData[self.active()].activeFilter[key]();
+					}
+					
+					$.getJSON("JsonServlet?Command=" + self.active() + "&offset=" + self.browseData[self.active()].nextOffset + "&sorting=" + self.browseData[self.active()].selectedSorting().toUpperCase() + "&filter=" + JSON.stringify(filter))
+					.success(function(receivedParsedJson) {
+						self.browseData[self.active()].nextOffset += self.documentLimit;
+						if(receivedParsedJson.DOCUMENT_SORTING.length < self.documentLimit) {
+							self.browseData[self.active()].documentsFull(true);
+						}
+						$.extend(globalData.DOCUMENT, receivedParsedJson.DOCUMENT);
+						
+						setTopTopics(receivedParsedJson.DOCUMENT_SORTING, true);
+						
+						self.browseData[self.active()].selectedDocuments(self.browseData[self.active()].selectedDocuments().concat(receivedParsedJson.DOCUMENT_SORTING));
+						for (var i=0;i<extend.length;i++) {
+				 			var extender = require(extend[i]);
+							extender(self);
+						}
+						self.loading(false);
+					});	
+				} else {
+					clearInterval(self.checkFullInterval);
 				}
-				
-				$.getJSON("JsonServlet?Command=" + self.active() + "&offset=" + self.browseData[self.active()].nextOffset + "&sorting=" + self.browseData[self.active()].selectedSorting().toUpperCase() + "&filter=" + JSON.stringify(filter))
-				.success(function(receivedParsedJson) {
-					self.browseData[self.active()].nextOffset += self.documentLimit;
-					if(receivedParsedJson.DOCUMENT_SORTING.length < self.documentLimit) {
-						self.browseData[self.active()].documentsFull(true);
-					}
-					$.extend(globalData.DOCUMENT, receivedParsedJson.DOCUMENT);
-					
-					setTopTopics(receivedParsedJson.DOCUMENT_SORTING, true);
-					
-					self.browseData[self.active()].selectedDocuments(self.browseData[self.active()].selectedDocuments().concat(receivedParsedJson.DOCUMENT_SORTING));
-					for (var i=0;i<extend.length;i++) {
-			 			var extender = require(extend[i]);
-						extender(self);
-					}
-					self.loading(false);
-				});
-				
 			}
+			
 		};
+		
+		self.checkFullInterval = false;
+		
+		self.loadUntilFull = function() {
+			self.checkFullInterval = setInterval(self.loadMoreDocuments, 50);
+		}
 		
 		self.loadDocument = function(docId) {
 			var postData = $.extend({}, self.browseData[self.active()].data);
@@ -163,6 +175,7 @@ function(ko, $) {
 				self.browseData[self.active()].textSelection = ko.observable();
 				$.getJSON("JsonServlet?Command=" + self.active() + "&sorting=" + self.browseData[self.active()].selectedSorting())
 				.success(function(receivedParsedJson) {
+					
 					self.browseData[self.active()].nextOffset = self.documentLimit;
 					if(receivedParsedJson.DOCUMENT_SORTING.length < self.documentLimit) {
 						self.browseData[self.active()].documentsFull = ko.observable(true);
@@ -181,6 +194,8 @@ function(ko, $) {
 					}
 					self.loading(false);
 					self.firstLoading(false);
+					$("#desktop").scrollTop(0);
+					self.loadUntilFull();
 				});
 			} 
 		};
@@ -188,7 +203,7 @@ function(ko, $) {
 		self.setData(data);
 		
 		self.windowWidth = ko.observable(Math.max(800, $(window).width(), /* For opera: */ document.documentElement.clientWidth)).subscribeTo("windowWidth");
-		
+		self.windowWidth.subscribe(self.loadUntilFull);
 		self.documentElementWidth = ko.computed (function() {
 			var documentWidth = 262;
 			var docDeskRatio = Math.floor((self.windowWidth() - 10) / documentWidth);

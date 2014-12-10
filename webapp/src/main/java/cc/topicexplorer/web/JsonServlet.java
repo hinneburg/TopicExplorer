@@ -32,11 +32,24 @@ public class JsonServlet extends HttpServlet {
 
 		Context context = new Context(WebChainManagement.getContext());
 		context.bind("SERVLET_WRITER", writer);
-
+		
+		Properties properties = (Properties) context.get("properties");
+		
 		int offset = (request.getParameter("offset") != null) ? Integer.parseInt(request.getParameter("offset")) : 0;
 
 		Set<String> startCommands = new HashSet<String>();
-		if (!command.contains("getActivePlugins")) {
+		if (command.contains("getDocBrowserLimit")) {
+			writer.print("{\"BrowserLimit\": " + properties.getProperty("DocBrowserLimit") + "}");
+		} else if (command.contains("getActivePlugins")) {
+			String plugins = properties.getProperty("plugins");
+			String[] pluginArray = plugins.split(",");
+			List<String> pluginList = new ArrayList<String>();
+
+			for (String element : pluginArray) {
+				pluginList.add("\"" + element + "\"");
+			}
+			writer.print("{\"PLUGINS\":" + pluginList.toString() + "}");
+		} else {
 			if (command.contains("getDoc")) {
 				context.bind("SHOW_DOC_ID", request.getParameter("DocId"));
 
@@ -97,17 +110,7 @@ public class JsonServlet extends HttpServlet {
 				startCommands.add("GetDateRange");
 			}
 			WebChainManagement.executeCommands(WebChainManagement.getOrderedCommands(startCommands), context);
-		} else {
-			Properties properties = (Properties) context.get("properties");
-			String plugins = properties.getProperty("plugins");
-			String[] pluginArray = plugins.split(",");
-			List<String> pluginList = new ArrayList<String>();
-
-			for (String element : pluginArray) {
-				pluginList.add("\"" + element + "\"");
-			}
-			writer.print("{\"PLUGINS\":" + pluginList.toString() + "}");
-		}
+		} 
 	}
 
 	/**

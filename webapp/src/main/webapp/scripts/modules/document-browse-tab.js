@@ -95,7 +95,7 @@ function(ko, $) {
 		
 		self.loadMoreDocuments = function() {
 			if(!self.loading()) {
-				if(!self.browseData[self.active()].documentsFull() && $("#desktop").scrollTop() + $("#desktop").height() + 90 >= $("#desktop")[0].scrollHeight) {
+				if(!self.browseData[self.active()].documentsFull() && $("#desktop").scrollTop() + $("#desktop").height() + 90 >= $("#desktop")[0].scrollHeight && $('#browserToolbar').length > 0) {
 					self.loading(true);
 					
 					filter = {};

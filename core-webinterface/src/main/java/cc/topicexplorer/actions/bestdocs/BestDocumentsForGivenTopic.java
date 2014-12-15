@@ -21,7 +21,7 @@ public class BestDocumentsForGivenTopic {
 	private PrintWriter outWriter;
 	private Database database;
 
-	public BestDocumentsForGivenTopic(String topicId, Integer limit, Integer offset, Database db, PrintWriter out) {
+	public BestDocumentsForGivenTopic(int topicId, int limit, int offset, Database db, PrintWriter out) {
 		documentMap = new SelectMap();
 		documentMap.select.add("DOCUMENT.DOCUMENT_ID");
 		documentMap.select.add("DOCUMENT_TOPIC.PR_DOCUMENT_GIVEN_TOPIC");
@@ -42,7 +42,7 @@ public class BestDocumentsForGivenTopic {
 		
 	}
 	
-	public BestDocumentsForGivenTopic(String topicId, Integer limit, Integer offset, Database db, PrintWriter out, String term, boolean hierarchicalTopicEnabled) {		
+	public BestDocumentsForGivenTopic(Integer topicId, Integer limit, Integer offset, Database db, PrintWriter out, String term, boolean hierarchicalTopicEnabled) {		
 		documentMap = new SelectMap();
 		documentMap.select.add("DOCUMENT.DOCUMENT_ID");
 		documentMap.select.add("DOCUMENT_TERM_TOPIC.TOPIC_ID");
@@ -69,9 +69,9 @@ public class BestDocumentsForGivenTopic {
 				documentMap.where.add(where);
 			
 		} else {
-			documentMap.where.add("DOCUMENT_TERM_TOPIC.TOPIC_ID IN (" + topicId + ")");
+			documentMap.where.add("DOCUMENT_TERM_TOPIC.TOPIC_ID=" + topicId + "");
 		}
-		documentMap.where.add("DOCUMENT_TERM_TOPIC.TERM IN ('" + term + "')");
+		documentMap.where.add("DOCUMENT_TERM_TOPIC.TERM like '" + term + "'");
 		documentMap.groupBy.add("DOCUMENT_ID");
 		documentMap.groupBy.add("DOCUMENT_TERM_TOPIC.TOPIC_ID");
 		documentMap.orderBy.add("DOCUMENT_COUNT DESC");
@@ -110,6 +110,11 @@ public class BestDocumentsForGivenTopic {
 	public void setOrderBy(ArrayList <String> orderBy) {
 		documentMap.orderBy = orderBy;
 	}
+	
+	public ArrayList <String> getOrderBy() {
+		return documentMap.orderBy;
+	}
+	
 	
 	public void executeQueriesAndWriteOutBestDocumentsForGivenTopic() {
 		JSONArray docSorting = new JSONArray();

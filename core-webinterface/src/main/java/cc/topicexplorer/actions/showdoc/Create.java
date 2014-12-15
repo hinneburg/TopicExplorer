@@ -14,7 +14,7 @@ public class Create extends TableSelectCommand {
 
 	@Override
 	public void tableExecute(Context context) {
-		String docId = context.getString("SHOW_DOC_ID");
+		int docId = context.getInteger("SHOW_DOC_ID");
 		PrintWriter pw = context.get("SERVLET_WRITER", PrintWriter.class);
 
 		ShowDoc showDocAction = new ShowDoc(docId, database, pw, properties);

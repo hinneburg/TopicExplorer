@@ -5,6 +5,7 @@ import java.util.Set;
 import cc.commandmanager.core.Context;
 import cc.topicexplorer.actions.bestdocs.BestDocumentsForGivenTopic;
 import cc.topicexplorer.commands.TableSelectCommand;
+import cc.topicexplorer.utils.MySQLEncoder;
 
 import com.google.common.collect.Sets;
 
@@ -13,8 +14,10 @@ public class Collect extends TableSelectCommand {
 	@Override
 	public void tableExecute(Context context) {
 		if(context.containsKey("frame")) {
-			String frame = context.getString("frame");
-			String frameType = context.getString("frameType");
+			MySQLEncoder me = new MySQLEncoder();
+			
+			String frame = me.encode(context.getString("frame"));
+			String frameType = me.encode(context.getString("frameType"));
 			
 			BestDocumentsForGivenTopic bestDocAction = context.get("BEST_DOC_ACTION", BestDocumentsForGivenTopic.class);
 			bestDocAction.addFrom("FRAME$FRAMES");

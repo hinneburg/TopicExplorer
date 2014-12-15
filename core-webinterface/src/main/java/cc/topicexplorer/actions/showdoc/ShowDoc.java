@@ -24,7 +24,7 @@ public class ShowDoc {
 	private PrintWriter outWriter;
 	private Properties properties;
 	
-	public ShowDoc(String documentId, Database db, PrintWriter out, Properties prop) {
+	public ShowDoc(int documentId, Database db, PrintWriter out, Properties prop) {
 		documentMap = new SelectMap();
 		documentMap.select.add("DOCUMENT_ID");
 		documentMap.from.add("DOCUMENT");

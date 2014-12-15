@@ -8,6 +8,7 @@ import org.json.JSONObject;
 import cc.commandmanager.core.Context;
 import cc.topicexplorer.actions.bestdocs.BestDocumentsForGivenTopic;
 import cc.topicexplorer.commands.TableSelectCommand;
+import cc.topicexplorer.utils.MySQLEncoder;
 
 import com.google.common.collect.Sets;
 
@@ -33,8 +34,9 @@ public class Collect extends TableSelectCommand {
 			
 			try {
 				filter = new JSONObject(context.getString("filter"));
+				MySQLEncoder me = new MySQLEncoder(); 
 				if(filter.has("word")) {
-					String word = filter.getString("word");
+					String word = me.encode(filter.getString("word"));
 					if(!word.isEmpty()) {
 						bestDocAction.addWhereClause("MATCH(" + searchColumn + ") AGAINST ('" + word	+ "' IN BOOLEAN MODE)");
 					}

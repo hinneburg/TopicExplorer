@@ -9,6 +9,7 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import cc.topicexplorer.database.Database;
 import cc.topicexplorer.database.SelectMap;
+import cc.topicexplorer.utils.MySQLEncoder;
 
 public class Autocomplete {
 	SelectMap autocompleteMap;
@@ -17,6 +18,8 @@ public class Autocomplete {
 	int numberOfTopics;
 
 	public Autocomplete(String searchWord, Database db, PrintWriter out, int numberOfTopics) {
+		MySQLEncoder me = new MySQLEncoder();
+		
 		autocompleteMap = new SelectMap();
 		autocompleteMap.select.add("TERM.TERM_ID");
 		autocompleteMap.select.add("TERM.TERM_NAME");
@@ -25,7 +28,7 @@ public class Autocomplete {
 		autocompleteMap.from.add("TERM");
 		autocompleteMap.from.add("TERM_TOPIC");
 		autocompleteMap.where.add("TERM_TOPIC.TERM_ID = TERM.TERM_ID");
-		autocompleteMap.where.add("UPPER(TERM.TERM_NAME) like '" + searchWord.toUpperCase() + "%'");
+		autocompleteMap.where.add("UPPER(TERM.TERM_NAME) like '" + me.encode(searchWord).toUpperCase() + "%'");
 //		autocompleteMap.where.add("TERM_TOPIC.TOPIC_ID < " + numberOfTopics);
 		autocompleteMap.orderBy.add("TERM.TERM_ID");
 		autocompleteMap.orderBy.add("TERM_TOPIC.PR_TOPIC_GIVEN_TERM DESC");

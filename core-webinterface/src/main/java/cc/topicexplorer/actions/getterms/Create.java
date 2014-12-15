@@ -13,7 +13,7 @@ public class Create extends TableSelectCommand {
 	@Override
 	public void tableExecute(Context context) {
 		PrintWriter pw = context.get("SERVLET_WRITER", PrintWriter.class);
-		String topicId = context.getString("TOPIC_ID");
+		int topicId = context.getInteger("TOPIC_ID");
 		int offset = context.getInteger("OFFSET");
 
 		GetTerms getTermsAction = new GetTerms(database, pw, topicId, offset);

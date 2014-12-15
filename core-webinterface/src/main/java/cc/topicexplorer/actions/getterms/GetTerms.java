@@ -19,7 +19,7 @@ public final class GetTerms {
 	private Database database;
 	private final SelectMap databaseQuery;
 	private static final Logger logger = Logger.getLogger(GetTerms.class);
-	private String topicId;
+	private int topicId;
 
 	/*ResultSet topicTermRS = database
 						.executeQuery("SELECT TERM_ID, NUMBER_OF_DOCUMENT_TOPIC FROM TERM_TOPIC WHERE TOPIC_ID="
@@ -27,7 +27,7 @@ public final class GetTerms {
 								+ " ORDER BY NUMBER_OF_DOCUMENT_TOPIC DESC LIMIT 20");*/
 	
 	
-	public GetTerms(Database db, PrintWriter out, String topicId, int offset) {
+	public GetTerms(Database db, PrintWriter out, int topicId, int offset) {
 		this.setDatabase(db);
 		this.setServletWriter(out);
 		this.databaseQuery = new SelectMap();

@@ -6,6 +6,7 @@ import java.util.Set;
 
 import cc.commandmanager.core.Context;
 import cc.topicexplorer.commands.TableSelectCommand;
+import cc.topicexplorer.utils.MySQLEncoder;
 
 import com.google.common.collect.Sets;
 
@@ -14,13 +15,14 @@ public class Create extends TableSelectCommand {
 	@Override
 	public void tableExecute(Context context) {
 
-		String topicId = context.getString("TOPIC_ID");
+		int topicId = context.getInteger("TOPIC_ID");
 		int offset = context.getInteger("OFFSET");
 		PrintWriter pw = context.get("SERVLET_WRITER", PrintWriter.class);
 		int limit = Integer.parseInt(properties.getProperty("DocBrowserLimit"));
 		BestDocumentsForGivenTopic bestDocAction;
 		if(context.containsKey("term")) {
-			String term = context.getString("term");
+			MySQLEncoder me = new MySQLEncoder();
+			String term = me.encode(context.getString("term"));
 			bestDocAction = new BestDocumentsForGivenTopic(topicId, limit, offset, database, pw, term, Arrays.asList(properties.get("plugins").toString().split(",")).contains("hierarchicaltopic"));
 		} else {
 			bestDocAction = new BestDocumentsForGivenTopic(topicId, limit, offset, database, pw);

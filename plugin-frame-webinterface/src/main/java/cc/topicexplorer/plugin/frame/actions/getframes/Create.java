@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 
 import cc.commandmanager.core.Context;
 import cc.topicexplorer.commands.TableSelectCommand;
+import cc.topicexplorer.utils.MySQLEncoder;
 
 import com.google.common.collect.Sets;
 
@@ -16,12 +17,15 @@ public class Create extends TableSelectCommand {
 
 	@Override
 	public void tableExecute(Context context) {
+		MySQLEncoder me = new MySQLEncoder();
+		
 		PrintWriter pw = context.get("SERVLET_WRITER", PrintWriter.class);
-		String topicId = context.getString("TOPIC_ID");
-		String frameType = context.getString("FRAME_TYPE");
+		int topicId = context.getInteger("TOPIC_ID");
+		String frameType = me.encode(context.getString("FRAME_TYPE"));
 		int offset = context.getInteger("OFFSET");
+		int limit = Integer.parseInt((String) properties.get("TopicBestItemLimit"));
 
-		context.bind("FRAME_ACTION", new Frames(this.database, pw, logger, topicId, frameType, offset));
+		context.bind("FRAME_ACTION", new Frames(this.database, pw, logger, topicId, frameType, offset, limit));
 	}
 
 	@Override

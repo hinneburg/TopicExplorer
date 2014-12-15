@@ -51,11 +51,11 @@ public class JsonServlet extends HttpServlet {
 			writer.print("{\"PLUGINS\":" + pluginList.toString() + "}");
 		} else {
 			if (command.contains("getDoc")) {
-				context.bind("SHOW_DOC_ID", request.getParameter("DocId"));
+				context.bind("SHOW_DOC_ID", Integer.parseInt(request.getParameter("DocId")));
 
 				startCommands.add("ShowDocCoreCreate");
 			} else if (command.contains("bestDocs")) {
-				context.bind("TOPIC_ID", request.getParameter("TopicId"));
+				context.bind("TOPIC_ID", Integer.parseInt(request.getParameter("TopicId")));
 				context.bind("OFFSET", offset);
 				@SuppressWarnings("unchecked")
 				Enumeration<String> parameterNames = request.getParameterNames();
@@ -65,7 +65,7 @@ public class JsonServlet extends HttpServlet {
 				}
 				startCommands.add("BestDocsCoreCreate");
 			} else if (command.contains("getTerms")) {
-				context.bind("TOPIC_ID", request.getParameter("TopicId"));
+				context.bind("TOPIC_ID", Integer.parseInt(request.getParameter("TopicId")));
 				context.bind("OFFSET", offset);
 				@SuppressWarnings("unchecked")
 				Enumeration<String> parameterNames = request.getParameterNames();
@@ -99,7 +99,7 @@ public class JsonServlet extends HttpServlet {
 			} else if (command.contains("getFrameInfo")) {
 				startCommands.add("FrameInfoCreate");
 			} else if (command.contains("getFrames")) {
-				context.bind("TOPIC_ID", request.getParameter("topicId"));
+				context.bind("TOPIC_ID", Integer.parseInt(request.getParameter("topicId")));
 				context.bind("OFFSET", offset);
 				context.bind("FRAME_TYPE", request.getParameter("frameType"));
 				

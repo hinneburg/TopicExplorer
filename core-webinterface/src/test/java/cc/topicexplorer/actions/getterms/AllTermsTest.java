@@ -74,7 +74,7 @@ public final class AllTermsTest {
 		when(_mockedMetaData.getColumnName(5)).thenReturn(_columnNames.get(4));
 
 		_testStream = new CharArrayWriter();
-		_allTerms = new GetTerms(_mockedDatabase, new PrintWriter(_testStream), "0", 0);
+		_allTerms = new GetTerms(_mockedDatabase, new PrintWriter(_testStream), 0, 0);
 	}
 
 	@Test

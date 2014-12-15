@@ -18,7 +18,7 @@ public class Frames {
 	private PrintWriter outWriter;
 	private Database database;
 
-	public Frames(Database database, PrintWriter pw, Logger logger, String topicId, String frameType, int offset) {
+	public Frames(Database database, PrintWriter pw, Logger logger, int topicId, String frameType, int offset, int limit) {
 		frameMap = new SelectMap();
 		frameMap.select.add("FRAME AS ITEM_NAME");
 		frameMap.select.add("COUNT( DISTINCT DOCUMENT_ID ) AS ITEM_COUNT");
@@ -26,11 +26,11 @@ public class Frames {
 		frameMap.select.add("FRAME$FRAMES.ACTIVE");
 		frameMap.from.add("FRAME$FRAMES");
 		frameMap.where.add("TOPIC_ID=" + topicId);
-		frameMap.where.add("FRAME_TYPE='" + frameType + "'");
+		frameMap.where.add("FRAME_TYPE like \"" + frameType + "\"");
 		frameMap.where.add("ACTIVE=1");
 		frameMap.groupBy.add("ITEM_NAME");
 		frameMap.orderBy.add("ITEM_COUNT DESC");
-		frameMap.limit = 20;
+		frameMap.limit = limit;
 		frameMap.offset = offset;
 
 		this.setDatabase(database);
@@ -65,6 +65,7 @@ public class Frames {
 		JSONArray sorting = new JSONArray();
 
 		ResultSet frameQueryRS = database.executeQuery(frameMap.getSQLString());
+		System.out.println(frameMap.getSQLString());
 		int topicId = -1;
 		int counter = frameMap.offset;
 		while (frameQueryRS.next()) {

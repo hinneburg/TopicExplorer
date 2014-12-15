@@ -34,7 +34,7 @@ public class Collect extends TableSelectCommand {
 		if(context.containsKey("sorting")) {
 			String sorting = context.getString("sorting");
 			if (sorting.equals("TIME")) {
-				ArrayList<String> orderBy = new ArrayList<String>();
+				ArrayList<String> orderBy = bestDocAction.getOrderBy();
 				orderBy.add("DOCUMENT.TIME$TIME_STAMP");
 				bestDocAction.setOrderBy(orderBy);
 			}

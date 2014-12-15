@@ -10,6 +10,7 @@ import org.apache.commons.lang.StringUtils;
 import cc.commandmanager.core.Context;
 import cc.topicexplorer.actions.search.Search;
 import cc.topicexplorer.commands.TableSelectCommand;
+import cc.topicexplorer.utils.MySQLEncoder;
 
 import com.google.common.collect.Sets;
 
@@ -17,6 +18,8 @@ public class Collect extends TableSelectCommand {
 
 	@Override
 	public void tableExecute(Context context) {
+		MySQLEncoder me = new MySQLEncoder();
+		
 		Search searchAction = context.get("SEARCH_ACTION", Search.class);
 
 		searchAction.addSearchColumn("DOCUMENT.TEXT$TITLE", "TEXT$TITLE");
@@ -36,29 +39,29 @@ public class Collect extends TableSelectCommand {
 			searchColumn = "DOCUMENT.TEXT$FULLTEXT";
 		}
 		searchAction.addSearchColumn("(LENGTH(" + searchColumn + ") + 2 "
-				+ "- LENGTH(REPLACE(CONCAT(' ', " + searchColumn + ", ' '), ' " + searchStringParts[0] + " ', ''))) / " 
-				+ (searchStringParts[0].length() + 2), "COUNT0");
+				+ "- LENGTH(REPLACE(CONCAT(' ', " + searchColumn + ", ' '), ' " + me.encode(searchStringParts[0]) + " ', ''))) / " 
+				+ (me.encode(searchStringParts[0]).length() + 2), "COUNT0");
 		for(int i = 1; i < searchStringParts.length; i++) {
 			searchAction.addSearchColumn("(LENGTH(" + searchColumn + ") + 2 "
-					+ "- LENGTH(REPLACE(CONCAT(' ', " + searchColumn + ", ' '), ' " + searchStringParts[i] + " ', ''))) / " 
-					+ (searchStringParts[i].length() + 2), "COUNT" + i);				
+					+ "- LENGTH(REPLACE(CONCAT(' ', " + searchColumn + ", ' '), ' " + me.encode(searchStringParts[i]) + " ', ''))) / " 
+					+ (me.encode(searchStringParts[i]).length() + 2), "COUNT" + i);				
 		}
-		searchAction.addWhereClause("MATCH(" + searchColumn + ") AGAINST ('" + searchString
+		searchAction.addWhereClause("MATCH(" + searchColumn + ") AGAINST ('" + me.encode(searchString)
 				+ "' IN BOOLEAN MODE)");
 		
 		if(context.containsKey("sorting")) {
 			String sorting = context.getString("sorting");
 			if (sorting.equals("RELEVANCE")) {
-				searchAction.addSearchColumn("MATCH(" + searchColumn + ") AGAINST ('" + searchString + "')", 
+				searchAction.addSearchColumn("MATCH(" + searchColumn + ") AGAINST ('" + me.encode(searchString) + "')", 
 						"RELEVANCE");
 				ArrayList<String> orderBy = searchAction.getOrderBy();
 				orderBy.add("RELEVANCE DESC");
 				searchAction.setOrderBy(orderBy);
 			}
 		} else {
-			searchAction.addSearchColumn("MATCH(" + searchColumn + ") AGAINST ('" + searchString + "')", 
+			searchAction.addSearchColumn("MATCH(" + searchColumn + ") AGAINST ('" + me.encode(searchString) + "')", 
 					"RELEVANCE");
-			ArrayList<String> orderBy = new ArrayList<String>();
+			ArrayList<String> orderBy = searchAction.getOrderBy();
 			orderBy.add("RELEVANCE DESC");
 			searchAction.setOrderBy(orderBy);
 		}
@@ -69,7 +72,7 @@ public class Collect extends TableSelectCommand {
 				if(filter.has("word")) {
 					String word = filter.getString("word");
 					if(!word.isEmpty()) {
-						searchAction.addWhereClause("MATCH(" + searchColumn + ") AGAINST ('" + word	+ "' IN BOOLEAN MODE)");
+						searchAction.addWhereClause("MATCH(" + searchColumn + ") AGAINST ('" + me.encode(word)	+ "' IN BOOLEAN MODE)");
 					}
 				}
 			} catch (JSONException e) {

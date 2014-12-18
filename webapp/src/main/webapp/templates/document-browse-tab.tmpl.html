@@ -13,34 +13,36 @@
 				<!--  /ko -->
 			<!-- /ko -->
 			<!-- ko ifnot: firstLoading --> 
-				<span style="font-weight: bold; margin-left: 20px;">Filter: </span>
-				<!-- ko if: typeof browseData[active()].activeFilter != undefined && browseData[active()].activeFilter.word().length == 0 -->
-					<input type="text" id="filterWord" name="filterWord" title="filterWord" data-bind="value: browseData[active()].filter.word">
-				<!-- /ko -->
-				<!-- ko if: typeof browseData[active()].activeFilter != undefined && browseData[active()].activeFilter.word().length > 0 -->
-					<span data-bind="text: browseData[active()].activeFilter.word()"></span>
-					<img style="cursor:pointer;width:8px; height:8px;" src="images/delete_24.png" alt="delete filter" title="delete filter" data-bind="click: function() { deleteFilter('word'); }"/>
-				<!-- /ko -->
-				<!-- ko if: typeof browseData[active()].activeFilter != undefined && globalData.PLUGINS.indexOf('time') > -1 -->
-					Date:
-					<!-- ko if: browseData[active()].activeFilter.firstDate().length == 0 --> 
-						<span>from:&nbsp;</span>
-						<input type="text" class="datepicker" id="firstDate" data-bind="value: browseData[active()].filter.firstDate">
+				<!-- ko if: typeof browseData[active()].activeFilter != undefined -->
+					<span style="font-weight: bold; margin-left: 20px;">Filter: </span>
+					<!-- ko if: browseData[active()].activeFilter.word().length == 0 -->
+						<input type="text" id="filterWord" name="filterWord" title="filterWord" data-bind="value: browseData[active()].filter.word">
 					<!-- /ko -->
-					<!-- ko if: browseData[active()].activeFilter.firstDate().length > 0 --> 
-						<span data-bind="text: browseData[active()].activeFilter.firstDate()"></span>
-						<img style="cursor:pointer;width:8px; height:8px;" src="images/delete_24.png" alt="delete filter" title="delete filter" data-bind="click: function() { deleteFilter('firstDate'); }" />
+					<!-- ko if: browseData[active()].activeFilter.word().length > 0 -->
+						<span data-bind="text: browseData[active()].activeFilter.word()"></span>
+						<img style="cursor:pointer;width:8px; height:8px;" src="images/delete_24.png" alt="delete filter" title="delete filter" data-bind="click: function() { deleteFilter('word'); }"/>
 					<!-- /ko -->
-					<!-- ko if: browseData[active()].activeFilter.lastDate().length == 0 -->
-						<span>to:&nbsp;</span>
-						<input type="text" class="datepicker" id="lastDate" data-bind="value: browseData[active()].filter.lastDate">
+					<!-- ko if: globalData.PLUGINS.indexOf('time') > -1 && typeof browseData[active()].data.week == 'undefined' -->
+						Date:
+						<!-- ko if: browseData[active()].activeFilter.firstDate().length == 0 --> 
+							<span>from:&nbsp;</span>
+							<input type="text" class="datepicker" id="firstDate" data-bind="value: browseData[active()].filter.firstDate">
+						<!-- /ko -->
+						<!-- ko if: browseData[active()].activeFilter.firstDate().length > 0 --> 
+							<span data-bind="text: browseData[active()].activeFilter.firstDate()"></span>
+							<img style="cursor:pointer;width:8px; height:8px;" src="images/delete_24.png" alt="delete filter" title="delete filter" data-bind="click: function() { deleteFilter('firstDate'); }" />
+						<!-- /ko -->
+						<!-- ko if: browseData[active()].activeFilter.lastDate().length == 0 -->
+							<span>to:&nbsp;</span>
+							<input type="text" class="datepicker" id="lastDate" data-bind="value: browseData[active()].filter.lastDate">
+						<!-- /ko -->
+						<!-- ko if: browseData[active()].activeFilter.lastDate().length > 0 -->
+							<span data-bind="text: browseData[active()].activeFilter.lastDate()"></span>
+							<img style="cursor:pointer;width:8px; height:8px;" src="images/delete_24.png" alt="delete filter" title="delete filter" data-bind="click: function() { deleteFilter('lastDate'); }" />
+						<!-- /ko -->
 					<!-- /ko -->
-					<!-- ko if: browseData[active()].activeFilter.lastDate().length > 0 -->
-						<span data-bind="text: browseData[active()].activeFilter.lastDate()"></span>
-						<img style="cursor:pointer;width:8px; height:8px;" src="images/delete_24.png" alt="delete filter" title="delete filter" data-bind="click: function() { deleteFilter('lastDate'); }" />
-					<!-- /ko -->
-				<!-- /ko -->
-				<button  data-bind="click: changeFilters">Accept Filter</button>
+					<button  data-bind="click: changeFilters">Accept Filter</button>
+				<!-- /ko -->	
 			<!-- /ko -->
 		</div>
 	<!-- /ko -->

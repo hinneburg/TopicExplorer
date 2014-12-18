@@ -49,7 +49,7 @@ function(ko, $) {
 				}
 				
 				self.browseData[self.active()].selectedDocuments([]);
-				$.getJSON("JsonServlet?Command=" + self.active() + "&sorting=" + self.browseData[self.active()].selectedSorting().toUpperCase() + "&filter=" + JSON.stringify(filter))
+				$.getJSON("JsonServlet?Command=" + self.browseData[self.active()].data.getParam + "&sorting=" + self.browseData[self.active()].selectedSorting().toUpperCase() + "&filter=" + JSON.stringify(filter))
 				.success(function(receivedParsedJson) {
 					self.browseData[self.active()].nextOffset = self.documentLimit;
 					if(receivedParsedJson.DOCUMENT_SORTING.length < self.documentLimit) {
@@ -67,7 +67,8 @@ function(ko, $) {
 						extender(self);
 					}
 					self.loading(false);
-				});			
+					self.loadUntilFull();
+				});	
 			}
 		};
 		
@@ -103,7 +104,7 @@ function(ko, $) {
 						filter[key] = self.browseData[self.active()].activeFilter[key]();
 					}
 					
-					$.getJSON("JsonServlet?Command=" + self.active() + "&offset=" + self.browseData[self.active()].nextOffset + "&sorting=" + self.browseData[self.active()].selectedSorting().toUpperCase() + "&filter=" + JSON.stringify(filter))
+					$.getJSON("JsonServlet?Command=" + self.browseData[self.active()].data.getParam + "&offset=" + self.browseData[self.active()].nextOffset + "&sorting=" + self.browseData[self.active()].selectedSorting().toUpperCase() + "&filter=" + JSON.stringify(filter))
 					.success(function(receivedParsedJson) {
 						self.browseData[self.active()].nextOffset += self.documentLimit;
 						if(receivedParsedJson.DOCUMENT_SORTING.length < self.documentLimit) {
@@ -173,7 +174,7 @@ function(ko, $) {
 				self.browseData[self.active()].selectedDocuments = ko.observableArray([]);
 				self.browseData[self.active()].textSelectArray = ko.observableArray([]);
 				self.browseData[self.active()].textSelection = ko.observable();
-				$.getJSON("JsonServlet?Command=" + self.active() + "&sorting=" + self.browseData[self.active()].selectedSorting())
+				$.getJSON("JsonServlet?Command=" + self.browseData[self.active()].data.getParam + "&sorting=" + self.browseData[self.active()].selectedSorting())
 				.success(function(receivedParsedJson) {
 					
 					self.browseData[self.active()].nextOffset = self.documentLimit;

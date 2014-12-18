@@ -81,7 +81,7 @@ function(ko, $, moment) {
     	};
     	
     	self.loadDocumentsForTopicsAndWeek = function (week) { 
-    		ko.postbox.publish('openNewTab',{moduleName:"document-browse-tab", tabHeading: moment(week).format('L').substr(0, 6) + ' - ' + moment(week).add('d', 6).format('L') + " (" + self.timeData[self.active()].topicId() + ")", data: {topicId: self.timeData[self.active()].topicId(), getParam: "bestDocs&TopicId="+ self.timeData[self.active()].topicId() + "&week=" + week.toString().substr(0,10)}});	
+    		ko.postbox.publish('openNewTab',{moduleName:"document-browse-tab", tabHeading: moment(week).format('L').substr(0, 6) + ' - ' + moment(week).add('d', 6).format('L') + " (" + self.timeData[self.active()].topicId() + ")", data: {topicId: self.timeData[self.active()].topicId(), week:  week.toString().substr(0,10), getParam: "bestDocs&TopicId="+ self.timeData[self.active()].topicId() + "&week=" + week.toString().substr(0,10)}});	
     	};
     	
     	self.makeChart = function() {

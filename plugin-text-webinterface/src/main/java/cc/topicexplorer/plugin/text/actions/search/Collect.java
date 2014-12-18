@@ -38,13 +38,13 @@ public class Collect extends TableSelectCommand {
 		}else {
 			searchColumn = "DOCUMENT.TEXT$FULLTEXT";
 		}
-		searchAction.addSearchColumn("(LENGTH(" + searchColumn + ") + 2 "
-				+ "- LENGTH(REPLACE(CONCAT(' ', " + searchColumn + ", ' '), ' " + me.encode(searchStringParts[0]) + " ', ''))) / " 
-				+ (me.encode(searchStringParts[0]).length() + 2), "COUNT0");
+		searchAction.addSearchColumn("(CHAR_LENGTH(REPLACE(" + searchColumn + ",' ', '  ')) + 2 "
+				+ "- CHAR_LENGTH(REPLACE(CONCAT(' ', REPLACE(" + searchColumn + ", ' ', '  '), ' '), ' " + searchStringParts[0].replace("'", "") + " ', ''))) / " 
+				+ (searchStringParts[0].replace("'", "").length() + 2), "COUNT0");
 		for(int i = 1; i < searchStringParts.length; i++) {
-			searchAction.addSearchColumn("(LENGTH(" + searchColumn + ") + 2 "
-					+ "- LENGTH(REPLACE(CONCAT(' ', " + searchColumn + ", ' '), ' " + me.encode(searchStringParts[i]) + " ', ''))) / " 
-					+ (me.encode(searchStringParts[i]).length() + 2), "COUNT" + i);				
+			searchAction.addSearchColumn("(CHAR_LENGTH(REPLACE(" + searchColumn + ",' ','  ')) + 2 "
+					+ "- CHAR_LENGTH(REPLACE(CONCAT(' ', REPLACE(" + searchColumn + ", ' ', '  '), ' '), ' " + searchStringParts[i].replace("'", "") + " ', ''))) / " 
+					+ (searchStringParts[i].replace("'", "").length() + 2), "COUNT" + i);				
 		}
 		searchAction.addWhereClause("MATCH(" + searchColumn + ") AGAINST ('" + me.encode(searchString)
 				+ "' IN BOOLEAN MODE)");

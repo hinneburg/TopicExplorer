@@ -45,8 +45,9 @@ function(ko, $, moment) {
 				}
 				
 				$(document).delegate(".datepicker", "focusin", function(){
-					   $(this).datepicker();
-					});
+					$(this).datepicker();
+					$(this).prop('readOnly', true);
+				});
 				
 			} 
 			if(instance.browseData[instance.active()].sortingOptions.indexOf('Time') == -1) {

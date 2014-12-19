@@ -10,6 +10,8 @@ function(ko, $, moment) {
 					instance.browseData.timeData.minDate = receivedParsedJson.DateRange[0] * 1000;
 					instance.browseData.timeData.maxDate = receivedParsedJson.DateRange[1] * 1000;
 					$.datepicker.setDefaults({
+						changeMonth: true, 
+						changeYear: true,
 						minDate: new Date(instance.browseData.timeData.minDate),
 						maxDate: new Date(instance.browseData.timeData.maxDate)
 					});
@@ -38,6 +40,7 @@ function(ko, $, moment) {
 					}
 						
 					$(".datepicker").datepicker();
+					$(".datepicker").prop('readOnly', true);
 					
 				}
 				

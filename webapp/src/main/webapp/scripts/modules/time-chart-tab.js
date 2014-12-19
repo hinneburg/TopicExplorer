@@ -191,12 +191,12 @@ function(ko, $, moment) {
 		self.timeData.allTopics.subscribe(self.changeTopics);
 		self.addTopic = function(elem, addedIndezes) {
 			if($(self.oldTopics).not(self.newTopics).get().length < $(self.newTopics).not(self.oldTopics).get().length) {
-				$(elem).filter('span').css('width', '5px').animate({width: '33px'}, 500);
+				$(elem).filter('div').css('width', '5px').animate({width: '40px'}, 500);
 			}
 		};
 		self.removeTopic = function(elem, deletedIndezes) {
 			if($(self.oldTopics).not(self.newTopics).get().length > $(self.newTopics).not(self.oldTopics).get().length) {
-				$(elem).filter('span').css('opacity', '0').animate({width: '5px'}, 500, function() {$(this).remove();});
+				$(elem).filter('div').css('opacity', '0').animate({width: '5px'}, 500, function() {$(this).remove();});
 			} else {
 				$(elem).remove();
 			}

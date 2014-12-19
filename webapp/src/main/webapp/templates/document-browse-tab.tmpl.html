@@ -79,7 +79,7 @@
 					</div>					
 					<div class="circles">
 						<!--  ko foreach: globalData.DOCUMENT[selectedDocument].topTopics() --> 
-							<div><span class="topicCheckboxCircle topicCircle" data-bind="style: {color: globalData.Topic[$data].COLOR_TOPIC$COLOR}, attr: {id: 't_' + $data, title: 'Topic ' + $data}, click: $parents[1].moveToTopic" >&#11044;</span></div>
+							<div style="cursor: pointer; margin-bottom:4px; width: 12px; height: 12px; -moz-border-radius: 6px; -webkit-border-radius: 6px; border-radius: 6px;" data-bind="style: {backgroundColor: globalData.Topic[$data].COLOR_TOPIC$COLOR}, attr: {id: 't_' + $data, title: 'Topic ' + $data}, click: $parents[1].moveToTopic" ></div>
 						<!-- /ko -->
 					</div>
 				</li>

@@ -13,10 +13,10 @@
 </div>
 <script id="autocomplete" type="text/html">
 <div style="width: 100%;overflow:hidden;text-overflow: ellipsis; white-space: nowrap;" data-bind="event:{mouseover:$parent.changeSearchWord}">
-<a href="#" data-bind="text: TERM_NAME"></a>
+<a href="#" data-bind="text: TERM_NAME" style="float: left;margin-right: 4px;"></a>
 <!-- ko foreach: TOP_TOPIC -->
 	<!-- ko if: $parents[1].selectedTopics.indexOf($data) > -1 -->
-		<span style="font-size: x-large;" class="topicCheckboxCircle topicCircle autocompleteTopic" data-bind="style: {color: globalData.Topic[$data].COLOR_TOPIC$COLOR}, attr: {id: 'acT_' + $data, title: 'Topic ' + $data}, click: $parents[1].moveToTopic">●</span>
+		<div class="autocompleteTopic" style="float: left; cursor: pointer; margin: 2px 4px 0 0; width: 12px; height: 12px; -moz-border-radius: 6px; -webkit-border-radius: 6px; border-radius: 6px;" data-bind="style: {backgroundColor: globalData.Topic[$data].COLOR_TOPIC$COLOR}, attr: {id: 'acT_' + $data, title: 'Topic ' + $data}" ></div>		
 	<!-- /ko -->
 <!-- /ko -->
 </div>

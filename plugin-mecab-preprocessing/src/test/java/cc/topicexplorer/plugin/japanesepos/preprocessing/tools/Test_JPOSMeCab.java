@@ -14,7 +14,7 @@ import cc.topicexplorer.plugin.japanesepos.preprocessing.implementation.postagge
 
 public class Test_JPOSMeCab {
 
-	@Ignore @Test
+	@Test
 	public void testDuplicates() throws Exception
 	{
 		String inFilePath = "";

@@ -23,11 +23,11 @@ public class JPOSMeCab {
 					System.exit(1);
 				}
 			} else if(System.getProperty("os.name").toLowerCase().indexOf("nux") >= 0) { // Linux
-				f = new File("/usr/lib/libmecab.so");
+				f = new File("/usr/lib/jni/libMeCab.so");
 				if(f.exists() && !f.isDirectory()) {
-					System.load("/usr/lib/libmecab.so");
+					System.load("/usr/lib/jni/libMeCab.so");
 				} else {
-					System.err.println("mecab-java library not found. You have to install mecab-utf8 and mecab-java.");
+					System.err.println("mecab-java library not found. You have to install mecab-utf8, libmecab-java and libmecab-jni.");
 					System.exit(1);
 				}
 			} else {

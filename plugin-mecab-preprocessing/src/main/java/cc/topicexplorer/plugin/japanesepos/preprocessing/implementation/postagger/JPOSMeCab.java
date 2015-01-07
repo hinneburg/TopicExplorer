@@ -1,5 +1,6 @@
 package cc.topicexplorer.plugin.japanesepos.preprocessing.implementation.postagger;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,8 +13,27 @@ public class JPOSMeCab {
 	
 	public JPOSMeCab() {
 		try {
-			// TODO dynamic machen!!
-			System.loadLibrary("MeCab");
+			File f;
+			if(System.getProperty("os.name").toLowerCase().indexOf("mac") >= 0) { // MacOSX
+				f = new File("/opt/local/lib/libmecab-java.dylib");
+				if(f.exists() && !f.isDirectory()) {
+					System.load("/opt/local/lib/libmecab-java.dylib");
+				} else {
+					System.err.println("mecab-java library not found. You have to install mecab-utf8 and mecab-java via MacPorts");
+					System.exit(1);
+				}
+			} else if(System.getProperty("os.name").toLowerCase().indexOf("nux") >= 0) { // Linux
+				f = new File("/usr/lib/libmecab.so");
+				if(f.exists() && !f.isDirectory()) {
+					System.load("/usr/lib/libmecab.so");
+				} else {
+					System.err.println("mecab-java library not found. You have to install mecab-utf8 and mecab-java.");
+					System.exit(1);
+				}
+			} else {
+				System.err.println("Only MacOSX and Linux are supported atm.");
+				System.exit(1);
+			}
 		} catch (UnsatisfiedLinkError e) {
 			System.err.println("Cannot load the required mecab-java library\n" + e);
 			System.exit(1);

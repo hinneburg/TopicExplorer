@@ -118,6 +118,8 @@ public class JPOSMeCab {
 		while ( queue.tokensLeft() ) {
 			csvList.add(queue.flush().csvString());
 		}
+		
+		tagger.delete();
 		return csvList;	
 	}
 	

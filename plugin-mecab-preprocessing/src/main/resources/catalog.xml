@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <catalog>
-	<command name="DocumentTermCreate" className="cc.topicexplorer.plugin.japanesepos.preprocessing.command.DocumentTermCreate"/>	
-	<command name="DocumentTermFill" className="cc.topicexplorer.plugin.japanesepos.preprocessing.command.DocumentTermFill"/>
+	<command name="DocumentTermCreate" className="cc.topicexplorer.plugin.mecab.preprocessing.command.DocumentTermCreate"/>	
+	<command name="DocumentTermFill" className="cc.topicexplorer.plugin.mecab.preprocessing.command.DocumentTermFill"/>
 </catalog>

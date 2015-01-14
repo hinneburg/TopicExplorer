@@ -10,11 +10,11 @@ import java.util.List;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import cc.topicexplorer.plugin.japanesepos.preprocessing.implementation.postagger.JPOSMeCab;
+import cc.topicexplorer.plugin.mecab.preprocessing.implementation.postagger.JPOSMeCab;
 
 public class Test_JPOSMeCab {
 
-	@Test
+	@Test @Ignore
 	public void testDuplicates() throws Exception
 	{
 		String inFilePath = "";
@@ -29,7 +29,7 @@ public class Test_JPOSMeCab {
 		if (i==6) inFilePath = this.getClass().getResource("/wiki_shibata.txt").getFile();
 		if (i==7) inFilePath = this.getClass().getResource("/wiki_vancouver.txt").getFile();
 		
-		JPOSMeCab jpos = new JPOSMeCab();
+		JPOSMeCab jpos = new JPOSMeCab("");
 
 //		jpos.setUseWordClass("MISC", false);
 //		jpos.setUseWordClass("SYM", false);

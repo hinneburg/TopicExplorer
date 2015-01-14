@@ -1,4 +1,4 @@
-package cc.topicexplorer.plugin.japanesepos.preprocessing.implementation.postagger;
+package cc.topicexplorer.plugin.mecab.preprocessing.implementation.postagger;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -7,35 +7,20 @@ import java.util.List;
 import org.chasen.mecab.Node;
 import org.chasen.mecab.Tagger;
 
-
-
 public class JPOSMeCab {
 	
-	public JPOSMeCab() {
+	public JPOSMeCab(String libraryPath) {
 		try {
 			File f;
-			if(System.getProperty("os.name").toLowerCase().indexOf("mac") >= 0) { // MacOSX
-				f = new File("/opt/local/lib/libmecab-java.dylib");
-				if(f.exists() && !f.isDirectory()) {
-					System.load("/opt/local/lib/libmecab-java.dylib");
-				} else {
-					System.err.println("mecab-java library not found. You have to install mecab-utf8 and mecab-java via MacPorts");
-					System.exit(1);
-				}
-			} else if(System.getProperty("os.name").toLowerCase().indexOf("nux") >= 0) { // Linux
-				f = new File("/usr/lib/jni/libMeCab.so");
-				if(f.exists() && !f.isDirectory()) {
-					System.load("/usr/lib/jni/libMeCab.so");
-				} else {
-					System.err.println("mecab-java library not found. You have to install mecab-utf8, libmecab-java and libmecab-jni.");
-					System.exit(1);
-				}
+			f = new File(libraryPath);
+			if(f.exists() && !f.isDirectory()) {
+				System.load(libraryPath);
 			} else {
-				System.err.println("Only MacOSX and Linux are supported atm.");
+				System.err.println(libraryPath.equals("/opt/local/lib/libmecab-java.dylib") + " " + f.exists() + " " + f.isDirectory() + "mecab-java library not found. Please install mecab-java libraries and check the config");
 				System.exit(1);
 			}
 		} catch (UnsatisfiedLinkError e) {
-			System.err.println("Cannot load the required mecab-java library\n" + e);
+			System.err.println("Cannot load the required mecab-java libraries\n" + e);
 			System.exit(1);
 		}
 	}

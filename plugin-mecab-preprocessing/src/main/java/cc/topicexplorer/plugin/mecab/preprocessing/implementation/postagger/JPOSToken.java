@@ -1,4 +1,4 @@
-package cc.topicexplorer.plugin.japanesepos.preprocessing.implementation.postagger;
+package cc.topicexplorer.plugin.mecab.preprocessing.implementation.postagger;
 
 public class JPOSToken
 {

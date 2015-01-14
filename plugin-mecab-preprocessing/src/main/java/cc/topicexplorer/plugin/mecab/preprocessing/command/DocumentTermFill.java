@@ -1,4 +1,4 @@
-package cc.topicexplorer.plugin.japanesepos.preprocessing.command;
+package cc.topicexplorer.plugin.mecab.preprocessing.command;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -12,16 +12,13 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Set;
 
-
 import cc.topicexplorer.commands.TableFillCommand;
-import cc.topicexplorer.plugin.japanesepos.preprocessing.implementation.postagger.JPOSMeCab;
+import cc.topicexplorer.plugin.mecab.preprocessing.implementation.postagger.JPOSMeCab;
 
 import com.google.common.collect.Sets;
 
 public class DocumentTermFill extends TableFillCommand {
 
-	private JPOSMeCab jpos;
-			
 	@Override
 	public void fillTable() {
 		String fileName = "temp/docTerm.sql.csv";
@@ -30,13 +27,12 @@ public class DocumentTermFill extends TableFillCommand {
         	fileTemp.delete();
         }  
 		try {
+			JPOSMeCab jpos = new JPOSMeCab(properties.getProperty("Mecab_LibraryPath").trim());
 			BufferedWriter docTermCSVWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileName, true), "UTF-8"));
 		
 			ResultSet textRs = database.executeQuery("SELECT " + properties.getProperty("OrgTableId") + 
 					", " + properties.getProperty("OrgTableTxt") + " FROM " + properties.getProperty("OrgTableName"));
 			while(textRs.next()) {
-				jpos = new JPOSMeCab(); // fixme: is it nessecary?
-				
 				List<String> csvList = jpos.parseString(textRs.getInt(properties.getProperty("OrgTableId")), textRs.getString(properties.getProperty("OrgTableTxt")));
 				
 				for (String csvEntry : csvList) {

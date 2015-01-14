@@ -1,4 +1,4 @@
-package cc.topicexplorer.plugin.japanesepos.preprocessing.command;
+package cc.topicexplorer.plugin.mecab.preprocessing.command;
 
 import java.sql.SQLException;
 import java.util.Set;

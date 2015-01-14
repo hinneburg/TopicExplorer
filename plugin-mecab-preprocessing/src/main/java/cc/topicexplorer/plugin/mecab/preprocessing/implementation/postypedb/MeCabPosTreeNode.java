@@ -1,4 +1,4 @@
-package cc.topicexplorer.plugin.japanesepos.preprocessing.implementation.postypedb;
+package cc.topicexplorer.plugin.mecab.preprocessing.implementation.postypedb;
 
 import java.util.ArrayList;
 import java.util.Iterator;

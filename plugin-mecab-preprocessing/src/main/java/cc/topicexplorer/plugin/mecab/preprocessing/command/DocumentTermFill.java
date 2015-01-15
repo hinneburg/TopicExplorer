@@ -12,12 +12,15 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 import cc.topicexplorer.commands.TableFillCommand;
 import cc.topicexplorer.plugin.mecab.preprocessing.implementation.postagger.JPOSMeCab;
 
 import com.google.common.collect.Sets;
 
 public class DocumentTermFill extends TableFillCommand {
+	private static final Logger logger = Logger.getLogger(DocumentTermFill.class);
 
 	@Override
 	public void fillTable() {
@@ -27,6 +30,10 @@ public class DocumentTermFill extends TableFillCommand {
         	fileTemp.delete();
         }  
 		try {
+			if(!properties.containsKey("Mecab_LibraryPath")) {
+				logger.error("Mecab library path not set. Did you enable mecab plugin in config.properties?");
+				System.exit(0);
+			}
 			JPOSMeCab jpos = new JPOSMeCab(properties.getProperty("Mecab_LibraryPath").trim());
 			BufferedWriter docTermCSVWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileName, true), "UTF-8"));
 		

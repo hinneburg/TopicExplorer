@@ -32,15 +32,15 @@ public class DocumentTermFill extends TableFillCommand {
 		try {
 			if(!properties.containsKey("Mecab_LibraryPath")) {
 				logger.error("Mecab library path not set. Did you enable mecab plugin in config.properties?");
-				System.exit(0);
+				throw new RuntimeException("Mecab library path not set.");
 			}
-			JPOSMeCab jpos = new JPOSMeCab(properties.getProperty("Mecab_LibraryPath").trim());
+			JPOSMeCab jpos = new JPOSMeCab(properties.getProperty("Mecab_LibraryPath").trim(), logger);
 			BufferedWriter docTermCSVWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileName, true), "UTF-8"));
 		
 			ResultSet textRs = database.executeQuery("SELECT " + properties.getProperty("OrgTableId") + 
 					", " + properties.getProperty("OrgTableTxt") + " FROM " + properties.getProperty("OrgTableName"));
 			while(textRs.next()) {
-				List<String> csvList = jpos.parseString(textRs.getInt(properties.getProperty("OrgTableId")), textRs.getString(properties.getProperty("OrgTableTxt")));
+				List<String> csvList = jpos.parseString(textRs.getInt(properties.getProperty("OrgTableId")), textRs.getString(properties.getProperty("OrgTableTxt")), logger);
 				
 				for (String csvEntry : csvList) {
 					docTermCSVWriter.write(csvEntry + "\n");

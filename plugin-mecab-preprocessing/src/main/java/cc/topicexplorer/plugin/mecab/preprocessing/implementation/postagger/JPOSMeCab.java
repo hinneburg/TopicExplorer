@@ -4,28 +4,29 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.chasen.mecab.Node;
 import org.chasen.mecab.Tagger;
 
 public class JPOSMeCab {
 	
-	public JPOSMeCab(String libraryPath) {
+	public JPOSMeCab(String libraryPath, Logger logger) {
 		try {
 			File f;
 			f = new File(libraryPath);
 			if(f.exists() && !f.isDirectory()) {
 				System.load(libraryPath);
 			} else {
-				System.err.println(libraryPath.equals("/opt/local/lib/libmecab-java.dylib") + " " + f.exists() + " " + f.isDirectory() + "mecab-java library not found. Please install mecab-java libraries and check the config");
-				System.exit(1);
+				logger.error("mecab-java library not found. Please install mecab-java libraries and check the config");
+				throw new RuntimeException("mecab-java library not found.");
 			}
 		} catch (UnsatisfiedLinkError e) {
-			System.err.println("Cannot load the required mecab-java libraries\n" + e);
-			System.exit(1);
+			logger.error("Cannot load the required mecab-java libraries\n" + e);
+			throw new RuntimeException(e);
 		}
 	}
 
-	public List<String> parseString(int docID, String str) {
+	public List<String> parseString(int docID, String str, Logger logger) {
 		List<String> csvList = new ArrayList<String>();
 		Tagger tagger = new Tagger();
 
@@ -95,7 +96,7 @@ public class JPOSMeCab {
 						csvList.add(queue.flush().csvString());
 					}
 				} else {
-					System.out.println("Char not found: " + token);
+					logger.warn("Char not found: " + token);
 				}
 			}
 		}

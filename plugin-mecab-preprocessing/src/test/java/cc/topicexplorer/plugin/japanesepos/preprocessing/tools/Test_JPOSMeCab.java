@@ -7,12 +7,15 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import cc.topicexplorer.plugin.mecab.preprocessing.command.PosTypeFill;
 import cc.topicexplorer.plugin.mecab.preprocessing.implementation.postagger.JPOSMeCab;
 
 public class Test_JPOSMeCab {
+	private static final Logger logger = Logger.getLogger(PosTypeFill.class);
 
 	@Test @Ignore
 	public void testDuplicates() throws Exception
@@ -29,7 +32,7 @@ public class Test_JPOSMeCab {
 		if (i==6) inFilePath = this.getClass().getResource("/wiki_shibata.txt").getFile();
 		if (i==7) inFilePath = this.getClass().getResource("/wiki_vancouver.txt").getFile();
 		
-		JPOSMeCab jpos = new JPOSMeCab("");
+		JPOSMeCab jpos = new JPOSMeCab("", logger);
 
 //		jpos.setUseWordClass("MISC", false);
 //		jpos.setUseWordClass("SYM", false);
@@ -54,7 +57,7 @@ public class Test_JPOSMeCab {
 				}
 		       reader.close();
 		         System.out.println(content.length());
-		       List<String> csvList = jpos.parseString(0, content);
+		       List<String> csvList = jpos.parseString(0, content, logger);
 				
 		       for (String csvEntry : csvList) {
 		    	   System.out.println(csvEntry);

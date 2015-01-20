@@ -75,7 +75,11 @@ public class JsonServlet extends HttpServlet {
 				}
 				startCommands.add("GetTermsCoreCreate");
 			} else if (command.contains("autocomplete")) {
-				context.bind("SEARCH_WORD", request.getParameter("SearchWord"));
+				String searchWord = request.getParameter("SearchWord");
+				if(searchWord.length() < Integer.parseInt(properties.getProperty("autocompleteMinChars"))) {
+					return;
+				}
+				context.bind("SEARCH_WORD", searchWord);
 
 				startCommands.add("AutocompleteCoreCreate");
 			} else if (command.contains("search")) {

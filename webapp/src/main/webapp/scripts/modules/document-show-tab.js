@@ -30,8 +30,6 @@ function(ko, $) {
 		self.setData = function (data) { 
 			
 			self.active = ko.observable(JSON.stringify(data));
-		//	if (!self.singleData[self.active()]) {
-			
 			if (!self.singleData[self.active()]) {
 				self.loading(true);
 				$.getJSON("JsonServlet?Command=getDoc&DocId=" + data.documentId)
@@ -54,17 +52,7 @@ function(ko, $) {
 					}
 					self.loading(false);
 				});
-			}
-//			} else {
-//				self.singleData[self.active()].data = data;
-//				for (var i=0;i<extend.length;i++) {
-//					var extender = require(extend[i]);
-//					extender(self);
-//				}
-//				self.loading(false);
-//			}
-//			
-				
+			}				
 		};
 		self.getData = function () { return self.active(); };
 		self.setData(data);

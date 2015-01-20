@@ -18,11 +18,12 @@
 		<!--  ko if:singleData[active()].data.searchWord != undefined-->
 			<span style="font-size:xx-small; color: #7f7f7f">Search: </span>
 			<!-- ko foreach: singleData[active()].data.searchWord.split(" ") -->
-				<!--  ko if: $parent.singleData[$parent.active()].DOCUMENT.SEARCH_TEXT.indexOf(' ' + $data + ' ') > -1 -->
-					<span style="font-size:xx-small; color: #7f7f7f;" data-bind="text: $data + '(' + $parent.singleData[$parent.active()].DOCUMENT.SEARCH_TEXT.match(new RegExp(' ' + $data + ' ','g')).length + ')' + ' '"></span>
+				<!--  ko if: globalData.DOCUMENT[$parent.singleData[$parent.active()].DOCUMENT.DOCUMENT_ID]['ISIN' + $index()] == 1-->
+					<span style="font-size:xx-small; color: #7f7f7f;" data-bind="text: $data + ' '"></span>
 				<!-- /ko -->
-				<!--  ko if: $parent.singleData[$parent.active()].DOCUMENT.SEARCH_TEXT.indexOf(' ' + $data + ' ') < 0 -->
-					<span style="font-size:xx-small; color: #7f7f7f; text-decoration: line-through" data-bind="text: $data + ' '"></span>
+				<!--  ko if: globalData.DOCUMENT[$parent.singleData[$parent.active()].DOCUMENT.DOCUMENT_ID]['ISIN' + $index()] < 1-->
+					<span style="font-size:xx-small; color: #7f7f7f; text-decoration: line-through" data-bind="text: $data"></span>
+					<span style="font-size:xx-small; color: #7f7f7f;" data-bind="text: $data">&nbsp;</span>
 				<!-- /ko -->
 			<!-- /ko -->
 		<!-- /ko --><br/>

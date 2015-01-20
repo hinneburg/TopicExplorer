@@ -59,11 +59,12 @@
 							<!--  ko if:$parent.browseData[$parent.active()].data.searchWord != undefined-->
 								<span style="font-size:xx-small; color: #7f7f7f">Search:
 								<!-- ko foreach: $parent.browseData[$parent.active()].data.searchWord.match(/\S+/g) -->
-									<!--  ko if: globalData.DOCUMENT[selectedDocument]['COUNT' + $index()] >= 1 -->
-										<span data-bind="text: $data + ' ' + '(' + parseInt(globalData.DOCUMENT[selectedDocument]['COUNT' + $index()]) + ')' + ' '"></span>
+									<!--  ko if: globalData.DOCUMENT[selectedDocument]['ISIN' + $index()] == 1 -->
+										<span data-bind="text: $data + ' '"></span>
 									<!-- /ko -->
-									<!--  ko if: globalData.DOCUMENT[selectedDocument]['COUNT' + $index()] < 1 -->
-										<span style="text-decoration: line-through" data-bind="text: $data + ' '"></span>
+									<!--  ko if: globalData.DOCUMENT[selectedDocument]['ISIN' + $index()] < 1 -->
+										<span style="text-decoration: line-through" data-bind="text: $data"></span>
+										<span>&nbsp;</span>
 									<!-- /ko -->
 								<!-- /ko -->
 								 </span>

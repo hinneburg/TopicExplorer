@@ -38,13 +38,10 @@ public class Collect extends TableSelectCommand {
 		}else {
 			searchColumn = "DOCUMENT.TEXT$FULLTEXT";
 		}
-		searchAction.addSearchColumn("(CHAR_LENGTH(REPLACE(" + searchColumn + ",' ', '  ')) + 2 "
-				+ "- CHAR_LENGTH(REPLACE(CONCAT(' ', REPLACE(" + searchColumn + ", ' ', '  '), ' '), ' " + searchStringParts[0].replace("'", "") + " ', ''))) / " 
-				+ (searchStringParts[0].replace("'", "").length() + 2), "COUNT0");
+		searchAction.addSearchColumn("match (" + searchColumn + ") against ('" + searchStringParts[0].replace("'", "") + "' in boolean mode)", "ISIN0");
 		for(int i = 1; i < searchStringParts.length; i++) {
-			searchAction.addSearchColumn("(CHAR_LENGTH(REPLACE(" + searchColumn + ",' ','  ')) + 2 "
-					+ "- CHAR_LENGTH(REPLACE(CONCAT(' ', REPLACE(" + searchColumn + ", ' ', '  '), ' '), ' " + searchStringParts[i].replace("'", "") + " ', ''))) / " 
-					+ (searchStringParts[i].replace("'", "").length() + 2), "COUNT" + i);				
+			searchAction.addSearchColumn("match (" + searchColumn + ") against ('" + searchStringParts[i].replace("'", "") + "' in boolean mode)", "ISIN" + i);
+							
 		}
 		searchAction.addWhereClause("MATCH(" + searchColumn + ") AGAINST ('" + me.encode(searchString)
 				+ "' IN BOOLEAN MODE)");

@@ -18,12 +18,12 @@
 		<!--  ko if:singleData[active()].data.searchWord != undefined-->
 			<span style="font-size:xx-small; color: #7f7f7f">Search: </span>
 			<!-- ko foreach: singleData[active()].data.searchWord.split(" ") -->
-				<!--  ko if: globalData.DOCUMENT[$parent.singleData[$parent.active()].DOCUMENT.DOCUMENT_ID]['ISIN' + $index()] == 1-->
+				<!--  ko if: globalData.DOCUMENT[$parent.singleData[$parent.active()].DOCUMENT.DOCUMENT_ID]['ISIN' + $index()] > 0-->
 					<span style="font-size:xx-small; color: #7f7f7f;" data-bind="text: $data + ' '"></span>
 				<!-- /ko -->
 				<!--  ko if: globalData.DOCUMENT[$parent.singleData[$parent.active()].DOCUMENT.DOCUMENT_ID]['ISIN' + $index()] < 1-->
 					<span style="font-size:xx-small; color: #7f7f7f; text-decoration: line-through" data-bind="text: $data"></span>
-					<span style="font-size:xx-small; color: #7f7f7f;" data-bind="text: $data">&nbsp;</span>
+					<span style="font-size:xx-small; color: #7f7f7f;">&nbsp;</span>
 				<!-- /ko -->
 			<!-- /ko -->
 		<!-- /ko --><br/>

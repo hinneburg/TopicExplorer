@@ -1,0 +1,14 @@
+.tbltree-indent {width:16px; height: 16px; display: inline-block; position: relative;}
+
+.tbltree-expander {width:16px; height: 16px; display: inline-block; position: relative; cursor: pointer;}
+
+.tbltree-expander-expanded{background-image: url(images/collapse.png); }
+.tbltree-expander-collapsed{background-image: url(images/expand.png);}
+
+.tbltree-level-pickers {float: left;}
+.tbltree-level-pickers .tbltree-level-item {cursor: pointer;}
+.tbltree-count-wrap {
+	font-style: italic;
+	font-size: 10px;
+	float: right;
+}

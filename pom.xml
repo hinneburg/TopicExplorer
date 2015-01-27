@@ -35,6 +35,7 @@
 		<module>plugin-wordtype-webinterface</module>
 		<module>run-preprocessing</module>
 		<module>webapp</module>
+        <module>webapp-preprocessing</module>
 	</modules>
 	<dependencies>
 		<dependency>

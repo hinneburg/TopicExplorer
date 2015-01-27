@@ -41,6 +41,12 @@ public class PosTypeCreate  extends TableCreateCommand{
 					+ "`HIGH` int(11) DEFAULT NULL, "
 					+ "`DESCRIPTION` varchar(255), "
 					+ "`PARENT_POS` int(11) DEFAULT NULL, "
+					+ "TOKEN_COUNT int(11) DEFAULT NULL, "
+					+ "DOCUMENT_COUNT int(11) DEFAULT NULL, "
+					+ "TERM_COUNT int(11) DEFAULT NULL, "
+					+ "MIN_TOKEN_LENGTH int(11) DEFAULT NULL, "
+					+ "MAX_TOKEN_LENGTH int(11) DEFAULT NULL, "
+					+ "AVG_TOKEN_LENGTH float(4,1) DEFAULT NULL, "
 					+ "PRIMARY KEY (`POS`)) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin ;");
 		} catch (SQLException e) {
 			logger.error("Table " + this.tableName + " could not be created.");

@@ -20,12 +20,20 @@ public class Create extends TableSelectCommand {
 		PrintWriter pw = context.get("SERVLET_WRITER", PrintWriter.class);
 		int limit = Integer.parseInt(properties.getProperty("DocBrowserLimit"));
 		BestDocumentsForGivenTopic bestDocAction;
+		boolean sortingByRelevance = true; 
+		if(context.containsKey("sorting")) {
+			String sorting = context.getString("sorting");
+			if (!sorting.equals("RELEVANCE")) {
+				sortingByRelevance = false;
+			}
+		}
+		
 		if(context.containsKey("term")) {
 			MySQLEncoder me = new MySQLEncoder();
 			String term = me.encode(context.getString("term"));
-			bestDocAction = new BestDocumentsForGivenTopic(topicId, limit, offset, database, pw, term, Arrays.asList(properties.get("plugins").toString().split(",")).contains("hierarchicaltopic"));
+			bestDocAction = new BestDocumentsForGivenTopic(topicId, limit, offset, database, pw, term, Arrays.asList(properties.get("plugins").toString().split(",")).contains("hierarchicaltopic"), sortingByRelevance);
 		} else {
-			bestDocAction = new BestDocumentsForGivenTopic(topicId, limit, offset, database, pw);
+			bestDocAction = new BestDocumentsForGivenTopic(topicId, limit, offset, database, pw, sortingByRelevance);
 		}
 		context.bind("BEST_DOC_ACTION", bestDocAction);
 	}

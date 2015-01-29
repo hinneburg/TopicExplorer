@@ -174,7 +174,7 @@ function(ko, $) {
 				self.browseData[self.active()].selectedDocuments = ko.observableArray([]);
 				self.browseData[self.active()].textSelectArray = ko.observableArray([]);
 				self.browseData[self.active()].textSelection = ko.observable();
-				$.getJSON("JsonServlet?Command=" + self.browseData[self.active()].data.getParam + "&sorting=" + self.browseData[self.active()].selectedSorting())
+				$.getJSON("JsonServlet?Command=" + self.browseData[self.active()].data.getParam + "&sorting=" + self.browseData[self.active()].selectedSorting().toUpperCase())
 				.success(function(receivedParsedJson) {
 					
 					self.browseData[self.active()].nextOffset = self.documentLimit;

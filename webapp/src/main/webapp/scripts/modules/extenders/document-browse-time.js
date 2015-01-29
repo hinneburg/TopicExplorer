@@ -20,26 +20,25 @@ function(ko, $, moment) {
 				
 				instance.browseData.activateDatePicker = function() {
 					if(instance.browseData[instance.active()].filter.firstDate().length == 0) {
-						$.datepicker.setDefaults({
+						$(".datepicker").eq(1).datepicker('option', {
 							minDate: new Date(instance.browseData.timeData.minDate)
 						});
 					} else {
-						$.datepicker.setDefaults({
+						$(".datepicker").eq(1).datepicker('option', {							
 							minDate: new Date(instance.browseData[instance.active()].filter.firstDate())
 						});
 					}
 					
 					if(instance.browseData[instance.active()].filter.lastDate().length == 0) {
-						$.datepicker.setDefaults({
+						$(".datepicker").first().datepicker('option', {
 							maxDate: new Date(instance.browseData.timeData.maxDate)
 						});
 					} else {
-						$.datepicker.setDefaults({
+						$(".datepicker").first().datepicker('option', {
 							maxDate: new Date(instance.browseData[instance.active()].filter.lastDate())
 						});
 					}
-						
-					$(".datepicker").datepicker();
+					$(".datepicker").datepicker();	
 					$(".datepicker").prop('readOnly', true);
 					
 				}

@@ -60,7 +60,7 @@ public class Collect extends TableSelectCommand {
 						Date date = dateFormat.parse(lastDate);
 						long time = date.getTime();
 						new Timestamp(time);
-						bestDocAction.addWhereClause("DOCUMENT.TIME$TIME_STAMP < " + time / 1000);
+						bestDocAction.addWhereClause("DOCUMENT.TIME$TIME_STAMP < " + (time + 86400000) / 1000);
 					}
 				}
 			} catch (JSONException e) {

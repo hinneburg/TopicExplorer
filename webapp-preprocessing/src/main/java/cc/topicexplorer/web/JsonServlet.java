@@ -94,9 +94,9 @@ public class JsonServlet extends HttpServlet {
 						+ " AND POS_TYPE.HIGH<=" + high + " GROUP BY DOCUMENT_TERM.TOKEN ORDER BY COUNT DESC");
 				writer.write("{\"TOKEN\":[");
 				if(wordsRs.next()) {
-					writer.write("{\"TOKEN\":\"" + wordsRs.getString("TOKEN") + "\",\"COUNT\":" + wordsRs.getInt("COUNT") + "}");
+					writer.write("{\"TOKEN\":\"" + wordsRs.getString("TOKEN").replace("\"", "\\\"") + "\",\"COUNT\":" + wordsRs.getInt("COUNT") + "}");
 					while(wordsRs.next()) {
-						writer.write(",{\"TOKEN\":\"" + wordsRs.getString("TOKEN") + "\",\"COUNT\":" + wordsRs.getInt("COUNT") + "}");
+						writer.write(",{\"TOKEN\":\"" + wordsRs.getString("TOKEN").replace("\"", "\\\"") + "\",\"COUNT\":" + wordsRs.getInt("COUNT") + "}");
 					}
 				}
 				writer.write("]}");

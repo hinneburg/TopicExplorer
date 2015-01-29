@@ -13,7 +13,8 @@
 		<img style="border: 0; margin: 0;" src="images/delete_24.png" data-bind="click: closeOverlay"/>
 		<div style="text-align: center; height:90%;position: fixed; left: 50%;width: 669px;margin-left: -335px;background-color: lightgrey; ">
 			<div style="text-align: center; overflow: auto; height:88%;position: fixed; left: 50%;width: 200px;margin-left: -100px;background-color: white; margin-top: 0.5%">
-				<!-- ko if: !loading() -->
+				<span style="margin-left: -300px;position: fixed;" data-bind="text: wordlistLabel"></span>
+				<!-- ko if: !loading() -->	
 				<ul style="list-style: none;padding: 0;">
 					<!-- ko foreach: {data: wordList, as: 'item'} -->
 						<li data-bind="text: item.TOKEN + ' (' + item.COUNT + ')'"></li>
@@ -31,7 +32,7 @@
 <script type="text/html" id="wordtype_listTemplate">
 <!-- ko if: PARENT > -1 -->
 <tr data-bind="attr: {'row-id': POS, 'parent-id': PARENT}">
-	<td><span data-bind="text:LABEL"></span><span style="cursor: pointer;" data-bind="click: function() { $parent.openOverlay($data); }"><img style="width: 12px; height: 12px; margin-bottom: -3px;" src="images/glass.png"/></span></td>
+	<td><span data-bind="text:LABEL"></span><span style="cursor: pointer;" data-bind="click: function() { globalData.openOverlay($data); }"><img style="width: 12px; height: 12px; margin-bottom: -3px;" src="images/glass.png"/></span></td>
 	<td title="count" data-bind="text:COUNT"></td>
 	<td title="document count" data-bind="text:DOCUMENT_COUNT"></td>
 	<td title="term count" data-bind="text:TERM_COUNT"></td>
@@ -42,7 +43,7 @@
 <!-- /ko --> 
 <!-- ko if: PARENT < 0 -->
 <tr data-bind="attr: {'row-id': POS}">
-	<td><span data-bind="text:LABEL"></span><span style="cursor: pointer;" data-bind="click: function() { $parent.openOverlay($data); }"><img style="width: 12px; height: 12px; margin-bottom: -3px;" src="images/glass.png"/></span></td>
+	<td><span data-bind="text:LABEL"></span><span style="cursor: pointer;" data-bind="click: function() { globalData.openOverlay($data); }"><img style="width: 12px; height: 12px; margin-bottom: -3px;" src="images/glass.png"/></span></td>
 	<td title="count" data-bind="text:COUNT"></td>
 	<td title="document count" data-bind="text:DOCUMENT_COUNT"></td>
 	<td title="term count" data-bind="text:TERM_COUNT"></td>

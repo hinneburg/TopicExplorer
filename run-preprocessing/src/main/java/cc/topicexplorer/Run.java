@@ -22,6 +22,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -52,8 +53,9 @@ public class Run {
 
 		try {
 			CommandLineParser commandLineParser = initializeCommandLineParser(args);
+			
 			runPreprocessing(commandLineParser.getStartCommands(), commandLineParser.getEndCommands(),
-					!commandLineParser.getOnlyDrawGraph());
+					!commandLineParser.getOnlyDrawGraph(), commandLineParser.getCatalogLocation());
 		} catch (Exception exception) {
 			logger.error("Preprocessing could not be completed.", exception);
 		} finally {
@@ -82,7 +84,7 @@ public class Run {
 	 *             commands can throw multiple RuntimeExceptions. This would signalize a corrupt preprocessing result.
 	 */
 	private static void runPreprocessing(Set<String> startCommands, Set<String> endCommands,
-			boolean commandsShouldGetExecuted) throws ParserConfigurationException, TransformerException, IOException,
+			boolean commandsShouldGetExecuted, String catalogLocation) throws ParserConfigurationException, TransformerException, IOException,
 			SAXException {
 		Date start = new Date();
 		Context context = new Context();
@@ -90,9 +92,15 @@ public class Run {
 
 		Properties properties = (Properties) context.get("properties");
 		String plugins = properties.getProperty("plugins");
-		logger.info("Activated plugins: " + plugins);
-
-		makeCatalog(plugins);
+		
+		if(catalogLocation != null && Run.class.getResource(catalogLocation) != null ) { 
+			Writer output = new BufferedWriter(new FileWriter(CATALOG_FILENAME));
+			output.write(IOUtils.toString(Run.class.getResourceAsStream(catalogLocation)));
+			output.close();
+		} else {
+			logger.info("Activated plugins: " + plugins);
+			makeCatalog(plugins);
+		}
 		CommandManagement commandManagement = new CommandManagement(CATALOG_FILENAME);
 
 		List<String> orderedCommands = commandManagement.getOrderedCommands(startCommands, endCommands);

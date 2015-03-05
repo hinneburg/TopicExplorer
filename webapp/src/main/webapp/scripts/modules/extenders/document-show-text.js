@@ -49,6 +49,9 @@ function(ko, $) {
 		
 		instance.singleData[instance.active()].TITLE_REPRESENTATION.TEXT_KEYWORDS = instance.singleData[instance.active()].DOCUMENT.TEXT$TITLE;
 		instance.singleData[instance.active()].TEXT_REPRESENTATION.TEXT_KEYWORDS = text;
-		instance.singleData[instance.active()].textSelectArray.push(new instance.TextRepresentation('Text with Keywords','TEXT_KEYWORDS'));
+		var textRepresentation = new instance.TextRepresentation('Text with Keywords','TEXT_KEYWORDS');
+		instance.singleData[instance.active()].textSelectArray.push(textRepresentation);
+		// set default to text with keywords
+		instance.singleData[instance.active()].textSelection(textRepresentation);
 	};
 });

@@ -6,7 +6,7 @@
 		<span data-bind="text: 'Wordtype count: ' + globalData.WORDTYPE_COUNT"></span><br/>
 		<span data-bind="text: 'Min/Avg/Max words per document: ' + globalData.MIN_WORD_COUNT + '/' + Math.round(globalData.WORD_COUNT/globalData.DOCUMENT_COUNT) + '/' + globalData.MAX_WORD_COUNT"></span><br/>
 		<span data-bind="text: 'Min/Avg/Max word length: ' + globalData.MIN_WORD_LENGTH + '/' + globalData.AVG_WORD_LENGTH + '/' + globalData.MAX_WORD_LENGTH"></span><br/>
-		<table id="table" data-bind="template: {name: 'wordtype_listTemplate', foreach: globalData.WORDTYPE_WORDCOUNTS, afterRender: function() {$('#table').tbltree();}}">
+		<table id="table" data-bind="template: {name: 'wordtype_listTemplate', foreach: globalData.WORDTYPE_WORDCOUNTS, afterRender: function() {$('#table').tbltree({initState:'expanded'});}}">
 		</table>
 	</div>
 	<div id="overlay" style="position: fixed; width: 100%; height:100%; top:0;margin: 0 auto; background-color:rgba(255,255,255,0.8); display: none;">
@@ -32,7 +32,7 @@
 <script type="text/html" id="wordtype_listTemplate">
 <!-- ko if: PARENT > -1 -->
 <tr data-bind="attr: {'row-id': POS, 'parent-id': PARENT}">
-	<td><span data-bind="text:LABEL"></span><span style="cursor: pointer;" data-bind="click: function() { globalData.openOverlay($data); }"><img style="width: 12px; height: 12px; margin-bottom: -3px;" src="images/glass.png"/></span></td>
+	<td><input class="wordtypeCheckbox" type="checkbox" name="wordType" data-bind="value: POS, attr {'id': 'checkBoxPos' + POS}, click: globalData.changeSelected, checked: globalData.checkedWordtypes" /><span data-bind="text:LABEL"></span><span style="cursor: pointer;" data-bind="click: function() { globalData.openOverlay($data); }"><img style="width: 12px; height: 12px; margin-bottom: -3px;" src="images/glass.png"/></span></td>
 	<td title="count" data-bind="text:COUNT"></td>
 	<td title="document count" data-bind="text:DOCUMENT_COUNT"></td>
 	<td title="term count" data-bind="text:TERM_COUNT"></td>
@@ -43,7 +43,7 @@
 <!-- /ko --> 
 <!-- ko if: PARENT < 0 -->
 <tr data-bind="attr: {'row-id': POS}">
-	<td><span data-bind="text:LABEL"></span><span style="cursor: pointer;" data-bind="click: function() { globalData.openOverlay($data); }"><img style="width: 12px; height: 12px; margin-bottom: -3px;" src="images/glass.png"/></span></td>
+	<td><input class="wordtypeCheckbox" type="checkbox" name="wordType" data-bind="value: POS, attr {'id': 'checkBoxPos' + POS}, click: globalData.changeSelected, checked: globalData.checkedWordtypes" /><span data-bind="text:LABEL"></span><span style="cursor: pointer;" data-bind="click: function() { globalData.openOverlay($data); }"><img style="width: 12px; height: 12px; margin-bottom: -3px;" src="images/glass.png"/></span></td>
 	<td title="count" data-bind="text:COUNT"></td>
 	<td title="document count" data-bind="text:DOCUMENT_COUNT"></td>
 	<td title="term count" data-bind="text:TERM_COUNT"></td>

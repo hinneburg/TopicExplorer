@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog>	
+	<command name="CreateDB" className="cc.topicexplorer.initcorpus.CreateDB"/>
+	<command name="CreateUser" className="cc.topicexplorer.initcorpus.CreateUser"/>
+	<command name="CopyOrgTable" className="cc.topicexplorer.initcorpus.CopyOrgTable"/>
+</catalog>

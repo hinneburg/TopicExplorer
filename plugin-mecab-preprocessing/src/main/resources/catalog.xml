@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<catalog>
-	<command name="DocumentTermCreate" className="cc.topicexplorer.plugin.mecab.preprocessing.command.DocumentTermCreate"/>	
-	<command name="DocumentTermFill" className="cc.topicexplorer.plugin.mecab.preprocessing.command.DocumentTermFill"/>
-	<command name="PosTypeCreate" className="cc.topicexplorer.plugin.mecab.preprocessing.command.PosTypeCreate"/>	
-	<command name="PosTypeFill" className="cc.topicexplorer.plugin.mecab.preprocessing.command.PosTypeFill"/>
-	<command name="PosTypeUpdate" className="cc.topicexplorer.plugin.mecab.preprocessing.command.PosTypeUpdate"/>
-</catalog>

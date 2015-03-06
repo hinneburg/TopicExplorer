@@ -6,6 +6,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
@@ -22,12 +24,13 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+
+import com.mysql.jdbc.Connection;
 
 import cc.commandmanager.core.Command;
 import cc.commandmanager.core.CommandManagement;
@@ -37,16 +40,16 @@ import cc.topicexplorer.commands.PropertiesCommand;
 import cc.topicexplorer.utils.CommandLineParser;
 import cc.topicexplorer.utils.LoggerUtil;
 
-public class Run {
+public class RunInitCorpus {
 
 	private static final String CATALOG_FILENAME = "catalog.xml";
-	private static final Logger logger = Logger.getLogger(Run.class);
+	private static final Logger logger = Logger.getLogger(RunInitCorpus.class);
 
 	public static void main(String[] args) throws Exception {
 		LoggerUtil.initializeLogger();
 
-		Run run = new Run();
-		run.logWelcomeMessage();
+		RunInitCorpus runInitCorpus = new RunInitCorpus();
+		runInitCorpus.logWelcomeMessage();
 
 		File temp = new File("temp");
 		temp.mkdir();
@@ -54,7 +57,7 @@ public class Run {
 		try {
 			CommandLineParser commandLineParser = initializeCommandLineParser(args);
 			
-			runPreprocessing(commandLineParser.getStartCommands(), commandLineParser.getEndCommands(),
+			runInitCorpus(commandLineParser.getStartCommands(), commandLineParser.getEndCommands(),
 					!commandLineParser.getOnlyDrawGraph(), commandLineParser.getCatalogLocation());
 		} catch (Exception exception) {
 			logger.error("Preprocessing could not be completed.", exception);
@@ -83,9 +86,8 @@ public class Run {
 	 * @throws RuntimeException
 	 *             commands can throw multiple RuntimeExceptions. This would signalize a corrupt preprocessing result.
 	 */
-	private static void runPreprocessing(Set<String> startCommands, Set<String> endCommands,
-			boolean commandsShouldGetExecuted, String catalogLocation) throws ParserConfigurationException, TransformerException, IOException,
-			SAXException {
+	private static void runInitCorpus(Set<String> startCommands, Set<String> endCommands,
+			boolean commandsShouldGetExecuted, String catalogLocation) throws Exception {
 		Date start = new Date();
 		Context context = new Context();
 		executeInitialCommands(context);
@@ -93,14 +95,9 @@ public class Run {
 		Properties properties = (Properties) context.get("properties");
 		String plugins = properties.getProperty("plugins");
 		
-		if(catalogLocation != null && Run.class.getResource(catalogLocation) != null ) { 
-			Writer output = new BufferedWriter(new FileWriter(CATALOG_FILENAME));
-			output.write(IOUtils.toString(Run.class.getResourceAsStream(catalogLocation)));
-			output.close();
-		} else {
-			logger.info("Activated plugins: " + plugins);
-			makeCatalog(plugins);
-		}
+		logger.info("Activated plugins: " + plugins);
+		makeCatalog(plugins, "preDB");
+
 		CommandManagement commandManagement = new CommandManagement(CATALOG_FILENAME);
 
 		List<String> orderedCommands = commandManagement.getOrderedCommands(startCommands, endCommands);
@@ -108,32 +105,58 @@ public class Run {
 
 		if (commandsShouldGetExecuted) {
 			commandManagement.executeCommands(orderedCommands, context);
-			logger.info("Preprocessing successfully executed!");
+			logger.info("Init corpus (pre DB) successfully executed!");
 		}
+		Connection crawlManagerConnection = (Connection) context.get("CrawlManagmentConnection");
+		crawlManagerConnection.close();
+		context.unbind("CrawlManagmentConnection");
+		
+		Command dbConnectionCommand = new DbConnectionCommand();
+		dbConnectionCommand.execute(context);
+		
+		makeCatalog(plugins, "postDB");
+
+		commandManagement = new CommandManagement(CATALOG_FILENAME);
+
+		orderedCommands = commandManagement.getOrderedCommands(startCommands, endCommands);
+		logger.info("ordered commands: " + orderedCommands);
+
+		if (commandsShouldGetExecuted) {
+			commandManagement.executeCommands(orderedCommands, context);
+			logger.info("Init corpus (post DB) successfully executed!");
+		}
+		
 		Date end = new Date();
 		logger.info("Execution time: " + (end.getTime() - start.getTime()) / 1000 + " seconds.");
 	}
 
 	private void logWelcomeMessage() {
-		logger.info("#####################################");
-		logger.info("# R U N   P R E P R O C E S S I N G #");
-		logger.info("#####################################");
+		logger.info("#######################################################");
+		logger.info("#  R U N   C O R P U S   I N I T I A L I Z A T I O N  #");
+		logger.info("#######################################################");
 	}
 
-	private static void executeInitialCommands(Context context) {
+	private static void executeInitialCommands(Context context) throws Exception {
 		try {
 			Command propertiesCommand = new PropertiesCommand();
 			propertiesCommand.execute(context);
-
-			Command dbConnectionCommand = new DbConnectionCommand();
-			dbConnectionCommand.execute(context);
+			
+			Properties properties = (Properties) context.get("properties");
+			
+			context.bind("CrawlManagmentConnection", DriverManager.getConnection("jdbc:mysql://" + properties.getProperty("database.DbLocation") + "/" 
+					+ properties.getProperty("database.CMDB") + "?useUnicode=true&characterEncoding=UTF-8&useCursorFetch=true", 
+					properties.getProperty("database.CMUser"), properties.getProperty("database.CMPassword")));
+			
 		} catch (RuntimeException exception) {
+			logger.error("Initialization abborted, due to a critical exception");
+			throw exception;
+		} catch (SQLException exception) {
 			logger.error("Initialization abborted, due to a critical exception");
 			throw exception;
 		}
 	}
 
-	private static void makeCatalog(String plugins) throws ParserConfigurationException, TransformerException,
+	private static void makeCatalog(String plugins, String extender) throws ParserConfigurationException, TransformerException,
 			IOException, SAXException {
 		DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
 		domFactory.setIgnoringComments(true);
@@ -142,45 +165,33 @@ public class Run {
 		builder = domFactory.newDocumentBuilder();
 
 		// init
-		Document doc = getMergedXML(builder.parse(Run.class
-				.getResourceAsStream("/cc/topicexplorer/core-preprocessing/catalog/preJooqConfig.xml")),
-				builder.parse(Run.class
-						.getResourceAsStream("/cc/topicexplorer/core-preprocessing/catalog/postJooqConfig.xml")));
+		Document doc = builder.parse(RunInitCorpus.class
+				.getResourceAsStream("/cc/topicexplorer/core-initcorpus/catalog/" + extender + "Config.xml"));
 
 		// process plugin catalogs
 		for (String plugin : plugins.split(",")) {
 			plugin = plugin.trim().toLowerCase();
-			if(Run.class.getResource("/cc/topicexplorer/plugin-" + plugin + "-preprocessing/catalog/preJooqConfig.xml") != null) {
+			
+			
+			if(RunInitCorpus.class.getResource("/cc/topicexplorer/plugin-" + plugin	+ "-initcorpus/catalog/" + extender + "Config.xml") != null) {
+				logger.info("/cc/topicexplorer/plugin-" + plugin
+						+ "-initcorpus/catalog/" + extender + "Config.xml");
 				try {
 					doc = getMergedXML(
 							doc,
-							builder.parse(Run.class.getResourceAsStream("/cc/topicexplorer/plugin-" + plugin
-									+ "-preprocessing/catalog/preJooqConfig.xml")));
+							builder.parse(RunInitCorpus.class.getResourceAsStream("/cc/topicexplorer/plugin-" + plugin
+									+ "-initcorpus/catalog/" + extender + "Config.xml")));
 				} catch (SAXException saxException) {
 					logger.warn(
-							"/cc/topicexplorer/plugin-" + plugin + "-preprocessing/catalog/preJooqConfig.xml not found",
+							"/cc/topicexplorer/plugin-" + plugin + "-initcorpus/catalog/" + extender + "Config.xml not found",
 							saxException);
 				} catch (IOException ioException) {
 					logger.warn(
-							"/cc/topicexplorer/plugin-" + plugin + "-preprocessing/catalog/preJooqConfig.xml not found",
+							"/cc/topicexplorer/plugin-" + plugin + "-initcorpus/catalog/" + extender + "Config.xml not found",
 							ioException);
 				}
 			}
 
-			if(Run.class.getResource("/cc/topicexplorer/plugin-" + plugin + "-preprocessing/catalog/postJooqConfig.xml") != null) {
-				try {
-					doc = getMergedXML(
-							doc,
-							builder.parse(Run.class.getResourceAsStream("/cc/topicexplorer/plugin-" + plugin
-									+ "-preprocessing/catalog/postJooqConfig.xml")));
-				} catch (SAXException saxException) {
-					logger.warn("/cc/topicexplorer/plugin-" + plugin
-							+ "-preprocessing/catalog/postJooqConfig.xml not found", saxException);
-				} catch (IOException ioException) {
-					logger.warn("/cc/topicexplorer/plugin-" + plugin
-							+ "-preprocessing/catalog/postJooqConfig.xml not found", ioException);
-				}
-			}
 		}
 
 		// write out

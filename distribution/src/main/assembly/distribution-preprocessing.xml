@@ -21,6 +21,7 @@
 			<includes>
 				<include>cc.topicexplorer:core-common</include>
 				<include>cc.topicexplorer:core-preprocessing</include>
+				<include>cc.topicexplorer:core-initcorpus</include>
 				<include>cc.topicexplorer:plugin-colortopic-preprocessing</include>
 				<include>cc.topicexplorer:plugin-hierarchicaltopic-preprocessing</include>
 				<include>cc.topicexplorer:plugin-prune-preprocessing</include>
@@ -32,8 +33,9 @@
 				<include>cc.topicexplorer:plugin-time-preprocessing</include>
 				<include>cc.topicexplorer:plugin-wiki-preprocessing</include>
 				<include>cc.topicexplorer:plugin-wordtype-preprocessing</include>
-				<include>cc.topicexplorer:plugin-mecab-preprocessing</include>
+				<include>cc.topicexplorer:plugin-mecab-initcorpus</include>
 				<include>cc.topicexplorer:run-preprocessing</include>
+				<include>cc.topicexplorer:run-initcorpus</include>
 			</includes>
 			<sources>
 				<outputDirectoryMapping>/</outputDirectoryMapping>

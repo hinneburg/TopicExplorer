@@ -57,9 +57,9 @@ function(ko, $) {
 	globalData.openOverlay = function(data) {
 		self.loading(true);
 		$('#overlay').show();
-		self.wordlistLabel(data.LABEL);
+		self.wordlistLabel(data.LABEL + ' (' + data.TERM_COUNT + ')');
 		$.getJSON("JsonServlet?Command=getWordlist&low=" + data.LOW + "&high=" + data.HIGH).success(function(receivedParsedJson) {
-			self.wordList(receivedParsedJson.TOKEN);
+			self.wordList(receivedParsedJson.TERM);
 			self.loading(false);
 		});	
 	}; 

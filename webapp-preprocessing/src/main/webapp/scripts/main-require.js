@@ -44,9 +44,7 @@ function flatTree(childArray) {
 		}
 		node.CHILDREN = children;
 		self.globalData.FLAT_TREE[childArray[idx].POS] = node;
-		console.log(idx + ': ' + childArray[idx].CHILDREN.length);
 		if(childArray[idx].CHILDREN.length > 0) {
-			console.log(idx + ': ' + childArray[idx].CHILDREN.length);
 			flatTree(childArray[idx].CHILDREN);
 		} 
 	}

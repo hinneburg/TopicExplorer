@@ -88,15 +88,15 @@ public class JsonServlet extends HttpServlet {
 			} else if (command.equals("getWordlist")) {
 				int low = Integer.parseInt(request.getParameter("low"));
 				int high = Integer.parseInt(request.getParameter("high"));
-				ResultSet wordsRs = database.executeQuery("SELECT DOCUMENT_TERM.TOKEN, COUNT(DOCUMENT_TERM.TOKEN) AS COUNT "
+				ResultSet wordsRs = database.executeQuery("SELECT DOCUMENT_TERM.TERM, COUNT(DOCUMENT_TERM.TERM) AS COUNT "
 						+ "FROM DOCUMENT_TERM, POS_TYPE WHERE "
 						+ "POS_TYPE.POS=DOCUMENT_TERM.WORDTYPE_CLASS AND POS_TYPE.LOW>=" + low
-						+ " AND POS_TYPE.HIGH<=" + high + " GROUP BY DOCUMENT_TERM.TOKEN ORDER BY COUNT DESC");
-				writer.write("{\"TOKEN\":[");
+						+ " AND POS_TYPE.HIGH<=" + high + " GROUP BY DOCUMENT_TERM.TERM ORDER BY COUNT DESC");
+				writer.write("{\"TERM\":[");
 				if(wordsRs.next()) {
-					writer.write("{\"TOKEN\":\"" + wordsRs.getString("TOKEN").replace("\"", "\\\"") + "\",\"COUNT\":" + wordsRs.getInt("COUNT") + "}");
+					writer.write("{\"TERM\":\"" + wordsRs.getString("TERM").replace("\"", "\\\"") + "\",\"COUNT\":" + wordsRs.getInt("COUNT") + "}");
 					while(wordsRs.next()) {
-						writer.write(",{\"TOKEN\":\"" + wordsRs.getString("TOKEN").replace("\"", "\\\"") + "\",\"COUNT\":" + wordsRs.getInt("COUNT") + "}");
+						writer.write(",{\"TERM\":\"" + wordsRs.getString("TERM").replace("\"", "\\\"") + "\",\"COUNT\":" + wordsRs.getInt("COUNT") + "}");
 					}
 				}
 				writer.write("]}");

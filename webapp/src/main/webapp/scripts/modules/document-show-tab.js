@@ -37,9 +37,9 @@ function(ko, $) {
 					self.singleData[self.active()] = receivedParsedJson;
 					self.singleData[self.active()].TEXT_REPRESENTATION = new Object();
 					self.singleData[self.active()].TITLE_REPRESENTATION = new Object();
-					self.singleData[self.active()].TEXT_REPRESENTATION.KEYWORDS = receivedParsedJson.DOCUMENT.WORD_LIST[0].TOKEN;
+					self.singleData[self.active()].TEXT_REPRESENTATION.KEYWORDS = receivedParsedJson.DOCUMENT.WORD_LIST[receivedParsedJson.DOCUMENT.WORD_LIST.length - 1].TOKEN;
 					
-					for(var i = 1; i < receivedParsedJson.DOCUMENT.WORD_LIST.length; i++) {
+					for(var i = receivedParsedJson.DOCUMENT.WORD_LIST.length - 2; i >= 0 ; i--) {
 						self.singleData[self.active()].TEXT_REPRESENTATION.KEYWORDS += ' ' + receivedParsedJson.DOCUMENT.WORD_LIST[i].TOKEN;
 					}
 					self.singleData[self.active()].TITLE_REPRESENTATION.KEYWORDS = globalData.DOCUMENT[data.documentId].KEYWORD_TITLE;

@@ -16,8 +16,8 @@ public class Collect extends TableSelectCommand {
 		if(context.containsKey("frame")) {
 			MySQLEncoder me = new MySQLEncoder();
 			
-			String frame = me.encode(context.getString("frame"));
-			String frameType = me.encode(context.getString("frameType"));
+			String frame = me.encodeAsANSI(context.getString("frame"));
+			String frameType = me.encodeAsANSI(context.getString("frameType"));
 			
 			BestDocumentsForGivenTopic bestDocAction = context.get("BEST_DOC_ACTION", BestDocumentsForGivenTopic.class);
 			bestDocAction.addFrom("FRAME$FRAMES");

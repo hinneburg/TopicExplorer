@@ -14,4 +14,8 @@ public class MySQLEncoder {
 	public String encode(String encodeString) {  
 		return ESAPI.encoder().encodeForSQL(mysqlCodec, encodeString);
 	}
+	
+	public String encodeAsANSI(String encodeString) {  
+		return ESAPI.encoder().encodeForSQL(new MySQLCodec(org.owasp.esapi.codecs.MySQLCodec.Mode.ANSI), encodeString);
+	}
 }

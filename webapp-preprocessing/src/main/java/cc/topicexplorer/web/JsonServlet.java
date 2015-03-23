@@ -11,6 +11,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
+
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import cc.commandmanager.core.Context;
@@ -21,6 +23,8 @@ import cc.topicexplorer.database.Database;
  */
 public class JsonServlet extends HttpServlet {
 
+	private static final Logger logger = Logger.getLogger(JsonServlet.class);
+	
 	private static final long serialVersionUID = 1L;
 
 	@Override
@@ -34,17 +38,15 @@ public class JsonServlet extends HttpServlet {
 
 		Context context = new Context(WebChainManagement.getContext());
 		context.bind("SERVLET_WRITER", writer);
-		// Properties properties = (Properties) context.get("properties");
+		
 		Database database = (Database) context.get("database");
-
-		JSONArray all = new JSONArray();
-		ArrayList<Integer> parents = new ArrayList<Integer>();
-
+	
 		try {
 			if (command.equals("init")) {
+				long before = System.currentTimeMillis();
 				ResultSet docCountRs = database
 						.executeQuery("SELECT COUNT(distinct DOCUMENT_ID) AS docCount, "
-								+ "COUNT(*) AS wordCount, COUNT(DISTINCT WORDTYPE_CLASS) AS wordtypeCount FROM DOCUMENT_TERM");
+								+ "SUM(TOKEN_COUNT) AS wordCount, COUNT(DISTINCT WORDTYPE_CLASS) AS wordtypeCount FROM DOCUMENT_WORDTYPE");
 				if (docCountRs.next()) {
 					writer.write("{\"DOCUMENT_COUNT\": "
 							+ docCountRs.getInt("docCount")
@@ -53,24 +55,36 @@ public class JsonServlet extends HttpServlet {
 							+ ", \"WORDTYPE_COUNT\": "
 							+ docCountRs.getInt("wordtypeCount") + ",");
 				}
+				logger.info("DocCount: " + (System.currentTimeMillis() - before) + "ms");
+				before = System.currentTimeMillis();
 				ResultSet maxWordCountRs = database
-						.executeQuery("SELECT COUNT(*) AS maxWordCount "
-								+ "FROM DOCUMENT_TERM GROUP BY DOCUMENT_ID ORDER BY maxWordCount DESC LIMIT 1");
+						.executeQuery("SELECT SUM(TOKEN_COUNT) AS maxWordCount "
+								+ "FROM DOCUMENT_WORDTYPE "
+								+ "WHERE WORDTYPE_CLASS IN (SELECT POS FROM POS_TYPE WHERE PARENT_POS=-1) "
+								+ "GROUP BY DOCUMENT_ID "
+								+ "ORDER BY maxWordCount DESC LIMIT 1");
 				if (maxWordCountRs.next()) {
 					writer.write("\"MAX_WORD_COUNT\": "
 							+ maxWordCountRs.getInt("maxWordCount") + ",");
 				}
+				logger.info("MaxWordCount: " + (System.currentTimeMillis() - before) + "ms");
+				before = System.currentTimeMillis();
 				ResultSet minWordCountRs = database
-						.executeQuery("SELECT COUNT(*) AS minWordCount "
-								+ "FROM DOCUMENT_TERM GROUP BY DOCUMENT_ID ORDER BY minWordCount LIMIT 1");
+						.executeQuery("SELECT SUM(TOKEN_COUNT) AS minWordCount "
+								+ "FROM DOCUMENT_WORDTYPE "
+								+ "WHERE WORDTYPE_CLASS IN (SELECT POS FROM POS_TYPE WHERE PARENT_POS=-1) "
+								+ "GROUP BY DOCUMENT_ID "
+								+ "ORDER BY minWordCount LIMIT 1");
 				if (minWordCountRs.next()) {
 					writer.write("\"MIN_WORD_COUNT\": "
 							+ minWordCountRs.getInt("minWordCount") + ",");
 				}
+				logger.info("MinWordCount: " + (System.currentTimeMillis() - before) + "ms");
+				before = System.currentTimeMillis();
 				ResultSet wordLengthRs = database
-						.executeQuery("SELECT MIN(CHAR_LENGTH(TOKEN)) AS minWordLength, "
-								+ "MAX(CHAR_LENGTH(TOKEN)) AS maxWordLength, AVG(CHAR_LENGTH(TOKEN)) AS avgWordLength "
-								+ "FROM DOCUMENT_TERM WHERE CHAR_LENGTH(TOKEN) > 0");
+						.executeQuery("SELECT MIN(MIN_TOKEN_LENGTH) AS minWordLength, "
+								+ "MAX(MAX_TOKEN_LENGTH) AS maxWordLength, SUM(SUM_TOKEN_LENGTH)/SUM(TOKEN_COUNT)  AS avgWordLength "
+								+ "FROM DOCUMENT_WORDTYPE WHERE WORDTYPE_CLASS IN (SELECT POS FROM POS_TYPE WHERE PARENT_POS=-1)");
 				if (wordLengthRs.next()) {
 					writer.write("\"MIN_WORD_LENGTH\": "
 							+ wordLengthRs.getInt("minWordLength") + ",");
@@ -79,19 +93,21 @@ public class JsonServlet extends HttpServlet {
 					writer.write("\"AVG_WORD_LENGTH\": "
 							+ wordLengthRs.getFloat("avgWordLength") + ",");
 				}
+				logger.info("WordLengths: " + (System.currentTimeMillis() - before) + "ms");
+				before = System.currentTimeMillis();
 				ResultSet wordtypeCountRs = database
 						.executeQuery("SELECT * FROM POS_TYPE "
 								+ "ORDER BY LOW, HIGH desc");
+				JSONArray all = new JSONArray();
+				ArrayList<Integer> parents = new ArrayList<Integer>();
 				parents.add(-1);
 				addChildren(wordtypeCountRs, all, parents);
 				writer.write("\"WORDTYPE_WORDCOUNTS\":" + all.toString() + "}");
+				logger.info("wordtypes: " + (System.currentTimeMillis() - before) + "ms");
 			} else if (command.equals("getWordlist")) {
-				int low = Integer.parseInt(request.getParameter("low"));
-				int high = Integer.parseInt(request.getParameter("high"));
-				ResultSet wordsRs = database.executeQuery("SELECT DOCUMENT_TERM.TERM, COUNT(DOCUMENT_TERM.TERM) AS COUNT "
-						+ "FROM DOCUMENT_TERM, POS_TYPE WHERE "
-						+ "POS_TYPE.POS=DOCUMENT_TERM.WORDTYPE_CLASS AND POS_TYPE.LOW>=" + low
-						+ " AND POS_TYPE.HIGH<=" + high + " GROUP BY DOCUMENT_TERM.TERM ORDER BY COUNT DESC");
+				int pos = Integer.parseInt(request.getParameter("pos"));
+				ResultSet wordsRs = database.executeQuery("SELECT TERM, COUNT "
+						+ "FROM ALL_TERMS WHERE POS=" + pos + " ORDER BY COUNT DESC");
 				writer.write("{\"TERM\":[");
 				if(wordsRs.next()) {
 					writer.write("{\"TERM\":\"" + wordsRs.getString("TERM").replace("\"", "\\\"") + "\",\"COUNT\":" + wordsRs.getInt("COUNT") + "}");
@@ -109,14 +125,7 @@ public class JsonServlet extends HttpServlet {
 
 	}
 
-	// Full texts POS LOW HIGH DESCRIPTION PARENT_POS TOKEN_COUNT DOCUMENT_COUNT
-	// TERM_COUNT MIN_TOKEN_LENGTH MAX_TOKEN_LENGTH AVG_TOKEN_LENGTH
 
-	// SELECT p.POS, p.DESCRIPTION, SUM(x.wordCount) AS wordCount, p.PARENT_POS
-	// FROM (SELECT WORDTYPE_CLASS, COUNT(*) AS wordCount FROM DOCUMENT_TERM
-	// GROUP BY WORDTYPE_CLASS) x, POS_TYPE subtype, POS_TYPE p WHERE
-	// subtype.POS = x.WORDTYPE_CLASS AND p.LOW <= subtype.LOW and
-	// subtype.HIGH<=p.HIGH GROUP BY p.POS ORDER BY p.LOW, p.HIGH desc
 	public void addChildren(ResultSet rs, JSONArray in,
 			ArrayList<Integer> parents) throws SQLException {
 		while (rs.next()) {

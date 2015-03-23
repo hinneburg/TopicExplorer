@@ -23,9 +23,9 @@ require([ "knockout","jquery","text!/JsonServlet?Command=init","knockout-amd-hel
 		function(ko, $, initJson) {
 	var self = this;
 	self.globalData = JSON.parse(initJson);
-	
+	self.globalData.module = ko.observable('words');
 	self.globalData.FLAT_TREE =  {};
-	flatTree(self.globalData.WORDTYPE_WORDCOUNTS);
+	flatTree(self.globalData.WORDTYPE_WORDCOUNTS, ko, 0);
 	
 	$(document).tooltip({ track: true });
 	
@@ -34,18 +34,23 @@ require([ "knockout","jquery","text!/JsonServlet?Command=init","knockout-amd-hel
 	ko.applyBindings(new function() {} ());
 });
 
-function flatTree(childArray) {
+function flatTree(childArray, ko, depth) {
 	for(idx in childArray) {
 		node = {}
 		node.PARENT = childArray[idx].PARENT;
+		node.LABEL = childArray[idx].LABEL;
 		children = [];
 		for(idx2 in childArray[idx].CHILDREN) {
 			children.push(childArray[idx].CHILDREN[idx2].POS);
 		}
+		
 		node.CHILDREN = children;
+		node.lowerBorder = ko.observable(0);
+		node.upperBorder = ko.observable(self.globalData.DOCUMENT_COUNT);
+		
 		self.globalData.FLAT_TREE[childArray[idx].POS] = node;
 		if(childArray[idx].CHILDREN.length > 0) {
-			flatTree(childArray[idx].CHILDREN);
+			flatTree(childArray[idx].CHILDREN, ko, depth + 1);
 		} 
 	}
 	return;

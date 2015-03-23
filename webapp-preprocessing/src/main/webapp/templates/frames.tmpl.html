@@ -1,0 +1,54 @@
+<div>
+	<div data-bind="text: version"></div>
+
+	<h3>Frame delimiters</h3>
+	<!-- ko foreach: {data: frameDelimiters, as: 'frameDelimiter'} -->
+		<span style="cursor:pointer; border: 1px solid lightgray" data-bind="text: frameDelimiter, click: $parent.removeFrameDelimiter" title="click to remove this frame delimiter"></span>
+	<!-- /ko -->		
+	<input type="text" id="newFrameDelimter" data-bind="value: newFrameDelimiter" >	
+	<button type="button" id="addFrameDelimiter" data-bind="click:addFrameDelimiter">add</button>
+	
+	
+	<h3>Frames</h3>
+	<select id="selectFirstWordtype" title="select start wordtype" data-bind="template: {name: 'wordtype_selectTemplate', foreach: globalData.WORDTYPE_WORDCOUNTS}"></select>
+	<input type="number" min="0" max="200" title="how many signs allowed between" id="signsBetween">
+	<select id="selectLastWordtype" title="select end wordtype" data-bind="template: {name: 'wordtype_selectTemplate', foreach: globalData.WORDTYPE_WORDCOUNTS}"></select>
+	<button type="button" id="addFrame" data-bind="click:addFrame">add</button><br/>
+	
+</div>
+<div>
+	<!-- ko if: globalData.selectedFrames().length  -->
+	<h5>Selected Frames</h5>
+	<table>
+		<thead>
+			<tr>
+				<th>start wordtype</th>
+				<th>end wordtype</th>
+				<th>signs between</th>
+				<th></th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody data-bind="foreach: {data: globalData.selectedFrames, as: 'frame'}">
+			<tr>
+				<td><span data-bind="text: globalData.FLAT_TREE[frame.firstWordtype].LABEL"></span></td>
+				<td><span data-bind="text: globalData.FLAT_TREE[frame.lastWordtype].LABEL"></span></td>
+				<td><span data-bind="text: frame.signsBetween"></span></td>
+				<td><button type="button" data-bind="click: function() { $parent.editFrame($index());}">edit</button></td>
+				<td><button type="button" data-bind="click:function() { $parent.removeFrame($index());}">remove</button></td>
+			</tr>
+		</tbody>
+	</table>
+	<!-- /ko -->	
+	<button type="button" data-bind="click:done">ok</button>
+	<button type="button" data-bind="click:back">back to word selection</button>
+</div>
+
+<script type="text/html" id="wordtype_selectTemplate">
+	<!-- ko if: CHILDREN.length > 0 -->
+		<!-- ko template: { name: 'wordtype_selectTemplate', foreach: CHILDREN } --><!-- /ko --> 
+	<!-- /ko -->
+	<!-- ko if: CHILDREN.length < 1 && globalData.checkedWordtypes().indexOf(String(POS)) > -1 -->
+		<option data-bind="value: POS, html:LABEL"></option>
+	<!-- /ko -->
+</script>

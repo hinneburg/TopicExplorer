@@ -19,7 +19,7 @@ public class PosTypeUpdate  extends TableFillCommand{
 
 	@Override
 	public Set<String> getBeforeDependencies() {
-		return Sets.newHashSet("PosTypeFill", "DocumentTermFill");
+		return Sets.newHashSet("PosTypeFill", "DocumentTermFill", "AllTermsCreate", "DocumentWordtypeFill");
 	}
 
 	@Override
@@ -35,52 +35,24 @@ public class PosTypeUpdate  extends TableFillCommand{
 	@Override
 	public void fillTable() {
 		try {
-//			this.database.executeUpdateQuery("SET innodb_table_locks = 0;"); 
-//			
-//			this.database.executeUpdateQuery("CREATE TABLE TEMP_POSTYPE AS "
-//					+ "SELECT dt.WORDTYPE_CLASS, COUNT(*) AS TOKEN_COUNT, "
-//					+ "COUNT(DISTINCT dt.DOCUMENT_ID) as DOCUMENT_COUNT, "
-//					+ "COUNT(DISTINCT dt.TERM) as TERM_COUNT, "
-//					+ "MIN(char_length(dt.TOKEN)) as MIN_TOKEN_LENGTH, "
-//					+ "AVG(char_length(dt.TOKEN)) as AVG_TOKEN_LENGTH, "
-//					+ "MAX(char_length(dt.TOKEN)) as MAX_TOKEN_LENGTH  "
-//					+ "FROM DOCUMENT_TERM dt GROUP BY dt.WORDTYPE_CLASS");
-//			
-//			this.database.executeUpdateQuery("SET innodb_table_locks = 1;"); 
-//			
-//			this.database.executeUpdateQuery("UPDATE " + this.tableName + ",("
-//					+ "SELECT p.POS, COUNT(*) AS TOKEN_COUNT, COUNT(DISTINCT dt.DOCUMENT_ID) as DOCUMENT_COUNT,"
-//					+ "COUNT(DISTINCT dt.TERM) as TERM_COUNT, MIN(char_length(dt.TOKEN)) as MIN_TOKEN_LENGTH,"
-//					+ "AVG(char_length(dt.TOKEN)) as AVG_TOKEN_LENGTH, MAX(char_length(dt.TOKEN)) as MAX_TOKEN_LENGTH "
-//					+ "FROM TEMP_POSTYPE dt, POS_TYPE subtype, POS_TYPE p "
-//					+ "WHERE subtype.POS = dt.WORDTYPE_CLASS AND p.LOW <= subtype.LOW and subtype.HIGH <= p.HIGH "
-//					+ "GROUP BY p.POS, p.DESCRIPTION, p.PARENT_POS,p.LOW, p.HIGH "
-//					+ "ORDER BY p.LOW, p.HIGH desc)x SET "
-//					+ this.tableName + ".TOKEN_COUNT=x.TOKEN_COUNT,"
-//					+ this.tableName + ".DOCUMENT_COUNT=x.DOCUMENT_COUNT,"
-//					+ this.tableName + ".TERM_COUNT=x.TERM_COUNT,"
-//					+ this.tableName + ".MIN_TOKEN_LENGTH=x.MIN_TOKEN_LENGTH,"
-//					+ this.tableName + ".AVG_TOKEN_LENGTH=x.AVG_TOKEN_LENGTH,"
-//					+ this.tableName + ".MAX_TOKEN_LENGTH=x.MAX_TOKEN_LENGTH "
-//					+ "WHERE " + this.tableName + ".POS=x.POS");
-			
 			this.database.executeUpdateQuery("UPDATE " + this.tableName + ", ("
-					+ "SELECT p.POS, COUNT(*) AS TOKEN_COUNT, COUNT(DISTINCT dt.DOCUMENT_ID) as DOCUMENT_COUNT,"
-					+ "COUNT(DISTINCT dt.TERM) as TERM_COUNT, MIN(char_length(dt.TOKEN)) as MIN_TOKEN_LENGTH,"
-					+ "AVG(char_length(dt.TOKEN)) as AVG_TOKEN_LENGTH, MAX(char_length(dt.TOKEN)) as MAX_TOKEN_LENGTH "
-					+ "FROM DOCUMENT_TERM dt, POS_TYPE subtype, POS_TYPE p "
-					+ "WHERE subtype.POS = dt.WORDTYPE_CLASS AND p.LOW <= subtype.LOW and subtype.HIGH <= p.HIGH "
-					+ "GROUP BY p.POS, p.DESCRIPTION, p.PARENT_POS,p.LOW, p.HIGH "
-					+ "ORDER BY p.LOW, p.HIGH desc)x SET "
-					+ this.tableName + ".TOKEN_COUNT=x.TOKEN_COUNT,"
-					+ this.tableName + ".DOCUMENT_COUNT=x.DOCUMENT_COUNT,"
-					+ this.tableName + ".TERM_COUNT=x.TERM_COUNT,"
+					+ "SELECT POS, COUNT(TERM) AS TERM_COUNT, SUM(COUNT) AS TOKEN_COUNT "
+					+ "FROM ALL_TERMS GROUP BY POS) x SET " + this.tableName + ".TERM_COUNT=x.TERM_COUNT,"
+					+ this.tableName + ".TOKEN_COUNT=x.TOKEN_COUNT WHERE x.POS=" + this.tableName + ".POS ");
+			this.database.executeUpdateQuery("UPDATE " + this.tableName + ", ("
+					+ "SELECT WORDTYPE_CLASS, COUNT(DISTINCT DOCUMENT_ID) AS DOCUMENT_COUNT,"
+					+ "MIN(MIN_TOKEN_LENGTH) AS MIN_TOKEN_LENGTH, "
+					+ "MAX(MAX_TOKEN_LENGTH) AS MAX_TOKEN_LENGTH, "
+					+ "SUM(SUM_TOKEN_LENGTH)/ "
+					+ "SUM(TOKEN_COUNT) AS AVG_TOKEN_LENGTH "
+					+ "FROM DOCUMENT_WORDTYPE GROUP BY WORDTYPE_CLASS)x "
+					+ "SET " + this.tableName + ".DOCUMENT_COUNT=x.DOCUMENT_COUNT,"
 					+ this.tableName + ".MIN_TOKEN_LENGTH=x.MIN_TOKEN_LENGTH,"
-					+ this.tableName + ".AVG_TOKEN_LENGTH=x.AVG_TOKEN_LENGTH,"
-					+ this.tableName + ".MAX_TOKEN_LENGTH=x.MAX_TOKEN_LENGTH "
-					+ "WHERE " + this.tableName + ".POS=x.POS");
+					+ this.tableName + ".MAX_TOKEN_LENGTH=x.MAX_TOKEN_LENGTH, "
+					+ this.tableName + ".AVG_TOKEN_LENGTH=x.AVG_TOKEN_LENGTH "
+					+ "WHERE " + this.tableName + ".POS=x.WORDTYPE_CLASS ");
 		} catch(SQLException e) {
-			logger.error("Error updating POS_TYPE table.");
+			logger.error("Error updating " + this.tableName + " table.");
 			throw new RuntimeException(e);
 		}
 	}

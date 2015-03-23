@@ -2,7 +2,10 @@
 <catalog>
 	<command name="DocumentTermCreate" className="cc.topicexplorer.plugin.mecab.initcorpus.command.DocumentTermCreate"/>	
 	<command name="DocumentTermFill" className="cc.topicexplorer.plugin.mecab.initcorpus.command.DocumentTermFill"/>
+	<command name="DocumentWordtypeCreate" className="cc.topicexplorer.plugin.mecab.initcorpus.command.DocumentWordtypeCreate"/>	
+	<command name="DocumentWordtypeFill" className="cc.topicexplorer.plugin.mecab.initcorpus.command.DocumentWordtypeFill"/>
 	<command name="PosTypeCreate" className="cc.topicexplorer.plugin.mecab.initcorpus.command.PosTypeCreate"/>	
 	<command name="PosTypeFill" className="cc.topicexplorer.plugin.mecab.initcorpus.command.PosTypeFill"/>
 	<command name="PosTypeUpdate" className="cc.topicexplorer.plugin.mecab.initcorpus.command.PosTypeUpdate"/>
+	<command name="AllTermsCreate" className="cc.topicexplorer.plugin.mecab.initcorpus.command.AllTermsCreate"/>
 </catalog>

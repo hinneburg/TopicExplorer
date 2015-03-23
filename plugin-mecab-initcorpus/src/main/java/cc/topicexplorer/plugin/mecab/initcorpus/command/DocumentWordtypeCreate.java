@@ -9,26 +9,22 @@ import cc.topicexplorer.commands.TableCreateCommand;
 
 import com.google.common.collect.Sets;
 
-public class DocumentTermCreate extends TableCreateCommand {
+public class DocumentWordtypeCreate extends TableCreateCommand {
 
-	private static final Logger logger = Logger.getLogger(DocumentTermCreate.class);
+	private static final Logger logger = Logger.getLogger(DocumentWordtypeCreate.class);
 
 	@Override
 	public void createTable() {
 		try {
 			this.database.executeUpdateQuery(" CREATE TABLE `" + this.tableName + "` ("
 					+ "`DOCUMENT_ID` INT(11) NOT NULL, "
-					+ "`POSITION_OF_TOKEN_IN_DOCUMENT` INT(11) NOT NULL, "
-					+ "`TERM` varchar(255) COLLATE utf8_bin NOT NULL, "
-					+ "`TOKEN` varchar(255) COLLATE utf8_bin NOT NULL, "
 					+ "`WORDTYPE_CLASS` INT(11) NOT NULL, "
-					+ "`CONTINUATION` INT(11) NOT NULL "
-					+ ") ENGINE=InnoDB CHARSET=utf8 COLLATE=utf8_bin ;");
-			this.database.executeUpdateQuery("ALTER TABLE `" + this.tableName + "` "
-					+ "ADD INDEX `INDEX_POS` (`DOCUMENT_ID`, `POSITION_OF_TOKEN_IN_DOCUMENT`)");
-			this.database.executeUpdateQuery("ALTER TABLE `" + this.tableName + "` "
-					+ "ADD INDEX `INDEX_WORDTYPE` (`DOCUMENT_ID`, `TERM`, `WORDTYPE_CLASS`)");
-			
+					+ "`TOKEN_COUNT` INT(11) NOT NULL, "
+					+ "`TERM_COUNT` INT(11) NOT NULL, "
+					+ "`MIN_TOKEN_LENGTH` INT(11) NOT NULL, "
+					+ "`MAX_TOKEN_LENGTH` INT(11) NOT NULL, "
+					+ "`SUM_TOKEN_LENGTH` INT(11) NOT NULL "
+					+ ") ENGINE=InnoDB CHARSET=utf8 COLLATE=utf8_bin ;");			
 		} catch (SQLException e) {
 			logger.error("Table " + this.tableName + " could not be created.");
 			throw new RuntimeException(e);
@@ -37,7 +33,7 @@ public class DocumentTermCreate extends TableCreateCommand {
 
 	@Override
 	public void setTableName() {
-		this.tableName = "DOCUMENT_TERM";
+		this.tableName = "DOCUMENT_WORDTYPE";
 	}
 
 	@Override

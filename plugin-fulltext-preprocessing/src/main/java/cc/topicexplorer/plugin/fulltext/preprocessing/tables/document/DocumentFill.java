@@ -30,12 +30,12 @@ public class DocumentFill extends TableFillCommand {
 		/** OHNE_JOOQ-START */
 		if (Boolean.parseBoolean(properties.getProperty("plugin_fulltext"))) {
 			try {
-				database.executeUpdateQuery("UPDATE " + "DOCUMENT" + " d, " + properties.getProperty("OrgTableName")
-						+ " org SET d." + "FULLTEXT$FULLTEXT" + " = org."
-						+ properties.getProperty("Fulltext_OrgTableFulltext") + " WHERE d." + "DOCUMENT_ID" + " = org."
-						+ properties.getProperty("OrgTableId"));
-				database.executeUpdateQuery("ALTER IGNORE TABLE `" + "DOCUMENT"
-						+ "` ADD FULLTEXT KEY FULLTEXT$FULLTEXT_IDX (" + "FULLTEXT$FULLTEXT" + ")");
+				database.executeUpdateQuery("UPDATE " + this.tableName+ " d, ("
+						+ "SELECT DOCUMENT_ID, GROUP_CONCAT(TOKEN SEPARATOR ' ') as FULL_TEXT "
+						+ "FROM DOCUMENT_TERM GROUP BY DOCUMENT_ID ORDER BY POSITION_OF_TOKEN_IN_DOCUMENT) dt "
+						+ "SET d.TEXT$FULLTEXT=dt.FULL_TEXT WHERE d.DOCUMENT_ID=dt.DOCUMENT_ID ");
+				database.executeUpdateQuery("ALTER IGNORE TABLE `" + this.tableName + "` "
+						+ "ADD FULLTEXT KEY FULLTEXT$FULLTEXT_IDX (FULLTEXT$FULLTEXT)");
 			} catch (SQLException e) {
 				logger.error("Table " + this.tableName + " could not be filled properly.");
 				throw new RuntimeException(e);

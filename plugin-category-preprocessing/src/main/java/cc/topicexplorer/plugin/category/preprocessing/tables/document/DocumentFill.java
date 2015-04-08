@@ -33,9 +33,9 @@ public class DocumentFill extends TableFillCommand {
 		if (Boolean.parseBoolean(properties.getProperty("plugin_category"))) {
 			try {
 				database.executeUpdateQuery("UPDATE " + this.tableName + " d, "
-						+ properties.getProperty("OrgTableName") + " org SET d." + "DOCUMENT.CATEGORY$CATEGORY_ID"
-						+ " = org." + properties.getProperty("Category_OrgTableCat") + " WHERE d."
-						+ "DOCUMENT.DOCUMENT_ID" + " = org." + properties.getProperty("OrgTableId"));
+						+ "orgTable_meta org SET d.DOCUMENT.CATEGORY$CATEGORY_ID"
+						+ " = org.CATEGORY WHERE d."
+						+ "DOCUMENT.DOCUMENT_ID=org.DOCUMENT_ID");
 
 				database.executeUpdateQuery("ALTER IGNORE TABLE " + this.tableName
 						+ " ADD KEY CATEGORY_DOCUMENT_IDX (`" + "DOCUMENT.DOCUMENT_ID" + "`,`"

@@ -26,10 +26,9 @@ public class DocumentFill extends TableFillCommand {
 		 */
 		/** OHNE_JOOQ-START */
 		try {
-			database.executeUpdateQuery("insert into " + "DOCUMENT" + " (" + "DOCUMENT.DOCUMENT_ID" + ", "
-					+ "DOCUMENT.NUMBER_OF_TOKENS" + ") select " + properties.getProperty("OrgTableId")
-					+ ", CHAR_LENGTH(" + properties.getProperty("OrgTableTxt") + ") from "
-					+ properties.getProperty("OrgTableName"));
+			database.executeUpdateQuery("insert into DOCUMENT (DOCUMENT.DOCUMENT_ID, "
+					+ "DOCUMENT.NUMBER_OF_TOKENS) select DOCUMENT_ID" 
+					+ ", CHAR_LENGTH(DOCUMENT_TEXT) from orgTable_text");
 		} catch (SQLException e) {
 			logger.error("Table " + this.tableName + " could not be filled properly.");
 			throw new RuntimeException(e);

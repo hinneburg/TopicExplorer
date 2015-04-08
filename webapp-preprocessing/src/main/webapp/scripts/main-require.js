@@ -39,15 +39,24 @@ function flatTree(childArray, ko, depth) {
 		node = {}
 		node.PARENT = childArray[idx].PARENT;
 		node.LABEL = childArray[idx].LABEL;
+		node.TERM_COUNT = childArray[idx].TERM_COUNT;
+		node.PARENTS_CHILDREN = [];
+		
 		children = [];
 		for(idx2 in childArray[idx].CHILDREN) {
 			children.push(childArray[idx].CHILDREN[idx2].POS);
 		}
 		
+		node.HIERARCHICAL_LABEL = "";
+		for(var i = 0; i < depth; i++) {
+			node.HIERARCHICAL_LABEL += "&nbsp;&nbsp;";
+		}
+		node.HIERARCHICAL_LABEL += childArray[idx].LABEL;
 		node.CHILDREN = children;
 		node.lowerBorder = ko.observable(0);
 		node.upperBorder = ko.observable(self.globalData.DOCUMENT_COUNT);
 		
+		node.stopwords = ko.observableArray([]);
 		self.globalData.FLAT_TREE[childArray[idx].POS] = node;
 		if(childArray[idx].CHILDREN.length > 0) {
 			flatTree(childArray[idx].CHILDREN, ko, depth + 1);

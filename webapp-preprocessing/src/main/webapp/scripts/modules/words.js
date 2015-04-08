@@ -11,9 +11,9 @@ function(ko, $) {
 	self.activePos= ko.observable(0);
 	self.changeStopWords = function(newValue) {
 		if(newValue.SELECTED) {
-			self.stopWords.push(newValue.TERM);
+			globalData.FLAT_TREE[self.activePos()].stopwords.push(newValue.TERM);
 		} else {
-			self.stopWords.remove(newValue.TERM);
+			globalData.FLAT_TREE[self.activePos()].stopwords.remove(newValue.TERM);
 		}
 		return true;
 	};
@@ -65,6 +65,29 @@ function(ko, $) {
 		return;
 	};
 	
+	self.giveBordersToChildren = function(pos) {
+		for(childIdx in globalData.FLAT_TREE[pos].CHILDREN) {
+			globalData.FLAT_TREE[globalData.FLAT_TREE[pos].CHILDREN[childIdx]].lowerBorder(globalData.FLAT_TREE[pos].lowerBorder());
+			globalData.FLAT_TREE[globalData.FLAT_TREE[pos].CHILDREN[childIdx]].upperBorder(globalData.FLAT_TREE[pos].upperBorder());
+			self.giveBordersToChildren(globalData.FLAT_TREE[pos].CHILDREN[childIdx]);
+		}
+		return;
+	}
+	
+	self.giveBordersToParents = function(pos) {
+		if(globalData.FLAT_TREE[pos].PARENT == -1) return;
+		if(globalData.FLAT_TREE[globalData.FLAT_TREE[pos].PARENT].CHILDREN.length > 1) {
+			globalData.FLAT_TREE[globalData.FLAT_TREE[pos].PARENT].lowerBorder(0);
+			globalData.FLAT_TREE[globalData.FLAT_TREE[pos].PARENT].upperBorder(globalData.DOCUMENT_COUNT);
+		} else {
+			globalData.FLAT_TREE[globalData.FLAT_TREE[pos].PARENT].lowerBorder(globalData.FLAT_TREE[pos].lowerBorder());
+			globalData.FLAT_TREE[globalData.FLAT_TREE[pos].PARENT].upperBorder(globalData.FLAT_TREE[pos].upperBorder());
+		}
+		self.giveBordersToParents(globalData.FLAT_TREE[pos].PARENT);
+	} 
+	
+	self.renderedWordList = ko.observableArray([]);
+	
 	self.openOverlay = function(data) {
 		self.loading(true);
 		self.activePos(data.POS);
@@ -72,12 +95,22 @@ function(ko, $) {
 		self.wordlistLabel(data.LABEL);
 		if(globalData.FLAT_TREE[data.POS].wordList == undefined) {
 			globalData.FLAT_TREE[data.POS].wordList = ko.observableArray([]);
+			
 			$.getJSON("JsonServlet?Command=getWordlist&pos=" + data.POS).success(function(receivedParsedJson) {
 				globalData.FLAT_TREE[data.POS].wordList(receivedParsedJson.TERM);
+				
+				
+				var tempWordList = [];
+				var maxIndex = Math.min(50, receivedParsedJson.TERM.length);
+				for(var i = 0; i < maxIndex; i++) {
+					tempWordList.push(i);
+				}
 				
 				for(wordIdx in globalData.FLAT_TREE[data.POS].wordList()) {
 					globalData.FLAT_TREE[data.POS].wordList()[wordIdx].SELECTED = true;
 				}
+				
+				self.renderedWordList(tempWordList.slice());
 				
 				$( "#slider" ).slider({
 					range: true,
@@ -87,15 +120,8 @@ function(ko, $) {
 					slide: function(event, ui) {
 						globalData.FLAT_TREE[data.POS].lowerBorder(ui.values[0]);
 						globalData.FLAT_TREE[data.POS].upperBorder(ui.values[1]);
-						for(wordIdx in globalData.FLAT_TREE[data.POS].wordList()) {
-							if(globalData.FLAT_TREE[data.POS].wordList()[wordIdx].COUNT < ui.values[1] && globalData.FLAT_TREE[data.POS].wordList()[wordIdx].COUNT > ui.values[0]) {
-								$('ul#wordList li:nth-child(' + (parseInt(wordIdx) + 1) + ')').css('color', 'black');
-								$('ul#wordList li:nth-child(' +  (parseInt(wordIdx) + 1) + ') :nth-child(2)').prop('disabled', false);
-							} else {
-								$('ul#wordList li:nth-child(' +  (parseInt(wordIdx) + 1) + ')').css('color', 'lightgrey');
-								$('ul#wordList li:nth-child(' +  (parseInt(wordIdx) + 1) + ') :nth-child(2)').prop('disabled', true);
-							}
-						}
+						self.giveBordersToChildren(data.POS);
+						self.giveBordersToParents(data.POS);
 					}
 				});
 				self.loading(false);
@@ -121,11 +147,74 @@ function(ko, $) {
 		} else {
 			alert('you have to select at least one wordtype');
 		}		
-	}
+	};
+	
+	self.statusMessage = ko.observable(""); 
 	self.goToFrames = function() {
 		globalData.selectedFrames = ko.observableArray([]);
-		globalData.module('frames');
+		$('#overlay2').hide();
+		$('#overlay3').show();
+		var wordtypes = [];
+		for(var id in globalData.checkedWordtypes()) {
+			wordtype = {};
+			wordtype.id = globalData.checkedWordtypes()[id];
+			wordtype.upperBorder = globalData.FLAT_TREE[globalData.checkedWordtypes()[id]].upperBorder();
+			wordtype.lowerBorder = globalData.FLAT_TREE[globalData.checkedWordtypes()[id]].lowerBorder();
+			wordtype.stopWords = globalData.FLAT_TREE[globalData.checkedWordtypes()[id]].stopwords();
+			wordtypes.push(wordtype);
+		}
+		self.statusMessage("writing topic count to property file...");
+		$.getJSON("JsonServlet?Command=specifyTopicCount&topicCount=" + self.topicCount()).success(function(receivedParsedJson) {
+			self.statusMessage("prepare json for generating csv...");
+			$.getJSON("JsonServlet?Command=generateCSV&wordList=" + JSON.stringify(wordtypes)).success(function(receivedParsedJson) {
+				globalData.module('frames');
+			});
+		});
+		
+		
+	};
+	var lastScrollTop = 0;
+	self.wordListScroll = function(bla, evt) {
+		temp = self.renderedWordList().slice();
+		if($("#wordlistDiv").scrollTop() + $("#wordlistDiv").height() + 90 >= $("#wordlistDiv")[0].scrollHeight && lastScrollTop <= $("#wordlistDiv").scrollTop() && temp[temp.length - 1] + 1 < globalData.FLAT_TREE[self.activePos()].TERM_COUNT) {
+			var addCount = Math.min(10, globalData.FLAT_TREE[self.activePos()].TERM_COUNT - temp[temp.length - 1] - 1); 
+			
+			for(var i = 0; i < addCount; i++) {
+				temp.splice(temp.length, 0, temp[temp.length - 1] + 1);
+			}
+			self.renderedWordList(temp);
+			
+			var firstHeight = $("#wordlistDiv")[0].scrollHeight;
+			
+			temp.splice(0,addCount);
+			self.renderedWordList(temp);
+			
+			$("#wordlistDiv").scrollTop($("#wordlistDiv").scrollTop() - ((firstHeight - $("#wordlistDiv")[0].scrollHeight)));			
+		} else if($("#wordlistDiv").scrollTop() < 10 && lastScrollTop > $("#wordlistDiv").scrollTop() && temp[0] >= 0) { 
+			var addCount = Math.min(10, temp[0]);
+			
+			for(var i = 0; i < addCount; i++) {
+				temp.splice(0, 0, temp[0] - 1);
+			}
+			self.renderedWordList(temp);
+			
+			var firstHeight = $("#wordlistDiv")[0].scrollHeight;
+			
+			temp.splice(temp.length - addCount, addCount);
+			self.renderedWordList(temp);
+			
+			$("#wordlistDiv").scrollTop($("#wordlistDiv").scrollTop() + ((firstHeight - $("#wordlistDiv")[0].scrollHeight)));
+		}
+		lastScrollTop = $("#wordlistDiv").scrollTop();
+	};
+	
+	self.isChecked = function(wordIndex) {
+		return ko.dependentObservable(function () {
+			if(globalData.FLAT_TREE[self.activePos()].wordList == undefined) return false;
+			return !(globalData.FLAT_TREE[self.activePos()].wordList()[wordIndex].COUNT > globalData.FLAT_TREE[self.activePos()].lowerBorder() && globalData.FLAT_TREE[self.activePos()].wordList()[wordIndex].COUNT < globalData.FLAT_TREE[self.activePos()].upperBorder());
+		}, this);
 	}
+	
 	self.topicCount = ko.observable(parseInt(globalData.DOCUMENT_COUNT / 1000) * 10);
 	return self;
 });

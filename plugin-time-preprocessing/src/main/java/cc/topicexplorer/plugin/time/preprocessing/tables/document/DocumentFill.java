@@ -29,10 +29,9 @@ public class DocumentFill extends TableFillCommand {
 			 */
 			/** OHNE_JOOQ-START */
 			try {
-				database.executeUpdateQuery("UPDATE " + this.tableName + " d, "
-						+ properties.getProperty("OrgTableName") + " org SET d." + "TIME$TIME_STAMP" + " = org."
-						+ properties.getProperty("Time_OrgTableTstamp") + " WHERE d." + "DOCUMENT_ID" + " = org."
-						+ properties.getProperty("OrgTableId"));
+				database.executeUpdateQuery("UPDATE " + this.tableName + " d, orgTable_meta "
+						+ "org SET d.TIME$TIME_STAMP=UNIX_TIMESTAMP(org.DOCUMENT_DATE) "
+						+ "WHERE d.DOCUMENT_ID=org.DOCUMENT_ID");
 			} catch (SQLException e) {
 				logger.error("Table " + this.tableName + " could not be filled properly.");
 				throw new RuntimeException(e);

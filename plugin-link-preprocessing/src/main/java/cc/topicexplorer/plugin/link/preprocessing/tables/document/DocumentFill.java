@@ -31,12 +31,9 @@ public class DocumentFill extends TableFillCommand {
 			/** OHNE_JOOQ-START */
 
 			try {
-				database.executeUpdateQuery("UPDATE " + this.tableName + " d, " + " (SELECT "
-						+ properties.getProperty("Link_OrgTableIndegree") + " AS indeg, "
-						+ properties.getProperty("Link_OrgTableLink") + " AS link, "
-						+ properties.getProperty("OrgTableId") + " AS id FROM "
-						+ properties.getProperty("OrgTableName") + " ) AS org SET " + "d.LINK$URL" + " = org.link, "
-						+ "d.LINK$IN_DEGREE" + " = org.indeg" + " WHERE org.id = d." + "DOCUMENT_ID");
+				database.executeUpdateQuery("UPDATE " + this.tableName + " d, (SELECT "
+						+ "URL, DOCUMENT_ID FROM orgTable_meta) AS org SET d.LINK$URL= org.URL "
+						+ "WHERE org.DOCUMENT_ID=d.DOCUMENT_ID");
 			} catch (SQLException e) {
 				logger.error("Table " + this.tableName + " could not be filled properly.");
 				throw new RuntimeException(e);

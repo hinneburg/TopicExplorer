@@ -33,10 +33,12 @@ public class DocumentFill extends TableFillCommand {
 		/** OHNE_JOOQ-START */
 		if (Boolean.parseBoolean(properties.getProperty("plugin_text"))) {
 			try {
-				database.executeUpdateQuery("UPDATE " + "DOCUMENT" + " d, " + properties.getProperty("OrgTableName")
-						+ " org SET d." + "TEXT$FULLTEXT" + " = org." + properties.getProperty("Text_OrgTableTxt")
-						+ ", " + "d.TEXT$TITLE" + " = org." + properties.getProperty("Text_OrgTableTitle")
-						+ " WHERE d." + "DOCUMENT_ID" + " = org." + properties.getProperty("OrgTableId"));
+				database.executeUpdateQuery("UPDATE DOCUMENT d, orgTable_text "
+						+ "org SET d.TEXT$FULLTEXT=org.DOCUMENT_TEXT "
+						+ "WHERE d.DOCUMENT_ID= org.DOCUMENT_ID");
+				database.executeUpdateQuery("UPDATE DOCUMENT d, orgTable_meta "
+						+ "org SET d.TEXT$TITLE=org.TITLE "
+						+ "WHERE d.DOCUMENT_ID= org.DOCUMENT_ID");
 				database.executeUpdateQuery("ALTER IGNORE TABLE " + "DOCUMENT" + " ADD KEY TEXT$TITLE_IDX ("
 						+ "TEXT$TITLE" + ")," + " ADD FULLTEXT KEY TEXT$FULLTEXT_IDX (" + "TEXT$FULLTEXT" + ");");
 			} catch (SQLException e) {

@@ -26,16 +26,16 @@ public class DocumentTermTopicFill extends TableFillCommand {
 				/**
 				 * MIT-JOOQ-START database.executeUpdateQuery("UPDATE " + DOCUMENT_TERM_TOPIC.getName() + " tta, " +
 				 * properties.getProperty("OrgTableName") + " org SET tta." + DOCUMENT_TERM_TOPIC.TIME$WEEK.getName() +
-				 * " = YEARWEEK(FROM_UNIXTIME(org." + properties.getProperty("Time_OrgTableTstamp") +
+				 * " = YEARWEEK(org." + properties.getProperty("Time_OrgTableTstamp") +
 				 * " - 86400)) WHERE tta." + DOCUMENT_TERM_TOPIC.DOCUMENT_ID.getName() + " = org." +
 				 * properties.getProperty("OrgTableId")); MIT-JOOQ-ENDE
 				 */
 				/** OHNE_JOOQ-START */
 				try {
-					database.executeUpdateQuery("UPDATE " + "DOCUMENT_TERM_TOPIC" + " tta, "
-							+ properties.getProperty("OrgTableName") + " org SET tta." + "TIME$WEEK"
-							+ " = YEARWEEK(FROM_UNIXTIME(org." + properties.getProperty("Time_OrgTableTstamp")
-							+ " - 86400)) WHERE tta." + "DOCUMENT_ID" + " = org." + properties.getProperty("OrgTableId"));
+					database.executeUpdateQuery("UPDATE DOCUMENT_TERM_TOPIC tta, "
+							+ "orgTable_meta org SET tta.TIME$WEEK"
+							+ " = YEARWEEK(FROM_UNIXTIME(UNIX_TIMESTAMP(org.DOCUMENT_DATE)"
+							+ " - 86400)) WHERE tta.DOCUMENT_ID= org.DOCUMENT_ID");
 				} catch (SQLException e) {
 					logger.error("Table " + this.tableName + " could not be filled properly.");
 					throw new RuntimeException(e);

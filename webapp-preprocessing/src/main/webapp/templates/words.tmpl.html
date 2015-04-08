@@ -28,12 +28,15 @@
 	<div id="overlay" class="overlay" style="position: fixed; width: 100%; height:100%; top:0;margin: 0 auto; background-color:rgba(255,255,255,0.8); display: none;">
 		<img style="border: 0; margin: 0;" src="images/delete_24.png" data-bind="click: closeOverlay"/>
 		<div style="text-align: center; height:90%;position: fixed; left: 50%;width: 669px;margin-left: -335px;background-color: lightgrey; ">
-			<div style="text-align: center; overflow: auto; height:84%;position: fixed; left: 50%;width: 200px;margin-left: -100px;background-color: white; margin-top: 0.5%">
+			<div id="wordlistDiv" style="text-align: center; overflow: auto; height:84%;position: fixed; left: 50%;width: 200px;margin-left: -100px;background-color: white; margin-top: 0.5%" data-bind="event: {scroll: wordListScroll}">
 				<span style="margin-left: -300px;position: fixed;font-weight: bold; font-size:x-large; color:#999;" data-bind="text: wordlistLabel"></span>
 				<!-- ko if: !loading() -->	
 				<ul style="list-style: none;padding: 0;" id="wordList">
-					<!-- ko foreach: {data: globalData.FLAT_TREE[activePos()].wordList, as: 'item'} -->
-						<li><span data-bind="text: item.TERM + ' (' + item.COUNT + ')'"></span><input class="wordCheckbox" type="checkbox" name="words" data-bind="value: item.TERM, attr {'id': 'checkBoxStopword_' + item.TERM}, click: $parent.changeStopWords, checked: item.SELECTED" /></li>
+					<!-- ko foreach: {data: renderedWordList, as: 'index'} -->
+						<li>
+							<span data-bind="text: globalData.FLAT_TREE[$parent.activePos()].wordList()[index].TERM + ' (' + globalData.FLAT_TREE[$parent.activePos()].wordList()[index].COUNT + ')'"></span>
+							<input class="wordCheckbox" type="checkbox" name="words" data-bind="value: globalData.FLAT_TREE[$parent.activePos()].wordList()[index].TERM, attr {'id': 'checkBoxStopword_' + globalData.FLAT_TREE[$parent.activePos()].wordList()[index].TERM}, click: $parent.changeStopWords, checked: globalData.FLAT_TREE[$parent.activePos()].wordList()[index].SELECTED,attr: {disabled: $parent.isChecked(index)}" />
+						</li>
 					<!-- /ko -->
 				</ul>
 				<!-- /ko --> 
@@ -58,6 +61,7 @@
 						<th>wordtype</th>
 						<th>lower pruning border</th>
 						<th>upper pruning border</th>
+						<th>stopwords</th>
 					</tr>
 				</thead>
 				<tbody data-bind="foreach: {data: globalData.checkedWordtypes, as: 'pos'}">
@@ -65,22 +69,20 @@
 						<td><span data-bind="text: globalData.FLAT_TREE[pos].LABEL"></span></td>
 						<td><span data-bind="text: globalData.FLAT_TREE[pos].lowerBorder"></span></td>
 						<td><span data-bind="text: globalData.FLAT_TREE[pos].upperBorder"></span></td>
+						<td><span data-bind="text: globalData.FLAT_TREE[pos].stopwords"></span></td>
 					</tr>
 				</tbody>
 			</table>
-			<!-- ko if: stopWords().length  -->
-				<h3>stop words</h3>
-				<span data-bind="text:stopWords()[0]"></span>
-				<!-- ko foreach: {data: stopWords, as: 'stopWord'} -->
-					<!-- ko if: $index() > 0 -->
-						<span data-bind="text: ', ' + stopWord"></span>
-					<!-- /ko -->
-				<!-- /ko -->		
-			<!-- /ko -->	
+			
 			<br/>
 			<span>find&nbsp;<input type="text" data-bind="value: topicCount"> topics</span> 
 			<button type="button" data-bind="click:goToFrames">ok</button>
 			<button type="button" data-bind="click:closeOverlay">cancel</button>
+		</div>
+	</div>
+	<div id="overlay3" class="overlay" style="position: fixed; width: 100%; height:100%; top: 0; margin: 0 auto; background-color:rgba(255,255,255,0.8); display: none;">
+		<div style="text-align: center; height:90%;position: fixed; left: 50%;width: 669px;margin-left: -335px;background-color: lightgrey;	overflow: scroll;top:42px;">
+			<img style="border: 0; top: 45px" src="images/ajax-loader.gif" alt="Loading"/><span data-bind="text:statusMessage"></span>
 		</div>
 	</div>
 </div>

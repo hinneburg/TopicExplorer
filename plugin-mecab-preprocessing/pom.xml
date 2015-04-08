@@ -5,14 +5,9 @@
 		<artifactId>topicexplorer-parent</artifactId>
 		<version>1.4-SNAPSHOT</version>
 	</parent>
-	<artifactId>plugin-mecab-initcorpus</artifactId>
-	<name>plugin-mecab-initcorpus</name>
+	<artifactId>plugin-mecab-preprocessing</artifactId>
+	<name>plugin-mecab-preprocessing</name>
 	<dependencies>
-		<dependency>
-			<groupId>org.chasen.mecab</groupId>
-			<artifactId>mecab-java</artifactId>
-			<version>0.993</version>
-		</dependency>
 		<dependency>
 			<groupId>cc.commandmanager</groupId>
 			<artifactId>command-manager</artifactId>
@@ -20,13 +15,18 @@
 		</dependency>
 		<dependency>
 			<groupId>cc.topicexplorer</groupId>
-			<artifactId>core-initcorpus</artifactId>
+			<artifactId>core-preprocessing</artifactId>
 			<version>1.4-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 			<version>1.2.17</version>
+		</dependency>
+		<dependency>
+	    <groupId>com.googlecode.json-simple</groupId>
+		    <artifactId>json-simple</artifactId>
+		    <version>1.1.1</version>
 		</dependency>
 	</dependencies>
 </project>

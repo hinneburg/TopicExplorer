@@ -29,6 +29,7 @@
 		<module>plugin-link-preprocessing</module>
 		<module>plugin-link-webinterface</module>
 		<module>plugin-mecab-initcorpus</module>
+		<module>plugin-mecab-preprocessing</module>
 		<module>plugin-time-preprocessing</module>
 		<module>plugin-time-webinterface</module>
 		<module>plugin-wiki-preprocessing</module>

@@ -10,12 +10,19 @@
 	
 	
 	<h3>Frames</h3>
+	<input type="number" min="1" max="200" title="best x of start wordtype" id="firstWordtypeLimit">
 	<select id="selectFirstWordtype" title="select start wordtype" data-bind="template: {name: 'wordtype_selectTemplate', foreach: globalData.WORDTYPE_WORDCOUNTS}"></select>
 	<input type="number" min="0" max="200" title="how many signs allowed between" id="signsBetween">
+	<input type="number" min="1" max="200" title="best x of end wordtype" id="lastWordtypeLimit">
 	<select id="selectLastWordtype" title="select end wordtype" data-bind="template: {name: 'wordtype_selectTemplate', foreach: globalData.WORDTYPE_WORDCOUNTS}"></select>
 	<button type="button" id="addFrame" data-bind="click:addFrame">add</button><br/>
 	
 </div>
+<div id="overlay" class="overlay" style="position: fixed; width: 100%; height:100%; top: 0; margin: 0 auto; background-color:rgba(255,255,255,0.8); display: none;">
+		<div style="text-align: center; height:90%;position: fixed; left: 50%;width: 669px;margin-left: -335px;background-color: lightgrey;	overflow: scroll;top:42px;">
+			<img style="border: 0; top: 45px" src="images/ajax-loader.gif" alt="Loading"/><span data-bind="text:statusMessage"></span>
+		</div>
+	</div>
 <div>
 	<!-- ko if: globalData.selectedFrames().length  -->
 	<h5>Selected Frames</h5>
@@ -31,8 +38,8 @@
 		</thead>
 		<tbody data-bind="foreach: {data: globalData.selectedFrames, as: 'frame'}">
 			<tr>
-				<td><span data-bind="text: globalData.FLAT_TREE[frame.firstWordtype].LABEL"></span></td>
-				<td><span data-bind="text: globalData.FLAT_TREE[frame.lastWordtype].LABEL"></span></td>
+				<td><span data-bind="text: globalData.FLAT_TREE[frame.firstWordtype].LABEL + ' (' + frame.firstWordtypeLimit + ')'"></span></td>
+				<td><span data-bind="text: globalData.FLAT_TREE[frame.lastWordtype].LABEL + ' (' + frame.lastWordtypeLimit + ')'"></span></td>
 				<td><span data-bind="text: frame.signsBetween"></span></td>
 				<td><button type="button" data-bind="click: function() { $parent.editFrame($index());}">edit</button></td>
 				<td><button type="button" data-bind="click:function() { $parent.removeFrame($index());}">remove</button></td>
@@ -45,10 +52,11 @@
 </div>
 
 <script type="text/html" id="wordtype_selectTemplate">
+	<!-- ko if: globalData.checkedWordtypes().indexOf(String(POS)) > -1 -->
+		<option data-bind="value: POS, html:globalData.FLAT_TREE[POS].HIERARCHICAL_LABEL"></option>
+	<!-- /ko -->
+	
 	<!-- ko if: CHILDREN.length > 0 -->
 		<!-- ko template: { name: 'wordtype_selectTemplate', foreach: CHILDREN } --><!-- /ko --> 
-	<!-- /ko -->
-	<!-- ko if: CHILDREN.length < 1 && globalData.checkedWordtypes().indexOf(String(POS)) > -1 -->
-		<option data-bind="value: POS, html:LABEL"></option>
 	<!-- /ko -->
 </script>

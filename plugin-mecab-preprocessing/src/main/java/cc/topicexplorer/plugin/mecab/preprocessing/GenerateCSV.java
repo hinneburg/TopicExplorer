@@ -105,9 +105,9 @@ public class GenerateCSV  extends TableCommand{
 			csvOutput.endRecord();
 				
 			ResultSet wordSelectRS = database.executeQuery("SELECT " + this.tableName + ".DOCUMENT_ID, POSITION_OF_TOKEN_IN_DOCUMENT, " 
-					+ this.tableName + ".TERM," + this.tableName + ".TOKEN, ALL_TERMS.POS AS WORDTYPE$WORDTYPE "
-					+ "FROM " + this.tableName + ", ALL_TERMS "
-					+ "WHERE " + this.tableName + ".TERM=ALL_TERMS.TERM AND " + this.tableName + ".WORDTYPE_CLASS=ALL_TERMS.POS AND "
+					+ this.tableName + ".TERM," + this.tableName + ".TOKEN, POS_TYPE.DESCRIPTION AS WORDTYPE$WORDTYPE "
+					+ "FROM " + this.tableName + ", ALL_TERMS, POS_TYPE "
+					+ "WHERE ALL_TERMS.POS=POS_TYPE.POS AND " + this.tableName + ".TERM=ALL_TERMS.TERM AND " + this.tableName + ".WORDTYPE_CLASS=ALL_TERMS.POS AND "
 					+ condition
 					+ "ORDER BY DOCUMENT_ID, POSITION_OF_TOKEN_IN_DOCUMENT");
 			while(wordSelectRS.next()) {

@@ -35,7 +35,7 @@
 					<!-- ko foreach: {data: renderedWordList, as: 'index'} -->
 						<li>
 							<span data-bind="text: globalData.FLAT_TREE[$parent.activePos()].wordList()[index].TERM + ' (' + globalData.FLAT_TREE[$parent.activePos()].wordList()[index].COUNT + ')'"></span>
-							<input class="wordCheckbox" type="checkbox" name="words" data-bind="value: globalData.FLAT_TREE[$parent.activePos()].wordList()[index].TERM, attr {'id': 'checkBoxStopword_' + globalData.FLAT_TREE[$parent.activePos()].wordList()[index].TERM}, click: $parent.changeStopWords, checked: globalData.FLAT_TREE[$parent.activePos()].wordList()[index].SELECTED,attr: {disabled: $parent.isChecked(index)}" />
+							<input class="wordCheckbox" type="checkbox" name="words" data-bind="value: globalData.FLAT_TREE[$parent.activePos()].wordList()[index].TERM, attr: {'id': 'checkBoxStopword_' + globalData.FLAT_TREE[$parent.activePos()].wordList()[index].TERM, disabled: $parent.isChecked(index)}, click: $parent.changeStopWords, checked: globalData.FLAT_TREE[$parent.activePos()].wordList()[index].SELECTED" />
 						</li>
 					<!-- /ko -->
 				</ul>
@@ -69,7 +69,7 @@
 						<td><span data-bind="text: globalData.FLAT_TREE[pos].LABEL"></span></td>
 						<td><span data-bind="text: globalData.FLAT_TREE[pos].lowerBorder"></span></td>
 						<td><span data-bind="text: globalData.FLAT_TREE[pos].upperBorder"></span></td>
-						<td><span data-bind="text: globalData.FLAT_TREE[pos].stopwords"></span></td>
+						<td><span data-bind="text: globalData.FLAT_TREE[pos].stopwords().join(', ')"></span></td>
 					</tr>
 				</tbody>
 			</table>

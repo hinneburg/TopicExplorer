@@ -7,13 +7,12 @@ function(ko, $) {
 	
 	globalData.checkedWordtypes = ko.observableArray([]);
 	
-	self.stopWords = ko.observableArray([]);
 	self.activePos= ko.observable(0);
 	self.changeStopWords = function(newValue) {
-		if(newValue.SELECTED) {
-			globalData.FLAT_TREE[self.activePos()].stopwords.push(newValue.TERM);
+		if(globalData.FLAT_TREE[self.activePos()].wordList()[newValue].SELECTED) {
+			globalData.FLAT_TREE[self.activePos()].stopwords.push(globalData.FLAT_TREE[self.activePos()].wordList()[newValue].TERM);
 		} else {
-			globalData.FLAT_TREE[self.activePos()].stopwords.remove(newValue.TERM);
+			globalData.FLAT_TREE[self.activePos()].stopwords.remove(globalData.FLAT_TREE[self.activePos()].wordList()[newValue].TERM);
 		}
 		return true;
 	};

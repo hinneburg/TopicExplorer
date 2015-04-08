@@ -13,11 +13,9 @@ function(ko, $) {
 	}
 	
 	self.statusMessage = ko.observable(""); 
-	console.log(globalData.checkedWordtypes());
 	for(wordTypeIdx in globalData.checkedWordtypes()) {
 		self.markParents(globalData.checkedWordtypes()[wordTypeIdx]);
 	}
-	console.log(globalData.checkedWordtypes());
 	self.version = "Frame Selector Version Alpha 0.1";
 	self.frameCount = ko.observable(1);
 	self.wordtypes = ko.observableArray([]);
@@ -97,11 +95,17 @@ function(ko, $) {
 	};
 	
 	self.done = function() {
-		$('#overlay').show();
-		self.statusMessage("writing frame data to property file...");
-		$.getJSON("JsonServlet?Command=specifyFrames&frames=" + JSON.stringify(globalData.selectedFrames()) + "&frameDelimiters=" + JSON.stringify(self.frameDelimiters())).success(function(receivedParsedJson) {
-			globalData.module('success');
-		});
+		var go = true;
+		if(globalData.selectedFrames().length < 1) {
+			go = confirm("No frames selected... Are you sure to continue?");
+		}
+		if(go) {
+			$('#overlay').show();
+			self.statusMessage("writing frame data to property file...");
+			$.getJSON("JsonServlet?Command=specifyFrames&frames=" + JSON.stringify(globalData.selectedFrames()) + "&frameDelimiters=" + JSON.stringify(self.frameDelimiters())).success(function(receivedParsedJson) {
+				globalData.module('success');
+			});
+		} 
 	};
 	
 	return self;

@@ -45,11 +45,16 @@ public class CreateUser implements Command {
 		String dbName = properties.getProperty("database.DB");
 		String dbUser = properties.getProperty("database.DbUser");
 		String dbPassword = properties.getProperty("database.DbPassword");
+		String[] allowFrom = properties.getProperty("database.AllowFrom").split(",");
+		String[] allowFileFrom = properties.getProperty("database.AllowFileFrom").split(",");
 		try {
 			Statement createUserStmt = crawlManagerConnection.createStatement();
-			createUserStmt.executeUpdate("grant all privileges on " +  dbName + ".* to '" + dbUser + "'@'localhost' identified by '" + dbPassword + "';");
-			createUserStmt.executeUpdate("grant file on *.* to '" + dbUser + "'@'localhost';");
-			createUserStmt.executeUpdate("grant all privileges on " +  dbName + ".* to '" + dbUser + "'@'topicexplorer.informatik.uni-halle.de' identified by '" + dbPassword + "';");
+			for(int i = 0; i < allowFrom.length; i++) {
+				createUserStmt.executeUpdate("grant all privileges on " +  dbName + ".* to '" + dbUser + "'@'" + allowFrom[i] + "' identified by '" + dbPassword + "';");
+			}
+			for(int i = 0; i < allowFileFrom.length; i++) {
+				createUserStmt.executeUpdate("grant file on *.* to '" + dbUser + "'@'" + allowFileFrom[i] + "';");
+			}
 		} catch (SQLException e) {
 			logger.error("DB user " + dbUser + " could not be created.");
 			throw new RuntimeException(e);

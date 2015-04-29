@@ -83,7 +83,7 @@ public class Prune_pb implements Command {
 					upperBoundPercent, lowerBoundPercent));
 		}
 
-		String query = "SELECT COUNT(*) FROM " + properties.getProperty("OrgTableName");
+		String query = "SELECT COUNT(*) FROM orgTable_meta";
 		try {
 			ResultSet rsDocCount = database.executeQuery(query);
 			if (rsDocCount.next()) {

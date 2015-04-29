@@ -1,19 +1,30 @@
 package cc.topicexplorer.web;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+
 import java.nio.charset.Charset;
+
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Connection;
+
 import java.util.ArrayList;
 import java.util.Properties;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Transformer;
@@ -23,6 +34,7 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
 import org.apache.log4j.Logger;
 
 import net.sf.json.JSONArray;
@@ -41,10 +53,14 @@ public class JsonServlet extends HttpServlet {
 	private static final Logger logger = Logger.getLogger(JsonServlet.class);
 	
 	private static final long serialVersionUID = 1L;
+	
+	private File tempPath;
 
 	@Override
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
+		tempPath = new File(getServletContext().getRealPath("/") + "WEB-INF" + File.separator +"temp");
+		
 		String command = request.getParameter("Command");
 
 		response.setCharacterEncoding("UTF8");
@@ -55,13 +71,21 @@ public class JsonServlet extends HttpServlet {
 		context.bind("SERVLET_WRITER", writer);
 		
 		Database database = (Database) context.get("database");
-		File tempPath = new File("temp");
+		
 		try {
 			if (command.equals("init")) {
 				
 				if(!tempPath.exists()) {
 					tempPath.mkdir();
 				}
+				// save db properties
+				Properties dbProps = PropertiesUtil.loadMandatoryProperties("database", "");
+				
+				FileOutputStream out = new FileOutputStream(new File(tempPath + "/database.local.properties"));
+				dbProps.store(out, null);
+				out.close();
+				
+				
 				long before = System.currentTimeMillis();
 				ResultSet docCountRs = database
 						.executeQuery("SELECT COUNT(distinct DOCUMENT_ID) AS docCount, "
@@ -138,14 +162,24 @@ public class JsonServlet extends HttpServlet {
 			} else if (command.equals("generateCSV")) {
 				if (request.getParameterMap().containsKey("wordList")) {
 					String wordListJSON = request.getParameter("wordList");
+					JSONArray wordList = (JSONArray) JSONSerializer.toJSON(wordListJSON);
+					FileOutputStream wordtypesOut = new FileOutputStream(new File(tempPath + "/wordtype.local.properties"));
+					if(wordList.size() > 0) {
+						JSONObject wordtype = (JSONObject) JSONSerializer.toJSON(wordList.get(0));
+						wordtypesOut.write(new String("wordtypes=" + wordtype.getString("id")).getBytes()); 
+						for(int i = 1 ; i < wordList.size(); i++) {
+							wordtype = (JSONObject) JSONSerializer.toJSON(wordList.get(i));
+							wordtypesOut.write(new String("," + wordtype.getInt("id")).getBytes()); 
+						}
+					}
+					wordtypesOut.close();
 					
-					@SuppressWarnings("resource")
-					FileOutputStream out = new FileOutputStream(new File(tempPath + "/wordlist.json"));
+					FileOutputStream jsonOut = new FileOutputStream(new File(tempPath + "/wordlist.json"));
 					
-					out.write(wordListJSON.getBytes(Charset.forName("UTF-8")));
+					jsonOut.write(wordListJSON.getBytes(Charset.forName("UTF-8")));
+					
+					jsonOut.close();
 					logger.info("word list: " + wordListJSON);
-					
-					Thread.sleep(1000); 
 					
 					writer.write("1");
 				} else {
@@ -154,8 +188,6 @@ public class JsonServlet extends HttpServlet {
 				}
 			} else if(command.equals("specifyTopicCount")) {
 				String topicCount = request.getParameter("topicCount");
-				
-				Thread.sleep(1000); 
 				
 				Properties props = PropertiesUtil.loadMandatoryProperties("config", "");
 				
@@ -210,7 +242,6 @@ public class JsonServlet extends HttpServlet {
 				props.store(out, null);
 				out.close();
 				
-				Thread.sleep(1000);
 				if(frameDelimiters.size() > 0) {
 					DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 					DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
@@ -230,21 +261,27 @@ public class JsonServlet extends HttpServlet {
 					TransformerFactory transformerFactory = TransformerFactory.newInstance();
 					Transformer transformer = transformerFactory.newTransformer();
 					DOMSource source = new DOMSource(doc);
-					StreamResult result = new StreamResult(new File(tempPath + "/frameDeliliter-ja.xml"));
-			 
-					// Output to console for testing
-					// StreamResult result = new StreamResult(System.out);
-			 
+					StreamResult result = new StreamResult(new File(tempPath + "/frameDelimiter-ja.xml"));
+			
 					transformer.transform(source, result);
 				}
-				
-				
 		 
 				logger.info("File saved!");
 				
-				logger.info("frame delimiter list: " + frameDelimiters.toString());
+				Properties dbProps = PropertiesUtil.updateOptionalProperties(new Properties(), "cmdb", "");
 				
-				writer.write("1");
+				Connection con = DriverManager.getConnection("jdbc:mysql://" + dbProps.getProperty("DbLocation")
+						+ "?useUnicode=true&characterEncoding=UTF-8&useCursorFetch=true", dbProps.getProperty("DbUser"), 
+						dbProps.getProperty("DbPassword"));
+				
+				PreparedStatement statement = con.prepareStatement("INSERT INTO TOPIC_EXPLORER (ZIPPED_CONFIGS) VALUES (?)");
+				statement.setBytes(1, zipConfig());
+				 
+	            statement.executeUpdate();
+	            
+				con.close();
+
+			    writer.write("1");
 			}
 		} catch (Exception e) {
 			logger.error("Error " + e);
@@ -254,7 +291,7 @@ public class JsonServlet extends HttpServlet {
 	}
 
 
-	public void addChildren(ResultSet rs, JSONArray in,
+	private void addChildren(ResultSet rs, JSONArray in,
 			ArrayList<Integer> parents) throws SQLException {
 		while (rs.next()) {
 			int parentPos = rs.getInt("PARENT_POS");
@@ -283,5 +320,48 @@ public class JsonServlet extends HttpServlet {
 				return;
 			}
 		}
+	}
+	
+	private byte[] zipConfig() {
+		ByteArrayOutputStream outStream = new ByteArrayOutputStream();		
+		try {
+			ZipOutputStream zos=new ZipOutputStream(outStream);
+			zos.setLevel(9);
+			 
+			addFileToZip(tempPath + "/config.local.properties", zos);
+			addFileToZip(tempPath + "/database.local.properties", zos);
+			addFileToZip(tempPath + "/frame.local.properties", zos);
+			addFileToZip(tempPath + "/frameDelimiter-ja.xml", zos);
+			addFileToZip(tempPath + "/wordtype.local.properties", zos);
+			addFileToZip(tempPath + "/wordlist.json", zos);
+			
+			zos.close();
+		} catch (IOException e) {
+			logger.error("Error " + e);
+			System.exit(0);
+		}
+		return outStream.toByteArray();
+	}
+	
+	private void addFileToZip(String fileName, ZipOutputStream zOut) {
+		try {
+			byte[] buffer = new byte[2048];
+			FileInputStream fin = new FileInputStream(fileName);
+			File file = new File(fileName);
+			zOut.putNextEntry(new ZipEntry(file.getName()));
+			int length;
+             
+            while((length = fin.read(buffer)) > 0) {
+            	zOut.write(buffer, 0, length);
+            }
+             
+            zOut.closeEntry();
+             
+            //close the InputStream
+            fin.close();
+		} catch (Exception e) {
+			logger.error("Error " + e);
+			System.exit(0);
+		} 
 	}
 }

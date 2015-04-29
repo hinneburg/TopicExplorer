@@ -33,10 +33,12 @@
 				<!-- ko if: !loading() -->	
 				<ul style="list-style: none;padding: 0;" id="wordList">
 					<!-- ko foreach: {data: renderedWordList, as: 'index'} -->
+						<!-- ko if: typeof globalData.FLAT_TREE[$parent.activePos()].wordList()[index] == 'object' -->
 						<li>
 							<span data-bind="text: globalData.FLAT_TREE[$parent.activePos()].wordList()[index].TERM + ' (' + globalData.FLAT_TREE[$parent.activePos()].wordList()[index].COUNT + ')'"></span>
 							<input class="wordCheckbox" type="checkbox" name="words" data-bind="value: globalData.FLAT_TREE[$parent.activePos()].wordList()[index].TERM, attr: {'id': 'checkBoxStopword_' + globalData.FLAT_TREE[$parent.activePos()].wordList()[index].TERM, disabled: $parent.isChecked(index)}, click: $parent.changeStopWords, checked: globalData.FLAT_TREE[$parent.activePos()].wordList()[index].SELECTED" />
 						</li>
+						<!-- /ko -->
 					<!-- /ko -->
 				</ul>
 				<!-- /ko --> 
@@ -90,7 +92,13 @@
 <script type="text/html" id="wordtype_listTemplate">
 <!-- ko if: PARENT > -1 -->
 <tr data-bind="attr: {'row-id': POS, 'parent-id': PARENT}">
-	<td><input class="wordtypeCheckbox" type="checkbox" name="wordType" data-bind="value: POS, attr {'id': 'checkBoxPos' + POS}, click: globalData.changeSelected, checked: globalData.checkedWordtypes" /><span data-bind="text:LABEL" ></span></td>
+	<td>
+		<input class="wordtypeCheckbox" type="checkbox" name="wordType" data-bind="value: POS, attr {'id': 'checkBoxPos' + POS}, click: globalData.changeSelected, checked: globalData.checkedWordtypes" />
+		<span data-bind="text:LABEL" ></span>
+		<!-- ko if: globalData.checkedWordtypes().indexOf(""+POS) > -1 -->
+			<img style="cursor: pointer;margin: 0; padding: 0;" src="images/pencil.png" data-bind="click: globalData.editSelected"/>
+		<!-- /ko --> 
+	</td>
 	<td data-bind="text:DOCUMENT_COUNT"></td>
 	<td data-bind="text:COUNT"></td>
 	<td data-bind="text:TERM_COUNT"></td>
@@ -101,7 +109,13 @@
 <!-- /ko --> 
 <!-- ko if: PARENT < 0 -->
 <tr data-bind="attr: {'row-id': POS}">
-	<td><input class="wordtypeCheckbox" type="checkbox" name="wordType" data-bind="value: POS, attr {'id': 'checkBoxPos' + POS}, click: globalData.changeSelected, checked: globalData.checkedWordtypes" /><span data-bind="text:LABEL"></span></td>
+	<td>
+		<input class="wordtypeCheckbox" type="checkbox" name="wordType" data-bind="value: POS, attr {'id': 'checkBoxPos' + POS}, click: globalData.changeSelected, checked: globalData.checkedWordtypes" />
+		<span data-bind="text:LABEL"></span>
+		<!-- ko if: globalData.checkedWordtypes().indexOf(""+POS) > -1 -->
+			<img  style="cursor: pointer;margin: 0; padding: 0;" src="images/pencil.png" data-bind="click: globalData.editSelected"/>
+		<!-- /ko --> 
+	</td>
 	<td data-bind="text:DOCUMENT_COUNT"></td>
 	<td data-bind="text:COUNT"></td>
 	<td data-bind="text:TERM_COUNT"></td>

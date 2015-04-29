@@ -11,11 +11,56 @@ function(ko, $) {
 	self.changeStopWords = function(newValue) {
 		if(globalData.FLAT_TREE[self.activePos()].wordList()[newValue].SELECTED) {
 			globalData.FLAT_TREE[self.activePos()].stopwords.push(globalData.FLAT_TREE[self.activePos()].wordList()[newValue].TERM);
+			self.addToChildrensStopwordlist(self.activePos(), globalData.FLAT_TREE[self.activePos()].wordList()[newValue].TERM);
 		} else {
 			globalData.FLAT_TREE[self.activePos()].stopwords.remove(globalData.FLAT_TREE[self.activePos()].wordList()[newValue].TERM);
+			self.removeFromChildrensStopwordlist(self.activePos(), globalData.FLAT_TREE[self.activePos()].wordList()[newValue].TERM);
+			self.removeFromParentsStopwordlist(self.activePos(), globalData.FLAT_TREE[self.activePos()].wordList()[newValue].TERM);
 		}
 		return true;
 	};
+	
+	self.addToChildrensStopwordlist = function(pos, term) {
+		for(childPos in globalData.FLAT_TREE[pos].CHILDREN) {
+			globalData.FLAT_TREE[globalData.FLAT_TREE[pos].CHILDREN[childPos]].stopwords.push(term);
+			if(typeof globalData.FLAT_TREE[globalData.FLAT_TREE[pos].CHILDREN[childPos]].wordList == 'function') {
+				for(wordIdx in globalData.FLAT_TREE[globalData.FLAT_TREE[pos].CHILDREN[childPos]].wordList()) {
+					if(globalData.FLAT_TREE[globalData.FLAT_TREE[pos].CHILDREN[childPos]].wordList()[wordIdx].TERM == term) {
+						globalData.FLAT_TREE[globalData.FLAT_TREE[pos].CHILDREN[childPos]].wordList()[wordIdx].SELECTED = false;
+					}
+				}
+			}
+			self.addToChildrensStopwordlist(globalData.FLAT_TREE[pos].CHILDREN[childPos], term);
+		}
+	};
+	
+	self.removeFromChildrensStopwordlist = function(pos, term) {
+		for(childPos in globalData.FLAT_TREE[pos].CHILDREN) {
+			globalData.FLAT_TREE[globalData.FLAT_TREE[pos].CHILDREN[childPos]].stopwords.remove(term);
+			if(typeof globalData.FLAT_TREE[globalData.FLAT_TREE[pos].CHILDREN[childPos]].wordList == 'function') {
+				for(wordIdx in globalData.FLAT_TREE[globalData.FLAT_TREE[pos].CHILDREN[childPos]].wordList()) {
+					if(globalData.FLAT_TREE[globalData.FLAT_TREE[pos].CHILDREN[childPos]].wordList()[wordIdx].TERM == term) {
+						globalData.FLAT_TREE[globalData.FLAT_TREE[pos].CHILDREN[childPos]].wordList()[wordIdx].SELECTED = true;
+					}
+				}
+			}
+			self.removeFromChildrensStopwordlist(globalData.FLAT_TREE[pos].CHILDREN[childPos], term);
+		}
+	};
+	
+	self.removeFromParentsStopwordlist = function(pos, term) {
+		if(globalData.FLAT_TREE[pos].PARENT > -1) {
+			globalData.FLAT_TREE[globalData.FLAT_TREE[pos].PARENT].stopwords.remove(term);
+			if(typeof globalData.FLAT_TREE[globalData.FLAT_TREE[pos].PARENT].wordList == 'function') {
+				for(wordIdx in globalData.FLAT_TREE[globalData.FLAT_TREE[pos].PARENT].wordList()) {
+					if(globalData.FLAT_TREE[globalData.FLAT_TREE[pos].PARENT].wordList()[wordIdx].TERM == term) {
+						globalData.FLAT_TREE[globalData.FLAT_TREE[pos].PARENT].wordList()[wordIdx].SELECTED = true;
+					}
+				}
+			}
+			self.removeFromParentsStopwordlist(globalData.FLAT_TREE[pos].PARENT, term);
+		}
+	}
 	
 	globalData.changeSelected = function(newValue) {
 		if(globalData.checkedWordtypes().indexOf(String(newValue.POS)) == -1) {
@@ -28,6 +73,10 @@ function(ko, $) {
 		}
 		return true;
 	};
+	
+	globalData.editSelected = function(newValue) {
+		self.openOverlay(newValue);
+	}
 	
 	self.markParent = function(parentPos, newPos) {
 		if(parentPos == -1) return;
@@ -106,7 +155,11 @@ function(ko, $) {
 				}
 				
 				for(wordIdx in globalData.FLAT_TREE[data.POS].wordList()) {
-					globalData.FLAT_TREE[data.POS].wordList()[wordIdx].SELECTED = true;
+					if(globalData.FLAT_TREE[data.POS].stopwords().indexOf(globalData.FLAT_TREE[data.POS].wordList()[wordIdx].TERM) < 0) {
+						globalData.FLAT_TREE[data.POS].wordList()[wordIdx].SELECTED = true;
+					} else {
+						globalData.FLAT_TREE[data.POS].wordList()[wordIdx].SELECTED = false;
+					}
 				}
 				
 				self.renderedWordList(tempWordList.slice());
@@ -210,6 +263,7 @@ function(ko, $) {
 	self.isChecked = function(wordIndex) {
 		return ko.dependentObservable(function () {
 			if(globalData.FLAT_TREE[self.activePos()].wordList == undefined) return false;
+			if(globalData.FLAT_TREE[self.activePos()].wordList()[wordIndex] == undefined) return false;
 			return !(globalData.FLAT_TREE[self.activePos()].wordList()[wordIndex].COUNT > globalData.FLAT_TREE[self.activePos()].lowerBorder() && globalData.FLAT_TREE[self.activePos()].wordList()[wordIndex].COUNT < globalData.FLAT_TREE[self.activePos()].upperBorder());
 		}, this);
 	}

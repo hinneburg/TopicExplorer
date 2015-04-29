@@ -39,6 +39,7 @@ import cc.topicexplorer.commands.DbConnectionCommand;
 import cc.topicexplorer.commands.PropertiesCommand;
 import cc.topicexplorer.utils.CommandLineParser;
 import cc.topicexplorer.utils.LoggerUtil;
+import cc.topicexplorer.utils.PropertiesUtil;
 
 public class RunInitCorpus {
 
@@ -141,11 +142,11 @@ public class RunInitCorpus {
 			Command propertiesCommand = new PropertiesCommand();
 			propertiesCommand.execute(context);
 			
-			Properties properties = (Properties) context.get("properties");
+			Properties dbProps = PropertiesUtil.updateOptionalProperties(new Properties(), "cmdb", "");
 			
-			context.bind("CrawlManagmentConnection", DriverManager.getConnection("jdbc:mysql://" + properties.getProperty("database.DbLocation") + "/" 
-					+ properties.getProperty("database.CMDB") + "?useUnicode=true&characterEncoding=UTF-8&useCursorFetch=true", 
-					properties.getProperty("database.CMUser"), properties.getProperty("database.CMPassword")));
+			context.bind("CrawlManagmentConnection", DriverManager.getConnection("jdbc:mysql://" + dbProps.getProperty("DbLocation")
+					+ "?useUnicode=true&characterEncoding=UTF-8&useCursorFetch=true", dbProps.getProperty("DbUser"), 
+					dbProps.getProperty("DbPassword")));
 			
 		} catch (RuntimeException exception) {
 			logger.error("Initialization abborted, due to a critical exception");

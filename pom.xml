@@ -36,6 +36,7 @@
 		<module>plugin-wordtype-preprocessing</module>
 		<module>plugin-wordtype-webinterface</module>
 		<module>run-initcorpus</module>
+		<module>run-jobmanagement</module>
 		<module>run-preprocessing</module>
 		<module>webapp</module>
         <module>webapp-preprocessing</module>

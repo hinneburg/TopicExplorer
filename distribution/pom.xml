@@ -108,6 +108,11 @@
 		</dependency>
 		<dependency>
 			<groupId>cc.topicexplorer</groupId>
+			<artifactId>run-jobmanagement</artifactId>
+			<version>1.4-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>cc.topicexplorer</groupId>
 			<artifactId>core-initcorpus</artifactId>
 			<version>1.4-SNAPSHOT</version>
 		</dependency>

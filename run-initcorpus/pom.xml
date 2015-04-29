@@ -6,7 +6,7 @@
 		<version>1.4-SNAPSHOT</version>
 	</parent>
 	<artifactId>run-initcorpus</artifactId>
-	<name>run-postcrawl</name>
+	<name>run-initcorpus</name>
 	<dependencies>
 		<dependency>
 			<groupId>log4j</groupId>

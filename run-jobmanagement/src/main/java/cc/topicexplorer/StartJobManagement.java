@@ -171,7 +171,7 @@ public class StartJobManagement {
 			
 			csvWriter.close();
 			
-			new File("resources" + File.separator + "wordlist.json").delete();
+//			new File("resources" + File.separator + "wordlist.json").delete();
 			
 
 		} catch (Exception e) {

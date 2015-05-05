@@ -218,7 +218,7 @@ function(ko, $) {
 		self.statusMessage("writing topic count to property file...");
 		$.getJSON("JsonServlet?Command=specifyTopicCount&topicCount=" + self.topicCount()).success(function(receivedParsedJson) {
 			self.statusMessage("prepare json for generating csv...");
-			$.getJSON("JsonServlet?Command=generateCSV&wordList=" + JSON.stringify(wordtypes)).success(function(receivedParsedJson) {
+			$.post("JsonServlet?Command=generateCSV", {wordList: JSON.stringify(wordtypes)}, function(receivedParsedJson, status) {
 				globalData.module('frames');
 			});
 		});

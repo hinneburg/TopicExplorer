@@ -54,13 +54,49 @@ public class JsonServlet extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
 	
-	private File tempPath;
+	private File tempPath = new File(getServletContext().getRealPath("/") + "WEB-INF" + File.separator +"temp");
+	
+	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+	           throws ServletException, java.io.IOException {
+		resp.setCharacterEncoding("UTF8");
+
+		PrintWriter writer = resp.getWriter();
+		
+		if (req.getParameter("Command").equals("generateCSV")) {
+			logger.info("bla");
+			if (req.getParameterMap().containsKey("wordList")) {
+				logger.info("bli");
+				String wordListJSON = req.getParameter("wordList");
+				JSONArray wordList = (JSONArray) JSONSerializer.toJSON(wordListJSON);
+				FileOutputStream wordtypesOut = new FileOutputStream(new File(tempPath + "/wordtype.local.properties"));
+				if(wordList.size() > 0) {
+					JSONObject wordtype = (JSONObject) JSONSerializer.toJSON(wordList.get(0));
+					wordtypesOut.write(new String("wordtypes=" + wordtype.getString("id")).getBytes()); 
+					for(int i = 1 ; i < wordList.size(); i++) {
+						wordtype = (JSONObject) JSONSerializer.toJSON(wordList.get(i));
+						wordtypesOut.write(new String("," + wordtype.getInt("id")).getBytes()); 
+					}
+				}
+				wordtypesOut.close();
+				
+				FileOutputStream jsonOut = new FileOutputStream(new File(tempPath + "/wordlist.json"));
+				
+				jsonOut.write(wordListJSON.getBytes(Charset.forName("UTF-8")));
+				
+				jsonOut.close();
+				logger.info("word list: " + wordListJSON);
+				
+				writer.write("1");
+			} else {
+				logger.error("no word types specified");
+				writer.write("0");
+			}
+		}
+	}
 
 	@Override
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		tempPath = new File(getServletContext().getRealPath("/") + "WEB-INF" + File.separator +"temp");
-		
 		String command = request.getParameter("Command");
 
 		response.setCharacterEncoding("UTF8");
@@ -159,33 +195,6 @@ public class JsonServlet extends HttpServlet {
 					}
 				}
 				writer.write("]}");
-			} else if (command.equals("generateCSV")) {
-				if (request.getParameterMap().containsKey("wordList")) {
-					String wordListJSON = request.getParameter("wordList");
-					JSONArray wordList = (JSONArray) JSONSerializer.toJSON(wordListJSON);
-					FileOutputStream wordtypesOut = new FileOutputStream(new File(tempPath + "/wordtype.local.properties"));
-					if(wordList.size() > 0) {
-						JSONObject wordtype = (JSONObject) JSONSerializer.toJSON(wordList.get(0));
-						wordtypesOut.write(new String("wordtypes=" + wordtype.getString("id")).getBytes()); 
-						for(int i = 1 ; i < wordList.size(); i++) {
-							wordtype = (JSONObject) JSONSerializer.toJSON(wordList.get(i));
-							wordtypesOut.write(new String("," + wordtype.getInt("id")).getBytes()); 
-						}
-					}
-					wordtypesOut.close();
-					
-					FileOutputStream jsonOut = new FileOutputStream(new File(tempPath + "/wordlist.json"));
-					
-					jsonOut.write(wordListJSON.getBytes(Charset.forName("UTF-8")));
-					
-					jsonOut.close();
-					logger.info("word list: " + wordListJSON);
-					
-					writer.write("1");
-				} else {
-					logger.error("no word types specified");
-					writer.write("0");
-				}
 			} else if(command.equals("specifyTopicCount")) {
 				String topicCount = request.getParameter("topicCount");
 				

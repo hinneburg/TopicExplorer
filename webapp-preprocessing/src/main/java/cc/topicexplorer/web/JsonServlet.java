@@ -54,10 +54,12 @@ public class JsonServlet extends HttpServlet {
 	
 	private static final long serialVersionUID = 1L;
 	
-	private File tempPath = new File(getServletContext().getRealPath("/") + "WEB-INF" + File.separator +"temp");
+	private File tempPath;
 	
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 	           throws ServletException, java.io.IOException {
+		tempPath = new File(getServletContext().getRealPath("/") + "WEB-INF" + File.separator +"temp");
+		
 		resp.setCharacterEncoding("UTF8");
 
 		PrintWriter writer = resp.getWriter();
@@ -97,6 +99,8 @@ public class JsonServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
+		tempPath = new File(getServletContext().getRealPath("/") + "WEB-INF" + File.separator +"temp");
+		
 		String command = request.getParameter("Command");
 
 		response.setCharacterEncoding("UTF8");

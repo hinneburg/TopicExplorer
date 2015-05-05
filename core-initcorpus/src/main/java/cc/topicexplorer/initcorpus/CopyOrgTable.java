@@ -63,8 +63,13 @@ public class CopyOrgTable implements Command {
 			for(String tableName : tableNames) {
 				tmpStmt = crawlManagerConnection.createStatement();
 				if(maxId == 0) {
-					tmpStmt.executeUpdate("CREATE TABLE " + dbName + ".orgTable_meta AS (SELECT * FROM " + tableName + ")");
+					tmpStmt.executeUpdate("CREATE TABLE " + dbName + ".orgTable_meta AS (SELECT *, MD5(URL) AS URL_MD5 FROM " + tableName + ")");
 					tmpStmt.executeUpdate("CREATE TABLE " + dbName + ".orgTable_text AS (SELECT * FROM " + tableName + "_TEXT)");
+					
+					tmpStmt.executeUpdate("create index url_idx on " + dbName + ".orgTable_meta(URL_MD5,DOCUMENT_DATE)");
+					tmpStmt.executeUpdate("create index id_idx on " + dbName + ".orgTable_meta(DOCUMENT_ID)");
+					
+					tmpStmt.executeUpdate("create index id_idx on " + dbName + ".orgTable_text(DOCUMENT_ID)");
 				} else {
 					//create temp tables
 					tmpStmt.executeUpdate("CREATE TABLE " + dbName + ".tempTable_meta AS (SELECT * FROM " + tableName + ")");
@@ -73,7 +78,7 @@ public class CopyOrgTable implements Command {
 					tmpStmt.executeUpdate("UPDATE " + dbName + ".tempTable_meta SET DOCUMENT_ID=DOCUMENT_ID+" + maxId);
 					tmpStmt.executeUpdate("UPDATE " + dbName + ".tempTable_text SET DOCUMENT_ID=DOCUMENT_ID+" + maxId);
 					//copy
-					tmpStmt.executeUpdate("INSERT INTO " + dbName + ".orgTable_meta SELECT * FROM " + dbName + ".tempTable_meta");
+					tmpStmt.executeUpdate("INSERT INTO " + dbName + ".orgTable_meta SELECT *, MD5(URL) AS URL_MD5 FROM " + dbName + ".tempTable_meta");
 					tmpStmt.executeUpdate("INSERT INTO " + dbName + ".orgTable_text SELECT * FROM " + dbName + ".tempTable_text");
 					//delete
 					tmpStmt.executeUpdate("DROP TABLE " + dbName + ".tempTable_meta");

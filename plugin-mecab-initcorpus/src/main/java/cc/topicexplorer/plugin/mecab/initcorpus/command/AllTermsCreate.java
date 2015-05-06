@@ -44,6 +44,26 @@ public class AllTermsCreate  extends TableCreateCommand {
 	public Set<String> getOptionalBeforeDependencies() {
 		return Sets.newHashSet();
 	}
+
+	public void printQueries(String strategy) {
+		if(strategy.contentEquals("simple"))
+		{
+			generateFillQueriesSimple();
+		} else if (strategy.contentEquals("iterateDocuments")) {
+			generateFillQueriesIterateDocuments();
+		} else if (strategy.contentEquals("iteratePos")) {
+			generateFillQueriesIteratePos();
+		} else {
+			System.out.println("Strategy " + strategy + "unknown");
+			return;
+		}
+		
+		for (int i=0;i<queries.size();i++) {
+			System.out.println(queries.get(i)+"\n");
+		}
+		return;
+	}
+		
 	private void generateFillQueriesSimple() {
 		queries.add(
 				"CREATE TABLE `" + this.tableName + "` AS "

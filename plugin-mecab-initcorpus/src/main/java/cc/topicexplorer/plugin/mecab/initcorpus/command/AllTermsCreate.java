@@ -92,7 +92,42 @@ public class AllTermsCreate  extends TableCreateCommand {
 	}
 
 	private void runSqlFillQueriesIterateDocuments() {
-		
+
+		// Simple idea: 1) create table ,
+		// 2) compute min and max of document ids
+		// 3) run the expensive query constraint to a small enough subset of
+		// document and insert into table
+		// 4) aggregate intermediate results by
+		// summing document counts (nop error can happen, as complete documents
+		// are processed)
+
+		// INSERT INTO ALL_TERMS_temp
+		// SELECT
+		// DOCUMENT_TERM.TERM,
+		// COUNT(DISTINCT DOCUMENT_TERM.DOCUMENT_ID) AS COUNT,
+		// p2.POS
+		// FROM
+		// DOCUMENT_TERM,
+		// POS_TYPE p1,
+		// POS_TYPE p2
+		// WHERE
+		// p1.POS=DOCUMENT_TERM.WORDTYPE_CLASS AND
+		// p1.LOW>=p2.LOW AND p1.HIGH<=p2.HIGH AND
+		// 1000<=DOCUMENT_TERM.DOCUMENT_ID and DOCUMENT_TERM.DOCUMENT_ID<2000
+		// GROUP BY
+		// DOCUMENT_TERM.TERM,
+		// p2.POS
+		// ;
+		// INSERT INTO ALL_TERMS
+		// SELECT
+		// TERM,
+		// SUM(COUNT) AS COUNT,
+		// POS
+		// FROM
+		// ALL_TERMS_temp
+		// GROUP BY TERM,POS
+		// ;
+
 	}
 
 	private void generateFillQueriesIteratePos() {

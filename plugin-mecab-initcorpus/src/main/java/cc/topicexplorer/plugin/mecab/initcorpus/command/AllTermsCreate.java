@@ -77,12 +77,9 @@ public class AllTermsCreate  extends TableCreateCommand {
 	private void runSqlFillQueriesSimple() {
 		
 		try {
-			for (Integer i=0;i<queries.size();i++) {
-				logger.info("Start Query " + i.toString());
-				this.database.executeUpdateQuery(queries.get(i));
-				logger.info("Finished Query " + i.toString());
-			}
-			 
+				logger.info("Start Query");
+				this.database.executeUpdateQuery(queries.get(0));
+				logger.info("Finished Query");
 		} catch (SQLException e) {
 			logger.error("Table " + this.tableName + " could not be created.");
 			throw new RuntimeException(e);

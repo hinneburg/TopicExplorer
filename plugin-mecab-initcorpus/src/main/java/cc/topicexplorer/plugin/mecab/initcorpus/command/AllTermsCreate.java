@@ -11,7 +11,7 @@ import com.google.common.collect.Sets;
 
 import cc.topicexplorer.commands.TableCreateCommand;
 
-public class AllTermsCreate  extends TableCreateCommand {
+public class AllTermsCreate extends TableCreateCommand {
 	private static final Logger logger = Logger.getLogger(AllTermsCreate.class);
 	private ArrayList<String> queries = new ArrayList<String>();
 
@@ -46,8 +46,7 @@ public class AllTermsCreate  extends TableCreateCommand {
 	}
 
 	public void printQueries(String strategy) {
-		if(strategy.contentEquals("simple"))
-		{
+		if (strategy.contentEquals("simple")) {
 			generateFillQueriesSimple();
 		} else if (strategy.contentEquals("iterateDocuments")) {
 			generateFillQueriesIterateDocuments();
@@ -57,25 +56,26 @@ public class AllTermsCreate  extends TableCreateCommand {
 			System.out.println("Strategy " + strategy + "unknown");
 			return;
 		}
-		
-		for (int i=0;i<queries.size();i++) {
-			System.out.println(queries.get(i)+"\n");
+
+		for (int i = 0; i < queries.size(); i++) {
+			System.out.println(queries.get(i) + "\n");
 		}
 		return;
 	}
-		
+
 	private void generateFillQueriesSimple() {
-		queries.add(
-				"CREATE TABLE `" + this.tableName + "` AS "
+		queries.add("CREATE TABLE `"
+				+ this.tableName
+				+ "` AS "
 				+ "SELECT DOCUMENT_TERM.TERM, COUNT(DISTINCT DOCUMENT_TERM.DOCUMENT_ID) AS COUNT, p2.POS "
 				+ "FROM DOCUMENT_TERM, POS_TYPE p1, POS_TYPE p2 "
 				+ "WHERE p1.POS=DOCUMENT_TERM.WORDTYPE_CLASS AND p1.LOW>=p2.LOW "
 				+ "AND p1.HIGH<=p2.HIGH "
-				+ "GROUP BY DOCUMENT_TERM.TERM, p2.POS"
-				);
+				+ "GROUP BY DOCUMENT_TERM.TERM, p2.POS");
 	}
+
 	private void runSqlFillQueriesSimple() {
-		
+
 		try {
 				logger.info("Start Query");
 				this.database.executeUpdateQuery(queries.get(0));
@@ -88,7 +88,7 @@ public class AllTermsCreate  extends TableCreateCommand {
 	}
 
 	private void generateFillQueriesIterateDocuments() {
-		
+
 	}
 
 	private void runSqlFillQueriesIterateDocuments() {
@@ -131,12 +131,11 @@ public class AllTermsCreate  extends TableCreateCommand {
 	}
 
 	private void generateFillQueriesIteratePos() {
-		
+
 	}
 
 	private void runSqlFillQueriesIteratePos() {
-		
-	}
 
+	}
 
 }

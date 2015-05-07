@@ -16,7 +16,7 @@ public class AllTermsCreateIterateDocuments {
 	
 	private static String generateCreateAllTermTmpTable() {
 //		return "CREATE TABLE ALL_TERMS_TMP (TERM VARCHAR(255),COUNT INTEGER(11),POS INTEGER(11)) ENGINE=MEMORY;"; 
-		return "CREATE TABLE ALL_TERMS_TMP (TERM VARCHAR(255),COUNT INTEGER(11),POS INTEGER(11)) ENGINE=INNODB;"; 
+		return "CREATE TABLE ALL_TERMS_TMP (TERM VARCHAR(100),COUNT INTEGER(11),POS INTEGER(11)) ENGINE=INNODB;"; 
 	}
 	
 	private static String generateInsertTermPosCountOfDocuments(Integer low, Integer high) {

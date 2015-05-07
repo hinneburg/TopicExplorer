@@ -24,7 +24,7 @@ public class DocumentWordtypeCreate extends TableCreateCommand {
 					+ "`MIN_TOKEN_LENGTH` INT(11) NOT NULL, "
 					+ "`MAX_TOKEN_LENGTH` INT(11) NOT NULL, "
 					+ "`SUM_TOKEN_LENGTH` INT(11) NOT NULL "
-					+ ") ENGINE=InnoDB;");			
+					+ ") ENGINE=InnoDB CHARSET=utf8 COLLATE=utf8_bin ;");			
 		} catch (SQLException e) {
 			logger.error("Table " + this.tableName + " could not be created.");
 			throw new RuntimeException(e);

@@ -131,31 +131,31 @@ public class StartJobManagement {
 				getCsvSql += " AND ((ALL_TERMS.POS=" + wordtypeItem.get("id") + " AND ALL_TERMS.COUNT<" 
 						+ wordtypeItem.get("upperBorder") + " AND ALL_TERMS.COUNT>" + wordtypeItem.get("lowerBorder");
 				stopWords = (JSONArray) wordtypeItem.get("stopWords");
-				if(stopWords.size() > 0) { 
-					getCsvSql += " AND ALL_TERMS.TERM NOT IN ('" + stopWords.get(0) + "'";
-					for (int j = 1; j < stopWords.size(); j++) {
-						getCsvSql += ",'" + stopWords.get(0) + "'";
-					}
-					getCsvSql += ")";
+			
+				getCsvSql += " AND ALL_TERMS.TERM NOT IN ('*'";
+				for (int j = 0; j < stopWords.size(); j++) {
+					getCsvSql += ",'" + stopWords.get(0) + "'";
 				}
-				getCsvSql += ")";
+				getCsvSql += "))";
+			
+
 				for (int i = 1; i < rootArray.size(); i++) {
 					wordtypeItem = (JSONObject) rootArray.get(i);
 					getCsvSql += " OR (ALL_TERMS.POS=" + wordtypeItem.get("id") + " AND ALL_TERMS.COUNT<" 
 							+ wordtypeItem.get("upperBorder") + " AND ALL_TERMS.COUNT>" + wordtypeItem.get("lowerBorder");
 					stopWords = (JSONArray) wordtypeItem.get("stopWords");
-					if(stopWords.size() > 0) { 
-						getCsvSql += " AND ALL_TERMS.TERM NOT IN ('" + stopWords.get(0) + "'";
-						for (int j = 1; j < stopWords.size(); j++) {
-							getCsvSql += ",'" + stopWords.get(j) + "'";
-						}
-						getCsvSql += ")";
+			
+					getCsvSql += " AND ALL_TERMS.TERM NOT IN ('*'";
+					for (int j = 0; j < stopWords.size(); j++) {
+						getCsvSql += ",'" + stopWords.get(j) + "'";
 					}
-					getCsvSql += ")";
+					getCsvSql += "))";
 	            }
 				getCsvSql += ")";
 			}
 			getCsvSql += " ORDER BY DOCUMENT_ID, POSITION_OF_TOKEN_IN_DOCUMENT";
+			
+			logger.info("bla: " + getCsvSql);
 			
 			Statement genCsvStmt = con.createStatement();
 			ResultSet genCsvRs = genCsvStmt.executeQuery(getCsvSql);

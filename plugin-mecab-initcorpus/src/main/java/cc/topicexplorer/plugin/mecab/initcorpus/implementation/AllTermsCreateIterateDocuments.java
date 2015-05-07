@@ -15,7 +15,8 @@ public class AllTermsCreateIterateDocuments {
 
 	
 	private static String generateCreateAllTermTmpTable() {
-		return "CREATE TABLE ALL_TERMS_TMP (TERM VARCHAR(255),COUNT INTEGER(11),POS INTEGER(11)) ENGINE=MEMORY;"; 
+//		return "CREATE TABLE ALL_TERMS_TMP (TERM VARCHAR(255),COUNT INTEGER(11),POS INTEGER(11)) ENGINE=MEMORY;"; 
+		return "CREATE TABLE ALL_TERMS_TMP (TERM VARCHAR(255),COUNT INTEGER(11),POS INTEGER(11)) ENGINE=INNODB;"; 
 	}
 	
 	private static String generateInsertTermPosCountOfDocuments(Integer low, Integer high) {
@@ -41,7 +42,8 @@ public class AllTermsCreateIterateDocuments {
 	}
 	
 	private static String generateSumTermPosCountsInNewTmpTable() {
-		return "CREATE TABLE ALL_TERMS_TMP_NEW ENGINE=MEMORY AS \n" +
+//		return "CREATE TABLE ALL_TERMS_TMP_NEW AS \n ENGINE=MEMORY AS \n" +
+		return "CREATE TABLE ALL_TERMS_TMP_NEW AS \n ENGINE=INNODB AS \n" +
 				 "SELECT \n" +
 				 "TERM, \n" +
 				 "SUM(COUNT) AS COUNT, \n" +

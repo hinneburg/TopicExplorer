@@ -59,6 +59,8 @@ public class DocumentTermFill extends TableFillCommand {
 					+ tableName + " CHARACTER SET utf8 FIELDS TERMINATED BY ',' ENCLOSED BY '\"' (`DOCUMENT_ID`, "
 					+ "`POSITION_OF_TOKEN_IN_DOCUMENT`, `TERM`, `TOKEN`, `WORDTYPE_CLASS`, `CONTINUATION`);");
 			stmt.close();
+			
+			database.executeUpdateQuery("CREATE INDEX TERM_WORDCLASS ON DOCUMENT_TERM(TERM,WORDTYPE_CLASS,DOCUMENT_ID)");
 		      
 			
 		} catch (SQLException e) {

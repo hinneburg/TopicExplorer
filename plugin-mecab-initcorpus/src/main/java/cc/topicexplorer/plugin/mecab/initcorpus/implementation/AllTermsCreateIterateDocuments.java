@@ -174,7 +174,7 @@ public class AllTermsCreateIterateDocuments {
 				database.executeUpdateQuery(queries.get(i));
 			} catch (SQLException e) {
 				logger.error("SQL Error during create, fill and index table ALL_TERMS with the iterate-documents strategy.\n" +
-						"Query " + i.toString() + " failed.\n" +
+						"Query " + i.toString() + " failed:\n" +
 						queries.get(i)
 						);
 				throw new RuntimeException(e);

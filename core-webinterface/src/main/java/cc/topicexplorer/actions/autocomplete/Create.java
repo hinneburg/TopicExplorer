@@ -12,7 +12,11 @@ public class Create extends TableSelectCommand {
 
 	@Override
 	public void tableExecute(Context context) {
-		String searchWord = context.getString("SEARCH_WORD");
+		String searchWord = "";
+		if(context.containsKey("SEARCH_WORD")) {
+			searchWord = context.getString("SEARCH_WORD");
+		}
+		
 		PrintWriter pw = context.get("SERVLET_WRITER", PrintWriter.class);
 		int numberOfTopics = Integer.parseInt(properties.getProperty("malletNumTopics"));
 

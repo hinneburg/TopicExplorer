@@ -16,6 +16,9 @@ public class GenerateSQL extends TableSelectCommand {
 
 	@Override
 	public void tableExecute(Context context) {
+		if(!context.containsKey("SEARCH_WORD")) {
+			return;
+		}
 		try {
 			Autocomplete autocompleteAction = context.get("AUTOCOMPLETE_ACTION", Autocomplete.class);
 			logger.info("QUERY will be executed: " + autocompleteAction.getQueryForExecute());

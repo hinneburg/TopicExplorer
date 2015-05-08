@@ -19,7 +19,7 @@ require.config({
 	}
 });
 
-require([ "knockout","jquery", "text!/JsonServlet?Command=getTopics", "text!/JsonServlet?Command=getActivePlugins", "text!/JsonServlet?Command=getDocBrowserLimit", "knockout-amd-helpers", "knockout-postbox", "moment",	"text", "jquery.ui","knockout-autocomplete",
+require([ "knockout","jquery", "text!/JsonServlet?Command=getTopics", "text!/JsonServlet?Command=getActivePlugins", "text!/JsonServlet?Command=getDocBrowserLimit", "text!/JsonServlet?Command=getWordtypeNames", "knockout-amd-helpers", "knockout-postbox", "moment",	"text", "jquery.ui","knockout-autocomplete",
           "scripts/modules/extenders/document-show-frames", 
           "scripts/modules/extenders/document-show-text",
           "scripts/modules/extenders/document-show-time",
@@ -28,12 +28,16 @@ require([ "knockout","jquery", "text!/JsonServlet?Command=getTopics", "text!/Jso
           "scripts/modules/extenders/topic-view-time",
           "scripts/modules/extenders/topic-view-frame",
           "scripts/modules/extenders/topic-view-wordtype",
-          "scripts/modules/extenders/topic-view-hierarchical"], function(ko, $, topicJson, pluginJson, browserLimitJson) {
+          "scripts/modules/extenders/topic-view-hierarchical"], function(ko, $, topicJson, pluginJson, browserLimitJson, wordtypeNamesJson) {
 	var self = this;
 	self.globalData = {};
 	var topics =  JSON.parse(topicJson);
 	var plugins = JSON.parse(pluginJson);
 	self.globalData.PLUGINS = plugins.PLUGINS;
+		
+	var wordtypeNamesObject = JSON.parse(wordtypeNamesJson);
+	self.globalData.WORDTYPE_NAMES = wordtypeNamesObject.WordtypeNames;
+
 	self.globalData.Topic = topics.Topic;
 	self.globalData.TOPIC_SORTING = topics.TOPIC_SORTING;
 	self.globalData.TopicBestItemLimit = topics.TopicBestItemLimit;

@@ -16,7 +16,7 @@ public class Create extends TableSelectCommand {
 		int topicId = context.getInteger("TOPIC_ID");
 		int offset = context.getInteger("OFFSET");
 
-		GetTerms getTermsAction = new GetTerms(database, pw, topicId, offset);
+		GetTerms getTermsAction = new GetTerms(database, pw, topicId, offset, Integer.parseInt((String) properties.get("TopicBestItemLimit")));
 		
 		context.bind("GET_TERMS_ACTION", getTermsAction);
 	}

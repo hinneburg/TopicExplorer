@@ -27,7 +27,7 @@ public final class GetTerms {
 								+ " ORDER BY NUMBER_OF_DOCUMENT_TOPIC DESC LIMIT 20");*/
 	
 	
-	public GetTerms(Database db, PrintWriter out, int topicId, int offset) {
+	public GetTerms(Database db, PrintWriter out, int topicId, int offset, int bestItemLimit) {
 		this.setDatabase(db);
 		this.setServletWriter(out);
 		this.databaseQuery = new SelectMap();
@@ -44,7 +44,7 @@ public final class GetTerms {
 		
 		this.databaseQuery.orderBy.add("NUMBER_OF_DOCUMENT_TOPIC DESC");
 		
-		this.databaseQuery.limit = 20;
+		this.databaseQuery.limit = bestItemLimit;
 		this.databaseQuery.offset = offset;
 		
 		this.topicId = topicId;
@@ -90,6 +90,8 @@ public final class GetTerms {
 
 		try {
 			resultSet = database.executeQuery(this.databaseQuery.getSQLString());
+			
+			System.out.println(this.databaseQuery.getSQLString());
 
 			String columnNameTmp;
 			for (int i = 0; i < resultSet.getMetaData().getColumnCount(); i++) {

@@ -20,11 +20,7 @@ public class BestTermsFill extends TableFillCommand {
 	public void fillTable() {
 		int bestTermCount = Integer.parseInt((String) properties.get("TopicBestItemLimit"));
 		try {	
-			ResultSet wordtypeRS = database.executeQuery("SELECT DISTINCT WORDTYPE$WORDTYPE FROM TERM");
-			List<String> wordtypes = new ArrayList<String>();
-			while(wordtypeRS.next()) {
-				wordtypes.add(wordtypeRS.getString("WORDTYPE$WORDTYPE"));
-			}
+			String[] wordtypes =  ((String) properties.get("Wordtype_wordtypes")).split(",");
 			ResultSet topipcIdsRs = database.executeQuery("SELECT TOPIC_ID FROM TOPIC");
 			List<Integer> topicIds = new ArrayList<Integer>();
 			while(topipcIdsRs.next()){
@@ -32,14 +28,26 @@ public class BestTermsFill extends TableFillCommand {
 			}
 			for (int topicId : topicIds) {
 				for(String wordtype : wordtypes) {
-					database.executeUpdateQueryForUpdate("INSERT INTO " + this.tableName 
-							+ "(TERM_ID, TERM_NAME, TOPIC_ID, NUMBER_OF_DOCUMENT_TOPIC, "
-							+ "WORDTYPE) SELECT TERM.TERM_ID, TERM.TERM_NAME, " 
-							+ topicId + ", TERM_TOPIC.NUMBER_OF_DOCUMENT_TOPIC, " 
-							+ "TERM.WORDTYPE$WORDTYPE FROM TERM, TERM_TOPIC "
-							+ "WHERE TERM.TERM_ID=TERM_TOPIC.TERM_ID AND TOPIC_ID=" + topicId 
-							+ " AND TERM.WORDTYPE$WORDTYPE='" + wordtype +"' "
-							+ "ORDER BY NUMBER_OF_DOCUMENT_TOPIC DESC LIMIT " + bestTermCount);
+					if(properties.getProperty("plugins").contains("mecab")) {
+						database.executeUpdateQueryForUpdate("INSERT INTO " + this.tableName 
+								+ "(TERM_ID, TERM_NAME, TOPIC_ID, NUMBER_OF_DOCUMENT_TOPIC, "
+								+ "WORDTYPE) SELECT TERM.TERM_ID, TERM.TERM_NAME, " 
+								+ topicId + ", TERM_TOPIC.NUMBER_OF_DOCUMENT_TOPIC, " 
+								+ wordtype + " FROM TERM, TERM_TOPIC "
+								+ "WHERE TERM.TERM_ID=TERM_TOPIC.TERM_ID AND TOPIC_ID=" + topicId 
+								+ " AND TERM.WORDTYPE$WORDTYPE IN (SELECT p1.POS FROM POS_TYPE p1, POS_TYPE p2 "
+								+ "WHERE p2.POS='" + wordtype + "' AND p2.LOW<=p1.LOW AND p2.HIGH>=p1.HIGH) "
+								+ "ORDER BY NUMBER_OF_DOCUMENT_TOPIC DESC LIMIT " + bestTermCount);
+					} else {
+						database.executeUpdateQueryForUpdate("INSERT INTO " + this.tableName 
+								+ "(TERM_ID, TERM_NAME, TOPIC_ID, NUMBER_OF_DOCUMENT_TOPIC, "
+								+ "WORDTYPE) SELECT TERM.TERM_ID, TERM.TERM_NAME, " 
+								+ topicId + ", TERM_TOPIC.NUMBER_OF_DOCUMENT_TOPIC, " 
+								+ "TERM.WORDTYPE$WORDTYPE FROM TERM, TERM_TOPIC "
+								+ "WHERE TERM.TERM_ID=TERM_TOPIC.TERM_ID AND TOPIC_ID=" + topicId 
+								+ " AND TERM.WORDTYPE$WORDTYPE='" + wordtype + "' "
+								+ "ORDER BY NUMBER_OF_DOCUMENT_TOPIC DESC LIMIT " + bestTermCount);
+					}
 				}
 			}
 		}catch (SQLException e) {

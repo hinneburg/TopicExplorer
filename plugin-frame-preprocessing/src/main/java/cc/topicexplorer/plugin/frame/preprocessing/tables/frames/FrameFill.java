@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import cc.topicexplorer.commands.TableFillCommand;
@@ -117,6 +118,34 @@ public final class FrameFill extends TableFillCommand {
 	private void createAndFillTableTopTerms(String startWordType, String startWordTypeLimit, String endWordType, String endWordTypeLimit) {
 		try {
 			boolean first = true;
+			boolean withPostypeTable = properties.getProperty("plugins").contains("mecab");
+			
+			ArrayList <Integer> childrenWordtypes = new ArrayList<Integer>();
+			String startWordTypeChildren = "";
+			String endWordTypeChildren = "";
+			
+			if(withPostypeTable) {
+				ResultSet wordtypeChildrenRs = database.executeQuery("SELECT p1.POS FROM POS_TYPE p1, POS_TYPE p2 WHERE p2.POS=" + startWordType
+						+ " AND p1.LOW>=p2.LOW AND p1.HIGH<=p2.HIGH");
+				while(wordtypeChildrenRs.next()) {
+					childrenWordtypes.add(wordtypeChildrenRs.getInt("POS"));
+				}
+				startWordTypeChildren = StringUtils.join(childrenWordtypes, ",");
+				
+				childrenWordtypes.clear();
+				
+				wordtypeChildrenRs = database.executeQuery("SELECT p1.POS FROM POS_TYPE p1, POS_TYPE p2 WHERE p2.POS=" + endWordType
+						+ " AND p1.LOW>=p2.LOW AND p1.HIGH<=p2.HIGH");
+				while(wordtypeChildrenRs.next()) {
+					childrenWordtypes.add(wordtypeChildrenRs.getInt("POS"));
+				}
+				endWordTypeChildren = StringUtils.join(childrenWordtypes, ",");
+				
+			} else {
+				startWordType = "'" + startWordType + "'";
+				endWordType = "'" + endWordType + "'";
+			}
+			
 			List<Integer> topicIds = new ArrayList<Integer>();
 			
 			ResultSet topipcIdsRs = database.executeQuery("SELECT TOPIC_ID FROM TOPIC");
@@ -126,9 +155,9 @@ public final class FrameFill extends TableFillCommand {
 			for (int i: topicIds) {
 				if(first) {
 					database.executeUpdateQuery("create table TopTerms ENGINE=InnoDB "
-							+ "select TERM_NAME, WORDTYPE$WORDTYPE, TOPIC_ID, PR_TERM_GIVEN_TOPIC from TERM_TOPIC join TERM using (TERM_ID) "
-							+ "where TOPIC_ID=" + i + " AND WORDTYPE$WORDTYPE='" + startWordType
-							+ "' order by PR_TERM_GIVEN_TOPIC desc limit "
+							+ "select TERM_NAME, '" + startWordType + "' AS WORDTYPE$WORDTYPE, TOPIC_ID, PR_TERM_GIVEN_TOPIC from TERM_TOPIC join TERM using (TERM_ID) "
+							+ "where TOPIC_ID=" + i + " AND WORDTYPE$WORDTYPE in (" + startWordTypeChildren
+							+ ") order by PR_TERM_GIVEN_TOPIC desc limit "
 							+ startWordTypeLimit + ";");
 					database.executeUpdateQuery("alter table TopTerms add index (TOPIC_ID,TERM_NAME)");
 					database.executeUpdateQuery("alter table TopTerms add index (TERM_NAME)");
@@ -137,18 +166,19 @@ public final class FrameFill extends TableFillCommand {
 				}
 				else {
 					database.executeUpdateQueryForUpdate("insert into TopTerms "
-						+ "select TERM_NAME, WORDTYPE$WORDTYPE, TOPIC_ID, PR_TERM_GIVEN_TOPIC from TERM_TOPIC join TERM "
-						+ "using (TERM_ID) where TOPIC_ID=" + i	+ " AND WORDTYPE$WORDTYPE='" + startWordType
-						+ "' order by PR_TERM_GIVEN_TOPIC desc limit "
+						+ "select TERM_NAME, '" + startWordType + "' AS WORDTYPE$WORDTYPE, TOPIC_ID, PR_TERM_GIVEN_TOPIC from TERM_TOPIC join TERM "
+						+ "using (TERM_ID) where TOPIC_ID=" + i	+ " AND WORDTYPE$WORDTYPE in (" + startWordTypeChildren
+						+ ") order by PR_TERM_GIVEN_TOPIC desc limit "
 						+ startWordTypeLimit + ";");
 				}
 			}
-
+			
+			
 			for (int i : topicIds) {
 				database.executeUpdateQueryForUpdate("insert into TopTerms "
-					+ "select TERM_NAME, WORDTYPE$WORDTYPE, TOPIC_ID, PR_TERM_GIVEN_TOPIC from TERM_TOPIC join TERM "
-					+ "using (TERM_ID) where TOPIC_ID=" + i	+ " AND WORDTYPE$WORDTYPE='" + endWordType
-					+ "' order by PR_TERM_GIVEN_TOPIC desc limit "
+					+ "select TERM_NAME, '" + endWordType + "' AS WORDTYPE$WORDTYPE, TOPIC_ID, PR_TERM_GIVEN_TOPIC from TERM_TOPIC join TERM "
+					+ "using (TERM_ID) where TOPIC_ID=" + i	+ " AND WORDTYPE$WORDTYPE in (" + endWordTypeChildren
+					+ ") order by PR_TERM_GIVEN_TOPIC desc limit "
 					+ endWordTypeLimit + ";");
 			}
 		} catch (SQLException e) {

@@ -56,7 +56,11 @@ function(ko, $) {
 					instance.Topic[topicId].TITLE_REPRESENTATION[wordType] = instance.Topic[topicId].TITLE_REPRESENTATION.KEYWORDS;
 					instance.Topic[topicId].INFO_HIGHLIGHT[wordType] = "";
 					if(firstTopic) {
-						instance.textSelectArray.push(new instance.TextRepresentation(wordType, wordType));	
+						if(globalData.PLUGINS.indexOf('mecab') > -1) {
+							instance.textSelectArray.push(new instance.TextRepresentation(globalData.WORDTYPE_NAMES[wordType], wordType));	
+						} else {
+							instance.textSelectArray.push(new instance.TextRepresentation(wordType, wordType));
+						}
 						instance.scrollCallback[wordType] = instance.wordtypeScrollCallback;
 						instance.loadDocumentsForItem[wordType] = instance.loadDocumentsForItem.KEYWORDS;
 					}				

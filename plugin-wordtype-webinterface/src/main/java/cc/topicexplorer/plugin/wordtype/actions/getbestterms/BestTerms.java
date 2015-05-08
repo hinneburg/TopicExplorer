@@ -18,20 +18,23 @@ public class BestTerms {
 	private PrintWriter outWriter;
 	private Database database;
 	
-	public BestTerms(Database database, PrintWriter pw, Logger logger, String wordtypes[]) {
-		String wordtypeInString = "WORDTYPE IN ('" + wordtypes[0] + "'";
-		for(int i = 1; i < wordtypes.length; i++) {
-			wordtypeInString += ",'" + wordtypes[i] + "'"; 
-		}
-		wordtypeInString += ")";
+	public BestTerms(Database database, PrintWriter pw, Logger logger, String wordtypes, boolean withPostypeTable) {
+		logger.info("withPostypeTable: " + withPostypeTable);
+		
 		bestTermsMap = new SelectMap();
 		bestTermsMap.select.add("TERM_ID AS ITEM_ID");
 		bestTermsMap.select.add("TERM_NAME AS ITEM_NAME");
 		bestTermsMap.select.add("NUMBER_OF_DOCUMENT_TOPIC AS ITEM_COUNT");
 		bestTermsMap.select.add("TOPIC_ID");
+		if(withPostypeTable) {
+			bestTermsMap.where.add("WORDTYPE IN (" + wordtypes + ")");
+		} else {
+			bestTermsMap.where.add("WORDTYPE='" + wordtypes + "'");
+			
+		}
 		bestTermsMap.select.add("WORDTYPE");
 		bestTermsMap.from.add("WORDTYPE$BEST_TERMS");
-		bestTermsMap.where.add(wordtypeInString);
+		
 		bestTermsMap.orderBy.add("TOPIC_ID");
 		bestTermsMap.orderBy.add("WORDTYPE");
 		bestTermsMap.orderBy.add("ITEM_COUNT DESC");
@@ -56,8 +59,17 @@ public class BestTerms {
 		bestTermsMap.select.add(bestTermsColumn + " as " + bestTermsColumnName);
 	}
 
-	public void getBestTerms(String enabledWordTypes[]) throws SQLException {
+	public void getBestTerms(String enabledWordTypes, boolean withPostypeTable) throws SQLException {
 		ArrayList<String> bestTermsColumnList = bestTermsMap.getCleanColumnNames();
+		
+//		if(withPostypeTable) {
+//			ResultSet descriptorRs = database.executeQuery("SELECT DESCRIPTION FROM POS_TYPE WHERE POS IN (" + enabledWordTypes + ")");
+//			int i = 0;
+//			while(descriptorRs.next()) {
+//				enabledWordTypes[i] = descriptorRs.getString("DESCRIPTION");
+//				i++;
+//			}
+//		}
 		
 		bestTermsColumnList.remove("TOPIC_ID");
 		bestTermsColumnList.remove("WORDTYPE");
@@ -70,6 +82,7 @@ public class BestTerms {
 		JSONArray sorting = new JSONArray();
 
 		ResultSet termQueryRS = database.executeQuery(bestTermsMap.getSQLString());
+		System.out.println(bestTermsMap.getSQLString());
 		Integer topicId = -1;
 		String wordType = "";
 		while (termQueryRS.next()) {
@@ -87,7 +100,7 @@ public class BestTerms {
 			
 			if(topicId != termQueryRS.getInt("TOPIC_ID")) {
 				if(topicId > -1) {
-					for(String wordtype: enabledWordTypes) {
+					for(String wordtype: enabledWordTypes.split(",")) {
 						if(!bestTerms.containsKey(wordtype)) {
 							topicData = new JSONObject();
 							topicData.put("SORTING", new JSONArray());
@@ -111,7 +124,7 @@ public class BestTerms {
 		}
 		topicData.put("SORTING", sorting);
 		bestTerms.put(wordType, topicData);
-		for(String wordtype: enabledWordTypes) {
+		for(String wordtype: enabledWordTypes.split(",")) {
 			if(!bestTerms.containsKey(wordtype)) {
 				topicData = new JSONObject();
 				topicData.put("SORTING", new JSONArray());
@@ -126,7 +139,7 @@ public class BestTerms {
 		while(topicIdsRS.next()) {
 			topicId = topicIdsRS.getInt("TOPIC_ID");
 			if(!all.containsKey(topicId.toString())) {
-				for(String wordtype: enabledWordTypes) {
+				for(String wordtype: enabledWordTypes.split(",")) {
 					topicData = new JSONObject();
 					topicData.put("SORTING", new JSONArray());
 					bestTerms.put(wordtype, topicData);

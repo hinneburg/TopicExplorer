@@ -2,6 +2,8 @@ package cc.topicexplorer.web;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -14,7 +16,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import cc.commandmanager.core.Context;
+import cc.topicexplorer.database.Database;
 
 /**
  * Servlet implementation class TestServlet
@@ -40,6 +46,29 @@ public class JsonServlet extends HttpServlet {
 		Set<String> startCommands = new HashSet<String>();
 		if (command.contains("getDocBrowserLimit")) {
 			writer.print("{\"BrowserLimit\": " + properties.getProperty("DocBrowserLimit") + "}");
+		} else if (command.contains("getWordtypeNames")) {
+			if(properties.getProperty("plugins").contains("mecab")) {
+		
+				Database database = (Database) context.get("database");
+				JSONObject wordtypes = new JSONObject();
+	
+				try {
+					ResultSet wordtypeNamesRs = database.executeQuery("SELECT POS, DESCRIPTION FROM POS_TYPE "
+							+ "WHERE POS IN (" + properties.getProperty("Wordtype_wordtypes") + ")");
+					while(wordtypeNamesRs.next()) {
+						wordtypes.put(wordtypeNamesRs.getString("POS"), wordtypeNamesRs.getString("DESCRIPTION"));
+					}
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} 
+				writer.print("{\"WordtypeNames\": " + wordtypes.toString() + "}");
+			} else {
+				writer.print("{\"WordtypeNames\": {}}");
+			}
 		} else if (command.contains("getActivePlugins")) {
 			String plugins = properties.getProperty("plugins");
 			String[] pluginArray = plugins.split(",");
@@ -72,13 +101,15 @@ public class JsonServlet extends HttpServlet {
 				while (parameterNames.hasMoreElements()) {
 					String paramName = parameterNames.nextElement();
 					context.bind(paramName, request.getParameter(paramName));
+					System.out.println(paramName + ": " + request.getParameter(paramName));
 				}
 				startCommands.add("GetTermsCoreCreate");
 			} else if (command.contains("autocomplete")) {
 				String searchWord = request.getParameter("SearchWord");
-				if(searchWord.length() < Integer.parseInt(properties.getProperty("autocompleteMinChars"))) {
+				
+				if(searchWord.length() < 1) {
 					return;
-				}
+				} 
 				context.bind("SEARCH_WORD", searchWord);
 
 				startCommands.add("AutocompleteCoreCreate");

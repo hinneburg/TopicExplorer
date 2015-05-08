@@ -21,7 +21,7 @@ public class TermTopicCreate extends TableCreateCommand {
 					+ "NUMBER_OF_TOKEN_TOPIC int(11) NOT NULL, "
 					+ "NUMBER_OF_DOCUMENT_TOPIC int(11) NOT NULL, "
 					+ "PR_TOPIC_GIVEN_TERM DOUBLE NOT NULL, PR_TERM_GIVEN_TOPIC DOUBLE) "
-					+ "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin; ");
+					+ "ENGINE=InnoDB; ");
 		} catch (SQLException e) {
 			logger.error("Table " + this.tableName + " could not be created.");
 			throw new RuntimeException(e);

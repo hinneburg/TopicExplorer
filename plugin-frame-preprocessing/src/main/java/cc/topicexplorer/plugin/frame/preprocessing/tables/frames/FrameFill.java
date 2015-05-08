@@ -125,7 +125,7 @@ public final class FrameFill extends TableFillCommand {
 			}
 			for (int i: topicIds) {
 				if(first) {
-					database.executeUpdateQuery("create table TopTerms ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin "
+					database.executeUpdateQuery("create table TopTerms ENGINE=InnoDB "
 							+ "select TERM_NAME, WORDTYPE$WORDTYPE, TOPIC_ID, PR_TERM_GIVEN_TOPIC from TERM_TOPIC join TERM using (TERM_ID) "
 							+ "where TOPIC_ID=" + i + " AND WORDTYPE$WORDTYPE='" + startWordType
 							+ "' order by PR_TERM_GIVEN_TOPIC desc limit "

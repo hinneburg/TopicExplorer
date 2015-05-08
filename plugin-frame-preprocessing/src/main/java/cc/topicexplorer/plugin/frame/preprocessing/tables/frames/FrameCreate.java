@@ -21,7 +21,9 @@ public final class FrameCreate extends TableCreateCommand {
 			this.database
 					.executeUpdateQuery("CREATE TABLE "
 							+ this.tableName
-							+ " (FRAME_ID INTEGER(11) NOT NULL KEY AUTO_INCREMENT, DOCUMENT_ID INT, TOPIC_ID INT, FRAME VARCHAR(255), START_POSITION INT, END_POSITION INT, ACTIVE BOOLEAN NOT NULL DEFAULT 1, FRAME_TYPE VARCHAR(255)) DEFAULT CHARSET=utf8 COLLATE=utf8_bin");
+							+ " (FRAME_ID INTEGER(11) NOT NULL KEY AUTO_INCREMENT, DOCUMENT_ID INT, "
+							+ "TOPIC_ID INT, FRAME VARCHAR(100), START_POSITION INT, END_POSITION INT, "
+							+ "ACTIVE BOOLEAN NOT NULL DEFAULT 1, FRAME_TYPE VARCHAR(100))");
 		} catch (SQLException e) {
 			logger.error("Table " + this.tableName + " could not be created.");
 			throw new RuntimeException(e);

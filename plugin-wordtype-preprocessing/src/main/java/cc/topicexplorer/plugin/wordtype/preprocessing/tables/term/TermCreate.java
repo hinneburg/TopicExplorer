@@ -17,7 +17,7 @@ public class TermCreate extends TableCreateCommand {
 	public void createTable() {
 		try {
 			this.database.executeUpdateQuery("ALTER IGNORE TABLE " + this.tableName
-					+ " ADD COLUMN WORDTYPE$WORDTYPE VARCHAR(255) COLLATE UTF8_BIN");
+					+ " ADD COLUMN WORDTYPE$WORDTYPE VARCHAR(100) ");
 		} catch (SQLException e) {
 			logger.error("Column TEXT$WORD_TYPE could not be added to table " + this.tableName);
 			throw new RuntimeException(e);

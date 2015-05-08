@@ -29,8 +29,8 @@ public class CategoryTreeCreate extends TableCreateCommand {
 
 		// create table
 		try {
-			database.executeUpdateQuery("create table `" + this.tableName + "` (" + "CAT$CHILD VARCHAR(255) NOT NULL, "
-					+ "CAT$PARENT VARCHAR (255) not null ) " + "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;");
+			database.executeUpdateQuery("create table `" + this.tableName + "` (" + "CAT$CHILD VARCHAR(100) NOT NULL, "
+					+ "CAT$PARENT VARCHAR (100) not null ) " + "ENGINE=InnoDB;");
 		} catch (SQLException e) {
 			logger.error("Table " + this.tableName + " could not be created.");
 			throw new RuntimeException(e);

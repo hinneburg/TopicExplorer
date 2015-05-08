@@ -17,9 +17,9 @@ public class WordsPerTopicPerWeekCreate extends TableCreateCommand {
 	public void createTable() {
 		try {
 			this.database.executeUpdateQuery(" CREATE TABLE `" + this.tableName + "` ("
-					+ " `ID` INT(11) NOT NULL AUTO_INCREMENT, " + " `TOPIC_ID` int(11) NOT NULL, "
-					+ " `WEEK` int(11) NOT NULL, " + " `WORD_COUNT` int(11) NOT NULL,"
-					+ " KEY `IDID` (`ID`)) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin; ");
+					+ " `ID` INT(11) NOT NULL AUTO_INCREMENT,  `TOPIC_ID` int(11) NOT NULL, "
+					+ " `WEEK` int(11) NOT NULL,  `WORD_COUNT` int(11) NOT NULL,"
+					+ " KEY `IDID` (`ID`)) ENGINE=InnoDB; ");
 		} catch (SQLException e) {
 			logger.error("Table " + this.tableName + " could not be created.");
 			throw new RuntimeException(e);

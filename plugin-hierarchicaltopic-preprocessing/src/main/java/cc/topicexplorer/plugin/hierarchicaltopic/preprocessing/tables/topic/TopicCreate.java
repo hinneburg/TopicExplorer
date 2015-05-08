@@ -20,7 +20,7 @@ public class TopicCreate extends TableCreateCommand {
 					+ " ADD COLUMN HIERARCHICAL_TOPIC$START INT(11) , "
 					+ " ADD COLUMN HIERARCHICAL_TOPIC$END INT(11) , "
 					+ " ADD COLUMN HIERARCHICAL_TOPIC$DEPTH INT(11) , "
-					+ " ADD COLUMN HIERARCHICAL_TOPIC$CLUSTER_MEMBERSHIP TEXT COLLATE utf8_bin");
+					+ " ADD COLUMN HIERARCHICAL_TOPIC$CLUSTER_MEMBERSHIP TEXT");
 		} catch (SQLException e) {
 			logger.error("Columns HIERARCHICAL_TOPIC$START, $END, $DEPTH, $CLUSTER_MEMBERSHIP could not be added to table "
 					+ this.tableName);

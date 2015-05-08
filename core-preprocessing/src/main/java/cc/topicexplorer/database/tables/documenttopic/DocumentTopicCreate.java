@@ -25,7 +25,7 @@ public class DocumentTopicCreate extends TableCreateCommand {
 					+ " `NUMBER_OF_TOKEN_TOPIC_IN_DOCUMENT` bigint(21) NOT NULL DEFAULT '0', "
 					+ "	 PR_TOPIC_GIVEN_DOCUMENT DOUBLE,"
 					+ "	 PR_DOCUMENT_GIVEN_TOPIC DOUBLE"
-					+ "	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;");
+					+ "	) ENGINE=InnoDB;");
 //			@formatter:on
 		} catch (SQLException e) {
 			logger.error("Table " + this.tableName + " could not be created.");

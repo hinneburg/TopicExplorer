@@ -18,10 +18,10 @@ public class BestTermsCreate extends TableCreateCommand {
 		try {
 			database.executeUpdateQuery("create table `" + this.tableName + "` ("
 					+ "TERM_ID INTEGER(11) NOT NULL, TOPIC_ID INTEGER(11) NOT NULL, "
-					+ "TERM_NAME VARCHAR(255) NOT NULL, "
+					+ "TERM_NAME VARCHAR(100) NOT NULL, "
 					+ "NUMBER_OF_DOCUMENT_TOPIC int(11) NOT NULL, "
-					+ "WORDTYPE VARCHAR(255) NOT NULL) "
-					+ "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin; ");
+					+ "WORDTYPE VARCHAR(100) NOT NULL) "
+					+ "ENGINE=InnoDB; ");
 		} catch (SQLException e) {
 			logger.error("Table " + this.tableName + " could not be created.");
 			throw new RuntimeException(e);

@@ -17,7 +17,7 @@ public class DocumentCreate extends TableCreateCommand {
 	public void createTable() {
 		try {
 			database.executeUpdateQuery("ALTER IGNORE TABLE `" + this.tableName
-					+ "` ADD COLUMN FULLTEXT$FULLTEXT TEXT COLLATE UTF8_BIN;");
+					+ "` ADD COLUMN FULLTEXT$FULLTEXT TEXT;");
 		} catch (SQLException e) {
 			logger.error("Column FULLTEXT$FULLTEXT could not be added to table " + this.tableName);
 			throw new RuntimeException(e);

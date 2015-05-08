@@ -22,7 +22,7 @@ public class TopicCreate extends TableCreateCommand {
 	public void createTable() {
 		try {
 			this.database.executeUpdateQuery("ALTER TABLE " + this.tableName
-					+ " ADD COLUMN TOPIC.COLOR_TOPIC$COLOR VARCHAR(10) COLLATE utf8_bin");
+					+ " ADD COLUMN TOPIC.COLOR_TOPIC$COLOR VARCHAR(10)");
 		} catch (SQLException e) {
 			logger.error("Column TOPIC.COLOR_TOPIC$COLOR could not be added to table " + this.tableName);
 			throw new RuntimeException(e);

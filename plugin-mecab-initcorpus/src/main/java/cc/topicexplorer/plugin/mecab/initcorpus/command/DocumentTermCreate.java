@@ -19,8 +19,8 @@ public class DocumentTermCreate extends TableCreateCommand {
 			this.database.executeUpdateQuery(" CREATE TABLE `" + this.tableName + "` ("
 					+ "`DOCUMENT_ID` INT(11) NOT NULL, "
 					+ "`POSITION_OF_TOKEN_IN_DOCUMENT` INT(11) NOT NULL, "
-					+ "`TERM` varchar(100) COLLATE utf8_bin NOT NULL, "
-					+ "`TOKEN` varchar(255) COLLATE utf8_bin NOT NULL, "
+					+ "`TERM` varchar(100) NOT NULL, "
+					+ "`TOKEN` varchar(100) NOT NULL, "
 					+ "`WORDTYPE_CLASS` INT(11) NOT NULL, "
 					+ "`CONTINUATION` INT(11) NOT NULL "
 					+ ") ENGINE=InnoDB;");

@@ -21,7 +21,7 @@ public final class BestFrameCreate extends TableCreateCommand {
 			this.database
 					.executeUpdateQuery("CREATE TABLE "
 							+ this.tableName
-							+ " (FRAME VARCHAR(255), TOPIC_ID INT,  FRAME_COUNT INT, FRAME_TYPE VARCHAR(255)) DEFAULT CHARSET=utf8 COLLATE=utf8_bin");
+							+ " (FRAME VARCHAR(255), TOPIC_ID INT,  FRAME_COUNT INT, FRAME_TYPE VARCHAR(100))");
 		} catch (SQLException e) {
 			logger.error("Table " + this.tableName + " could not be created.");
 			throw new RuntimeException(e);

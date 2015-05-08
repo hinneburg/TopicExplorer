@@ -20,7 +20,7 @@ public class DocumentTermTopicCreate extends TableCreateCommand {
 		} else {
 			try {
 				database.executeUpdateQuery("ALTER IGNORE TABLE `" + this.tableName
-						+ "` ADD COLUMN WORDTYPE$WORDTYPE varchar(255) COLLATE utf8_bin NOT NULL;");
+						+ "` ADD COLUMN WORDTYPE$WORDTYPE varchar(100) NOT NULL;");
 			} catch (SQLException e) {
 				logger.error("Column WORDTYPE$WORDTYPE could not be added to table " + this.tableName);
 				throw new RuntimeException(e);

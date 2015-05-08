@@ -34,9 +34,9 @@ public class OrgTableCreateAndFill extends TableCommand {
 
 		String sql = "CREATE TABLE `" + tableName + "` (" + "`" + this.properties.getProperty("OrgTableId")
 				+ "` bigint(11) NOT NULL, " + "`" + this.properties.getProperty("OrgTableTxt")
-				+ "` text COLLATE utf8_bin NOT NULL, " + "`" + this.properties.getProperty("Text_OrgTableTitle")
-				+ "` text COLLATE utf8_bin NOT NULL , " + " UNIQUE KEY `id` (`id`) "
-				+ " ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin; ";
+				+ "` text NOT NULL, " + "`" + this.properties.getProperty("Text_OrgTableTitle")
+				+ "` text NOT NULL , " + " UNIQUE KEY `id` (`id`) "
+				+ " ) ENGINE=InnoDB; ";
 
 		// create table
 

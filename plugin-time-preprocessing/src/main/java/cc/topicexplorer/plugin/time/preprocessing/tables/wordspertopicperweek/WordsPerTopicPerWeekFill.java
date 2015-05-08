@@ -110,7 +110,7 @@ public class WordsPerTopicPerWeekFill extends TableFillCommand {
 		try {
 			database.executeUpdateQuery("create table TIME$WEEK (TIME$WEEK INTEGER(11) NOT NULL,"
 					+ "TIME$NUMBER_OF_TOKEN_PER_WEEK int(11) NOT NULL) "
-					+ "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;");
+					+ "ENGINE=InnoDB;");
 			database.executeUpdateQuery("insert into TIME$WEEK (TIME$WEEK,TIME$NUMBER_OF_TOKEN_PER_WEEK)"
 					+ "select TIME$WEEK,count(*) TIME$NUMBER_OF_TOKEN_PER_WEEK "
 					+ "from DOCUMENT_TERM_TOPIC join TERM on (TERM.TERM_NAME=DOCUMENT_TERM_TOPIC.TERM) "
@@ -124,10 +124,10 @@ public class WordsPerTopicPerWeekFill extends TableFillCommand {
 	private void timeTermWeek() {
 		try {
 			database.executeUpdateQuery("create table TIME$TERM_WEEK ("
-					+ "TERM_NAME varchar(255) COLLATE utf8_bin NOT NULL, TERM_ID INTEGER(11) NOT NULL, "
+					+ "TERM_NAME varchar(100) NOT NULL, TERM_ID INTEGER(11) NOT NULL, "
 					+ "TIME$WEEK INTEGER(11) NOT NULL, TIME$NUMBER_OF_TOKEN_TERM_PER_WEEK int(11) NOT NULL, "
 					+ "TIME$PR_TERM_GIVEN_WEEK DOUBLE NOT NULL, TIME$PR_WEEK_GIVEN_TERM DOUBLE) "
-					+ "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;");
+					+ "ENGINE=InnoDB;");
 			database.executeUpdateQuery("insert into TIME$TERM_WEEK (TERM_NAME, TERM_ID, "
 					+ "TIME$WEEK, TIME$NUMBER_OF_TOKEN_TERM_PER_WEEK, TIME$PR_TERM_GIVEN_WEEK) "
 					+ "select TERM.TERM_NAME, TERM.TERM_ID, X.TIME$WEEK, "
@@ -151,7 +151,7 @@ public class WordsPerTopicPerWeekFill extends TableFillCommand {
 			database.executeUpdateQuery("create table TIME$TOPIC_WEEK (TOPIC_ID INTEGER(11) NOT NULL, "
 					+ "TIME$WEEK INTEGER(11) NOT NULL, TIME$NUMBER_OF_TOKEN_TOPIC_PER_WEEK int(11) NOT NULL, "
 					+ "TIME$PR_TOPIC_GIVEN_WEEK DOUBLE NOT NULL,  TIME$PR_WEEK_GIVEN_TOPIC DOUBLE) "
-					+ "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;");
+					+ "ENGINE=InnoDB;");
 			if(Arrays.asList(properties.get("plugins").toString().split(",")).contains("hierarchicaltopic")) {
 				database.executeUpdateQuery("insert into TIME$TOPIC_WEEK (TOPIC_ID, TIME$WEEK, "
 						+ "TIME$NUMBER_OF_TOKEN_TOPIC_PER_WEEK, TIME$PR_TOPIC_GIVEN_WEEK, "
@@ -197,11 +197,11 @@ public class WordsPerTopicPerWeekFill extends TableFillCommand {
 	private void timeTermTopicWeek() {
 		try {
 			database.executeUpdateQuery("create table TIME$TERM_TOPIC_WEEK ( "
-					+ "TERM_NAME varchar(255) COLLATE utf8_bin NOT NULL,  " + "TERM_ID INTEGER(11) NOT NULL,  "
+					+ "TERM_NAME varchar(100) NOT NULL,  " + "TERM_ID INTEGER(11) NOT NULL,  "
 					+ "TOPIC_ID INTEGER(11) NOT NULL, " + "TIME$WEEK INTEGER(11) NOT NULL, "
 					+ "TIME$NUMBER_OF_TOKEN_AND_TOPIC_PER_WEEK int(11) NOT NULL,  "
 					+ "TIME$PR_TOPIC_GIVEN_TERM_WEEK DOUBLE NOT NULL,  " + "TIME$PR_TERM_GIVEN_TOPIC_WEEK DOUBLE)  "
-					+ "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;");
+					+ "ENGINE=InnoDB;");
 			if(Arrays.asList(properties.get("plugins").toString().split(",")).contains("hierarchicaltopic")) {
 				database.executeUpdateQuery("insert into TIME$TERM_TOPIC_WEEK ("
 						+ "TOPIC_ID,  "

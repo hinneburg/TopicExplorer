@@ -17,16 +17,16 @@ public class DuplicatesCreate extends TableCreateCommand {
 	public void createTable() {
 //		@formatter:off
 		String query = " CREATE TABLE `" + this.tableName + "` (" +
-				"  `MD5SUM` varchar(255) COLLATE utf8_bin NOT NULL," +
-				"  `DOCUMENT_ID` varchar(255) COLLATE utf8_bin NOT NULL," +
+				"  `MD5SUM` varchar(100) NOT NULL," +
+				"  `DOCUMENT_ID` varchar(100) NOT NULL," +
 				"  `START_POSITION` int(11) NOT NULL," +
 				"  `END_POSITION` int(11) NOT NULL," +
-				"  `GROUP_ID` varchar(32) COLLATE utf8_bin NOT NULL," +
+				"  `GROUP_ID` varchar(32) NOT NULL," +
 				"  `ID` int(11) NOT NULL AUTO_INCREMENT," +
 				"  PRIMARY KEY (`ID`)," +
 				"  KEY `HELPER_IDX` (`DOCUMENT_ID`,`START_POSITION`)," +
 				"  KEY `GROUP_IDX` (`GROUP_ID`)" +
-				") ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_bin ;";
+				") ENGINE=InnoDB;";
 //		@formatter:on
 		try {
 			this.database.executeUpdateQuery(query);

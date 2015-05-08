@@ -17,7 +17,7 @@ public class DocumentCreate extends TableCreateCommand {
 	public void createTable() {
 		try {
 			database.executeUpdateQuery("ALTER IGNORE TABLE `" + this.tableName
-					+ "` ADD COLUMN LINK$URL VARCHAR(500) COLLATE UTF8_BIN,"
+					+ "` ADD COLUMN LINK$URL TEXT,"
 					+ " ADD COLUMN LINK$IN_DEGREE INT(11) DEFAULT 1;");
 		} catch (SQLException e) {
 			logger.error("Columns LINK$URL, LINK$IN_DEGREE could not be added to table " + this.tableName);

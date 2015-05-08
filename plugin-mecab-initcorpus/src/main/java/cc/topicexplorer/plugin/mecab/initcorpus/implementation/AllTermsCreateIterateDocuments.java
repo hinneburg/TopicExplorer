@@ -42,8 +42,8 @@ public class AllTermsCreateIterateDocuments {
 	}
 	
 	private static String generateSumTermPosCountsInNewTmpTable() {
-//		return "CREATE TABLE ALL_TERMS_TMP_NEW AS \n ENGINE=MEMORY AS \n" +
-		return "CREATE TABLE ALL_TERMS_TMP_NEW AS \n ENGINE=INNODB AS \n" +
+//		return "CREATE TABLE ALL_TERMS_TMP_NEW \n ENGINE=MEMORY AS \n" +
+		return "CREATE TABLE ALL_TERMS_TMP_NEW \n ENGINE=INNODB AS \n" +
 				 "SELECT \n" +
 				 "TERM, \n" +
 				 "SUM(COUNT) AS COUNT, \n" +

@@ -41,7 +41,7 @@ function(ko, $) {
 		self.Topic[i].INFO_HIGHLIGHT = new Object();
 		self.Topic[i].INFO_HIGHLIGHT.KEYWORDS = "";
 		self.Topic[i].TITLE_REPRESENTATION.KEYWORDS = globalData.Topic[i].ITEMS.KEYWORDS[globalData.Topic[i].SORTING.KEYWORDS()[0]].ITEM_NAME;
-		for(var j = 1; j < 3; j++) {
+		for(var j = 1; j < Math.min(3, globalData.Topic[i].SORTING.KEYWORDS().length); j++) {
 			self.Topic[i].TITLE_REPRESENTATION.KEYWORDS += ', ' + globalData.Topic[i].ITEMS.KEYWORDS[globalData.Topic[i].SORTING.KEYWORDS()[j]].ITEM_NAME;
 		}
 	}

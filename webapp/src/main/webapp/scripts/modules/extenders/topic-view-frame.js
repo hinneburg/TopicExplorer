@@ -29,6 +29,17 @@ function(ko, $) {
 		$.getJSON("JsonServlet?Command=getBestFrames").success(function(receivedParsedJson) {
 			var firstTopic = true;
 			for (topicId in receivedParsedJson) {
+				if(typeof globalData.Topic[topicId] == 'undefined') {
+					 globalData.Topic[topicId] = {};
+					 globalData.Topic[topicId].ITEMS = {};
+					 globalData.Topic[topicId].COUNT = {};
+					 globalData.Topic[topicId].SORTING = {};
+					 globalData.Topic[topicId].FULL = {};
+					 instance.Topic[topicId] = {};
+					 instance.Topic[topicId].TITLE_REPRESENTATION = {};
+					 instance.Topic[topicId].INFO_HIGHLIGHT = {};
+				}
+				
 				$.extend(globalData.Topic[topicId].ITEMS, receivedParsedJson[topicId].ITEMS);
 			
 				for(frameType in receivedParsedJson[topicId].ITEMS) {

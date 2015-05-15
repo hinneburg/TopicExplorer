@@ -18,7 +18,7 @@ public class DocumentCreate extends TableCreateCommand {
 		try {
 			this.database.executeUpdateQuery("ALTER IGNORE TABLE " + this.tableName
 					+ " ADD COLUMN TEXT$FULLTEXT MEDIUMTEXT,"
-					+ " ADD COLUMN TEXT$TITLE VARCHAR(100)");
+					+ " ADD COLUMN TEXT$TITLE VARCHAR(255)");
 		} catch (SQLException e) {
 			logger.error("Columns TEXT$FULLTEXT, $TITLE could not be added to table " + this.tableName);
 			throw new RuntimeException(e);

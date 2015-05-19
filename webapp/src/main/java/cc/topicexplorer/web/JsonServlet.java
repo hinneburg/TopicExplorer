@@ -180,7 +180,13 @@ public class JsonServlet extends HttpServlet {
 
 				startCommands.add("GetDateRange");
 			}
-			WebChainManagement.executeCommands(WebChainManagement.getOrderedCommands(startCommands), context);
+			
+			if (!startCommands.isEmpty()) {
+				WebChainManagement.executeCommands(WebChainManagement.getOrderedCommands(startCommands), context);
+			}
+			else {
+				logger.warn("Detected request with non-matching command. No commands executed.");
+			}
 		} 
 	}
 

@@ -17,7 +17,7 @@ public class GenerateSQL extends TableSelectCommand {
 	@Override
 	public void tableExecute(Context context) {
 		try {
-			BestFrames frameAction = context.get("FRAME_ACTION", BestFrames.class);
+			BestFrames frameAction = context.get("cc.topicexplorer.plugin.frame.actions.getbestframes.BestFrames", BestFrames.class);
 			frameAction.getFrames();
 		} catch (SQLException sqlEx) {
 			logger.error("A problem occured while executing the query.");

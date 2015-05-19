@@ -25,7 +25,7 @@ public class Create extends TableSelectCommand {
 		int offset = context.getInteger("OFFSET");
 		int limit = Integer.parseInt((String) properties.get("TopicBestItemLimit"));
 
-		context.bind("FRAME_ACTION", new Frames(this.database, pw, logger, topicId, frameType, offset, limit));
+		context.bind("cc.topicexplorer.plugin.frame.actions.getframes.Frames", new Frames(this.database, pw, logger, topicId, frameType, offset, limit));
 	}
 
 	@Override

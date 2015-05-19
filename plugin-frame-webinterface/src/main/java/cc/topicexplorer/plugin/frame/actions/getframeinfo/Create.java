@@ -17,7 +17,7 @@ public class Create extends TableSelectCommand {
 	@Override
 	public void tableExecute(Context context) {
 		PrintWriter pw = context.get("SERVLET_WRITER", PrintWriter.class);
-		context.bind("FRAME_ACTION", new FrameInfo(this.database, pw, logger));
+		context.bind("cc.topicexplorer.plugin.frame.actions.getframeinfo.FrameInfo", new FrameInfo(this.database, pw, logger));
 	}
 
 	@Override

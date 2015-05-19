@@ -5,7 +5,7 @@ function(ko, $, moment) {
 			
 			if(typeof instance.browseData.timeData == 'undefined') {
 				instance.browseData.timeData = {};
-				$.getJSON("JsonServlet?Command=GetDateRange")
+				$.getJSON("JsonServlet?Command=getDateRange")
 				.success(function(receivedParsedJson) {
 					instance.browseData.timeData.minDate = receivedParsedJson.DateRange[0] * 1000;
 					instance.browseData.timeData.maxDate = receivedParsedJson.DateRange[1] * 1000;

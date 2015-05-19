@@ -50,10 +50,16 @@ public class JsonServlet extends HttpServlet {
 
 		Set<String> startCommands = new HashSet<String>();
 		if ("getDocBrowserLimit".equals(command)) {
+			logger.info("Detected command getDocBrowserLimit.");
+
 			writer.print("{\"BrowserLimit\": " + properties.getProperty("DocBrowserLimit") + "}");
 		} else if ("getWordtypeNames".equals(command)) {
+
+			logger.info("Detected command getWordTypeNames.");
 			if(properties.getProperty("plugins").contains("mecab")) {
-		
+
+				logger.info("Plugin mecab is active.");
+
 				Database database = (Database) context.get("database");
 				JSONObject wordtypes = new JSONObject();
 	
@@ -75,6 +81,8 @@ public class JsonServlet extends HttpServlet {
 				writer.print("{\"WordtypeNames\": {}}");
 			}
 		} else if ("getActivePlugins".equals(command)) {
+			logger.info("Detected command getActivePlugins.");
+
 			String plugins = properties.getProperty("plugins");
 			String[] pluginArray = plugins.split(",");
 			List<String> pluginList = new ArrayList<String>();
@@ -85,10 +93,14 @@ public class JsonServlet extends HttpServlet {
 			writer.print("{\"PLUGINS\":" + pluginList.toString() + "}");
 		} else {
 			if ("getDoc".equals(command)) {
+				logger.info("Detected command getDoc.");
+
 				context.bind("SHOW_DOC_ID", Integer.parseInt(request.getParameter("DocId")));
 
 				startCommands.add("ShowDocCoreCreate");
 			} else if ("bestDocs".equals(command)) {
+				logger.info("Detected command bestDocs.");
+
 				context.bind("TOPIC_ID", Integer.parseInt(request.getParameter("TopicId")));
 				context.bind("OFFSET", offset);
 				@SuppressWarnings("unchecked")
@@ -99,6 +111,8 @@ public class JsonServlet extends HttpServlet {
 				}
 				startCommands.add("BestDocsCoreCreate");
 			} else if ("getTerms".equals(command)) {
+				logger.info("Detected command getTerms.");
+
 				context.bind("TOPIC_ID", Integer.parseInt(request.getParameter("TopicId")));
 				context.bind("OFFSET", offset);
 				@SuppressWarnings("unchecked")
@@ -110,6 +124,8 @@ public class JsonServlet extends HttpServlet {
 				}
 				startCommands.add("GetTermsCoreCreate");
 			} else if ("autocomplete".equals(command)) {
+				logger.info("Detected command autocomplete.");
+
 				String searchWord = request.getParameter("SearchWord");
 				
 				if(searchWord.length() < 1) {
@@ -119,6 +135,8 @@ public class JsonServlet extends HttpServlet {
 
 				startCommands.add("AutocompleteCoreCreate");
 			} else if ("search".equals(command)) {
+				logger.info("Detected command search.");
+
 				context.bind("SEARCH_WORD", request.getParameter("SearchWord"));
 				context.bind("SEARCH_STRICT", request.getParameter("SearchStrict"));
 				context.bind("OFFSET", offset);
@@ -130,23 +148,36 @@ public class JsonServlet extends HttpServlet {
 				}
 				startCommands.add("SearchCoreCreate");
 			} else if ("getBestFrames".equals(command)) {
+				logger.info("Detected command getBestFrames.");
+
 				startCommands.add("BestFrameCreate");
 			} else if ("getBestTerms".equals(command)) {
+				logger.info("Detected command getBestTerms.");
+
 				startCommands.add("BestTermsCreate");
 			} else if ("getTopics".equals(command)) {
-				
+				logger.info("Detected command getTopics.");
+
 				startCommands.add("GetTopicsCoreCreate");
 			} else if ("getFrameInfo".equals(command)) {
+				logger.info("Detected command getFrameInfo.");
+
 				startCommands.add("FrameInfoCreate");
 			} else if ("getFrames".equals(command)) {
+				logger.info("Detected command getFrames.");
+
 				context.bind("TOPIC_ID", Integer.parseInt(request.getParameter("topicId")));
 				context.bind("OFFSET", offset);
 				context.bind("FRAME_TYPE", request.getParameter("frameType"));
 				
 				startCommands.add("FrameCreate");
 			} else if ("getDates".equals(command)) {
+				logger.info("Detected command getDates.");
+
 				startCommands.add("GetDatesTimeCreate");
 			} else if ("getDateRange".equals(command)) {
+				logger.info("Detected command getDateRange.");
+
 				startCommands.add("GetDateRange");
 			}
 			WebChainManagement.executeCommands(WebChainManagement.getOrderedCommands(startCommands), context);

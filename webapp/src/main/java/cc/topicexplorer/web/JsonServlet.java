@@ -44,9 +44,9 @@ public class JsonServlet extends HttpServlet {
 		int offset = (request.getParameter("offset") != null) ? Integer.parseInt(request.getParameter("offset")) : 0;
 
 		Set<String> startCommands = new HashSet<String>();
-		if (command.contains("getDocBrowserLimit")) {
+		if ("getDocBrowserLimit".equals(command)) {
 			writer.print("{\"BrowserLimit\": " + properties.getProperty("DocBrowserLimit") + "}");
-		} else if (command.contains("getWordtypeNames")) {
+		} else if ("getWordtypeNames".equals(command)) {
 			if(properties.getProperty("plugins").contains("mecab")) {
 		
 				Database database = (Database) context.get("database");
@@ -69,7 +69,7 @@ public class JsonServlet extends HttpServlet {
 			} else {
 				writer.print("{\"WordtypeNames\": {}}");
 			}
-		} else if (command.contains("getActivePlugins")) {
+		} else if ("getActivePlugins".equals(command)) {
 			String plugins = properties.getProperty("plugins");
 			String[] pluginArray = plugins.split(",");
 			List<String> pluginList = new ArrayList<String>();
@@ -79,11 +79,11 @@ public class JsonServlet extends HttpServlet {
 			}
 			writer.print("{\"PLUGINS\":" + pluginList.toString() + "}");
 		} else {
-			if (command.contains("getDoc")) {
+			if ("getDoc".equals(command)) {
 				context.bind("SHOW_DOC_ID", Integer.parseInt(request.getParameter("DocId")));
 
 				startCommands.add("ShowDocCoreCreate");
-			} else if (command.contains("bestDocs")) {
+			} else if ("bestDocs".equals(command)) {
 				context.bind("TOPIC_ID", Integer.parseInt(request.getParameter("TopicId")));
 				context.bind("OFFSET", offset);
 				@SuppressWarnings("unchecked")
@@ -93,7 +93,7 @@ public class JsonServlet extends HttpServlet {
 					context.bind(paramName, request.getParameter(paramName));
 				}
 				startCommands.add("BestDocsCoreCreate");
-			} else if (command.contains("getTerms")) {
+			} else if ("getTerms".equals(command)) {
 				context.bind("TOPIC_ID", Integer.parseInt(request.getParameter("TopicId")));
 				context.bind("OFFSET", offset);
 				@SuppressWarnings("unchecked")
@@ -104,7 +104,7 @@ public class JsonServlet extends HttpServlet {
 					System.out.println(paramName + ": " + request.getParameter(paramName));
 				}
 				startCommands.add("GetTermsCoreCreate");
-			} else if (command.contains("autocomplete")) {
+			} else if ("autocomplete".equals(command)) {
 				String searchWord = request.getParameter("SearchWord");
 				
 				if(searchWord.length() < 1) {
@@ -113,7 +113,7 @@ public class JsonServlet extends HttpServlet {
 				context.bind("SEARCH_WORD", searchWord);
 
 				startCommands.add("AutocompleteCoreCreate");
-			} else if (command.contains("search")) {
+			} else if ("search".equals(command)) {
 				context.bind("SEARCH_WORD", request.getParameter("SearchWord"));
 				context.bind("SEARCH_STRICT", request.getParameter("SearchStrict"));
 				context.bind("OFFSET", offset);
@@ -124,24 +124,24 @@ public class JsonServlet extends HttpServlet {
 					context.bind(paramName, request.getParameter(paramName));
 				}
 				startCommands.add("SearchCoreCreate");
-			} else if (command.contains("getBestFrames")) {
+			} else if ("getBestFrames".equals(command)) {
 				startCommands.add("BestFrameCreate");
-			} else if (command.contains("getBestTerms")) {
+			} else if ("getBestTerms".equals(command)) {
 				startCommands.add("BestTermsCreate");
-			} else if (command.contains("getTopics")) {
+			} else if ("getTopics".equals(command)) {
 				
 				startCommands.add("GetTopicsCoreCreate");
-			} else if (command.contains("getFrameInfo")) {
+			} else if ("getFrameInfo".equals(command)) {
 				startCommands.add("FrameInfoCreate");
-			} else if (command.contains("getFrames")) {
+			} else if ("getFrames".equals(command)) {
 				context.bind("TOPIC_ID", Integer.parseInt(request.getParameter("topicId")));
 				context.bind("OFFSET", offset);
 				context.bind("FRAME_TYPE", request.getParameter("frameType"));
 				
 				startCommands.add("FrameCreate");
-			} else if (command.contains("getDates")) {
+			} else if ("getDates".equals(command)) {
 				startCommands.add("GetDatesTimeCreate");
-			} else if (command.contains("getDateRange")) {
+			} else if ("getDateRange".equals(command)) {
 				startCommands.add("GetDateRange");
 			}
 			WebChainManagement.executeCommands(WebChainManagement.getOrderedCommands(startCommands), context);

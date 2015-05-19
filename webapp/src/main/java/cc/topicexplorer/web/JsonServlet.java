@@ -63,6 +63,7 @@ public class JsonServlet extends HttpServlet {
 				Database database = (Database) context.get("database");
 				JSONObject wordtypes = new JSONObject();
 	
+				logger.info("Retrieving word type names for POS IDs:" + properties.getProperty("Wordtype_wordtypes"));
 				try {
 					ResultSet wordtypeNamesRs = database.executeQuery("SELECT POS, DESCRIPTION FROM POS_TYPE "
 							+ "WHERE POS IN (" + properties.getProperty("Wordtype_wordtypes") + ")");

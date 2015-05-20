@@ -33,6 +33,8 @@ public class JsonServlet extends HttpServlet {
 	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		synchronized (this) {
+		
 		String command = request.getParameter("Command");
 		
 		logger.info("Recieved request with command: " + command);
@@ -189,7 +191,8 @@ public class JsonServlet extends HttpServlet {
 			else {
 				logger.warn("Detected request with non-matching command. No commands executed.");
 			}
-		} 
+		}
+		}
 	}
 
 	/**

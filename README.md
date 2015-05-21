@@ -67,7 +67,7 @@ autocompleteMinChars=3
 malletNumTopics=<Number of Topics>
 TopicBestItemLimit=30
 ```
-,file `database.local.properties`
+file `database.local.properties`
 ``` 
 DbLocation=localhost:3306
 DbUser=<user>
@@ -101,7 +101,7 @@ sudo apt-get install r-base
 sudo apt-get install r-recommended 
 ```
 For other systems, make sure that `Rscript` command is in your general search path.
-####Install eclipse kepler 
+####Install eclipse kepler (or Luna)
 from http://eclipse.org/ and install plugins via Help -> Install new Software
 Select `Kepler - http://download.eclipse.org/releases/kepler` and chose the packages:
    - JST Server Adapters
@@ -156,14 +156,14 @@ Mouse right click on TopicExplorer -> Run as -> Maven Build (at first time input
 ####Run preprocessing
 Open a console and navigate to the workspace. Then go into the distribution module
 ```
-cd TopicExplorer/distribution/target/distribution-1.0-SNAPSHOT-preprocessing/
+cd TopicExplorer/distribution/target/distribution-1.X-SNAPSHOT-preprocessing/
 
 ```
 Make sure your local property files are in the right place
 ```
 ls resources/
 ```
-should show at least `config.local.properties` and `database.local.properties`. 
+should show at least `config.local.properties`, `database.local.properties` and `log4j.local.properties`. 
 When everything is fine, start the preprocessing
 ```
 ./bin/run-preprocessing.sh

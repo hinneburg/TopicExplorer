@@ -9,21 +9,17 @@ After that clone the repository by executing in (some new) eclipse workspace fol
 ```
 git clone git@github.com:hinneburg/TopicExplorer.git
 ```
-####Install mysql 5.1 or later 
-For Ubuntu see article http://wiki.ubuntuusers.de/MySQL .
-```    
-    sudo apt-get install mysql-server
-```
-This installation routine lets you chose a root password for the  mysql-db
-####Change some mysql defaults to allow `load local infile`
-This may not be neccessary in Ubuntu. You need to find mysql-server config file, 
+####Install mariadb 10.0.14 or later 
+For Ubuntu see article https://downloads.mariadb.org/mariadb/repositories/ .
+The installation routine lets you chose a root password for the  mariadb
+####Change some mariadb (mysql) defaults to allow `load local infile`
+This may not be neccessary in Ubuntu. You need to find maria(mysql)-server config file, 
 for Ubuntu this is at `/etc/mysql/my.cnf`. Insert `local-infile=1` into both sections 
 under `[mysqld]` and `[mysql]`.
 ####Create user as Mysql-Root and set privileges
 using some mysql client, 
 e.g. on Ubuntu: `mysql -u root -p`.
 ```
-grant usage on *.* to <user>@localhost identified by '<password>';
 grant all privileges on <Maerchen Datenbank>.* to <user>@localhost ;
 grant file on *.* to <user>@localhost ;
 ```

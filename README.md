@@ -20,13 +20,13 @@ under `[mysqld]` and `[mysql]`.
 using some mysql client, 
 e.g. on Ubuntu: `mysql -u root -p`.
 ```
-grant all privileges on <Maerchen Datenbank>.* to <user>@localhost ;
+grant all privileges on <Maerchen Datenbank>.* to <user>@localhost identified by <password>;
 grant file on *.* to <user>@localhost ;
 ```
 ####Create database as `<user>`
 with some mysql client, e.g. on Ubuntu: `mysql -u <user> -p`.
 ```
-create database <Maerchen Datenbank>;
+create database <Maerchen Datenbank> CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 ```
 ####Download the document collection of Grimms fairy tales
   - Fulltexts: http://users.informatik.uni-halle.de/~hinnebur/maerchen/grimms_maerchen_without_duplicates.sql
@@ -37,7 +37,7 @@ using an IP of uni-halle.de, e.g. login to the vpn of Uni Halle.
 using some mysql client
 e.g. on Ubuntu 
 ```
-mysql -u <user> -p -d <Maerchen Datenbank> < <Path to File>grimms_maerchen_without_duplicates.sql
+mysql -u <user> -p -D <Maerchen Datenbank> < <Path to File>grimms_maerchen_without_duplicates.sql
 ```
 This creates and fills a table with the structure
 ```
@@ -99,9 +99,6 @@ https://tomcat.apache.org/download-60.cgi
 and extract it to some path.
 Create a new server Apache TomCat 6. and reference the chosen path
 File -> New -> Others -> Server
-####Import Projects into Eclipse: 
-Import -> Maven -> Existing Maven Project -> browse : Navigate to TopicExplorer Folder. 
-Further, disable workspace resolution in Eclipse maven plugin: right click project, Maven -> Disable Workspace Resolution. This is important to prevent Eclipse from acidentally using artefacts from projects that are open in your workspace instead of the artefacts specified in dependencies in the `pom.xml`.
 ####Specify server settings
 Create file `~/.m2/settings.xml`.
 
@@ -129,6 +126,10 @@ Create file `~/.m2/settings.xml`.
  </settings>
 ```
 Ask the project manager about the passwords of  `db-devRead` and `db-devWrite`.
+
+####Import Projects into Eclipse: 
+Import -> Maven -> Existing Maven Project -> browse : Navigate to TopicExplorer Folder. 
+Further, disable workspace resolution in Eclipse maven plugin: right click project, Maven -> Disable Workspace Resolution. This is important to prevent Eclipse from acidentally using artefacts from projects that are open in your workspace instead of the artefacts specified in dependencies in the `pom.xml`.
 
 ####Build the project
 Mouse right click on TopicExplorer -> Run as -> Maven Build (at first time input goals: clean install)

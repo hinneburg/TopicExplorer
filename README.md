@@ -39,13 +39,17 @@ e.g. on Ubuntu
 ```
 mysql -u <user> -p -D <Maerchen Datenbank> < <Path to File>grimms_maerchen_without_duplicates.sql
 ```
-This creates and fills a table with the structure
+This creates and fills two tables with the structures
 ```
-CREATE TABLE orgTable (
-  id int(11) NOT NULL,
-  title text COLLATE utf8_bin NOT NULL,
-  txt text COLLATE utf8_bin NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+CREATE TABLE orgTable_meta (
+  DOCUMENT_ID int(11) NOT NULL,
+  TITLE VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE orgTable_text (
+  DOCUMENT_ID int(11) NOT NULL,
+  DOCUMENT_TEXT  mediumtext
+) ENGINE=INNODB;
 ```
 
 ####Create as developer the following two paths

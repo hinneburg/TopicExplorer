@@ -74,7 +74,8 @@ public final class FrameFill extends TableFillCommand {
 		if( startWordTypes.length == endWordTypes.length && 
 			startWordTypes.length == startWordTypeLimits.length && 
 			startWordTypes.length == endWordTypeLimits.length && 
-			startWordTypes.length == maxFrameSizes.length) {
+			startWordTypes.length == maxFrameSizes.length &&
+			!startWordTypes[0].isEmpty() ) {
 		
 			for(int i = 0; i < startWordTypes.length; i++) {
 				createAndFillTableTopTerms(startWordTypes[i], startWordTypeLimits[i], endWordTypes[i], endWordTypeLimits[i]);

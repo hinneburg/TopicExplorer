@@ -71,41 +71,39 @@ public final class FrameFill extends TableFillCommand {
 		String[] startWordTypeLimits = ((String) properties.get("Frame_firstWordTypeLimit")).split(",");
 		String[] endWordTypeLimits = ((String) properties.get("Frame_firstWordTypeLimit")).split(",");
 		String[] maxFrameSizes = ((String) properties.get("Frame_maxFrameSize")).split(",");
-		if( startWordTypes.length == endWordTypes.length && 
-			startWordTypes.length == startWordTypeLimits.length && 
-			startWordTypes.length == endWordTypeLimits.length && 
-			startWordTypes.length == maxFrameSizes.length
-			 ) {
-			if (!startWordTypes[0].isEmpty() ) {
-				logger.warn("Skip computing frames, no frames types specified. ");
-				return;
-			}
-		
-			for(int i = 0; i < startWordTypes.length; i++) {
-				createAndFillTableTopTerms(startWordTypes[i], startWordTypeLimits[i], endWordTypes[i], endWordTypeLimits[i]);
-				logger.info(i + 1 + ". frame: topTerms filled");
-				String frameType = startWordTypes[i] + "_" + startWordTypeLimits[i] + "_" + endWordTypes[i] + "_" 
-						+ endWordTypeLimits[i] + "_" + maxFrameSizes[i];
-				frameTypes.add(frameType);
-				findFrames(Integer.parseInt(maxFrameSizes[i]), startWordTypes[i], frameType);
-				logger.info(i + 1 + ". frametype filled");
-
-				dropTopTermTable();
-				
-			}
-			try {
-				database.executeUpdateQuery("ALTER TABLE " + this.tableName + " ADD KEY IDX0 (DOCUMENT_ID,TOPIC_ID,START_POSITION,END_POSITION) ");
-			} catch (SQLException e) {
-				logger.error("Exception while creating frames indezes.");
-				throw new RuntimeException(e);
-			}
-			processFrameDelimiter();
-			logger.info("frames deactivated");
-			logger.info(String.format("Table %s is filled.", this.tableName));
-		} else {
+		if (!(startWordTypes.length == endWordTypes.length && startWordTypes.length == startWordTypeLimits.length
+				&& startWordTypes.length == endWordTypeLimits.length && startWordTypes.length == maxFrameSizes.length)) {
 			logger.error("Sizes of frame property fields do not match");
 			throw new RuntimeException();
 		}
+
+		if (!startWordTypes[0].isEmpty()) {
+			logger.warn("Skip quitely computing frames, no frames types specified. ");
+			return;
+		}
+
+		for (int i = 0; i < startWordTypes.length; i++) {
+			createAndFillTableTopTerms(startWordTypes[i], startWordTypeLimits[i], endWordTypes[i], endWordTypeLimits[i]);
+			logger.info(i + 1 + ". frame: topTerms filled");
+			String frameType = startWordTypes[i] + "_" + startWordTypeLimits[i] + "_" + endWordTypes[i] + "_"
+					+ endWordTypeLimits[i] + "_" + maxFrameSizes[i];
+			frameTypes.add(frameType);
+			findFrames(Integer.parseInt(maxFrameSizes[i]), startWordTypes[i], frameType);
+			logger.info(i + 1 + ". frametype filled");
+
+			dropTopTermTable();
+
+		}
+		try {
+			database.executeUpdateQuery("ALTER TABLE " + this.tableName
+					+ " ADD KEY IDX0 (DOCUMENT_ID,TOPIC_ID,START_POSITION,END_POSITION) ");
+		} catch (SQLException e) {
+			logger.error("Exception while creating frames indezes.");
+			throw new RuntimeException(e);
+		}
+		processFrameDelimiter();
+		logger.info("frames deactivated");
+		logger.info(String.format("Table %s is filled.", this.tableName));
 	}
 	
 	private void processFrameDelimiter() {

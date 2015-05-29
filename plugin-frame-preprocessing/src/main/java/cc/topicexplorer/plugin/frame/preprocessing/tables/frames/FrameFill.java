@@ -84,7 +84,7 @@ public final class FrameFill extends TableFillCommand {
 			throw new RuntimeException();
 		}
 
-		if (!startWordTypes[0].isEmpty()) {
+		if (startWordTypes[0].isEmpty()) {
 			logger.warn("Skip quitely computing frames, no frames types specified. ");
 			return;
 		}

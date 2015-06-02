@@ -19,18 +19,22 @@ public class DocumentFill extends TableFillCommand {
 	@Override
 	public void fillTable() {
 		/**
-		 * MIT-JOOQ-START if (Boolean.parseBoolean(properties.getProperty("plugin_fulltext"))) {
-		 * database.executeUpdateQuery("UPDATE " + DOCUMENT.getName() + " d, " + properties.getProperty("OrgTableName")
-		 * + " org SET d." + DOCUMENT.FULLTEXT$FULLTEXT.getName() + " = org." +
-		 * properties.getProperty("Fulltext_OrgTableFulltext") + " WHERE d." + DOCUMENT.DOCUMENT_ID.getName() +
-		 * " = org." + properties.getProperty("OrgTableId")); database.executeUpdateQuery("ALTER IGNORE TABLE `" +
-		 * DOCUMENT.getName() + "` ADD FULLTEXT KEY FULLTEXT$FULLTEXT_IDX (" + DOCUMENT.FULLTEXT$FULLTEXT.getName() +
-		 * ")"); } MIT-JOOQ-ENDE
+		 * MIT-JOOQ-START if
+		 * (Boolean.parseBoolean(properties.getProperty("plugin_fulltext"))) {
+		 * database.executeUpdateQuery("UPDATE " + DOCUMENT.getName() + " d, " +
+		 * properties.getProperty("OrgTableName") + " org SET d." +
+		 * DOCUMENT.FULLTEXT$FULLTEXT.getName() + " = org." +
+		 * properties.getProperty("Fulltext_OrgTableFulltext") + " WHERE d." +
+		 * DOCUMENT.DOCUMENT_ID.getName() + " = org." +
+		 * properties.getProperty("OrgTableId"));
+		 * database.executeUpdateQuery("ALTER IGNORE TABLE `" +
+		 * DOCUMENT.getName() + "` ADD FULLTEXT KEY FULLTEXT$FULLTEXT_IDX (" +
+		 * DOCUMENT.FULLTEXT$FULLTEXT.getName() + ")"); } MIT-JOOQ-ENDE
 		 */
 		/** OHNE_JOOQ-START */
 		if (Boolean.parseBoolean(properties.getProperty("plugin_fulltext"))) {
 			try {
-				database.executeUpdateQuery("UPDATE " + this.tableName+ " d, ("
+				database.executeUpdateQuery("UPDATE " + this.tableName + " d, ("
 						+ "SELECT DOCUMENT_ID, GROUP_CONCAT(TOKEN SEPARATOR ' ') as FULL_TEXT "
 						+ "FROM DOCUMENT_TERM GROUP BY DOCUMENT_ID ORDER BY POSITION_OF_TOKEN_IN_DOCUMENT) dt "
 						+ "SET d.FULLTEXT$FULLTEXT=dt.FULL_TEXT WHERE d.DOCUMENT_ID=dt.DOCUMENT_ID ");

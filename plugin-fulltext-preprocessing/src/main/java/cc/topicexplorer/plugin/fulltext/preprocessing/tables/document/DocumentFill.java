@@ -33,7 +33,7 @@ public class DocumentFill extends TableFillCommand {
 				database.executeUpdateQuery("UPDATE " + this.tableName+ " d, ("
 						+ "SELECT DOCUMENT_ID, GROUP_CONCAT(TOKEN SEPARATOR ' ') as FULL_TEXT "
 						+ "FROM DOCUMENT_TERM GROUP BY DOCUMENT_ID ORDER BY POSITION_OF_TOKEN_IN_DOCUMENT) dt "
-						+ "SET d.TEXT$FULLTEXT=dt.FULL_TEXT WHERE d.DOCUMENT_ID=dt.DOCUMENT_ID ");
+						+ "SET d.FULLTEXT$FULLTEXT=dt.FULL_TEXT WHERE d.DOCUMENT_ID=dt.DOCUMENT_ID ");
 				database.executeUpdateQuery("ALTER IGNORE TABLE `" + this.tableName + "` "
 						+ "ADD FULLTEXT KEY FULLTEXT$FULLTEXT_IDX (FULLTEXT$FULLTEXT)");
 			} catch (SQLException e) {

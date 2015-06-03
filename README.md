@@ -12,10 +12,14 @@ git clone git@github.com:hinneburg/TopicExplorer.git
 ####Install mariadb 10.0.14 or later 
 For Ubuntu see article https://downloads.mariadb.org/mariadb/repositories/ .
 The installation routine lets you chose a root password for the  mariadb
-####Change some mariadb (mysql) defaults to allow `load local infile`
+####Change some mariadb (mysql) defaults 
+  - allow `load local infile`
 This may not be neccessary in Ubuntu. You need to find maria(mysql)-server config file, 
 for Ubuntu this is at `/etc/mysql/my.cnf`. Insert `local-infile=1` into both sections 
 under `[mysqld]` and `[mysql]`.
+  - set `innodb_buffer_pool_size` to a large size like `8GB`
+  - set `ft_min_word_len=1` in case of Japanese words to allow fulltext search of small words
+  - set `group_concat_max_len=1000000` to a large value to allow constucting Japanese documents from a table containing all tokenized words of each document. The parameter value needs to be an upper bound of the constructed document size.
 ####Create user as Mysql-Root and set privileges
 using some mysql client, 
 e.g. on Ubuntu: `mysql -u root -p`.

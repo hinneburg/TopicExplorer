@@ -62,14 +62,18 @@ public class StartJobManagement {
 			Statement setNextJobStmt = con.createStatement();
 			setNextJobStmt.executeUpdate("UPDATE TOPIC_EXPLORER SET RUNNING=NOW() WHERE TOPIC_EXPLORER_ID=" + jobId);
 			
+			setNextJobStmt.close();
+
 			decompressConfigs(nextJobRS.getBytes("ZIPPED_CONFIGS"));
 					
 			generateCsv();
 			
 			cc.topicexplorer.Run.main(args);
-			
-			setNextJobStmt.executeUpdate("UPDATE TOPIC_EXPLORER SET FINISHED=NOW() WHERE TOPIC_EXPLORER_ID=" + jobId);
-			
+
+			Statement setNextJobStmt2 = con.createStatement();
+			setNextJobStmt2.executeUpdate("UPDATE TOPIC_EXPLORER SET FINISHED=NOW() WHERE TOPIC_EXPLORER_ID=" + jobId);
+			setNextJobStmt2.close();
+
 			System.exit(0);
 		} else {
 			logger.info("no jobs in queue");

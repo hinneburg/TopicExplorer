@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>cc.topicexplorer</groupId>
@@ -7,17 +8,13 @@
 	</parent>
 	<artifactId>plugin-wiki-preprocessing</artifactId>
 	<name>plugin-wiki-preprocessing</name>
-	<repositories>
-		<repository>
-			<id>org.sweble.wikitext</id>
-			<url>http://mojo.informatik.uni-erlangen.de/nexus/content/repositories/public-snapshots</url>
-		</repository>
-	</repositories>
+	<!-- <repositories> <repository> <id>org.sweble.wikitext</id> <url>http://mojo.informatik.uni-erlangen.de/nexus/content/repositories/public-snapshots</url> 
+		</repository> </repositories> -->
 	<dependencies>
 		<dependency>
 			<groupId>cc.commandmanager</groupId>
 			<artifactId>command-manager</artifactId>
-<version>1.0beta</version>
+			<version>1.0beta</version>
 		</dependency>
 		<dependency>
 			<groupId>cc.topicexplorer</groupId>
@@ -29,11 +26,33 @@
 			<artifactId>log4j</artifactId>
 			<version>1.2.17</version>
 		</dependency>
+		<!-- <dependency> <groupId>org.sweble.wikitext</groupId> <artifactId>swc-engine</artifactId> 
+			<version>2.0.0-alpha-2-SNAPSHOT</version> </dependency> -->
 		<dependency>
 			<groupId>org.sweble.wikitext</groupId>
 			<artifactId>swc-engine</artifactId>
-			<version>2.0.0-alpha-2-SNAPSHOT</version>
+			<version>2.0.0</version>
 		</dependency>
+<dependency>
+    <groupId>org.sweble.wikitext</groupId>
+    <artifactId>swc-article-cruncher</artifactId>
+    <version>2.0.0</version>
+</dependency>
+<dependency>
+    <groupId>org.sweble.wikitext</groupId>
+    <artifactId>swc-parser-lazy</artifactId>
+    <version>2.0.0</version>
+</dependency>
+<dependency>
+    <groupId>org.sweble.wikitext</groupId>
+    <artifactId>swc-dumpreader</artifactId>
+    <version>2.0.0</version>
+</dependency>
+<dependency>
+    <groupId>org.sweble.wikitext</groupId>
+    <artifactId>swc-example-basic</artifactId>
+    <version>2.0.0</version>
+</dependency>
 		<dependency>
 			<groupId>net.sourceforge.javacsv</groupId>
 			<artifactId>javacsv</artifactId>

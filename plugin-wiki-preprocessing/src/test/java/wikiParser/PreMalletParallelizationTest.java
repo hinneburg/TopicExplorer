@@ -2,9 +2,10 @@ package wikiParser;
 
 import static org.fest.assertions.Assertions.assertThat;
 
+import org.apache.xalan.xsltc.compiler.CompilerException;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.sweble.wikitext.engine.CompilerException;
+import org.sweble.wikitext.engine.EngineException;
 import org.sweble.wikitext.parser.parser.LinkTargetException;
 
 import tools.TestUtil;
@@ -34,7 +35,7 @@ public class PreMalletParallelizationTest {
 
 	@Ignore
 	@Test
-	public void testParsedTextReadable() throws CompilerException, LinkTargetException {
+	public void testParsedTextReadable() throws CompilerException, LinkTargetException, EngineException {
 
 		// FIXME russisch, zeilenende vom buffered reader macht Probleme
 		String test = this.parsedWikiTextReadable;
@@ -49,7 +50,7 @@ public class PreMalletParallelizationTest {
 
 	@Ignore
 	@Test
-	public void testParsedTextByLine() throws CompilerException, LinkTargetException {
+	public void testParsedTextByLine() throws CompilerException, LinkTargetException, EngineException {
 
 		// FIXME russisch, zeilenende vom buffered reader macht Probleme
 		String test = this.outputParsed;

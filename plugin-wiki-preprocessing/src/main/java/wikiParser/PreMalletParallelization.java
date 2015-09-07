@@ -10,17 +10,17 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Properties;
 
-import org.sweble.wikitext.engine.CompilerException;
-//import org.sweble.wikitext.engine.CompiledPage;
+import org.apache.xalan.xsltc.compiler.CompilerException;
+import org.sweble.wikitext.engine.EngineException;
 import org.sweble.wikitext.engine.PageId;
 import org.sweble.wikitext.engine.PageTitle;
-import org.sweble.wikitext.engine.WtEngine;
+import org.sweble.wikitext.engine.WtEngineImpl;
 import org.sweble.wikitext.engine.config.WikiConfig;
-import org.sweble.wikitext.engine.nodes.EngCompiledPage;
-import org.sweble.wikitext.engine.utils.DefaultConfigEn;
+import org.sweble.wikitext.engine.nodes.EngProcessedPage;
 import org.sweble.wikitext.parser.parser.LinkTargetException;
 
 import tools.BracketPositions;
+import tools.DefaultConfigEn;
 import tools.PointInteger;
 import tools.WikiArticle;
 import tools.WikiIDTitlePair;
@@ -313,9 +313,10 @@ public class PreMalletParallelization extends Thread {
 	 * 
 	 * @param id_title
 	 * @return parsed Wikitext as string
+	 * @throws EngineException
 	 * @throws Exception
 	 */
-	private WikiArticle getParsedWikiArticle(WikiIDTitlePair id_title) {
+	private WikiArticle getParsedWikiArticle(WikiIDTitlePair id_title) throws EngineException {
 		String wikiText = "";
 
 		try {
@@ -345,10 +346,10 @@ public class PreMalletParallelization extends Thread {
 	}
 
 	String parse(String wikiOrigText, WikiIDTitlePair id_title, boolean csvOrReadable) throws CompilerException,
-			LinkTargetException {
+			LinkTargetException, EngineException {
 		WikiConfig config = DefaultConfigEn.generate();
 
-		WtEngine engine = new WtEngine(config);
+		WtEngineImpl engine = new WtEngineImpl(config);
 
 		// Retrieve a page
 		PageTitle pageTitle = PageTitle.make(config, id_title.getWikiTitle());
@@ -356,7 +357,7 @@ public class PreMalletParallelization extends Thread {
 		PageId pageId = new PageId(pageTitle, -1);
 
 		// Compile the retrieved page
-		EngCompiledPage cp = engine.postprocess(pageId, wikiOrigText, null);
+		EngProcessedPage cp = engine.postprocess(pageId, wikiOrigText, null);
 
 		TextConverter p = new TextConverter(config, wrapCol);
 		p.setCsvOrReadable(csvOrReadable);
@@ -542,6 +543,9 @@ public class PreMalletParallelization extends Thread {
 			if (debug) {
 				e3.printStackTrace();
 			}
+		} catch (EngineException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		} finally {
 			try {
 				db.shutdownDB();

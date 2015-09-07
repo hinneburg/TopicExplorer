@@ -172,8 +172,9 @@ public class TextConverter extends AstVisitor<WtNode> {
 
 	public void visit(WtNode n) {
 
-		if (debugAstNode)
+		if (debugAstNode) {
 			System.err.println("visit AstNode n: " + n.getNodeName());
+		}
 
 		// TODO wahrscheinlich kann das weg
 		if (n.getNodeName().equals("DefinitionDefinition")) {
@@ -216,8 +217,9 @@ public class TextConverter extends AstVisitor<WtNode> {
 	public void visit(WtListItem item) // sind Elemente von den Listen, falls
 										// sie geparst werden
 	{
-		if (!csvOrReadable)
+		if (!csvOrReadable) {
 			newline(1);
+		}
 
 		iterate(item);
 	}
@@ -251,8 +253,9 @@ public class TextConverter extends AstVisitor<WtNode> {
 	}
 
 	public void visit(WtWhitespace w) {
-		if (!csvOrReadable)
+		if (!csvOrReadable) {
 			write(" ");
+		}
 	}
 
 	public void visit(WtBold b) {
@@ -280,8 +283,9 @@ public class TextConverter extends AstVisitor<WtNode> {
 	}
 
 	public void visit(WtXmlCharRef cr) {
-		if (debug)
+		if (debug) {
 			System.out.println(" xmlCharRef ");
+		}
 
 		if (!csvOrReadable) {
 			write(Character.toChars(cr.getCodePoint()));
@@ -336,8 +340,9 @@ public class TextConverter extends AstVisitor<WtNode> {
 
 	public void visit(WtExternalLink link) {
 		// links sind nur nummern
-		if (debug)
+		if (debug) {
 			System.out.println("externallink überprüfen " + extLinkNum);
+		}
 
 		//
 		// write('[');
@@ -347,9 +352,11 @@ public class TextConverter extends AstVisitor<WtNode> {
 
 	public void visit(WtInternalLink link) {
 
-		if (link.getTarget().getContent().contains(":")) {
+		// if (link.getTarget().getContent().contains(":")) {
+		if (link.getTarget().contains(":")) {
 
-			String target = link.getTarget().getContent();
+			// String target = link.getTarget().getContent();
+			String target = link.getTarget().toString();
 			// nur wenn csv erstellt wird,
 			if (ExtraInformations.getIsPictureStartsWith(target)) {
 
@@ -390,9 +397,12 @@ public class TextConverter extends AstVisitor<WtNode> {
 		}
 
 		try {
-			PageTitle page = PageTitle.make(config, link.getTarget().getContent());
-			if (page.getNamespace().equals(config.getNamespace("Category")))
+			// PageTitle page = PageTitle.make(config,
+			// link.getTarget().getContent());
+			PageTitle page = PageTitle.make(config, link.getTarget().toString());
+			if (page.getNamespace().equals(config.getNamespace("Category"))) {
 				return;
+			}
 		} catch (LinkTargetException e) {
 		}
 
@@ -401,14 +411,16 @@ public class TextConverter extends AstVisitor<WtNode> {
 			System.err.println("Es gibt prefix !!" + link.getPrefix());
 		}
 
-		if (!csvOrReadable)
+		if (!csvOrReadable) {
 			write(link.getPrefix());
+		}
 
 		bool_has_extra_information = true;
 		extra_information = ExtraInformations.extraInternalLink;
 
 		if (!link.hasTitle()) {
-			write(link.getTarget().getContent());
+			// write(link.getTarget().getContent());
+			write(link.getTarget().toString());
 		} else {
 
 			// wenn mehr als nur ein Textfeld im Linktitel enthalten ist, kann
@@ -428,8 +440,9 @@ public class TextConverter extends AstVisitor<WtNode> {
 			iterate(link.getTitle());
 		}
 
-		if (!csvOrReadable)
+		if (!csvOrReadable) {
 			write(link.getPostfix());
+		}
 	}
 
 	/*
@@ -502,9 +515,10 @@ public class TextConverter extends AstVisitor<WtNode> {
 	// Stuff we want to hide
 
 	public void visit(WtImageLink n) {
-		if (debug)
+		if (debug) {
 			System.out.println(" ImageLink " + n.getTarget());
-		// write(" ImageLink " + n.getTarget());
+			// write(" ImageLink " + n.getTarget());
+		}
 
 		if (csvOrReadable) {
 			// Dateiname:
@@ -512,7 +526,8 @@ public class TextConverter extends AstVisitor<WtNode> {
 			bool_has_extra_information = true;
 			extra_information = ExtraInformations.extraPicure1Append;
 
-			write(n.getTarget().getContent());
+			// write(n.getTarget().getContent());
+			write(n.getTarget().toString());
 
 			// Titel??, gibt es auch mehr Unterknoten? eventuell dynamisch
 			// machen?
@@ -534,13 +549,15 @@ public class TextConverter extends AstVisitor<WtNode> {
 	}
 
 	public void visit(WtIllegalCodePoint n) {
-		if (debug)
+		if (debug) {
 			System.out.println(" illegalcodepoint");
+		}
 	}
 
 	public void visit(WtXmlComment n) {
-		if (debug)
+		if (debug) {
 			System.out.println(" xmlComment " + n.getContent());
+		}
 	}
 
 	/*
@@ -579,18 +596,21 @@ public class TextConverter extends AstVisitor<WtNode> {
 	}
 
 	public void visit(WtTemplateParameter n) {
-		if (debug)
+		if (debug) {
 			System.out.println(" Templateparameter ");
+		}
 	}
 
 	public void visit(WtTagExtension n) {
-		if (debug)
+		if (debug) {
 			System.out.println(" TagExtension " + n.getBody());
+		}
 	}
 
 	public void visit(WtPageSwitch n) {
-		if (debug)
+		if (debug) {
 			System.out.println(" Tagwtpageswitch " + n.getName());
+		}
 	}
 
 	// public void visit( MagicWord n)
@@ -634,14 +654,16 @@ public class TextConverter extends AstVisitor<WtNode> {
 
 	private void newline(int num) {
 		if (pastBod) {
-			if (num > needNewlines)
+			if (num > needNewlines) {
 				needNewlines = num;
+			}
 		}
 	}
 
 	private void wantSpace() {
-		if (pastBod)
+		if (pastBod) {
 			needSpace = true;
+		}
 	}
 
 	private void finishLine() {
@@ -683,18 +705,22 @@ public class TextConverter extends AstVisitor<WtNode> {
 		}
 
 		if (!noWrap && needNewlines <= 0) {
-			if (needSpace)
+			if (needSpace) {
 				length += 1;
+			}
 
-			if (line.length() + length >= wrapCol && line.length() > 0)
+			if (line.length() + length >= wrapCol && line.length() > 0) {
 				writeNewlines(1);
+			}
 		}
 
-		if (needSpace && needNewlines <= 0)
+		if (needSpace && needNewlines <= 0) {
 			line.append(' ');
+		}
 
-		if (needNewlines > 0)
+		if (needNewlines > 0) {
 			writeNewlines(needNewlines);
+		}
 
 		needSpace = false;
 		pastBod = true;
@@ -737,18 +763,21 @@ public class TextConverter extends AstVisitor<WtNode> {
 				}
 			}
 
-			if (Character.isSpaceChar(s.charAt(0)))
+			if (Character.isSpaceChar(s.charAt(0))) {
 				wantSpace();
+			}
 
 			String[] words = ws.split(s);
 			for (int i = 0; i < words.length;) {
 				writeWord(words[i]);
-				if (++i < words.length)
+				if (++i < words.length) {
 					wantSpace();
+				}
 			}
 
-			if (Character.isSpaceChar(s.charAt(s.length() - 1)))
+			if (Character.isSpaceChar(s.charAt(s.length() - 1))) {
 				wantSpace();
+			}
 		}
 	}
 

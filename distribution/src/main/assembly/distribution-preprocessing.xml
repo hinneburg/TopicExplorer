@@ -31,7 +31,7 @@
 				<include>cc.topicexplorer:plugin-link-preprocessing</include>
 				<include>cc.topicexplorer:plugin-text-preprocessing</include>
 				<include>cc.topicexplorer:plugin-time-preprocessing</include>
-				<include>cc.topicexplorer:plugin-wiki-preprocessing</include>
+<!-- 				<include>cc.topicexplorer:plugin-wiki-preprocessing</include> -->
 				<include>cc.topicexplorer:plugin-wordtype-preprocessing</include>
 				<include>cc.topicexplorer:plugin-mecab-initcorpus</include>
 				<include>cc.topicexplorer:run-preprocessing</include>

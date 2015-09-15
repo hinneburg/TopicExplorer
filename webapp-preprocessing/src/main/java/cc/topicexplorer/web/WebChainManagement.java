@@ -1,17 +1,20 @@
 package cc.topicexplorer.web;
 
-import java.util.Collections;
+import java.io.File;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import cc.commandmanager.core.CommandManagement;
+import cc.commandmanager.core.CommandClass;
+import cc.commandmanager.core.CommandGraph;
+import cc.commandmanager.core.CommandManager;
 import cc.commandmanager.core.Context;
+import cc.commandmanager.core.Try;
 
 public class WebChainManagement {
 
-	private static CommandManagement commandManagement;
+	private static CommandManager commandManager;
 	private static final Logger logger = Logger.getLogger(WebChainManagement.class);
 	private static boolean isInitialized = false;
 	private static Context context;
@@ -23,7 +26,9 @@ public class WebChainManagement {
 	public static void init(Context context, String catalogLocation) {
 		if (!isInitialized) {
 			WebChainManagement.context = context;
-			commandManagement = new CommandManagement(catalogLocation, context);
+			File catalogfile = new File(catalogLocation);
+			Try<CommandGraph> commandgraph = CommandGraph.fromXml(catalogfile);
+			commandManager = new CommandManager(commandgraph.get());
 			isInitialized = true;
 		} else {
 			throw new IllegalStateException("Class has already been initialized.");
@@ -39,9 +44,9 @@ public class WebChainManagement {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static List<String> getOrderedCommands(Set<String> startCommands) {
+	public static List<CommandClass> getOrderedCommands(Set<String> startCommands) {
 		if (isInitialized) {
-			return commandManagement.getOrderedCommands(startCommands, Collections.EMPTY_SET);
+			return commandManager.getCommandGraph().topologicalOrderOfAllCommands();
 		} else {
 			throw new IllegalStateException("Class must be initialized before getOrderedCommands can be called.");
 		}
@@ -50,7 +55,7 @@ public class WebChainManagement {
 	public static void executeCommands(List<String> commands, Context context) {
 		if (isInitialized) {
 			try {
-				commandManagement.executeCommands(commands, context);
+				commandManager.executeCommands(commands, context);
 			} catch (RuntimeException e) {
 				logger.error("A command caused a RuntimeException.", e);
 			}

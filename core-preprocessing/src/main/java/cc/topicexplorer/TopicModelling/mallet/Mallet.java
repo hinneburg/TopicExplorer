@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 
 import cc.commandmanager.core.Command;
 import cc.commandmanager.core.Context;
+import cc.commandmanager.core.ResultState;
 import cc.mallet.classify.tui.Csv2Vectors;
 import cc.mallet.topics.tui.Vectors2Topics;
 
@@ -21,36 +22,37 @@ public class Mallet implements Command {
 	private Properties properties;
 
 	@Override
-	public void execute(Context context) {
+	public ResultState execute(Context context) {
 		properties = context.get("properties", Properties.class);
-		
-		if(!properties.get("newTopics").toString().equalsIgnoreCase("true")) {
+
+		if (!properties.get("newTopics").toString().equalsIgnoreCase("true")) {
 			logger.info("Skip: Take the previous DOCUMENT_TERM_TOPIC table");
 		} else {
 			logger.info("run mallet");
-	
+
 			try {
 				importFile();
 			} catch (FileNotFoundException e1) {
 				logger.error("Import file could not be found.");
-				throw new RuntimeException(e1);
+				return ResultState.failure("Import file could not be found.", e1);
 			} catch (IOException e2) {
 				logger.error("During file import a file stream problem occured.");
-				throw new RuntimeException(e2);
+				return ResultState.failure("During file import a file stream problem occured.", e2);
 			}
-	
+
 			try {
 				trainTopics(properties.getProperty("malletNumTopics"));
 			} catch (IOException e3) {
 				logger.error("During topic training a file stream problem occured.");
-				throw new RuntimeException(e3);
+				return ResultState.failure("During topic training a file stream problem occured.", e3);
 			}
 		}
+		return ResultState.success();
 	}
 
 	private static void importFile() throws FileNotFoundException, IOException {
 		String[] malletArgs = { "--keep-sequence", "TRUE", "--input", "temp/malletinput.txt", "--output",
-				"temp/out.sequence.input", "--print-output", "FALSE", "--token-regex", "[^\\s]+" }; //[\\p{L}\\p{N}_]+|[\\p{P}]+
+				"temp/out.sequence.input", "--print-output", "FALSE", "--token-regex", "[^\\s]+" }; // [\\p{L}\\p{N}_]+|[\\p{P}]+
 		Csv2Vectors.main(malletArgs);
 		logger.info("import done");
 	}
@@ -60,7 +62,7 @@ public class Mallet implements Command {
 				"--num-iterations", "500", "--optimize-interval", "10", "--optimize-burn-in", "1000", "--output-state",
 				"temp/out.topic-state.gz", "--output-doc-topics", "temp/out.doc-topics", "--inferencer-filename",
 				"temp/out.inferencer", "--num-threads", "4", "--num-top-words", "20", "--output-topic-keys",
-				"temp/out.topic-keys" };
+		"temp/out.topic-keys" };
 		Vectors2Topics.main(malletArgs);
 		logger.info("train topics done");
 	}

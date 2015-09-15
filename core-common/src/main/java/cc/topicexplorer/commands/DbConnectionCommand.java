@@ -5,6 +5,7 @@ import java.util.Set;
 
 import cc.commandmanager.core.Command;
 import cc.commandmanager.core.Context;
+import cc.commandmanager.core.ResultState;
 import cc.topicexplorer.database.Database;
 
 import com.google.common.collect.Sets;
@@ -12,9 +13,11 @@ import com.google.common.collect.Sets;
 public class DbConnectionCommand implements Command {
 
 	@Override
-	public void execute(Context context) {
+	public ResultState execute(Context context) {
 		Database database = new Database(context.get("properties", Properties.class), false);
 		context.bind("database", database);
+
+		return ResultState.success();
 	}
 
 	@Override

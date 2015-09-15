@@ -10,6 +10,7 @@ import org.apache.log4j.Logger;
 
 import cc.commandmanager.core.Command;
 import cc.commandmanager.core.Context;
+import cc.commandmanager.core.ResultState;
 import cc.topicexplorer.utils.PropertiesUtil;
 
 import com.google.common.annotations.VisibleForTesting;
@@ -27,21 +28,24 @@ public class PropertiesCommand implements Command {
 	private static final String DATABASE_PREFIX = "database.";
 
 	/**
+	 * @return
 	 * @throws MissingResourceException
 	 *             if local.config.properties could not be resolved as a stream
 	 * @throws IOException
 	 *             if an error occured when reading from the input stream
 	 * @throws IllegalStateException
-	 *             if one of the essential properties could not be loaded as they are config.local.properties,
-	 *             database.global.properties, database.local.properties
+	 *             if one of the essential properties could not be loaded as
+	 *             they are config.local.properties, database.global.properties,
+	 *             database.local.properties
 	 */
 	@Override
-	public void execute(Context context) {
+	public ResultState execute(Context context) {
 		Properties properties = PropertiesUtil.loadMandatoryProperties("config", NO_PREFIX);
 		properties = PropertiesUtil.updateMandatoryProperties(properties, "database", DATABASE_PREFIX);
 		properties = loadPluginProperties(properties);
 
 		context.bind(PROPERTIES_KEY, properties);
+		return ResultState.success();
 	}
 
 	private static Properties loadPluginProperties(Properties properties) {

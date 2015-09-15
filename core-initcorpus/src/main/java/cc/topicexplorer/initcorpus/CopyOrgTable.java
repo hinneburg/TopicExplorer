@@ -11,10 +11,11 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import com.google.common.collect.Sets;
-
 import cc.commandmanager.core.Command;
 import cc.commandmanager.core.Context;
+import cc.commandmanager.core.ResultState;
+
+import com.google.common.collect.Sets;
 
 public class CopyOrgTable implements Command {
 	private static final Logger logger = Logger.getLogger(CopyOrgTable.class);
@@ -40,62 +41,71 @@ public class CopyOrgTable implements Command {
 	}
 
 	@Override
-	public void execute(Context context) {
+	public ResultState execute(Context context) {
 		Properties properties = (Properties) context.get("properties");
 		Connection crawlManagerConnection = (Connection) context.get("CrawlManagmentConnection");
-		
+
 		String dbName = properties.getProperty("database.DB");
 		String searchStringId = properties.getProperty("database.SearchStringId");
-		
+
 		try {
-			Statement copyStmt = crawlManagerConnection.createStatement(java.sql.ResultSet.TYPE_FORWARD_ONLY, java.sql.ResultSet.CONCUR_READ_ONLY);
+			Statement copyStmt = crawlManagerConnection.createStatement(java.sql.ResultSet.TYPE_FORWARD_ONLY,
+					java.sql.ResultSet.CONCUR_READ_ONLY);
 			copyStmt.setFetchSize(Integer.MIN_VALUE);
-			
+
 			Statement tmpStmt;
-			
-			ResultSet tableRs = copyStmt.executeQuery("SELECT TABLE_NAME FROM CRAWL WHERE SEARCH_STRING_ID=" + searchStringId);
+
+			ResultSet tableRs = copyStmt.executeQuery("SELECT TABLE_NAME FROM CRAWL WHERE SEARCH_STRING_ID="
+					+ searchStringId);
 			int maxId = 0;
 			List<String> tableNames = new ArrayList<String>();
-			while(tableRs.next()) {
+			while (tableRs.next()) {
 				tableNames.add(tableRs.getString("TABLE_NAME"));
 			}
 			copyStmt.close();
-			for(String tableName : tableNames) {
+			for (String tableName : tableNames) {
 				tmpStmt = crawlManagerConnection.createStatement();
-				if(maxId == 0) {
-					tmpStmt.executeUpdate("CREATE TABLE " + dbName + ".orgTable_meta AS (SELECT *, MD5(URL) AS URL_MD5 FROM " + tableName + ")");
-					tmpStmt.executeUpdate("CREATE TABLE " + dbName + ".orgTable_text AS (SELECT * FROM " + tableName + "_TEXT)");
-					
+				if (maxId == 0) {
+					tmpStmt.executeUpdate("CREATE TABLE " + dbName
+							+ ".orgTable_meta AS (SELECT *, MD5(URL) AS URL_MD5 FROM " + tableName + ")");
+					tmpStmt.executeUpdate("CREATE TABLE " + dbName + ".orgTable_text AS (SELECT * FROM " + tableName
+							+ "_TEXT)");
+
 					tmpStmt.executeUpdate("create index url_idx on " + dbName + ".orgTable_meta(URL_MD5,DOCUMENT_DATE)");
 					tmpStmt.executeUpdate("create index id_idx on " + dbName + ".orgTable_meta(DOCUMENT_ID)");
-					
+
 					tmpStmt.executeUpdate("create index id_idx on " + dbName + ".orgTable_text(DOCUMENT_ID)");
 				} else {
-					//create temp tables
-					tmpStmt.executeUpdate("CREATE TABLE " + dbName + ".tempTable_meta AS (SELECT * FROM " + tableName + ")");
-					tmpStmt.executeUpdate("CREATE TABLE " + dbName + ".tempTable_text AS (SELECT * FROM " + tableName + "_TEXT)");
-					//update ids
+					// create temp tables
+					tmpStmt.executeUpdate("CREATE TABLE " + dbName + ".tempTable_meta AS (SELECT * FROM " + tableName
+							+ ")");
+					tmpStmt.executeUpdate("CREATE TABLE " + dbName + ".tempTable_text AS (SELECT * FROM " + tableName
+							+ "_TEXT)");
+					// update ids
 					tmpStmt.executeUpdate("UPDATE " + dbName + ".tempTable_meta SET DOCUMENT_ID=DOCUMENT_ID+" + maxId);
 					tmpStmt.executeUpdate("UPDATE " + dbName + ".tempTable_text SET DOCUMENT_ID=DOCUMENT_ID+" + maxId);
-					//copy
-					tmpStmt.executeUpdate("INSERT INTO " + dbName + ".orgTable_meta SELECT *, MD5(URL) AS URL_MD5 FROM " + dbName + ".tempTable_meta");
-					tmpStmt.executeUpdate("INSERT INTO " + dbName + ".orgTable_text SELECT * FROM " + dbName + ".tempTable_text");
-					//delete
+					// copy
+					tmpStmt.executeUpdate("INSERT INTO " + dbName
+							+ ".orgTable_meta SELECT *, MD5(URL) AS URL_MD5 FROM " + dbName + ".tempTable_meta");
+					tmpStmt.executeUpdate("INSERT INTO " + dbName + ".orgTable_text SELECT * FROM " + dbName
+							+ ".tempTable_text");
+					// delete
 					tmpStmt.executeUpdate("DROP TABLE " + dbName + ".tempTable_meta");
 					tmpStmt.executeUpdate("DROP TABLE " + dbName + ".tempTable_text");
 				}
 				ResultSet maxIdRs = tmpStmt.executeQuery("SELECT MAX(DOCUMENT_ID) FROM " + dbName + ".orgTable_meta");
-				if(maxIdRs.next()) {
+				if (maxIdRs.next()) {
 					maxId = maxIdRs.getInt(1);
 				}
 				tmpStmt.close();
 			}
-			
+
 		} catch (SQLException e) {
 			logger.error("OrgTables could not be created.");
 			throw new RuntimeException(e);
 		}
-		
+		return ResultState.success();
+
 	}
 
 }

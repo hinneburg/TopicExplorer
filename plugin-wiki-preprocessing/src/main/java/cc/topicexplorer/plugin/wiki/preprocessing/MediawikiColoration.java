@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 import wikiParser.MediawikiColorationAction_EntryPointForParallelisation;
 import cc.commandmanager.core.Command;
 import cc.commandmanager.core.Context;
+import cc.commandmanager.core.ResultState;
 
 import com.google.common.collect.Sets;
 
@@ -17,7 +18,7 @@ public class MediawikiColoration implements Command {
 	private Properties properties;
 
 	@Override
-	public void execute(Context context) {
+	public ResultState execute(Context context) {
 		logger.info("[ " + getClass() + " ] - " + ": coloring the mediawiki");
 
 		properties = context.get("properties", Properties.class);
@@ -28,6 +29,7 @@ public class MediawikiColoration implements Command {
 		} catch (InterruptedException e) {
 			logger.warn("Coloration of mediawiki failed", e);
 		}
+		return ResultState.success();
 	}
 
 	@Override

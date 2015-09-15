@@ -8,10 +8,11 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import com.google.common.collect.Sets;
-
-import cc.commandmanager.core.Context;
 import cc.commandmanager.core.Command;
+import cc.commandmanager.core.Context;
+import cc.commandmanager.core.ResultState;
+
+import com.google.common.collect.Sets;
 
 public class CreateUser implements Command {
 	private static final Logger logger = Logger.getLogger(CreateUser.class);
@@ -38,10 +39,10 @@ public class CreateUser implements Command {
 
 
 	@Override
-	public void execute(Context context) {
+	public ResultState execute(Context context) {
 		Properties properties = (Properties) context.get("properties");
 		Connection crawlManagerConnection = (Connection) context.get("CrawlManagmentConnection");
-		
+
 		String dbName = properties.getProperty("database.DB");
 		String dbUser = properties.getProperty("database.DbUser");
 		String dbPassword = properties.getProperty("database.DbPassword");
@@ -49,16 +50,17 @@ public class CreateUser implements Command {
 		String[] allowFileFrom = properties.getProperty("database.AllowFileFrom").split(",");
 		try {
 			Statement createUserStmt = crawlManagerConnection.createStatement();
-			for(int i = 0; i < allowFrom.length; i++) {
-				createUserStmt.executeUpdate("grant all privileges on " +  dbName + ".* to '" + dbUser + "'@'" + allowFrom[i] + "' identified by '" + dbPassword + "';");
+			for (String element : allowFrom) {
+				createUserStmt.executeUpdate("grant all privileges on " +  dbName + ".* to '" + dbUser + "'@'" + element + "' identified by '" + dbPassword + "';");
 			}
-			for(int i = 0; i < allowFileFrom.length; i++) {
-				createUserStmt.executeUpdate("grant file on *.* to '" + dbUser + "'@'" + allowFileFrom[i] + "';");
+			for (String element : allowFileFrom) {
+				createUserStmt.executeUpdate("grant file on *.* to '" + dbUser + "'@'" + element + "';");
 			}
 		} catch (SQLException e) {
 			logger.error("DB user " + dbUser + " could not be created.");
-			throw new RuntimeException(e);
+			return ResultState.failure("DB user " + dbUser + " could not be created.", e);
 		}
+		return ResultState.success();
 	}
 
 }

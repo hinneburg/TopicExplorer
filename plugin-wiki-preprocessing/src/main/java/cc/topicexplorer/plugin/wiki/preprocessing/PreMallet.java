@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 import wikiParser.PreMalletAction_EntryPointForParallelisation;
 import cc.commandmanager.core.Command;
 import cc.commandmanager.core.Context;
+import cc.commandmanager.core.ResultState;
 
 import com.google.common.collect.Sets;
 
@@ -17,12 +18,13 @@ public class PreMallet implements Command {
 	private Properties properties;
 
 	@Override
-	public void execute(Context context) {
+	public ResultState execute(Context context) {
 		logger.info("[ " + getClass() + " ] - " + "preparing wiki-articles for mallet");
 
 		properties = context.get("properties", Properties.class);
 		PreMalletAction_EntryPointForParallelisation ph = new PreMalletAction_EntryPointForParallelisation(properties);
 		ph.start();
+		return ResultState.success();
 	}
 
 	@Override

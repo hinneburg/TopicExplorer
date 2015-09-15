@@ -14,6 +14,7 @@ import org.apache.log4j.Logger;
 
 import cc.commandmanager.core.Command;
 import cc.commandmanager.core.Context;
+import cc.commandmanager.core.ResultState;
 import cc.topicexplorer.database.Database;
 
 import com.google.common.collect.Sets;
@@ -27,7 +28,7 @@ public class Prune_pb implements Command {
 	private float upperBound;
 	private Database database;
 
-	private void processPrune() {
+	private ResultState processPrune() {
 		ProcessBuilder p = new ProcessBuilder("bash", "-c", "scripts/prune.sh " + properties.getProperty("InCSVFile")
 				+ " " + this.lowerBound + " " + this.upperBound);
 
@@ -53,22 +54,24 @@ public class Prune_pb implements Command {
 			logger.info("Pruning successfully executed");
 		} catch (IOException e) {
 			logger.error("Pruning execution failed");
-			throw new RuntimeException(e);
+			return ResultState.failure("Pruning execution failed", e);
 		}
+		return ResultState.success();
 	}
 
-	private void renameFile(String source, String destination) {
+	private ResultState renameFile(String source, String destination) {
 		File sourceFile = new File(source);
 		File destinationFile = new File(destination);
 
 		if (!sourceFile.renameTo(destinationFile)) {
 			logger.error("File could not be renamed: " + source);
-			throw new IllegalStateException();
+			return ResultState.failure("File could not be renamed: " + source);
 		}
+		return ResultState.success();
 	}
 
 	@Override
-	public void execute(Context context) {
+	public ResultState execute(Context context) {
 		logger.info("[ " + getClass() + " ] - " + "pruning vocabular");
 
 		properties = context.get("properties", Properties.class);
@@ -79,8 +82,8 @@ public class Prune_pb implements Command {
 
 		if (!hasValidBounds(upperBoundPercent, lowerBoundPercent)) {
 			logger.error("Stop: Invalid Pruning Bounds!");
-			throw new IllegalArgumentException(String.format("upperBoundPercent: %f, lowerBoundPercent: %f",
-					upperBoundPercent, lowerBoundPercent));
+			return ResultState.failure(String.format("upperBoundPercent: %f, lowerBoundPercent: %f", upperBoundPercent,
+					lowerBoundPercent));
 		}
 
 		String query = "SELECT COUNT(*) FROM orgTable_meta";
@@ -96,7 +99,7 @@ public class Prune_pb implements Command {
 			}
 		} catch (SQLException e) {
 			logger.error("Error in Query: " + query);
-			throw new RuntimeException(e);
+			return ResultState.failure("Error in Query: " + query, e);
 		}
 
 		this.processPrune();
@@ -106,6 +109,7 @@ public class Prune_pb implements Command {
 
 		this.renameFile(properties.getProperty("InCSVFile") + ".pruned.Lower." + this.lowerBound + ".Upper."
 				+ this.upperBound + ".csv", properties.getProperty("InCSVFile"));
+		return ResultState.success();
 	}
 
 	private boolean hasValidBounds(float upperBoundPercent, float lowerBoundPercent) {

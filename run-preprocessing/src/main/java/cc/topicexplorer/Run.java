@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Date;
-import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
@@ -30,8 +29,10 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import cc.commandmanager.core.Command;
-import cc.commandmanager.core.CommandManagement;
+import cc.commandmanager.core.CommandGraph;
+import cc.commandmanager.core.CommandManager;
 import cc.commandmanager.core.Context;
+import cc.commandmanager.core.Try;
 import cc.topicexplorer.commands.DbConnectionCommand;
 import cc.topicexplorer.commands.PropertiesCommand;
 import cc.topicexplorer.utils.CommandLineParser;
@@ -53,7 +54,7 @@ public class Run {
 
 		try {
 			CommandLineParser commandLineParser = initializeCommandLineParser(args);
-			
+
 			runPreprocessing(commandLineParser.getStartCommands(), commandLineParser.getEndCommands(),
 					!commandLineParser.getOnlyDrawGraph(), commandLineParser.getCatalogLocation());
 		} catch (Exception exception) {
@@ -75,25 +76,28 @@ public class Run {
 	}
 
 	/**
-	 * Execute initial commands, collect plugin names from local and global config properties, create catalog, let
-	 * chainManager order all commands, execute ordered commands.Users can specify from which command to start the
-	 * execution and which command should be the last one to execute. Specification can be made via start- and end
-	 * command parameter respectively.
-	 * 
+	 * Execute initial commands, collect plugin names from local and global
+	 * config properties, create catalog, let chainManager order all commands,
+	 * execute ordered commands.Users can specify from which command to start
+	 * the execution and which command should be the last one to execute.
+	 * Specification can be made via start- and end command parameter
+	 * respectively.
+	 *
 	 * @throws RuntimeException
-	 *             commands can throw multiple RuntimeExceptions. This would signalize a corrupt preprocessing result.
+	 *             commands can throw multiple RuntimeExceptions. This would
+	 *             signalize a corrupt preprocessing result.
 	 */
 	private static void runPreprocessing(Set<String> startCommands, Set<String> endCommands,
-			boolean commandsShouldGetExecuted, String catalogLocation) throws ParserConfigurationException, TransformerException, IOException,
-			SAXException {
+			boolean commandsShouldGetExecuted, String catalogLocation) throws ParserConfigurationException,
+			TransformerException, IOException, SAXException {
 		Date start = new Date();
 		Context context = new Context();
 		executeInitialCommands(context);
 
 		Properties properties = (Properties) context.get("properties");
 		String plugins = properties.getProperty("plugins");
-		
-		if(catalogLocation != null && Run.class.getResource(catalogLocation) != null ) { 
+
+		if (catalogLocation != null && Run.class.getResource(catalogLocation) != null) {
 			Writer output = new BufferedWriter(new FileWriter(CATALOG_FILENAME));
 			output.write(IOUtils.toString(Run.class.getResourceAsStream(catalogLocation)));
 			output.close();
@@ -101,13 +105,12 @@ public class Run {
 			logger.info("Activated plugins: " + plugins);
 			makeCatalog(plugins);
 		}
-		CommandManagement commandManagement = new CommandManagement(CATALOG_FILENAME);
-
-		List<String> orderedCommands = commandManagement.getOrderedCommands(startCommands, endCommands);
-		logger.info("ordered commands: " + orderedCommands);
+		File catalogfile = new File(CATALOG_FILENAME);
+		Try<CommandGraph> commandgraph = CommandGraph.fromXml(catalogfile);
+		CommandManager commandManager = new CommandManager(commandgraph.get());
 
 		if (commandsShouldGetExecuted) {
-			commandManagement.executeCommands(orderedCommands, context);
+			commandManager.executeAllCommands(context);
 			logger.info("Preprocessing successfully executed!");
 		}
 		Date end = new Date();
@@ -134,7 +137,7 @@ public class Run {
 	}
 
 	private static void makeCatalog(String plugins) throws ParserConfigurationException, TransformerException,
-			IOException, SAXException {
+	IOException, SAXException {
 		DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
 		domFactory.setIgnoringComments(true);
 		DocumentBuilder builder = null;
@@ -150,24 +153,24 @@ public class Run {
 		// process plugin catalogs
 		for (String plugin : plugins.split(",")) {
 			plugin = plugin.trim().toLowerCase();
-			if(Run.class.getResource("/cc/topicexplorer/plugin-" + plugin + "-preprocessing/catalog/preJooqConfig.xml") != null) {
+			if (Run.class
+					.getResource("/cc/topicexplorer/plugin-" + plugin + "-preprocessing/catalog/preJooqConfig.xml") != null) {
 				try {
 					doc = getMergedXML(
 							doc,
 							builder.parse(Run.class.getResourceAsStream("/cc/topicexplorer/plugin-" + plugin
 									+ "-preprocessing/catalog/preJooqConfig.xml")));
 				} catch (SAXException saxException) {
-					logger.warn(
-							"/cc/topicexplorer/plugin-" + plugin + "-preprocessing/catalog/preJooqConfig.xml not found",
-							saxException);
+					logger.warn("/cc/topicexplorer/plugin-" + plugin
+							+ "-preprocessing/catalog/preJooqConfig.xml not found", saxException);
 				} catch (IOException ioException) {
-					logger.warn(
-							"/cc/topicexplorer/plugin-" + plugin + "-preprocessing/catalog/preJooqConfig.xml not found",
-							ioException);
+					logger.warn("/cc/topicexplorer/plugin-" + plugin
+							+ "-preprocessing/catalog/preJooqConfig.xml not found", ioException);
 				}
 			}
 
-			if(Run.class.getResource("/cc/topicexplorer/plugin-" + plugin + "-preprocessing/catalog/postJooqConfig.xml") != null) {
+			if (Run.class.getResource("/cc/topicexplorer/plugin-" + plugin
+					+ "-preprocessing/catalog/postJooqConfig.xml") != null) {
 				try {
 					doc = getMergedXML(
 							doc,

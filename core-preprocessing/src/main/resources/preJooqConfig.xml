@@ -13,5 +13,4 @@
 	
 	<command name="TermTopicCreate" className="cc.topicexplorer.database.tables.termtopic.TermTopicCreate"/>
 	
-	<command name="TopicCreate" className="cc.topicexplorer.database.tables.topic.TopicCreate"/>
 </catalog>

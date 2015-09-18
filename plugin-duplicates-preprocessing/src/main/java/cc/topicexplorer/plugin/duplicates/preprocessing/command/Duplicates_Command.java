@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 
 import cc.commandmanager.core.Command;
 import cc.commandmanager.core.Context;
+import cc.commandmanager.core.ResultState;
 import cc.topicexplorer.database.Database;
 import cc.topicexplorer.plugin.duplicates.preprocessing.implementation.Duplicates;
 
@@ -22,7 +23,7 @@ public class Duplicates_Command implements Command {
 	private final Duplicates duplicates = new Duplicates();
 
 	@Override
-	public void execute(Context context) {
+	public ResultState execute(Context context) {
 		logger.info("[ " + getClass() + " ] - " + "detecting duplicates");
 
 		properties = context.get("properties", Properties.class);
@@ -42,8 +43,9 @@ public class Duplicates_Command implements Command {
 			duplicates.writeDuplicatesToDB();
 		} catch (SQLException sqlEx) {
 			logger.error("Could not write duplicates to db.");
-			throw new RuntimeException(sqlEx);
+			return ResultState.failure("Could not write duplicates to db.", sqlEx);
 		}
+		return ResultState.success();
 	}
 
 	@Override

@@ -20,6 +20,7 @@ import org.apache.log4j.Logger;
 
 import cc.commandmanager.core.Command;
 import cc.commandmanager.core.Context;
+import cc.commandmanager.core.ResultState;
 import cc.topicexplorer.database.Database;
 
 import com.csvreader.CsvReader;
@@ -27,7 +28,8 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
 
 /**
- * MIT-JOOQ-START import static jooq.generated.Tables.DOCUMENT_TERM_TOPIC; MIT-JOOQ-ENDE
+ * MIT-JOOQ-START import static jooq.generated.Tables.DOCUMENT_TERM_TOPIC;
+ * MIT-JOOQ-ENDE
  */
 
 public class Prune_DB implements Command {
@@ -39,7 +41,7 @@ public class Prune_DB implements Command {
 	private Database database;
 
 	@Override
-	public void execute(Context context) {
+	public ResultState execute(Context context) {
 
 		logger.info("[ " + getClass() + " ] - " + "pruning vocabular");
 
@@ -67,13 +69,14 @@ public class Prune_DB implements Command {
 			if (upperBoundPercent < 0 || lowerBoundPercent < 0 || upperBoundPercent > 100 || lowerBoundPercent > 100
 					|| upperBoundPercent < lowerBoundPercent) {
 				logger.error("Stop: Invalid Pruning Bounds!");
-				throw new IllegalArgumentException(String.format("upperBoundPercent: %f, lowerBoundPercent: %f",
+				return ResultState.failure(String.format("upperBoundPercent: %f, lowerBoundPercent: %f",
 						upperBoundPercent, lowerBoundPercent));
 			}
 
 			// copy from doctermtopic and delete topic_id
 			/**
-			 * MIT-JOOQ-START database.executeUpdateQuery( "CREATE TABLE IF NOT EXISTS TEMP4PRUNE LIKE " +
+			 * MIT-JOOQ-START database.executeUpdateQuery(
+			 * "CREATE TABLE IF NOT EXISTS TEMP4PRUNE LIKE " +
 			 * DOCUMENT_TERM_TOPIC.getName()); MIT-JOOQ-ENDE
 			 */
 
@@ -82,7 +85,7 @@ public class Prune_DB implements Command {
 				database.executeUpdateQuery("CREATE TABLE IF NOT EXISTS TEMP4PRUNE LIKE DOCUMENT_TERM_TOPIC");
 			} catch (SQLException e1) {
 				logger.error("Essential table TEMP4PRUNE could not be created.");
-				throw new RuntimeException(e1);
+				return ResultState.failure("Essential table TEMP4PRUNE could not be created.", e1);
 			}
 			/** OHNE_JOOQ-ENDE */
 
@@ -90,7 +93,8 @@ public class Prune_DB implements Command {
 				database.executeUpdateQuery("ALTER TABLE TEMP4PRUNE DROP COLUMN TOPIC_ID");
 			} catch (SQLException e2) {
 				logger.error("Column TOPIC_ID could not be dropped in table TEMP4PRUNE, though it should be dropped.");
-				throw new RuntimeException(e2);
+				return ResultState.failure(
+						"Column TOPIC_ID could not be dropped in table TEMP4PRUNE, though it should be dropped.", e2);
 			}
 
 			try {
@@ -99,7 +103,7 @@ public class Prune_DB implements Command {
 						+ ");");
 			} catch (SQLException e3) {
 				logger.error("Local data could not be loaded into table TEMP4PRUNE properly.");
-				throw new RuntimeException(e3);
+				return ResultState.failure("Local data could not be loaded into table TEMP4PRUNE properly.", e3);
 			}
 
 			PrintWriter writer = null;
@@ -119,30 +123,29 @@ public class Prune_DB implements Command {
 				logger.info("Pruning: count: " + count + " lower: " + lowerBound + " upper: " + upperBound);
 				writer = new PrintWriter(new OutputStreamWriter(new BufferedOutputStream(new FileOutputStream(
 						properties.getProperty("InCSVFile") + ".pruned.Lower." + lowerBound + ".Upper." + upperBound
-								+ ".csv")), "UTF-8"));
+						+ ".csv")), "UTF-8"));
 			} catch (SQLException e4) {
 				logger.error("Error in Query: " + queryForDocCountRs);
-				throw new RuntimeException(e4);
+				return ResultState.failure("Error in Query: " + queryForDocCountRs, e4);
 			}
 
 			try {
-//				@formatter:off
+				// @formatter:off
 				database.executeUpdateQuery("CREATE TABLE TEMP4PRUNE2 (UNIQUE (TERM)) "
 						+ "ENGINE=MEMORY AS SELECT TERM FROM TEMP4PRUNE GROUP BY TERM "
 						+ "HAVING COUNT(DISTINCT DOCUMENT_ID) < " + upperBound + " AND COUNT(DISTINCT DOCUMENT_ID) > "
 						+ lowerBound);
-//				@formatter:on
+				// @formatter:on
 			} catch (SQLException e5) {
 				logger.error("Essential table TEMP4PRUNE2 could not be created.");
 				writer.close();
-				throw new RuntimeException(e5);
+				return ResultState.failure("Essential table TEMP4PRUNE2 could not be created.", e5);
 			}
 
-//			@formatter:off
+			// @formatter:off
 			String queryForPrunedRs = "SELECT " + select + " FROM " + "TEMP4PRUNE,TEMP4PRUNE2 "
-					+ "WHERE TEMP4PRUNE.TERM=TEMP4PRUNE2.TERM "
-					+ "ORDER BY DOCUMENT_ID,POSITION_OF_TOKEN_IN_DOCUMENT";
-//			@formatter:on
+					+ "WHERE TEMP4PRUNE.TERM=TEMP4PRUNE2.TERM " + "ORDER BY DOCUMENT_ID,POSITION_OF_TOKEN_IN_DOCUMENT";
+			// @formatter:on
 			try {
 				ResultSet prunedRS = database.executeQuery(queryForPrunedRs);
 
@@ -170,7 +173,7 @@ public class Prune_DB implements Command {
 				}
 			} catch (SQLException e6) {
 				logger.error("Error in Query: " + queryForPrunedRs);
-				throw new RuntimeException(e6);
+				return ResultState.failure("Error in Query: " + queryForPrunedRs, e6);
 			} finally {
 				writer.close();
 			}
@@ -189,23 +192,25 @@ public class Prune_DB implements Command {
 					+ upperBound + ".csv", properties.getProperty("InCSVFile"));
 		} catch (FileNotFoundException e8) {
 			logger.error("Required file could not be found.");
-			throw new RuntimeException(e8);
+			return ResultState.failure("Required file could not be found.", e8);
 		} catch (IOException e9) {
 			logger.error("Handling CSV headers caused a file stream problem.");
-			throw new RuntimeException(e9);
+			return ResultState.failure("Handling CSV headers caused a file stream problem.", e9);
 		}
 
 		inCsv.close();
+		return ResultState.success();
 	}
 
-	private void renameFile(String source, String destination) {
+	private ResultState renameFile(String source, String destination) {
 		File sourceFile = new File(source);
 		File destinationFile = new File(destination);
 
 		if (!sourceFile.renameTo(destinationFile)) {
 			logger.error("File could not be renamed: " + source);
-			throw new IllegalStateException();
+			return ResultState.failure("File could not be renamed: " + source);
 		}
+		return ResultState.success();
 	}
 
 	@Override

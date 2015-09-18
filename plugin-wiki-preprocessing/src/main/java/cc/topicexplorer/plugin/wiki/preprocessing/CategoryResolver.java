@@ -24,6 +24,7 @@ import tools.WikiIDTitlePair;
 import wikiParser.SupporterForBothTypes;
 import cc.commandmanager.core.Command;
 import cc.commandmanager.core.Context;
+import cc.commandmanager.core.ResultState;
 
 import com.google.common.collect.Sets;
 
@@ -41,7 +42,7 @@ public class CategoryResolver implements Command {
 	private final LinkedList<String> stack = new LinkedList<String>();
 
 	@Override
-	public void execute(Context context) {
+	public ResultState execute(Context context) {
 		logger.info("[ " + getClass() + " ] - " + " resolve categorys from wiki-db");
 		prop = context.get("properties", Properties.class);
 
@@ -50,8 +51,9 @@ public class CategoryResolver implements Command {
 			start();
 		} catch (IOException e) {
 			logger.error("Category resolver caused a problem");
-			throw new RuntimeException(e);
+			return ResultState.failure("Category resolver caused a problem", e);
 		}
+		return ResultState.success();
 	}
 
 	@Override

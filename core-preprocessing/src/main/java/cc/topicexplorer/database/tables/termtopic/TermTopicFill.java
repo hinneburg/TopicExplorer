@@ -1,10 +1,10 @@
 package cc.topicexplorer.database.tables.termtopic;
 
-/** MIT-JOOQ-START 
+/** MIT-JOOQ-START
  import static jooq.generated.Tables.TERM;
  import static jooq.generated.Tables.TERM_TOPIC;
  import static jooq.generated.Tables.DOCUMENT_TERM_TOPIC;
- import static jooq.generated.Tables.TOPIC; 
+ import static jooq.generated.Tables.TOPIC;
  MIT-JOOQ-ENDE */
 
 import java.sql.SQLException;
@@ -33,8 +33,8 @@ public class TermTopicFill extends TableFillCommand {
 	@Override
 	public void fillTable() {
 
-// @formatter:off
-/** MIT-JOOQ-START 
+		// @formatter:off
+		/** MIT-JOOQ-START
 		database.executeUpdateQuery("insert into " + TERM_TOPIC.getName() + " ( "
 				+ TERM_TOPIC.TOPIC_ID.getName() + ", "
 				+ TERM_TOPIC.TERM_ID.getName() + ", "
@@ -70,10 +70,10 @@ public class TermTopicFill extends TableFillCommand {
 				+ TERM_TOPIC.TOPIC_ID.getName() + "), "
 				+ " ADD KEY `TOPIC_TERM_IDX` (" + TERM_TOPIC.TOPIC_ID.getName()
 				+ ", " + TERM_TOPIC.TERM_ID.getName() + ")");
- MIT-JOOQ-ENDE */ 	
-//				@formatter:on
+ MIT-JOOQ-ENDE */
+		//				@formatter:on
 		/** OHNE_JOOQ-START */
-//		@formatter:off
+		//		@formatter:off
 		try {
 			database.executeUpdateQuery("insert into " + "TERM_TOPIC" + " ( "
 					+ "TERM_TOPIC.TOPIC_ID" + ", "
@@ -100,7 +100,7 @@ public class TermTopicFill extends TableFillCommand {
 					+ "TOPIC_ID" + "), "
 					+ " ADD KEY `TOPIC_TERM_IDX` (" + "TOPIC_ID"
 					+ ", " + "TERM_ID" + ")");
-//		@formatter:on
+			//		@formatter:on
 		} catch (SQLException e) {
 			logger.error("Table " + this.tableName + " could not be filled properly.");
 			throw new RuntimeException(e);
@@ -115,7 +115,7 @@ public class TermTopicFill extends TableFillCommand {
 
 	@Override
 	public Set<String> getBeforeDependencies() {
-		return Sets.newHashSet("TermTopicCreate", "DocumentTermTopicFill", "DocumentFill", "TopicFill");
+		return Sets.newHashSet("TermTopicCreate", "DocumentTermTopicFill", "DocumentFill", "TopicFill", "TermFill");
 	}
 
 	@Override

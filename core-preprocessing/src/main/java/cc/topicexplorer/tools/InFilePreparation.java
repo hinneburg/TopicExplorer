@@ -19,24 +19,26 @@ import org.apache.log4j.Logger;
 
 import cc.commandmanager.core.Command;
 import cc.commandmanager.core.Context;
+import cc.commandmanager.core.ResultState;
 import cc.topicexplorer.database.Database;
 
 import com.csvreader.CsvReader;
 import com.google.common.collect.Sets;
 
-/** MIT-JOOQ-START 
+/** MIT-JOOQ-START
  import static jooq.generated.Tables.DOCUMENT_TERM_TOPIC;
  MIT-JOOQ-ENDE */
 
 /**
  * <h1>This class represents the first step in the TopicExplorer-workflow</h1>
- * 
+ *
  * <p>
- * The class owns functions to proof the given in-file and prepare the Mallet-in-file
+ * The class owns functions to proof the given in-file and prepare the
+ * Mallet-in-file
  * </p>
- * 
+ *
  * @author Matthias Pfuhl
- * 
+ *
  */
 public class InFilePreparation implements Command {
 
@@ -47,32 +49,34 @@ public class InFilePreparation implements Command {
 	private Properties properties;
 
 	@Override
-	public void execute(Context context) {
+	public ResultState execute(Context context) {
 		properties = (Properties) context.get("properties");
-		
-		if(!properties.get("newTopics").toString().equalsIgnoreCase("true")) {
+
+		if (!properties.get("newTopics").toString().equalsIgnoreCase("true")) {
 			logger.info("Skip: Take the previous DOCUMENT_TERM_TOPIC table");
 		} else {
 			logger.info("preparing the in-file for mallet");
-	
+
 			database = (Database) context.get("database");
 			String inFile = properties.getProperty("InCSVFile");
-	
+
 			if (checkHeader(inFile)) {
 				writeMalletInFile("temp/malletinput.txt");
 				logger.info("[ " + getClass() + " ] - " + "the in-file for mallet successfully prepared");
 				inCsv.close();
 			} else {
-				throw new IllegalArgumentException("Missing CSV header in table DOCUMENT_TERM_TOPIC");
+				return ResultState.failure("Missing CSV header in table DOCUMENT_TERM_TOPIC");
 			}
 		}
+		return ResultState.success();
 	}
 
 	/**
-	 * The function checks if the used separator and the static defined names are correct
-	 * 
+	 * The function checks if the used separator and the static defined names
+	 * are correct
+	 *
 	 * @return true if all is correct, else false (with a little information)
-	 * 
+	 *
 	 * @throws SQLException
 	 *             if a database access error occurs
 	 * @throws IllegalStateException
@@ -90,7 +94,8 @@ public class InFilePreparation implements Command {
 				List<String> tableColumnList = new ArrayList<String>();
 
 				/**
-				 * MIT-JOOQ-START ResultSet rs = database.executeQuery("SELECT * FROM " +
+				 * MIT-JOOQ-START ResultSet rs =
+				 * database.executeQuery("SELECT * FROM " +
 				 * DOCUMENT_TERM_TOPIC.getName()); MIT-JOOQ-ENDE
 				 */
 				/** OHNE_JOOQ-START */

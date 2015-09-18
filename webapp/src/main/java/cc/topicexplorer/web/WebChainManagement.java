@@ -27,6 +27,9 @@ public class WebChainManagement {
 			WebChainManagement.context = context;
 			File catalogfile = new File(catalogLocation);
 			Try<CommandGraph> commandgraph = CommandGraph.fromXml(catalogfile);
+			if (!commandgraph.isPresent()) {
+				logger.error("CommandGraph not present");
+			}
 			commandManager = new CommandManager(commandgraph.get());
 			isInitialized = true;
 		} else {

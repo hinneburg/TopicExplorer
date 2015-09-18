@@ -83,6 +83,7 @@ public class OnStartup implements ServletContextListener {
 
 			String path = servletContext.getRealPath("/");
 			String catalogLocation = path + "WEB-INF" + File.separator + "classes" + File.separator + "catalog.xml";
+			logger.info("Path to catalog: " + catalogLocation);
 			try {
 				PrintWriter pw = new PrintWriter(new FileWriter(catalogLocation));
 				makeCatalogFromProperties(context.get("properties", Properties.class), pw);

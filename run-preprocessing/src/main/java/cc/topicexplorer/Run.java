@@ -20,7 +20,6 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
@@ -60,7 +59,7 @@ public class Run {
 		} catch (Exception exception) {
 			logger.error("Preprocessing could not be completed.", exception);
 		} finally {
-			FileUtils.deleteDirectory(temp);
+			//			FileUtils.deleteDirectory(temp);
 		}
 	}
 

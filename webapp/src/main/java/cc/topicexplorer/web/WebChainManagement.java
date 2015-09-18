@@ -42,14 +42,6 @@ public class WebChainManagement {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	public static List<CommandClass> getOrderedCommands() {
-		if (isInitialized) {
-			return commandManager.getCommandGraph().topologicalOrderOfAllCommands();
-		} else {
-			throw new IllegalStateException("Class must be initialized before getOrderedCommands can be called.");
-		}
-	}
 
 	public static void executeCommands(List<String> commands, Context context) {
 		if (isInitialized) {

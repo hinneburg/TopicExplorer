@@ -189,7 +189,7 @@ public class JsonServlet extends HttpServlet {
 				}
 
 				if (!startCommands.isEmpty()) {
-					WebChainManagement.executeCommands((List<String>) startCommands, context);
+					WebChainManagement.executeCommands(startCommands, context);
 				} else {
 					logger.warn("Detected request with non-matching command. No commands executed.");
 				}

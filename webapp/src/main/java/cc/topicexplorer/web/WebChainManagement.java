@@ -1,11 +1,9 @@
 package cc.topicexplorer.web;
 
 import java.io.File;
-import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import cc.commandmanager.core.CommandClass;
 import cc.commandmanager.core.CommandGraph;
 import cc.commandmanager.core.CommandManager;
 import cc.commandmanager.core.Context;
@@ -46,10 +44,11 @@ public class WebChainManagement {
 	}
 
 
-	public static void executeCommands(List<String> commands, Context context) {
+
+	public static void executeCommands(Iterable<String> commands, Context context) {
 		if (isInitialized) {
 			try {
-				commandManager.executeCommands(commands, context);
+				commandManager.executeConnectedComponentsContaining(commands, context);
 			} catch (RuntimeException e) {
 				logger.error("A command caused a RuntimeException.", e);
 			}

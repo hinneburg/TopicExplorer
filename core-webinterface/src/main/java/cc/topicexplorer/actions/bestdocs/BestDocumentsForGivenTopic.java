@@ -139,6 +139,7 @@ public class BestDocumentsForGivenTopic {
 				docs.put(docId, doc);
 				docSorting.add(docId);				
 			}
+			mainQueryRS.close();			
 			all.put("DOCUMENT", docs);
 			all.put("DOCUMENT_SORTING", docSorting);
 		} catch (SQLException e) {

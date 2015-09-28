@@ -98,12 +98,14 @@ public class GetTopics {
 					topTerms.add(topTerm);
 					termList.add(topicTermRS.getInt("TERM_ID"));
 				}
+				topicTermRS.close();
 				topic.put("Top_Terms", topTerms);
 				topTerms.clear();
 				topics.put(topicRS.getInt("TOPIC.TOPIC_ID"), topic);
 				
 				
 			}
+			topicRS.close();
 			
 			ResultSet selectedTopicRS = database.executeQuery(selectedTopicsMap.getSQLString());
 			while (selectedTopicRS.next()) {
@@ -111,6 +113,7 @@ public class GetTopics {
 			}
 			all.put("Topic", topics);
 			all.put("TOPIC_SORTING", topicSorting);
+			selectedTopicRS.close();
 
 
 			// TERM
@@ -122,6 +125,7 @@ public class GetTopics {
 				term.put("TERM_NAME", termRS.getString("TERM_NAME"));
 				terms.put(termRS.getString("TERM_ID"), term);
 			}
+			termRS.close();
 			all.put("Term", terms);
 
 		} catch (SQLException e) {

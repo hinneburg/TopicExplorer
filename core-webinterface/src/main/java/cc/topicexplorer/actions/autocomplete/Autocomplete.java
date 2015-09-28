@@ -79,6 +79,7 @@ public class Autocomplete {
 			}
 			topicList.add(autocompleteQueryRS.getInt("TOPIC_ID"));
 		}
+		autocompleteQueryRS.close();
 		if (term.size() > 0) {
 			term.put("TOP_TOPIC", topicList);
 			all.add(term);

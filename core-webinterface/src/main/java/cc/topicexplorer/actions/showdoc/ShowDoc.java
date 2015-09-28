@@ -84,6 +84,7 @@ public class ShowDoc {
 				}
 				docId = documentRS.getInt("DOCUMENT_ID");
 			}
+			documentRS.close();
 
 			Long time = System.currentTimeMillis() - start;
 			logger.info(" DocQueryTime: " + time + " ms");
@@ -106,6 +107,7 @@ public class ShowDoc {
 					}
 					parentList.add(hierarchicalTopicRS.getInt("PARENT_ID"));
 				}
+				hierarchicalTopicRS.close();
 				topicListOfParents.put(leafTopicId, parentList);
 			}
 			
@@ -121,6 +123,7 @@ public class ShowDoc {
 				}
 				topics.add(topic);
 			}
+			topicRS.close();
 
 			// hack: the following should happen in frame class(es):
 			if (Arrays.asList(properties.get("plugins").toString().split(",")).contains("frame")) {
@@ -150,6 +153,7 @@ public class ShowDoc {
 					}
 					frames.add(frame);
 				}
+				frameRS.close();
 				frameTypes.put(actFrameType, frames);
 				doc.put("FRAME_LIST", frameTypes);
 			}

@@ -113,6 +113,7 @@ public final class GetTerms {
 				terms.put(resultSet.getString("TERM_ID"), term);
 				
 			}
+			resultSet.close();
 			topic.put("Top_Terms", topTerms);
 			topTerms.clear();
 			topics.put(topicId, topic);

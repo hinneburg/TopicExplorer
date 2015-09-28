@@ -90,6 +90,7 @@ public class Search {
 			}
 			docs.put(docId, doc);
 		}
+		mainQueryRS.close();
 
 		all.put("DOCUMENT", docs);
 		all.put("DOCUMENT_SORTING", docSorting);

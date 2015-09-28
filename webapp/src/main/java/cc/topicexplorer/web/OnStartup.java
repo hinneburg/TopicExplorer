@@ -1,9 +1,6 @@
 package cc.topicexplorer.web;
 
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.sql.Driver;
 import java.sql.DriverManager;
@@ -31,6 +28,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import com.google.common.base.Joiner;
 import com.mysql.jdbc.AbandonedConnectionCleanupThread;
 
 import cc.commandmanager.core.Command;
@@ -43,8 +41,6 @@ public class OnStartup implements ServletContextListener {
 
 	private static final Logger logger = Logger.getLogger(OnStartup.class);
 	private static boolean hasBeenInitialized = false;
-
-	private ServletContext servletContext;
 
 	@Override
 	public void contextDestroyed(final ServletContextEvent arg0) {
@@ -67,46 +63,34 @@ public class OnStartup implements ServletContextListener {
             e.printStackTrace();
         }
 	}
-
+	
 	@Override
-	public void contextInitialized(ServletContextEvent arg0) {
+	public void contextInitialized(final ServletContextEvent arg0) {
 		if (!hasBeenInitialized) {
 
 			System.out.println("Do on startup.");
-			servletContext = arg0.getServletContext();
 
 			Context context = new Context();
 			executeInitialCommands(context);
 			LoggerUtil.initializeLogger();
+			
+			String[] plugins = getActivedPluginsFromProperties(context.get("properties", Properties.class));
+			logger.info("Activated plugins: " + Joiner.on(',').join(plugins));
 
-			if (this.getClass().getResource("/catalog.xml") != null) {
-				String path = servletContext.getRealPath("/");
-				File file = new File(path + "WEB-INF" + File.separator + "classes" + File.separator + "catalog.xml");
-				if (file.delete()) {
-					logger.info(file.getName() + " is deleted!");
-				} else {
-					logger.warn("Delete operation is failed.");
-				}
-			}
-
-			String path = servletContext.getRealPath("/");
-			String catalogLocation = path + "WEB-INF" + File.separator + "classes" + File.separator + "catalog.xml";
-			logger.info("Path to catalog: " + catalogLocation);
 			try {
-				PrintWriter pw = new PrintWriter(new FileWriter(catalogLocation));
-				makeCatalogFromProperties(context.get("properties", Properties.class), pw);
+				Document mergedCatalog = generatedMergedPluginCatalog(plugins);
+				logger.info("Merged Catalog\n" + catalog2String(mergedCatalog));
+				WebChainManagement.init(context, mergedCatalog);
 			} catch (ParserConfigurationException e) {
-				doOnCatalogException(e, catalogLocation);
+				doOnMergeCatalogException(e);
 			} catch (SAXException e) {
-				doOnCatalogException(e, catalogLocation);
-			} catch (IOException e) {
-				doOnCatalogException(e, catalogLocation);
+				doOnMergeCatalogException(e);
 			} catch (TransformerException e) {
-				doOnCatalogException(e, catalogLocation);
+				doOnMergeCatalogException(e);
+			} catch (IOException e) {
+				doOnMergeCatalogException(e);
 			}
-
-			WebChainManagement.init(context, catalogLocation);
-			hasBeenInitialized = true;
+			hasBeenInitialized = true;	
 		}
 	}
 
@@ -118,16 +102,22 @@ public class OnStartup implements ServletContextListener {
 			Command dbConnectionCommand = new DbConnectionCommand();
 			dbConnectionCommand.execute(context);
 		} catch (RuntimeException rntmEx) {
-			logger.error("Initialization abborted, due to a critical exception", rntmEx);
+			logger.error("Initialization abborted, due to a critical exception during initial Commands (Properties, DbConnection)", rntmEx);
 			throw rntmEx;
 		}
 	}
 
-	private static void makeCatalogFromProperties(Properties properties, PrintWriter pw)
-			throws ParserConfigurationException, SAXException, IOException, TransformerException {
-		// to be filled with makeCatalog() of RandomDocs.java
-		String plugins = properties.getProperty("plugins");
-		logger.info("Activated plugins: " + plugins);
+	private static String[] getActivedPluginsFromProperties (Properties properties) {
+		String pluginsString = properties.getProperty("plugins");
+		String[] plugins = pluginsString.split(",");
+		for (String plugin : plugins) {
+			plugin.trim().toLowerCase();
+		}
+		return plugins;
+	}
+	
+	private static Document generatedMergedPluginCatalog(String[] plugins) 
+		throws ParserConfigurationException, SAXException, IOException {
 
 		DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
 		domFactory.setIgnoringComments(true);
@@ -140,8 +130,7 @@ public class OnStartup implements ServletContextListener {
 				.getResourceAsStream("/cc/topicexplorer/core-webinterface/catalog/catalog.xml"));
 
 		// process plugin catalogs
-		for (String plugin : plugins.split(",")) {
-			plugin = plugin.trim().toLowerCase();
+		for (String plugin : plugins) {
 			try {
 				doc = getMergedXML(
 						doc,
@@ -158,7 +147,10 @@ public class OnStartup implements ServletContextListener {
 			}
 		}
 
-		// write out
+		return doc;
+	}
+	
+	private static String catalog2String(Document doc) throws TransformerException {
 		TransformerFactory tFactory = TransformerFactory.newInstance();
 		Transformer transformer = tFactory.newTransformer();
 		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
@@ -168,13 +160,9 @@ public class OnStartup implements ServletContextListener {
 		transformer.transform(source, result);
 
 		String xmlOutput = result.getWriter().toString();
-
-		pw.println(xmlOutput);
-		pw.flush();
-		pw.close();
-
-	}
-
+		return xmlOutput;
+ 	}
+	
 	private static Document getMergedXML(Document xmlFile1, Document xmlFile2) {
 		NodeList nodes = xmlFile2.getElementsByTagName("catalog").item(0).getChildNodes();
 		for (int i = 0; i < nodes.getLength(); i++) {
@@ -184,8 +172,8 @@ public class OnStartup implements ServletContextListener {
 		return xmlFile1;
 	}
 
-	private void doOnCatalogException(Throwable t, String catalogLocation) {
-		logger.warn("Problems occured while creating and filling the catalog at this location: " + catalogLocation, t);
+	private void doOnMergeCatalogException(Throwable t) {
+		logger.warn("Problems occured while merging the catalog", t);
 	}
 
 }

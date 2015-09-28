@@ -3,6 +3,7 @@ package cc.topicexplorer.web;
 import java.io.File;
 
 import org.apache.log4j.Logger;
+import org.w3c.dom.Document;
 
 import cc.commandmanager.core.CommandGraph;
 import cc.commandmanager.core.CommandManager;
@@ -20,11 +21,10 @@ public class WebChainManagement {
 		throw new UnsupportedOperationException();
 	}
 
-	public static void init(Context context, String catalogLocation) {
+	public static void init(Context context, Document catalog) {
 		if (!isInitialized) {
 			WebChainManagement.context = context;
-			File catalogfile = new File(catalogLocation);
-			Try<CommandGraph> commandgraph = CommandGraph.fromXml(catalogfile);
+			Try<CommandGraph> commandgraph = CommandGraph.fromDocument(catalog);
 			if (!commandgraph.isPresent()) {
 				logger.error("CommandGraph not present");
 			}

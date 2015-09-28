@@ -31,7 +31,6 @@ public class JsonServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private static final Logger logger = Logger.getLogger(JsonServlet.class);
 
-	@SuppressWarnings("unchecked")
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		synchronized (this) {
@@ -110,7 +109,6 @@ public class JsonServlet extends HttpServlet {
 
 					context.bind("TOPIC_ID", Integer.parseInt(request.getParameter("TopicId")));
 					context.bind("OFFSET", offset);
-					@SuppressWarnings("unchecked")
 					Enumeration<String> parameterNames = request.getParameterNames();
 					while (parameterNames.hasMoreElements()) {
 						String paramName = parameterNames.nextElement();
@@ -122,7 +120,6 @@ public class JsonServlet extends HttpServlet {
 
 					context.bind("TOPIC_ID", Integer.parseInt(request.getParameter("TopicId")));
 					context.bind("OFFSET", offset);
-					@SuppressWarnings("unchecked")
 					Enumeration<String> parameterNames = request.getParameterNames();
 					while (parameterNames.hasMoreElements()) {
 						String paramName = parameterNames.nextElement();
@@ -147,7 +144,6 @@ public class JsonServlet extends HttpServlet {
 					context.bind("SEARCH_WORD", request.getParameter("SearchWord"));
 					context.bind("SEARCH_STRICT", request.getParameter("SearchStrict"));
 					context.bind("OFFSET", offset);
-					@SuppressWarnings("unchecked")
 					Enumeration<String> parameterNames = request.getParameterNames();
 					while (parameterNames.hasMoreElements()) {
 						String paramName = parameterNames.nextElement();

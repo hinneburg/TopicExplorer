@@ -31,6 +31,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import com.mysql.jdbc.AbandonedConnectionCleanupThread;
+
 import cc.commandmanager.core.Command;
 import cc.commandmanager.core.Context;
 import cc.topicexplorer.commands.DbConnectionCommand;
@@ -45,7 +47,7 @@ public class OnStartup implements ServletContextListener {
 	private ServletContext servletContext;
 
 	@Override
-	public void contextDestroyed(ServletContextEvent arg0) {
+	public void contextDestroyed(final ServletContextEvent arg0) {
 		// This manually deregisters JDBC driver, which prevents Tomcat 7 from
 		// complaining about memory leaks wrto this class
 		Enumeration<Driver> drivers = DriverManager.getDrivers();
@@ -58,6 +60,12 @@ public class OnStartup implements ServletContextListener {
 				logger.log(Level.ERROR, String.format("Error deregistering driver %s", driver), e);
 			}
 		}
+        try {
+            AbandonedConnectionCleanupThread.shutdown();
+        } catch (InterruptedException e) {
+            logger.warn("SEVERE problem cleaning up: " + e.getMessage());
+            e.printStackTrace();
+        }
 	}
 
 	@Override

@@ -1,18 +1,8 @@
 package cc.topicexplorer.web;
 
-import java.io.File;
-
-import org.apache.log4j.Logger;
-
-import cc.commandmanager.core.CommandGraph;
-import cc.commandmanager.core.CommandManager;
 import cc.commandmanager.core.Context;
-import cc.commandmanager.core.Try;
 
 public class WebChainManagement {
-
-	private static CommandManager commandManager;
-	private static final Logger logger = Logger.getLogger(WebChainManagement.class);
 	private static boolean isInitialized = false;
 	private static Context context;
 
@@ -20,12 +10,9 @@ public class WebChainManagement {
 		throw new UnsupportedOperationException();
 	}
 
-	public static void init(Context context, String catalogLocation) {
+	public static void init(Context context) {
 		if (!isInitialized) {
 			WebChainManagement.context = context;
-			File catalogfile = new File(catalogLocation);
-			Try<CommandGraph> commandgraph = CommandGraph.fromXml(catalogfile);
-			commandManager = new CommandManager(commandgraph.get());
 			isInitialized = true;
 		} else {
 			throw new IllegalStateException("Class has already been initialized.");

@@ -66,7 +66,7 @@ public class JsonServlet extends HttpServlet {
 			Context context = new Context(WebChainManagement.getContext());
 			context.bind("SERVLET_WRITER", writer);
 
-			Database database = (Database) context.get("database");
+			Database database = context.get("database", Database.class);
 
 			try {
 				if (command.equals("init")) {

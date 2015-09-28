@@ -46,7 +46,7 @@ public class JsonServlet extends HttpServlet {
 			Context context = new Context(WebChainManagement.getContext());
 			context.bind("SERVLET_WRITER", writer);
 
-			Properties properties = (Properties) context.get("properties");
+			Properties properties = context.get("properties",Properties.class);
 
 			int offset = (request.getParameter("offset") != null) ? Integer.parseInt(request.getParameter("offset"))
 					: 0;
@@ -63,7 +63,7 @@ public class JsonServlet extends HttpServlet {
 
 					logger.info("Plugin mecab is active.");
 
-					Database database = (Database) context.get("database");
+					Database database = context.get("database",Database.class);
 					JSONObject wordtypes = new JSONObject();
 
 					logger.info("Retrieving word type names for POS IDs:"

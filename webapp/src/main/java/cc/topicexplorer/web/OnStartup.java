@@ -1,6 +1,7 @@
 package cc.topicexplorer.web;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.StringWriter;
 import java.sql.Driver;
 import java.sql.DriverManager;
@@ -50,30 +51,33 @@ public class OnStartup implements ServletContextListener {
 			Driver driver = drivers.nextElement();
 			try {
 				DriverManager.deregisterDriver(driver);
-				logger.log(Level.INFO, String.format("deregistering jdbc driver: %s", driver));
+				logger.log(Level.INFO,
+						String.format("deregistering jdbc driver: %s", driver));
 			} catch (SQLException e) {
-				logger.log(Level.ERROR, String.format("Error deregistering driver %s", driver), e);
+				logger.log(Level.ERROR,
+						String.format("Error deregistering driver %s", driver),
+						e);
 			}
 		}
-        try {
-            AbandonedConnectionCleanupThread.shutdown();
-        } catch (InterruptedException e) {
-            logger.warn("SEVERE problem cleaning up: " + e.getMessage());
-            e.printStackTrace();
-        }
+		try {
+			AbandonedConnectionCleanupThread.shutdown();
+		} catch (InterruptedException e) {
+			logger.warn("SEVERE problem cleaning up: " + e.getMessage());
+			e.printStackTrace();
+		}
 	}
-	
+
 	@Override
 	public void contextInitialized(final ServletContextEvent arg0) {
 		if (!hasBeenInitialized) {
-
-			System.out.println("Do on startup.");
-
 			Context context = new Context();
 			executeInitialCommands(context);
 			LoggerUtil.initializeLogger();
-			
-			String[] plugins = getActivedPluginsFromProperties(context.get("properties", Properties.class));
+
+			logger.info("Do on startup.");
+
+			String[] plugins = getActivedPluginsFromProperties(context.get(
+					"properties", Properties.class));
 			logger.info("Activated plugins: " + Joiner.on(',').join(plugins));
 
 			try {
@@ -89,7 +93,7 @@ public class OnStartup implements ServletContextListener {
 			} catch (IOException e) {
 				doOnMergeCatalogException(e);
 			}
-			hasBeenInitialized = true;	
+			hasBeenInitialized = true;
 		}
 	}
 
@@ -101,12 +105,15 @@ public class OnStartup implements ServletContextListener {
 			Command dbConnectionCommand = new DbConnectionCommand();
 			dbConnectionCommand.execute(context);
 		} catch (RuntimeException rntmEx) {
-			logger.error("Initialization abborted, due to a critical exception during initial Commands (Properties, DbConnection)", rntmEx);
+			logger.error(
+					"Initialization abborted, due to a critical exception during initial Commands (Properties, DbConnection)",
+					rntmEx);
 			throw rntmEx;
 		}
 	}
 
-	private static String[] getActivedPluginsFromProperties (Properties properties) {
+	private static String[] getActivedPluginsFromProperties(
+			Properties properties) {
 		String pluginsString = properties.getProperty("plugins");
 		String[] plugins = pluginsString.split(",");
 		for (String plugin : plugins) {
@@ -114,42 +121,51 @@ public class OnStartup implements ServletContextListener {
 		}
 		return plugins;
 	}
-	
-	private static Document generatedMergedPluginCatalog(String[] plugins) 
-		throws ParserConfigurationException, SAXException, IOException {
 
-		DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
+	private static Document generatedMergedPluginCatalog(String[] plugins)
+			throws ParserConfigurationException, SAXException, IOException {
+
+		DocumentBuilderFactory domFactory = DocumentBuilderFactory
+				.newInstance();
 		domFactory.setIgnoringComments(true);
 		DocumentBuilder builder = null;
 
 		builder = domFactory.newDocumentBuilder();
 
 		// init
-		Document doc = builder.parse(OnStartup.class
-				.getResourceAsStream("/cc/topicexplorer/core-webinterface/catalog/catalog.xml"));
+		Document doc = builder
+				.parse(OnStartup.class
+						.getResourceAsStream("/cc/topicexplorer/core-webinterface/catalog/catalog.xml"));
 
 		// process plugin catalogs
 		for (String plugin : plugins) {
+			InputStream inPluginCatalog = OnStartup.class
+					.getResourceAsStream("/cc/topicexplorer/plugin-" + plugin
+							+ "-webinterface/catalog/catalog.xml");
+			if (inPluginCatalog == null) {
+				logger.warn("/cc/topicexplorer/plugin-" + plugin
+						+ "-webinterface/catalog/catalog.xml not found");
+				continue;
+			}
+
 			try {
-				doc = getMergedXML(
-						doc,
-						builder.parse(OnStartup.class.getResourceAsStream("/cc/topicexplorer/plugin-" + plugin
-								+ "-webinterface/catalog/catalog.xml")));
+				doc = getMergedXML(doc, builder.parse(inPluginCatalog));
 			} catch (SAXException saxEx) {
-				logger.warn("/cc/topicexplorer/plugin-" + plugin + "-webinterface/catalog/catalog.xml not found", saxEx);
+				logger.warn("/cc/topicexplorer/plugin-" + plugin
+						+ "-webinterface/catalog/catalog.xml not found", saxEx);
 			} catch (IOException ioEx) {
-				logger.warn("/cc/topicexplorer/plugin-" + plugin + "-webinterface/catalog/catalog.xml not found", ioEx);
+				logger.warn("/cc/topicexplorer/plugin-" + plugin
+						+ "-webinterface/catalog/catalog.xml not found", ioEx);
 			} catch (IllegalStateException e) {
-				logger.warn(e);
-			} catch (IllegalArgumentException e) {
 				logger.warn(e);
 			}
 		}
 
 		return doc;
 	}
-	
-	private static String catalog2String(Document doc) throws TransformerException {
+
+	private static String catalog2String(Document doc)
+			throws TransformerException {
 		TransformerFactory tFactory = TransformerFactory.newInstance();
 		Transformer transformer = tFactory.newTransformer();
 		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
@@ -160,13 +176,15 @@ public class OnStartup implements ServletContextListener {
 
 		String xmlOutput = result.getWriter().toString();
 		return xmlOutput;
- 	}
-	
+	}
+
 	private static Document getMergedXML(Document xmlFile1, Document xmlFile2) {
-		NodeList nodes = xmlFile2.getElementsByTagName("catalog").item(0).getChildNodes();
+		NodeList nodes = xmlFile2.getElementsByTagName("catalog").item(0)
+				.getChildNodes();
 		for (int i = 0; i < nodes.getLength(); i++) {
 			Node importNode = xmlFile1.importNode(nodes.item(i), true);
-			xmlFile1.getElementsByTagName("catalog").item(0).appendChild(importNode);
+			xmlFile1.getElementsByTagName("catalog").item(0)
+					.appendChild(importNode);
 		}
 		return xmlFile1;
 	}

@@ -59,12 +59,12 @@ public class OnStartup implements ServletContextListener {
 						e);
 			}
 		}
-//		try {
-//			AbandonedConnectionCleanupThread.shutdown();
-//		} catch (InterruptedException e) {
-//			logger.warn("SEVERE problem cleaning up: " + e.getMessage());
-//			e.printStackTrace();
-//		}
+		try {
+			AbandonedConnectionCleanupThread.shutdown();
+		} catch (InterruptedException e) {
+			logger.warn("SEVERE problem cleaning up: " + e.getMessage());
+			e.printStackTrace();
+		}
 	}
 
 	@Override

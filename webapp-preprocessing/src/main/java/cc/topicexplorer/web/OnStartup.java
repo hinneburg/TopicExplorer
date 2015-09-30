@@ -38,12 +38,12 @@ public class OnStartup implements ServletContextListener {
 				logger.log(Level.ERROR, String.format("Error deregistering driver %s", driver), e);
 			}
 		}
-//        try {
-//            AbandonedConnectionCleanupThread.shutdown();
-//        } catch (InterruptedException e) {
-//            logger.warn("SEVERE problem cleaning up: " + e.getMessage());
-//            e.printStackTrace();
-//        }
+        try {
+            AbandonedConnectionCleanupThread.shutdown();
+        } catch (InterruptedException e) {
+            logger.warn("SEVERE problem cleaning up: " + e.getMessage());
+            e.printStackTrace();
+        }
 	}
 
 	@Override

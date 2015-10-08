@@ -40,6 +40,7 @@ public class PosTypeCreate  extends TableCreateCommand{
 					+ "`LOW` int(11) DEFAULT NULL,"
 					+ "`HIGH` int(11) DEFAULT NULL, "
 					+ "`DESCRIPTION` varchar(255), "
+					+ "`LONG_DESCRIPTION` varchar(255) DEFAULT 'unknown', "
 					+ "`PARENT_POS` int(11) DEFAULT NULL, "
 					+ "TOKEN_COUNT int(11) DEFAULT NULL, "
 					+ "DOCUMENT_COUNT int(11) DEFAULT NULL, "

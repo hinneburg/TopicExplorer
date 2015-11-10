@@ -195,17 +195,159 @@ public class DocumentChunkTest {
 		r2.startPosition = 7;
 		r2.endPosition = 11;
 		expectedListOfChunkRows.add(r2);
+		ChunkRow r3 = new ChunkRow();
+		r3.startPosition = 13;
+		r3.endPosition = 16;
+		expectedListOfChunkRows.add(r3);
 		ChunkRow r4 = new ChunkRow();
-		r4.startPosition = 13;
-		r4.endPosition = 16;
+		r4.startPosition = 17;
+		r4.endPosition = 19;
 		expectedListOfChunkRows.add(r4);
-		ChunkRow r5 = new ChunkRow();
-		r5.startPosition = 17;
-		r5.endPosition = 19;
-		expectedListOfChunkRows.add(r5);
 
 		assertEquals(expectedListOfChunkRows, actualListOfChunkRows);
-
-
     }
+
+	@Test
+    public void test_chunking2() {
+		List<String> inputDelimiters = new ArrayList<String>();
+		inputDelimiters.add(",");
+		inputDelimiters.add(".");
+		inputDelimiters.add(":");
+		inputDelimiters.add("?");
+		inputDelimiters.add("!");
+		inputDelimiters.add(";");
+		String text = "Es war ein Mann, der hatte drei Söhne und weiter nichts im Vermögen als das Haus, worin er wohnte. Nun hätte jeder gerne nach seinem Tode das Haus gehabt, dem Vater war aber einer so lieb wie der andere, da wußte er nicht, wie er's anfangen sollte, daß er keinem zu nahe tät. Verkaufen wollte er das Haus auch nicht,";
+		
+		SortedSet<Integer> actualCutPos = DocumentChunk.getSetOfCutPositions(
+				text, 
+				DocumentChunk.cleanDelimiterList(inputDelimiters)
+				);
+		SortedSet<Integer> expectedCutPos = new TreeSet<Integer>();
+		expectedCutPos.add(15);
+		expectedCutPos.add(80);
+		expectedCutPos.add(97);
+		expectedCutPos.add(153);
+		expectedCutPos.add(202);
+		expectedCutPos.add(221);
+		expectedCutPos.add(247);
+		expectedCutPos.add(274);
+		expectedCutPos.add(315);
+
+		assertEquals(expectedCutPos,actualCutPos);
+		
+		List<ChunkRow> actualListOfChunkRows = DocumentChunk.getListOfChunkRows(
+				actualCutPos, 
+				text.length());
+		List<ChunkRow> expectedListOfChunkRows = new ArrayList<ChunkRow>();
+		ChunkRow r1 = new ChunkRow();
+		r1.startPosition = 0;
+		r1.endPosition = 15;
+		expectedListOfChunkRows.add(r1);
+		ChunkRow r2 = new ChunkRow();
+		r2.startPosition = 16;
+		r2.endPosition = 80;
+		expectedListOfChunkRows.add(r2);
+		ChunkRow r3 = new ChunkRow();
+		r3.startPosition = 81;
+		r3.endPosition = 97;
+		expectedListOfChunkRows.add(r3);
+		ChunkRow r4 = new ChunkRow();
+		r4.startPosition = 98;
+		r4.endPosition = 153;
+		expectedListOfChunkRows.add(r4);
+		ChunkRow r5 = new ChunkRow();
+		r5.startPosition = 154;
+		r5.endPosition = 202;
+		expectedListOfChunkRows.add(r5);
+		ChunkRow r6 = new ChunkRow();
+		r6.startPosition = 203;
+		r6.endPosition = 221;
+		expectedListOfChunkRows.add(r6);
+		ChunkRow r7 = new ChunkRow();
+		r7.startPosition = 222;
+		r7.endPosition = 247;
+		expectedListOfChunkRows.add(r7);
+		ChunkRow r8 = new ChunkRow();
+		r8.startPosition = 248;
+		r8.endPosition = 274;
+		expectedListOfChunkRows.add(r8);
+		ChunkRow r9 = new ChunkRow();
+		r9.startPosition = 275;
+		r9.endPosition = 315;
+		expectedListOfChunkRows.add(r9);
+
+		assertEquals(expectedListOfChunkRows, actualListOfChunkRows);
+    }
+	@Test
+    public void test_chunking3() {
+		List<String> inputDelimiters = new ArrayList<String>();
+		inputDelimiters.add(",");
+		inputDelimiters.add(".");
+		inputDelimiters.add(":");
+		inputDelimiters.add("?");
+		inputDelimiters.add("!");
+		inputDelimiters.add(";");
+		System.out.println(inputDelimiters.toString());
+		String text = "Es war ein Mann, der hatte drei Söhne und weiter nichts im Vermögen als das Haus, worin er wohnte. Nun hätte jeder gerne nach seinem Tode das Haus gehabt, dem Vater war aber einer so lieb wie der andere, da wußte er nicht, wie er's anfangen sollte, daß er keinem zu nahe tät. Verkaufen wollte er das Haus auch nicht";
+		
+		SortedSet<Integer> actualCutPos = DocumentChunk.getSetOfCutPositions(
+				text, 
+				DocumentChunk.cleanDelimiterList(inputDelimiters)
+				);
+		SortedSet<Integer> expectedCutPos = new TreeSet<Integer>();
+		expectedCutPos.add(15);
+		expectedCutPos.add(80);
+		expectedCutPos.add(97);
+		expectedCutPos.add(153);
+		expectedCutPos.add(202);
+		expectedCutPos.add(221);
+		expectedCutPos.add(247);
+		expectedCutPos.add(274);
+		
+		assertEquals(expectedCutPos,actualCutPos);
+		
+		List<ChunkRow> actualListOfChunkRows = DocumentChunk.getListOfChunkRows(
+				actualCutPos, 
+				text.length());
+		List<ChunkRow> expectedListOfChunkRows = new ArrayList<ChunkRow>();
+		ChunkRow r1 = new ChunkRow();
+		r1.startPosition = 0;
+		r1.endPosition = 15;
+		expectedListOfChunkRows.add(r1);
+		ChunkRow r2 = new ChunkRow();
+		r2.startPosition = 16;
+		r2.endPosition = 80;
+		expectedListOfChunkRows.add(r2);
+		ChunkRow r3 = new ChunkRow();
+		r3.startPosition = 81;
+		r3.endPosition = 97;
+		expectedListOfChunkRows.add(r3);
+		ChunkRow r4 = new ChunkRow();
+		r4.startPosition = 98;
+		r4.endPosition = 153;
+		expectedListOfChunkRows.add(r4);
+		ChunkRow r5 = new ChunkRow();
+		r5.startPosition = 154;
+		r5.endPosition = 202;
+		expectedListOfChunkRows.add(r5);
+		ChunkRow r6 = new ChunkRow();
+		r6.startPosition = 203;
+		r6.endPosition = 221;
+		expectedListOfChunkRows.add(r6);
+		ChunkRow r7 = new ChunkRow();
+		r7.startPosition = 222;
+		r7.endPosition = 247;
+		expectedListOfChunkRows.add(r7);
+		ChunkRow r8 = new ChunkRow();
+		r8.startPosition = 248;
+		r8.endPosition = 274;
+		expectedListOfChunkRows.add(r8);
+		ChunkRow r9 = new ChunkRow();
+		r9.startPosition = 275;
+		r9.endPosition = 314;
+		expectedListOfChunkRows.add(r9);
+
+		assertEquals(expectedListOfChunkRows, actualListOfChunkRows);
+    }
+
 }

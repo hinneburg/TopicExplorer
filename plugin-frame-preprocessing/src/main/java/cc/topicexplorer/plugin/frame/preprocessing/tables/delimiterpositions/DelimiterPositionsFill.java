@@ -9,6 +9,7 @@ import java.io.UnsupportedEncodingException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -80,7 +81,8 @@ public final class DelimiterPositionsFill extends TableFillCommand {
 					BufferedWriter frameDelimiterCSVWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("temp/frameDelimiter.sql.csv", true), "UTF-8"));
 				
 					XMLConfiguration delimiterConfig = new XMLConfiguration(properties.getProperty("Frame_frameDelimiterFile"));
-					List<String> delimiterList = delimiterConfig.getList("delimiter");
+					List<String> delimiterList = Arrays.asList(delimiterConfig
+							.getStringArray("delimiter"));
 					ArrayList<String> cleanDelimiterList = new ArrayList<String>();
 					for (String s : delimiterList) {
 						if (!s.equals("")) {

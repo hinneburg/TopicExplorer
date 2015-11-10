@@ -22,13 +22,17 @@ import cc.topicexplorer.database.Database;
 public class DocumentChunk {
 
 	private static final Logger logger = Logger.getLogger(DocumentChunk.class);
-	private static final String pluginPrefix = "FRAME";
+	public static final String pluginPrefix = "FRAME";
+	public static final String delimiter = "$";
+	public static final String tableName = "DOCUMENT_CHUNK";
+	private static final String documentChunksFile ="temp/documentchunks.csv"; 
+
 
 	public static final String getCreateTableStatement() {
 		// @formatter:off
 		return 
 		"CREATE TABLE " + 
-		   pluginPrefix + "$DOCUMENT_CHUNK" +
+		   pluginPrefix + delimiter + tableName + " " +
 		   "(" + 
 		     "DOCUMENT_ID INTEGER UNSIGNED,"	+ 
 		     "START_POSITION INTEGER UNSIGNED," + 
@@ -51,19 +55,20 @@ public class DocumentChunk {
 	public static final String getLoadChunksStatement() {
 		// @formatter:off
 		return 
-		"LOAD DATA INFILE 'temp/frames.sql.csv' IGNORE INTO TABLE" +
-		pluginPrefix + "$DOCUMENT_CHUNK " +
+		"LOAD DATA LOCAL INFILE '"+documentChunksFile+"' IGNORE INTO TABLE " +
+		   pluginPrefix + delimiter + tableName + " " +
 		"CHARACTER SET utf8 FIELDS TERMINATED BY ',' " +
 		"(DOCUMENT_ID, START_POSITION, END_POSITION);";
 	   // @formatter:on
 	}
-
+	
 	public static final String getCreateIndexStatement() {
 		// @formatter:off
 		return 
 		"CREATE INDEX " +
-		pluginPrefix + "$DOCUMENT_CHUNK_IDX1 " +
-		"ON " + pluginPrefix + "$DOCUMENT_CHUNK"+
+  	    pluginPrefix + delimiter + tableName + "_IDX1 " +
+		"ON " + 
+  	    pluginPrefix + delimiter + tableName +
 		"(DOCUMENT_ID, START_POSITION, END_POSITION);";
 	   // @formatter:on
 	}
@@ -72,7 +77,7 @@ public class DocumentChunk {
 			final List<String> delimiterList) {
 		final ArrayList<String> cleanDelimiterList = new ArrayList<String>();
 		for (final String s : delimiterList) {
-			if (!s.equals("")) {
+			if (!s.trim().equals("")) {
 				cleanDelimiterList.add(s.trim());
 			}
 		}
@@ -161,8 +166,14 @@ public class DocumentChunk {
 		final Iterator<Integer> it = cutPositions.iterator();
 		final Integer cut = it.next();
 		if (cut==0) chunk.startPosition = 1;
-		else chunk.startPosition = 0;
+		else {
+			chunk.startPosition = 0;
+			chunk.endPosition = cut;
+			rowsOfChunks.add(new ChunkRow(chunk));
+			chunk.startPosition = chunk.endPosition + 1;
+		}
 		while (it.hasNext()) {
+//			Here is an Error!!! The firsts cut Pos gets ignored!!!
 			chunk.endPosition = it.next();
 			if (chunk.startPosition < chunk.endPosition)
 				rowsOfChunks.add(new ChunkRow(chunk));
@@ -182,7 +193,7 @@ public class DocumentChunk {
 		logger.info("Document texts selected.");
 
 		final BufferedWriter chunkWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
-				"temp/frameDelimiter.sql.csv", true), "UTF-8"));
+				documentChunksFile, false), "UTF-8"));
 
 		while (documentRS.next()) {
 			final Integer documentId = documentRS.getInt("DOCUMENT_ID");
@@ -196,7 +207,7 @@ public class DocumentChunk {
 			}
 		}
 		chunkWriter.close();
-		logger.info("Document chunks written into file.");
+		logger.info("Document chunks written into file " + documentChunksFile);
 
 		database.executeUpdateQuery( getLoadChunksStatement() );
 		logger.info("Document chunks loaded into database table.");

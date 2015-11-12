@@ -1,9 +1,7 @@
 package cc.topicexplorer.plugin.frame.preprocessing.implementation;
 
 import java.io.BufferedWriter;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -17,22 +15,17 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.log4j.Logger;
 
-import cc.topicexplorer.database.Database;
-
 public class DocumentChunk {
 
 	private static final Logger logger = Logger.getLogger(DocumentChunk.class);
-	public static final String pluginPrefix = "FRAME";
-	public static final String delimiter = "$";
 	public static final String tableName = "DOCUMENT_CHUNK";
-	private static final String documentChunksFile ="temp/documentchunks.csv"; 
 
 
 	public static final String getCreateTableStatement() {
 		// @formatter:off
 		return 
 		"CREATE TABLE " + 
-		   pluginPrefix + delimiter + tableName + " " +
+		   FrameCommon.pluginPrefix + FrameCommon.delimiter + tableName + " " +
 		   "(" + 
 		     "DOCUMENT_ID INTEGER UNSIGNED,"	+ 
 		     "START_POSITION INTEGER UNSIGNED," + 
@@ -52,11 +45,11 @@ public class DocumentChunk {
 	   // @formatter:on
 	}
 
-	public static final String getLoadChunksStatement() {
+	public static final String getLoadChunksStatement(final String documentChunksFile) {
 		// @formatter:off
 		return 
 		"LOAD DATA LOCAL INFILE '"+documentChunksFile+"' IGNORE INTO TABLE " +
-		   pluginPrefix + delimiter + tableName + " " +
+		    FrameCommon.pluginPrefix + FrameCommon.delimiter + tableName + " " +
 		"CHARACTER SET utf8 FIELDS TERMINATED BY ',' " +
 		"(DOCUMENT_ID, START_POSITION, END_POSITION);";
 	   // @formatter:on
@@ -66,9 +59,9 @@ public class DocumentChunk {
 		// @formatter:off
 		return 
 		"CREATE INDEX " +
-  	    pluginPrefix + delimiter + tableName + "_IDX1 " +
+		FrameCommon.pluginPrefix + FrameCommon.delimiter + tableName + "_IDX1 " +
 		"ON " + 
-  	    pluginPrefix + delimiter + tableName +
+		FrameCommon.pluginPrefix + FrameCommon.delimiter + tableName +
 		"(DOCUMENT_ID, START_POSITION, END_POSITION);";
 	   // @formatter:on
 	}
@@ -186,14 +179,11 @@ public class DocumentChunk {
 		return rowsOfChunks;
 	}
 
-	public static final void fill(final List<String> delimiterList, final Database database) throws IOException, SQLException {
+	public static final void writeDocumentChunks(
+			final List<String> delimiterList, 
+			final BufferedWriter chunkWriter, 
+			final ResultSet documentRS) throws IOException, SQLException {
 		final List<String> cleanDelimiterList = cleanDelimiterList(delimiterList);
-
-		final ResultSet documentRS = database.executeQuery( getSelectDocumentTextStatement() );
-		logger.info("Document texts selected.");
-
-		final BufferedWriter chunkWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
-				documentChunksFile, false), "UTF-8"));
 
 		while (documentRS.next()) {
 			final Integer documentId = documentRS.getInt("DOCUMENT_ID");
@@ -206,12 +196,5 @@ public class DocumentChunk {
 						+ chunk.endPosition.toString() + "\n");
 			}
 		}
-		chunkWriter.close();
-		logger.info("Document chunks written into file " + documentChunksFile);
-
-		database.executeUpdateQuery( getLoadChunksStatement() );
-		logger.info("Document chunks loaded into database table.");
-		database.executeUpdateQuery( getCreateIndexStatement() );
-		logger.info("Index on document chunk table created.");
 	}
 }

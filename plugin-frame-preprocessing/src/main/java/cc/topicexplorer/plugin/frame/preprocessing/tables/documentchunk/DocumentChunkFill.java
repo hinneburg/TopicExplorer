@@ -1,8 +1,12 @@
 package cc.topicexplorer.plugin.frame.preprocessing.tables.documentchunk;
 
+import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
@@ -16,10 +20,13 @@ import com.google.common.collect.Sets;
 
 import cc.topicexplorer.commands.TableFillCommand;
 import cc.topicexplorer.plugin.frame.preprocessing.implementation.DocumentChunk;
+import cc.topicexplorer.plugin.frame.preprocessing.implementation.FrameCommon;
 
 public class DocumentChunkFill extends TableFillCommand {
 	private static final Logger logger = Logger
 			.getLogger(DocumentChunkFill.class);
+	private static final String documentChunksFile ="temp/documentchunks.csv"; 
+
 
 	@Override
 	public Set<String> getAfterDependencies() {
@@ -81,8 +88,21 @@ public class DocumentChunkFill extends TableFillCommand {
 		checkingFrameDelimiterFileConfiguration();
 		try {
 			List<String> delimiterList=getDelimiterListFromXmlConfigFile(properties.getProperty("Frame_frameDelimiterFile"));
-			logger.info("DelimiterList " + getDelimiterListLogString(delimiterList));		
-			DocumentChunk.fill(delimiterList, database);
+			logger.info("DelimiterList " + getDelimiterListLogString(delimiterList));
+			
+			final BufferedWriter chunkWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(
+					documentChunksFile, false), "UTF-8"));
+			final ResultSet documentRS = database.executeQuery( DocumentChunk.getSelectDocumentTextStatement() );
+			logger.info("Document texts selected.");		
+			DocumentChunk.writeDocumentChunks(delimiterList, chunkWriter, documentRS );			
+			chunkWriter.close();
+			documentRS.close();
+			logger.info("Document chunks written into file " + documentChunksFile);
+			database.executeUpdateQuery( DocumentChunk.getLoadChunksStatement(documentChunksFile) );
+			logger.info("Document chunks from "+documentChunksFile+" loaded into database table.");
+			database.executeUpdateQuery( DocumentChunk.getCreateIndexStatement() );
+			logger.info("Index on document chunk table created.");
+
 		} catch (UnsupportedEncodingException e1) {
 			e1.printStackTrace();
 			logger.error("Exception while opening delimiter configuration file. Wrong Encoding.");
@@ -106,14 +126,10 @@ public class DocumentChunkFill extends TableFillCommand {
 		}
 
 	}
-
-	
-	
 	
 	@Override
 	public void setTableName() {
-		this.tableName = DocumentChunk.pluginPrefix + DocumentChunk.delimiter
+		this.tableName = FrameCommon.pluginPrefix + FrameCommon.delimiter
 				+ DocumentChunk.tableName;
 	}
-
 }

@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 
 import cc.topicexplorer.commands.TableCreateCommand;
 import cc.topicexplorer.plugin.frame.preprocessing.implementation.DocumentChunk;
+import cc.topicexplorer.plugin.frame.preprocessing.implementation.FrameCommon;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Sets;
@@ -29,8 +30,8 @@ public class DocumentChunkCreate extends TableCreateCommand {
 
 	@Override
 	public void setTableName() {
-		this.tableName = DocumentChunk.pluginPrefix + 
-				DocumentChunk.delimiter + 
+		this.tableName = FrameCommon.pluginPrefix + 
+				FrameCommon.delimiter + 
 				DocumentChunk.tableName;
 	}
 

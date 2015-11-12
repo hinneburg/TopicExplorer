@@ -7,4 +7,5 @@
 	<command name="Frame_DelimiterPositionsFill" className="cc.topicexplorer.plugin.frame.preprocessing.tables.delimiterpositions.DelimiterPositionsFill"/>
  -->
 	<command name="Frame_DocumentChunkFill" className="cc.topicexplorer.plugin.frame.preprocessing.tables.documentchunk.DocumentChunkFill"/>
+	<command name="Frame_FrametypeFill" className="cc.topicexplorer.plugin.frame.preprocessing.tables.frametype.FrametypeFill"/>
 </catalog>

@@ -8,4 +8,5 @@
  -->
 	<command name="Frame_DocumentChunkCreate" className="cc.topicexplorer.plugin.frame.preprocessing.tables.documentchunk.DocumentChunkCreate"/>
 	<command name="Frame_FrametypeCreate" className="cc.topicexplorer.plugin.frame.preprocessing.tables.frametype.FrametypeCreate"/>
+	<command name="Frame_FrameOccurrenceCreate" className="cc.topicexplorer.plugin.frame.preprocessing.tables.frameoccurrence.FrameOccurrenceCreate"/>
 </catalog>

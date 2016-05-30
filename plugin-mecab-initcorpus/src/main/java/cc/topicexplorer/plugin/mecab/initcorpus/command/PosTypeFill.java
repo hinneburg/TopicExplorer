@@ -251,7 +251,8 @@ public class PosTypeFill extends TableFillCommand {
 							"(50,22000,22999, 'WP', 'Wh-pronoun',-1),"+
 							"(51,23000,23999, 'WP$', 'Possessive wh-pronoun',-1),"+
 							"(52,24000,24999, 'WRB', 'Wh-adverb',-1),"+ 
-							"(53,25000,25999, 'IN/that', 'Preposition or subordinating conjunction',-1);"
+							"(53,25000,25999, 'IN/that', 'Preposition or subordinating conjunction',-1),"+
+							"(54,26000,26999, ':', 'Unknown',-1);"
 							);
 //					VHZ
 				}

@@ -179,11 +179,13 @@ public class Database {
 
 			} catch (SQLException e) {
 				// 'Retryable' SQL-State is 08S01 for Communication Error
+				// 'Retryable' SQL-State is 08003 for Connection does not exist
 				// Retry only if error due to stale or dead connection
+				// https://dev.mysql.com/doc/connector-odbc/en/connector-odbc-reference-errorcodes.html
 
 				String sqlState = e.getSQLState();
 
-				if ("08S01".equals(sqlState)) {
+				if ("08S01".equals(sqlState) || "08003".equals(sqlState)) {
 					retryCount--;
 					connection.close();
 					this.connect();
@@ -202,7 +204,7 @@ public class Database {
 		if (!queryCompleted && (retryCount == 0)) {
 			logger.error("The statement  " + query + " caused an retryable SQL exception and was "
 					+ this.numberOfRetries + " times retried. "
-					+ "Retryable Exceptions are those with SQL State 08S01.");
+					+ "Retryable Exceptions are those with SQL State 08S01 or 08003.");
 			throw new RuntimeException();
 		}
 

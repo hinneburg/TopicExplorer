@@ -182,7 +182,7 @@ function(ko, $) {
 			self.loading(false);
 			$( "#slider" ).slider("values", [globalData.FLAT_TREE[data.POS].lowerBorder(), globalData.FLAT_TREE[data.POS].upperBorder()]);
 			for(wordIdx in globalData.FLAT_TREE[data.POS].wordList()) {
-				if(globalData.FLAT_TREE[data.POS].wordList()[wordIdx].COUNT >= globalData.FLAT_TREE[data.POS].upperBorder() || globalData.FLAT_TREE[data.POS].wordList()[wordIdx].COUNT <= globalData.FLAT_TREE[data.POS].lowerBorder()) {
+				if(globalData.FLAT_TREE[data.POS].wordList()[wordIdx].COUNT > globalData.FLAT_TREE[data.POS].upperBorder() || globalData.FLAT_TREE[data.POS].wordList()[wordIdx].COUNT <= globalData.FLAT_TREE[data.POS].lowerBorder()) {
 					$('ul#wordList li:nth-child(' +  (parseInt(wordIdx) + 1) + ')').css('color', 'lightgrey');
 					$('ul#wordList li:nth-child(' +  (parseInt(wordIdx) + 1) + ') :nth-child(2)').prop('disabled', true);
 				}
@@ -264,7 +264,7 @@ function(ko, $) {
 		return ko.dependentObservable(function () {
 			if(globalData.FLAT_TREE[self.activePos()].wordList == undefined) return false;
 			if(globalData.FLAT_TREE[self.activePos()].wordList()[wordIndex] == undefined) return false;
-			return !(globalData.FLAT_TREE[self.activePos()].wordList()[wordIndex].COUNT > globalData.FLAT_TREE[self.activePos()].lowerBorder() && globalData.FLAT_TREE[self.activePos()].wordList()[wordIndex].COUNT < globalData.FLAT_TREE[self.activePos()].upperBorder());
+			return !(globalData.FLAT_TREE[self.activePos()].wordList()[wordIndex].COUNT > globalData.FLAT_TREE[self.activePos()].lowerBorder() && globalData.FLAT_TREE[self.activePos()].wordList()[wordIndex].COUNT <= globalData.FLAT_TREE[self.activePos()].upperBorder());
 		}, this);
 	}
 	

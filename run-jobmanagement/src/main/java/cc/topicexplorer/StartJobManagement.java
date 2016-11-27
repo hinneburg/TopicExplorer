@@ -130,7 +130,7 @@ public class StartJobManagement {
 					+ "AND ALL_TERMS.POS=DOCUMENT_TERM.WORDTYPE_CLASS ";
 			if (rootArray.size() > 0) {
 				wordtypeItem = (JSONObject) rootArray.get(0);
-				getCsvSql += " AND ((ALL_TERMS.POS=" + wordtypeItem.get("id") + " AND ALL_TERMS.COUNT<"
+				getCsvSql += " AND ((ALL_TERMS.POS=" + wordtypeItem.get("id") + " AND ALL_TERMS.COUNT<="
 						+ wordtypeItem.get("upperBorder") + " AND ALL_TERMS.COUNT>" + wordtypeItem.get("lowerBorder");
 				stopWords = (JSONArray) wordtypeItem.get("stopWords");
 
@@ -142,7 +142,7 @@ public class StartJobManagement {
 
 				for (int i = 1; i < rootArray.size(); i++) {
 					wordtypeItem = (JSONObject) rootArray.get(i);
-					getCsvSql += " OR (ALL_TERMS.POS=" + wordtypeItem.get("id") + " AND ALL_TERMS.COUNT<"
+					getCsvSql += " OR (ALL_TERMS.POS=" + wordtypeItem.get("id") + " AND ALL_TERMS.COUNT<="
 							+ wordtypeItem.get("upperBorder") + " AND ALL_TERMS.COUNT>"
 							+ wordtypeItem.get("lowerBorder");
 					stopWords = (JSONArray) wordtypeItem.get("stopWords");

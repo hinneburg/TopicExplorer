@@ -153,7 +153,7 @@ public class PosTypeFill extends TableFillCommand {
 							"(3, 3000, 3999, 'ADJ', 'Adjektive', -1),"+
 							"(100, 3000, 3499, 'ADJA', 'attributives Adjektiv', 3),"+
 							"(101, 3500, 3999, 'ADJD', 'adverbiales oder pradikatives Adjektiv', 3),"+
-							"(4, 4000, 4009, 'P', 'Pronomina', -1),"+
+							"(4, 4000, 4999, 'P', 'Pronomina', -1),"+
 							"(115, 4010, 4019, 'PDS', 'substituierendes Demonstrativpronomen', 4),"+
 							"(116, 4020, 4029, 'PDAT', 'attribuierendes Demonstrativpronomen', 4),"+
 							"(117, 4030, 4039, 'PIS', 'substituierendes Indefinitpronomen', 4),"+

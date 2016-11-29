@@ -141,14 +141,14 @@ public class PosTypeFill extends TableFillCommand {
 							"(141, 1030, 1039, 'VVIZU', 'Infinitiv mit zu, voll', 135),"+
 							"(142, 1040, 1049, 'VVPP', 'Partizip Perfekt, voll', 135),"+
 							"(136, 1100, 1199, 'VA', 'Verben aux', 1),"+
-							"(143, 1100, 1199, 'VAFIN', 'finites Verb, aux', 136),"+
-							"(144, 1100, 1199, 'VAIMP', 'Imperativ, aux', 136),"+
-							"(145, 1100, 1199, 'VAINF', 'Infinitiv, aux', 136),"+
-							"(147, 1100, 1199, 'VAPP', 'Partizip Perfekt, aux', 136),"+
+							"(143, 1100, 1109, 'VAFIN', 'finites Verb, aux', 136),"+
+							"(144, 1110, 1119, 'VAIMP', 'Imperativ, aux', 136),"+
+							"(145, 1120, 1129, 'VAINF', 'Infinitiv, aux', 136),"+
+							"(147, 1130, 1139, 'VAPP', 'Partizip Perfekt, aux', 136),"+
 							"(137, 1200, 1299, 'VM', 'Verben modal', 1),"+
-							"(148, 1200, 1299, 'VMFIN', 'finites Verb, modal', 137),"+
-							"(149, 1200, 1299, 'VMINF', 'Infinitiv, modal', 137),"+
-							"(150, 1200, 1299, 'VMPP', 'Partizip Perfekt, modal', 137),"+
+							"(148, 1200, 1209, 'VMFIN', 'finites Verb, modal', 137),"+
+							"(149, 1210, 1219, 'VMINF', 'Infinitiv, modal', 137),"+
+							"(150, 1220, 1229, 'VMPP', 'Partizip Perfekt, modal', 137),"+
 							"(2, 2000, 2999, 'ART', 'Artikel', -1),"+
 							"(3, 3000, 3999, 'ADJ', 'Adjektive', -1),"+
 							"(100, 3000, 3499, 'ADJA', 'attributives Adjektiv', 3),"+

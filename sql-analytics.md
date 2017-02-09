@@ -6,6 +6,7 @@
 - [SQL Anfrage um Häufigkeiten eines Wortes in Dokumenten eines Thema auszuwählen](https://github.com/hinneburg/TopicExplorer/blob/master/sql-analytics.md#sql-anfrage-um-h%C3%A4ufigkeiten-eines-wortes-in-dokumenten-eines-thema-auszuw%C3%A4hlen)- [] ()
 
 ####SQL Anfrage um Zusammenhänge zwischen Themen zu finden####
+
 ```
 select
 t1.TOPIC_ID,
@@ -64,6 +65,19 @@ order by s_min3 desc
 limit 10
 ;
 ```
+Beobachtung auf Basis der ersten 10 repräsentativen Dokumenten für Thema 74 (Familie, Haus, Tocher): Andere häufige Themen sind:
+51 (Frauen, männlich, Männer) : 7 v. 10 Dokumenten 
+57 (böse, Partner, gut) : 2 v. 10 Dokumenten
+1 (Kinder, Kind) : 1 v. 10 (aber 11 v. 30 Dokumenten)
+22 (Verständnis, Bewusstsein) : 0 v. 10 Dokumenten
+84 (Ort, gehen): 0 v. 10 Dokumenten
+
+Abfrage über sum_min1 für Thema 74: 22 (Verständnis, Bewusstsein), 84 (Ort, gehen), 64, 57 (böse, Partner), 4 (spaßig, mögen, gut)
+Abfrage über sum_min2 für Thema 74: 4 (spaßig, mögen, gut), 57 (böse, Partner), 92, 1, 51
+Abfrage über sum_min3 für Thema 74: 1 (Kinder, Kind), 57 (böse, Partner), 51 (Frauen, männlich), 4, 55
+
+-> über die Abfrage sum_min3 entspricht die Themenreihenfolge am ehesten der Themenverteilung in den ersten 10 repräsentativen Dokumenten.
+
 ####SQL Anfrage zum Auflisten der Wörter eines Themas####
 ```
 select *
@@ -75,6 +89,7 @@ limit 10
 ;
 ```
 ####SQL Anfrage zu Exportieren von einzelnen Dokumenten nach bestimmten Kriterien####
+z.B. durch Abfrage mit '名無し' [Anonym] lassen sich Dokumente mit Forendiskussionen oder Kommentaren finden 
 ```
 select
 DOCUMENT_ID,

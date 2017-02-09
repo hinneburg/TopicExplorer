@@ -1,4 +1,7 @@
-SQL Anfrage um Zusammenhänge zwischen Themen zu finden.
+#SQL-Analysen auf einer TopicExplorer Datenbank#
+##Übersicht##
+
+####SQL Anfrage um Zusammenhänge zwischen Themen zu finden####
 ```
 select
 t1.TOPIC_ID,
@@ -54,6 +57,68 @@ dt1.TOPIC_ID,
 dt2.TOPIC_ID
 -- Wechseln der Ordnung zwischen s_min und s_min2
 order by s_min3 desc
+limit 10
+;
+```
+####SQL Anfrage zum Auflisten der Wörter eines Themas####
+```
+select *
+from TERM_TOPIC join TERM using (TERM_ID)
+-- Hier koennen Sie die topic Nummer ändern
+where TOPIC_ID=22
+order by NUMBER_OF_DOCUMENT_TOPIC desc
+limit 10
+;
+```
+####SQL Anfrage zu Exportieren von einzelnen Dokumenten nach bestimmten Kriterien####
+```
+select
+DOCUMENT_ID,
+LINK$URL,
+TEXT$TITLE,
+FULLTEXT$FULLTEXT
+From
+DOCUMENT
+where
+-- Hier koennen Sie die Dokument-IDs einsetzen.
+DOCUMENT_ID in (139797,325345)
+AND
+-- Hiermit kann man Dokumente mit bestimmten Zeichenketten finden
+-- auf Grundlage der mit MeCab zerlegten Token, die mit Leerzeichen getrennt sind
+FULLTEXT$FULLTEXT LIKE '%名無し%'  
+AND
+-- auf Grundlage der Originaltexte
+TEXT$FULLTEXT LIKE '%文部科学省%'  
+;
+```
+####SQL Anfrage um Häufigkeiten eines Wortes in Dokumenten eines Thema auszuwählen####
+auch wenn das Wort in den Dokumenten nicht dem Thema zugeordnet ist
+```
+select
+d.DOCUMENT_ID
+, count(*) as Token_Anzahl
+, d.LINK$URL
+, d.TEXT$TITLE
+-- , d.FULLTEXT$FULLTEXT
+From
+DOCUMENT d
+ -- Jiko Sekinin ist in zweii Token getrennt
+ join DOCUMENT_TERM_TOPIC dtt_jiko on (d.DOCUMENT_ID = dtt_jiko.DOCUMENT_ID and dtt_jiko.TERM='自己')
+ join DOCUMENT_TERM_TOPIC dtt_sekinin on (d.DOCUMENT_ID = dtt_sekinin.DOCUMENT_ID and dtt_sekinin.TERM='責任')
+ join DOCUMENT_TOPIC dt on (dt.DOCUMENT_ID=d.DOCUMENT_ID)
+where
+dtt_jiko.POSITION_OF_TOKEN_IN_DOCUMENT+2=dtt_sekinin.POSITION_OF_TOKEN_IN_DOCUMENT
+and dtt_jiko.TOPIC_ID=dtt_sekinin.TOPIC_ID
+-- Thema zum Auswaehlen
+and dt.TOPIC_ID=74
+-- Häufigkeit des Themas im Dokument auswählen
+and dt.NUMBER_OF_TOKEN_TOPIC_IN_DOCUMENT>5
+group by
+d.DOCUMENT_ID,
+d.LINK$URL,
+d.TEXT$TITLE,
+d.FULLTEXT$FULLTEXT
+order by Token_Anzahl desc
 limit 10
 ;
 ```

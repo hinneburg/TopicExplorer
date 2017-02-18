@@ -65,18 +65,12 @@ order by s_min3 desc
 limit 10
 ;
 ```
-Beobachtung auf Basis der ersten 10 repräsentativen Dokumenten für Thema 74 (Familie, Haus, Tocher): Andere häufige Themen sind:
-51 (Frauen, männlich, Männer) : 7 v. 10 Dokumenten 
-57 (böse, Partner, gut) : 2 v. 10 Dokumenten
-1 (Kinder, Kind) : 1 v. 10 (aber 11 v. 30 Dokumenten)
-22 (Verständnis, Bewusstsein) : 0 v. 10 Dokumenten
-84 (Ort, gehen): 0 v. 10 Dokumenten
 
-Abfrage über sum_min1 für Thema 74: 22 (Verständnis, Bewusstsein), 84 (Ort, gehen), 64, 57 (böse, Partner), 4 (spaßig, mögen, gut)
-Abfrage über sum_min2 für Thema 74: 4 (spaßig, mögen, gut), 57 (böse, Partner), 92, 1, 51
-Abfrage über sum_min3 für Thema 74: 1 (Kinder, Kind), 57 (böse, Partner), 51 (Frauen, männlich), 4, 55
+Bei verschiedenen Versuchen hat s_min3 am ehesten anhand der repräsentativen Dokumente nachvollziehbare Ergebnisse geliefert:
 
--> über die Abfrage sum_min3 entspricht die Themenreihenfolge am ehesten der Themenverteilung in den ersten 10 repräsentativen Dokumenten.
+Für Thema 6 (jikosekinin und Geiselnahmen) unterscheidet sich die Reihenfolge bei s_min, s_min2 und s_min3 kaum, aber s_min3 bringt Thema46 und Thema99 (beide ein Cluster für "Japan/"Japaner"/"Amerika"/"Krieg" mit politisch rechtslastigen Texten) am weitesten nach oben. 
+
+--> Für die weitere Analyse sind die Dokumente nötig, die beide Themen möglichst ausgeprägt enthalten (also Thema6(jikosekinin/Geiselnahmen) und Thema 46(Japan/Amerika)!
 
 ####SQL Anfrage zum Auflisten der Wörter eines Themas####
 ```

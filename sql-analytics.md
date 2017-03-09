@@ -77,15 +77,30 @@ Für Thema 6 (jikosekinin und Geiselnahmen) unterscheidet sich die Reihenfolge b
 ```
 select
     dt1.TOPIC_ID,
+       dt1.NUMBER_OF_TOKEN_TOPIC_IN_DOCUMENT,
     dt2.TOPIC_ID,    
+       dt2.NUMBER_OF_TOKEN_TOPIC_IN_DOCUMENT,
     least(
        dt1.NUMBER_OF_TOKEN_TOPIC_IN_DOCUMENT,
        dt2.NUMBER_OF_TOKEN_TOPIC_IN_DOCUMENT
        )
     as Minimal_Number_of_Tokens,
+    least(
+       dt1.NUMBER_OF_TOKEN_TOPIC_IN_DOCUMENT,
+       dt2.NUMBER_OF_TOKEN_TOPIC_IN_DOCUMENT
+       )
+    /sqrt(d.NUMBER_OF_TOKENS)
+    as Minimal_Percentage_of_Tokens,
+    least(
+       dt1.NUMBER_OF_TOKEN_TOPIC_IN_DOCUMENT,
+       dt2.NUMBER_OF_TOKEN_TOPIC_IN_DOCUMENT
+       )
+    /sqrt(d.NUMBER_OF_TOKENS)
+    as Minimal_SQRT_Percentage_of_Tokens,
     dt1.DOCUMENT_ID,
     TEXT$TITLE,
-    TITLE
+    TITLE,
+    LINK$URL
 from
         DOCUMENT_TOPIC dt1
    join DOCUMENT_TOPIC dt2 on (dt1.DOCUMENT_ID=dt2.DOCUMENT_ID)
@@ -93,9 +108,11 @@ from
 where
 -- Hier koennen Sie das Ausgangsthema und das Zielthema aendern
     dt1.TOPIC_ID=142
-and dt2.TOPIC_ID=73
+and dt2.TOPIC_ID=77
 order by 
    Minimal_Number_of_Tokens desc
+--   Minimal_Percentage_of_Tokens desc
+--    Minimal_SQRT_Percentage_of_Tokens desc
 limit 10
 ;
 ```

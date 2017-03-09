@@ -1,7 +1,7 @@
 #SQL-Analysen auf einer TopicExplorer Datenbank#
 ##Übersicht##
 - [SQL Anfrage um Zusammenhänge zwischen Themen zu finden](https://github.com/hinneburg/TopicExplorer/blob/master/sql-analytics.md#sql-anfrage-um-zusammenh%C3%A4nge-zwischen-themen-zu-finden)
-- [SQL Anfrage zum Finden der Dokumente, die einen Zusammenhang zwischen zwei Themen belegen]()
+- [SQL Anfrage zum Finden der Dokumente, die einen Zusammenhang zwischen zwei Themen belegen](https://github.com/hinneburg/TopicExplorer/blob/master/sql-analytics.md#sql-anfrage-zum-finden-der-dokumente-die-einen-zusammenhang-zwischen-zwei-themen-belegen)
 - [SQL Anfrage zum Auflisten der Wörter eines Themas](https://github.com/hinneburg/TopicExplorer/blob/master/sql-analytics.md#sql-anfrage-zum-auflisten-der-w%C3%B6rter-eines-themas)
 - [SQL Anfrage zu Exportieren von einzelnen Dokumenten nach bestimmten Kriterien](https://github.com/hinneburg/TopicExplorer/blob/master/sql-analytics.md#sql-anfrage-zu-exportieren-von-einzelnen-dokumenten-nach-bestimmten-kriterien)
 - [SQL Anfrage um Häufigkeiten eines Wortes in Dokumenten eines Thema auszuwählen](https://github.com/hinneburg/TopicExplorer/blob/master/sql-analytics.md#sql-anfrage-um-h%C3%A4ufigkeiten-eines-wortes-in-dokumenten-eines-thema-auszuw%C3%A4hlen)- [] ()
@@ -73,7 +73,7 @@ Für Thema 6 (jikosekinin und Geiselnahmen) unterscheidet sich die Reihenfolge b
 
 --> Für die weitere Analyse sind die Dokumente nötig, die beide Themen möglichst ausgeprägt enthalten (also Thema6(jikosekinin/Geiselnahmen) und Thema 46(Japan/Amerika)!
 
-#####SQL Anfrage zum Finden der Dokumente, die einen Zusammenhang zwischen zwei Themen belegen####
+####SQL Anfrage zum Finden der Dokumente, die einen Zusammenhang zwischen zwei Themen belegen####
 ```
 select
     dt1.TOPIC_ID,

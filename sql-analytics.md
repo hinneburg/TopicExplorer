@@ -1,6 +1,7 @@
 #SQL-Analysen auf einer TopicExplorer Datenbank#
 ##Übersicht##
 - [SQL Anfrage um Zusammenhänge zwischen Themen zu finden](https://github.com/hinneburg/TopicExplorer/blob/master/sql-analytics.md#sql-anfrage-um-zusammenh%C3%A4nge-zwischen-themen-zu-finden)
+- [SQL Anfrage zum Finden der Dokumente, die einen Zusammenhang zwischen zwei Themen belegen]()
 - [SQL Anfrage zum Auflisten der Wörter eines Themas](https://github.com/hinneburg/TopicExplorer/blob/master/sql-analytics.md#sql-anfrage-zum-auflisten-der-w%C3%B6rter-eines-themas)
 - [SQL Anfrage zu Exportieren von einzelnen Dokumenten nach bestimmten Kriterien](https://github.com/hinneburg/TopicExplorer/blob/master/sql-analytics.md#sql-anfrage-zu-exportieren-von-einzelnen-dokumenten-nach-bestimmten-kriterien)
 - [SQL Anfrage um Häufigkeiten eines Wortes in Dokumenten eines Thema auszuwählen](https://github.com/hinneburg/TopicExplorer/blob/master/sql-analytics.md#sql-anfrage-um-h%C3%A4ufigkeiten-eines-wortes-in-dokumenten-eines-thema-auszuw%C3%A4hlen)- [] ()
@@ -71,6 +72,34 @@ Bei verschiedenen Versuchen hat s_min3 am ehesten anhand der repräsentativen Do
 Für Thema 6 (jikosekinin und Geiselnahmen) unterscheidet sich die Reihenfolge bei s_min, s_min2 und s_min3 kaum, aber s_min3 bringt Thema46 und Thema99 (beide ein Cluster für "Japan/"Japaner"/"Amerika"/"Krieg" mit politisch rechtslastigen Texten) am weitesten nach oben. 
 
 --> Für die weitere Analyse sind die Dokumente nötig, die beide Themen möglichst ausgeprägt enthalten (also Thema6(jikosekinin/Geiselnahmen) und Thema 46(Japan/Amerika)!
+
+#####SQL Anfrage zum Finden der Dokumente, die einen Zusammenhang zwischen zwei Themen belegen####
+```
+select
+    dt1.TOPIC_ID,
+    dt2.TOPIC_ID,    
+    least(
+       dt1.NUMBER_OF_TOKEN_TOPIC_IN_DOCUMENT,
+       dt2.NUMBER_OF_TOKEN_TOPIC_IN_DOCUMENT
+       )
+    as Minimal_Number_of_Tokens,
+    dt1.DOCUMENT_ID,
+    TEXT$TITLE,
+    TITLE
+from
+        DOCUMENT_TOPIC dt1
+   join DOCUMENT_TOPIC dt2 on (dt1.DOCUMENT_ID=dt2.DOCUMENT_ID)
+   join DOCUMENT d on (dt1.DOCUMENT_ID=d.DOCUMENT_ID)
+where
+-- Hier koennen Sie das Ausgangsthema und das Zielthema aendern
+    dt1.TOPIC_ID=142
+and dt2.TOPIC_ID=73
+order by 
+   Minimal_Number_of_Tokens desc
+limit 10
+;
+```
+
 
 ####SQL Anfrage zum Auflisten der Wörter eines Themas####
 ```

@@ -131,6 +131,44 @@ order by NUMBER_OF_DOCUMENT_TOPIC desc
 limit 10
 ;
 ```
+#### SQL Anfrage für verschiedene Dokument-Rankings für ein gegebenes Topic ####
+```
+select
+  DOCUMENT.DOCUMENT_ID
+  , DOCUMENT_TOPIC.TOPIC_ID
+  , PR_DOCUMENT_GIVEN_TOPIC
+  , NUMBER_OF_TOKEN_TOPIC_IN_DOCUMENT
+  , DOCUMENT.NUMBER_OF_TOKENS
+  , NUMBER_OF_TOKEN_TOPIC_IN_DOCUMENT / DOCUMENT.NUMBER_OF_TOKENS as LinearilyNormalized
+  , NUMBER_OF_TOKEN_TOPIC_IN_DOCUMENT / sqrt(DOCUMENT.NUMBER_OF_TOKENS) as NonlinearilyNormalized
+-- Durch Entfernen der Kommentarzeichen weitere Attribute auswählen
+  -- , SUBSTR(DOCUMENT.TEXT, 1, 150) AS KEYWORD_SNIPPET
+  -- , DOCUMENT.TITLE AS KEYWORD_TITLE
+  -- , CONCAT('[',DOCUMENT.BEST_TOPICS,']') AS TOP_TOPIC
+  -- , DOCUMENT.LINK$URL
+   , orgTable_meta.DOCUMENT_DATE
+from DOCUMENT 
+  join DOCUMENT_TOPIC on (DOCUMENT.DOCUMENT_ID=DOCUMENT_TOPIC.DOCUMENT_ID)
+  join TOPIC t1 on (
+                   DOCUMENT_TOPIC.TOPIC_ID=t1.TOPIC_ID AND 
+                   t1.HIERARCHICAL_TOPIC$START=t1.HIERARCHICAL_TOPIC$END
+                   )
+  join TOPIC t2 on (
+                   t1.HIERARCHICAL_TOPIC$START>=t2.HIERARCHICAL_TOPIC$START AND
+                   t1.HIERARCHICAL_TOPIC$END<=t2.HIERARCHICAL_TOPIC$END
+                   )
+  join orgTable_meta on (orgTable_meta.DOCUMENT_ID=DOCUMENT.DOCUMENT_ID)
+where
+  -- Ausgangsthema
+  t2.TOPIC_ID=77
+ORDER BY
+--  PR_DOCUMENT_GIVEN_TOPIC DESC
+  NonlinearilyNormalized DESC
+--   LinearilyNormalized DESC
+LIMIT 10
+;
+```
+
 #### SQL Anfrage zu Exportieren von einzelnen Dokumenten nach bestimmten Kriterien ####
 z.B. durch Abfrage mit '名無し' [Anonym] lassen sich Dokumente mit Forendiskussionen oder Kommentaren finden 
 ```

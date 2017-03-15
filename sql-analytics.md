@@ -1,12 +1,13 @@
-#SQL-Analysen auf einer TopicExplorer Datenbank#
-##Übersicht##
+# SQL-Analysen auf einer TopicExplorer Datenbank #
+
+## Übersicht ##
 - [SQL Anfrage um Zusammenhänge zwischen Themen zu finden](https://github.com/hinneburg/TopicExplorer/blob/master/sql-analytics.md#sql-anfrage-um-zusammenh%C3%A4nge-zwischen-themen-zu-finden)
 - [SQL Anfrage zum Finden der Dokumente, die einen Zusammenhang zwischen zwei Themen belegen](https://github.com/hinneburg/TopicExplorer/blob/master/sql-analytics.md#sql-anfrage-zum-finden-der-dokumente-die-einen-zusammenhang-zwischen-zwei-themen-belegen)
 - [SQL Anfrage zum Auflisten der Wörter eines Themas](https://github.com/hinneburg/TopicExplorer/blob/master/sql-analytics.md#sql-anfrage-zum-auflisten-der-w%C3%B6rter-eines-themas)
 - [SQL Anfrage zu Exportieren von einzelnen Dokumenten nach bestimmten Kriterien](https://github.com/hinneburg/TopicExplorer/blob/master/sql-analytics.md#sql-anfrage-zu-exportieren-von-einzelnen-dokumenten-nach-bestimmten-kriterien)
 - [SQL Anfrage um Häufigkeiten eines Wortes in Dokumenten eines Thema auszuwählen](https://github.com/hinneburg/TopicExplorer/blob/master/sql-analytics.md#sql-anfrage-um-h%C3%A4ufigkeiten-eines-wortes-in-dokumenten-eines-thema-auszuw%C3%A4hlen)- [] ()
 
-####SQL Anfrage um Zusammenhänge zwischen Themen zu finden####
+#### SQL Anfrage um Zusammenhänge zwischen Themen zu finden ####
 
 ```
 select
@@ -73,7 +74,7 @@ Für Thema 6 (jikosekinin und Geiselnahmen) unterscheidet sich die Reihenfolge b
 
 --> Für die weitere Analyse sind die Dokumente nötig, die beide Themen möglichst ausgeprägt enthalten (also Thema6(jikosekinin/Geiselnahmen) und Thema 46(Japan/Amerika)!
 
-####SQL Anfrage zum Finden der Dokumente, die einen Zusammenhang zwischen zwei Themen belegen####
+#### SQL Anfrage zum Finden der Dokumente, die einen Zusammenhang zwischen zwei Themen belegen ####
 ```
 select
     dt1.TOPIC_ID,
@@ -89,7 +90,7 @@ select
        dt1.NUMBER_OF_TOKEN_TOPIC_IN_DOCUMENT,
        dt2.NUMBER_OF_TOKEN_TOPIC_IN_DOCUMENT
        )
-    /sqrt(d.NUMBER_OF_TOKENS)
+    /d.NUMBER_OF_TOKENS
     as Minimal_Percentage_of_Tokens,
     least(
        dt1.NUMBER_OF_TOKEN_TOPIC_IN_DOCUMENT,
@@ -116,9 +117,11 @@ order by
 limit 10
 ;
 ```
+-  Ranking nach Minimal_SQRT_Percentage_of_Tokens scheint besser als das Ranking nach Minimal_Number_of_Tokens zu sein, weil ein Thema dominiert
+- In einem anderen Fall scheinen beide Rankings Minimal_SQRT_Percentage_of_Tokens und nach Minimal_Number_of_Tokens interessante Dokumente. 
+- Vielleicht sollte die Differenz der Token-Anzahlen zusätzlich beachtet werden. Das wird beim Minimum bisher nicht gemacht.
 
-
-####SQL Anfrage zum Auflisten der Wörter eines Themas####
+#### SQL Anfrage zum Auflisten der Wörter eines Themas ####
 ```
 select *
 from TERM_TOPIC join TERM using (TERM_ID)
@@ -128,7 +131,7 @@ order by NUMBER_OF_DOCUMENT_TOPIC desc
 limit 10
 ;
 ```
-####SQL Anfrage zu Exportieren von einzelnen Dokumenten nach bestimmten Kriterien####
+#### SQL Anfrage zu Exportieren von einzelnen Dokumenten nach bestimmten Kriterien ####
 z.B. durch Abfrage mit '名無し' [Anonym] lassen sich Dokumente mit Forendiskussionen oder Kommentaren finden 
 ```
 select
@@ -150,7 +153,7 @@ AND
 TEXT$FULLTEXT LIKE '%文部科学省%'  
 ;
 ```
-####SQL Anfrage um Häufigkeiten eines Wortes in Dokumenten eines Thema auszuwählen####
+#### SQL Anfrage um Häufigkeiten eines Wortes in Dokumenten eines Thema auszuwählen  ####
 auch wenn das Wort in den Dokumenten nicht dem Thema zugeordnet ist
 ```
 select

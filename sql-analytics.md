@@ -170,6 +170,8 @@ LIMIT 10
 ;
 ```
 
+Setzt man unter ORDER BY das Kriterium NUMBER_OF_TOKEN_TOPIC_IN_DOCUMENT DESC ein und wählt es aus, ergibt sich dieselbe Reihenfolge wie bei den repräsentativen Dokumenten im TopicExplorer. Wählt man für die Tabelle dabei noch DOCUMENT.LINK$URL aus, lässt sich auf einen Blick erkennen, ob die repräsentativen Dokumente von demselben Blog stammen - für die Themenauswertung eine sehr wichtige Erkenntnis!
+
 #### SQL Anfrage zu Exportieren von einzelnen Dokumenten nach bestimmten Kriterien ####
 z.B. durch Abfrage mit '名無し' [Anonym] lassen sich Dokumente mit Forendiskussionen oder Kommentaren finden 
 ```

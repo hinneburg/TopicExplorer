@@ -146,30 +146,23 @@ select
   -- , SUBSTR(DOCUMENT.TEXT, 1, 150) AS KEYWORD_SNIPPET
   -- , DOCUMENT.TITLE AS KEYWORD_TITLE
   -- , CONCAT('[',DOCUMENT.BEST_TOPICS,']') AS TOP_TOPIC
+   , TEXT$TITLE
    , DOCUMENT.LINK$URL
    , orgTable_meta.DOCUMENT_DATE
 from DOCUMENT 
   join DOCUMENT_TOPIC on (DOCUMENT.DOCUMENT_ID=DOCUMENT_TOPIC.DOCUMENT_ID)
-  join TOPIC t1 on (
-                   DOCUMENT_TOPIC.TOPIC_ID=t1.TOPIC_ID AND 
-                   t1.HIERARCHICAL_TOPIC$START=t1.HIERARCHICAL_TOPIC$END
-                   )
-  join TOPIC t2 on (
-                   t1.HIERARCHICAL_TOPIC$START>=t2.HIERARCHICAL_TOPIC$START AND
-                   t1.HIERARCHICAL_TOPIC$END<=t2.HIERARCHICAL_TOPIC$END
-                   )
+  join TOPIC t on (DOCUMENT_TOPIC.TOPIC_ID=t.TOPIC_ID)
   join orgTable_meta on (orgTable_meta.DOCUMENT_ID=DOCUMENT.DOCUMENT_ID)
 where
   -- Ausgangsthema
-  t2.TOPIC_ID=77
+  t.TOPIC_ID=77
 ORDER BY
 --  PR_DOCUMENT_GIVEN_TOPIC DESC
 --  NonlinearilyNormalized DESC
 --  LinearilyNormalized DESC
-NUMBER_OF_TOKEN_TOPIC_IN_DOCUMENT DESC
+ NUMBER_OF_TOKEN_TOPIC_IN_DOCUMENT DESC
 LIMIT 30
-;
-```
+;```
 
 Setzt man unter ORDER BY das Kriterium NUMBER_OF_TOKEN_TOPIC_IN_DOCUMENT DESC ein und wählt es aus, ergibt sich dieselbe Reihenfolge wie bei den repräsentativen Dokumenten im TopicExplorer. Wählt man für die Tabelle dabei noch DOCUMENT.LINK$URL aus, lässt sich auf einen Blick erkennen, ob die repräsentativen Dokumente von demselben Blog stammen - für die Themenauswertung eine sehr wichtige Erkenntnis!
 

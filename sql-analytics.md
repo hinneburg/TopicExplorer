@@ -5,6 +5,7 @@
 - [SQL Anfrage zum Finden der Dokumente, die einen Zusammenhang zwischen zwei Themen belegen](https://github.com/hinneburg/TopicExplorer/blob/master/sql-analytics.md#sql-anfrage-zum-finden-der-dokumente-die-einen-zusammenhang-zwischen-zwei-themen-belegen)
 - [SQL Anfrage zum Auflisten der Wörter eines Themas](https://github.com/hinneburg/TopicExplorer/blob/master/sql-analytics.md#sql-anfrage-zum-auflisten-der-w%C3%B6rter-eines-themas)
 - [SQL Anfrage für verschiedene Dokument-Rankings für ein gegebenes Topic](https://github.com/hinneburg/TopicExplorer/blob/master/sql-analytics.md#sql-anfrage-f%C3%BCr-verschiedene-dokument-rankings-f%C3%BCr-ein-gegebenes-topic)
+- [SQL Anfrage für verschiedene Rankings der Blog-URLs für ein gegebenes Topic](https://github.com/hinneburg/TopicExplorer/blob/master/sql-analytics.md#sql-anfrage-f%C3%BCr-verschiedene-rankings-der-blog-urls-f%C3%BCr-ein-gegebenes-topic)
 - [SQL Anfrage zu Exportieren von einzelnen Dokumenten nach bestimmten Kriterien](https://github.com/hinneburg/TopicExplorer/blob/master/sql-analytics.md#sql-anfrage-zu-exportieren-von-einzelnen-dokumenten-nach-bestimmten-kriterien)
 - [SQL Anfrage um Häufigkeiten eines Wortes in Dokumenten eines Thema auszuwählen](https://github.com/hinneburg/TopicExplorer/blob/master/sql-analytics.md#sql-anfrage-um-h%C3%A4ufigkeiten-eines-wortes-in-dokumenten-eines-thema-auszuw%C3%A4hlen)- [] ()
 

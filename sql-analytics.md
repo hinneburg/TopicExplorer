@@ -133,7 +133,7 @@ order by NUMBER_OF_DOCUMENT_TOPIC desc
 limit 10
 ;
 ```
-#### SQL Anfrage für verschiedene Rankings der Blog-URLs für ein gegebenes Topic ####
+#### SQL Anfrage für verschiedene Dokument-Rankings für ein gegebenes Topic ####
 ```
 select
   DOCUMENT.DOCUMENT_ID
@@ -167,7 +167,7 @@ LIMIT 30
 ```
 
 Setzt man unter ORDER BY das Kriterium NUMBER_OF_TOKEN_TOPIC_IN_DOCUMENT DESC ein und wählt es aus, ergibt sich dieselbe Reihenfolge wie bei den repräsentativen Dokumenten im TopicExplorer. Wählt man für die Tabelle dabei noch DOCUMENT.LINK$URL aus, lässt sich auf einen Blick erkennen, ob die repräsentativen Dokumente von demselben Blog stammen - für die Themenauswertung eine sehr wichtige Erkenntnis!
-#### SQL Anfrage für verschiedene Dokument-Rankings für ein gegebenes Topic ####
+#### SQL Anfrage für verschiedene Rankings der Blog-URLs für ein gegebenes Topic ####
 ```
 select
        SUBSTR(LINK$URL 
@@ -198,9 +198,37 @@ ORDER BY
 LIMIT 30
 ;
 ```
-
-
-
+#### SQL Anfrage für die Dokumente eines Blogs für ein gegebenes Topic ####
+```
+select
+   DOCUMENT.DOCUMENT_ID
+   , TEXT$TITLE
+   , DOCUMENT.LINK$URL
+   , SUBSTR(LINK$URL 
+         FROM 1
+         FOR locate("/",LINK$URL, locate("/",LINK$URL, 8) + 1 ) 
+         ) as Blog
+  , DOCUMENT_TOPIC.TOPIC_ID
+  , t.NUMBER_OF_TOKENS
+  , NUMBER_OF_TOKEN_TOPIC_IN_DOCUMENT 
+  , NUMBER_OF_TOKEN_TOPIC_IN_DOCUMENT / t.NUMBER_OF_TOKENS as PERCENTAGE_OF_TOKEN_OF_DOCUMENT_IN_TOPIC  
+from DOCUMENT 
+  join DOCUMENT_TOPIC on (DOCUMENT.DOCUMENT_ID=DOCUMENT_TOPIC.DOCUMENT_ID)
+  join TOPIC t on (DOCUMENT_TOPIC.TOPIC_ID=t.TOPIC_ID)
+where
+  -- Ausgangsthema
+  t.TOPIC_ID=32
+  -- Blog
+  and 'http://blogs.yahoo.co.jp/lesson848/' = 
+      SUBSTR(LINK$URL 
+         FROM 1
+         FOR locate("/",LINK$URL, locate("/",LINK$URL, 8) + 1 ) 
+         )
+ORDER BY
+  NUMBER_OF_TOKEN_TOPIC_IN_DOCUMENT DESC
+LIMIT 30
+;
+```
 #### SQL Anfrage zu Exportieren von einzelnen Dokumenten nach bestimmten Kriterien ####
 z.B. durch Abfrage mit '名無し' [Anonym] lassen sich Dokumente mit Forendiskussionen oder Kommentaren finden 
 ```

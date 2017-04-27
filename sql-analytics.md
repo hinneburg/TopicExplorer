@@ -162,7 +162,8 @@ ORDER BY
 --  LinearilyNormalized DESC
  NUMBER_OF_TOKEN_TOPIC_IN_DOCUMENT DESC
 LIMIT 30
-;```
+;
+```
 
 Setzt man unter ORDER BY das Kriterium NUMBER_OF_TOKEN_TOPIC_IN_DOCUMENT DESC ein und wählt es aus, ergibt sich dieselbe Reihenfolge wie bei den repräsentativen Dokumenten im TopicExplorer. Wählt man für die Tabelle dabei noch DOCUMENT.LINK$URL aus, lässt sich auf einen Blick erkennen, ob die repräsentativen Dokumente von demselben Blog stammen - für die Themenauswertung eine sehr wichtige Erkenntnis!
 

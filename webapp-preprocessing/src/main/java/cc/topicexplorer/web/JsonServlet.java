@@ -40,6 +40,8 @@ import cc.commandmanager.core.Context;
 import cc.topicexplorer.database.Database;
 import cc.topicexplorer.utils.PropertiesUtil;
 
+import com.mysql.jdbc.Statement;
+
 /**
  * Servlet implementation class TestServlet
  */
@@ -232,12 +234,72 @@ public class JsonServlet extends HttpServlet {
 							+ "?useUnicode=true&characterEncoding=UTF-8&useCursorFetch=true",
 							dbProps.getProperty("DbUser"), dbProps.getProperty("DbPassword"));
 
-					PreparedStatement statement = con
-							.prepareStatement("INSERT INTO TOPIC_EXPLORER (ZIPPED_CONFIGS) VALUES (?)");
-					statement.setBytes(1, zipConfig());
+					// Check if new table TOPICEXPLORER_DEFINITION is present
+					String topicExplorer_DefinitionIsPresent = "";
+					try {
 
-					statement.executeUpdate();
+						java.sql.Statement checkStmt = con.createStatement();
+						ResultSet resultSetOfCheck = checkStmt.executeQuery("select count(*) as IS_THERE "
+								+ "from  INFORMATION_SCHEMA.Tables "
+								+ "where TABLE_NAME='TOPIC_EXPLORER_DEFINITION' and TABLE_SCHEMA=DATABASE();");
+						if (resultSetOfCheck.next()) {
+							topicExplorer_DefinitionIsPresent = resultSetOfCheck.getString("IS_THERE");
+							logger.info("Test if TOPIC_EXPLORER_DEFINITION table is present, gave result: "
+									+ topicExplorer_DefinitionIsPresent);
 
+						}
+						resultSetOfCheck.close();
+						checkStmt.close();
+					} catch (SQLException e) {
+						logger.error("Can not check if TOPIC_EXPLORER_DEFINITION table is present.");
+						throw new RuntimeException(e);
+					}
+
+					if ("1".equals(topicExplorer_DefinitionIsPresent)) {
+						Properties dbProps2 = PropertiesUtil.loadMandatoryProperties("database", "");
+						String teIdentifier = dbProps2.getProperty("DB");
+						Integer topicExplorerId = -1;
+						try {
+							logger.info("insert zipped config with TE_IDENTIFIER: " + teIdentifier);
+
+							PreparedStatement statement = con.prepareStatement(
+									"INSERT INTO TOPIC_EXPLORER (ZIPPED_CONFIGS, TE_IDENTIFIER) VALUES (?,?)",
+									Statement.RETURN_GENERATED_KEYS);
+							statement.setBytes(1, zipConfig());
+							statement.setString(2, teIdentifier);
+							statement.executeUpdate();
+
+							ResultSet rs = statement.getGeneratedKeys();
+							rs.next();
+							topicExplorerId = rs.getInt(1);
+							rs.close();
+							statement.close();
+						} catch (SQLException e) {
+							logger.error("Can not insert config files and TE_IDENTIFIER into TOPIC_EXPLORER tables.");
+							throw new RuntimeException(e);
+						}
+
+						try {
+							logger.info("update TOPIC_EXPLORER_DEFINITION with TE_IDENTIFIER: " + teIdentifier
+									+ " and set TOPIC_EXPLORER_ID to " + topicExplorerId.toString());
+							PreparedStatement statement2 = con
+									.prepareStatement("UPDATE TOPIC_EXPLORER_DEFINITION SET TOPIC_EXPLORER_ID=? where TE_IDENTIFIER=?");
+							statement2.setInt(1, topicExplorerId);
+							statement2.setString(2, teIdentifier);
+							statement2.executeUpdate();
+							statement2.close();
+						} catch (SQLException e) {
+							logger.error("Can not update TOPIC_EXPLORER_DEFINITION table with new TOPIC_EXPLORER_ID.");
+							throw new RuntimeException(e);
+						}
+					} else {
+
+						PreparedStatement statement = con
+								.prepareStatement("INSERT INTO TOPIC_EXPLORER (ZIPPED_CONFIGS) VALUES (?)");
+						statement.setBytes(1, zipConfig());
+
+						statement.executeUpdate();
+					}
 					con.close();
 
 					writer.write("1");

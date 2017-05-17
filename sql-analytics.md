@@ -199,6 +199,13 @@ ORDER BY
 LIMIT 30
 ;
 ```
+Blogs von dem Provider Nifty bauen sich anders auf und werden deshalb bei dieser Abfrage außen vor gelassen:
+Die URLs von Nifty-Blogs setzen sich wie folgt zusammen:    http://XXXX-YYYY.cocolog-nifty.com/blog/JAHR 
+Andere Blogs, z.B. von yahoo haben den Aufbau               http://blogs.yahoo.co.jp/XXXXYYYY/ZAHL.html
+Der für diese Abfrage relevante Name des Blogs steht also bei Nifty direkt hinter dem http://. In der dritten Spalte, in der bei anderen Blog-Providern der Name des Blogs folgt, steht bei allen Nifty-Blogs einheitlich "blog" 
+
+
+
 #### SQL Anfrage für die Dokumente eines Blogs für ein gegebenes Topic ####
 ```
 select

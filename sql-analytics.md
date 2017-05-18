@@ -6,6 +6,7 @@
 - [SQL Anfrage zum Auflisten der Wörter eines Themas](https://github.com/hinneburg/TopicExplorer/blob/master/sql-analytics.md#sql-anfrage-zum-auflisten-der-w%C3%B6rter-eines-themas)
 - [SQL Anfrage für verschiedene Dokument-Rankings für ein gegebenes Topic](https://github.com/hinneburg/TopicExplorer/blob/master/sql-analytics.md#sql-anfrage-f%C3%BCr-verschiedene-dokument-rankings-f%C3%BCr-ein-gegebenes-topic)
 - [SQL Anfrage für verschiedene Rankings der Blog-URLs für ein gegebenes Topic](https://github.com/hinneburg/TopicExplorer/blob/master/sql-analytics.md#sql-anfrage-f%C3%BCr-verschiedene-rankings-der-blog-urls-f%C3%BCr-ein-gegebenes-topic)
+- [SQL Anfrage für Ranking der Blog-URLs für ein Corpus mit Wortfilter](https://github.com/hinneburg/TopicExplorer/blob/master/sql-analytics.md#sql-anfrage-f%C3%BCr-ranking-der-blog-urls-f%C3%BCr-ein-corpus-mit-wortfilter)
 - [SQL Anfrage für die Dokumente eines Blogs für ein gegebenes Topic](https://github.com/hinneburg/TopicExplorer/blob/master/sql-analytics.md#sql-anfrage-f%C3%BCr-die-dokumente-eines-blogs-f%C3%BCr-ein-gegebenes-topic)
 - [SQL Anfrage zu Exportieren von einzelnen Dokumenten nach bestimmten Kriterien](https://github.com/hinneburg/TopicExplorer/blob/master/sql-analytics.md#sql-anfrage-zu-exportieren-von-einzelnen-dokumenten-nach-bestimmten-kriterien)
 - [SQL Anfrage um Häufigkeiten eines Wortes in Dokumenten eines Thema auszuwählen](https://github.com/hinneburg/TopicExplorer/blob/master/sql-analytics.md#sql-anfrage-um-h%C3%A4ufigkeiten-eines-wortes-in-dokumenten-eines-thema-auszuw%C3%A4hlen)- [] ()
@@ -204,6 +205,43 @@ Die URLs von Nifty-Blogs setzen sich wie folgt zusammen:    http://XXXX-YYYY.coc
 Andere Blogs, z.B. von yahoo haben den Aufbau               http://blogs.yahoo.co.jp/XXXXYYYY/ZAHL.html
 Der für diese Abfrage relevante Name des Blogs steht also bei Nifty direkt hinter dem http://. In der dritten Spalte, in der bei anderen Blog-Providern der Name des Blogs folgt, steht bei allen Nifty-Blogs einheitlich "blog" 
 
+#### SQL Anfrage für Ranking der Blog-URLs für ein Corpus mit Wortfilter ####
+Um einen TopicExplorer auf bestimmte Inhalte einzugrenzen, ist es oft notwendig nicht relevante Inhalte aus dem Corpus auszuschließen. Dafür müssen boolsche Suchwortfilter entwickelt werden. Ob der Filter gut funktioniert ist, läßt sich bei Blogs oft an der Blog-URL in Kombnination der Anzahl der ausgeschlossenen Dokumente sehen. 
+```
+select 
+       SUBSTR(URL 
+         FROM 1
+         FOR locate("/",URL, locate("/",URL, 8) + 1 ) 
+         ) as BlogAuthor,
+      count(*) as DOCUMENT_NUMBER
+from orgTable_meta join orgTable_text using (DOCUMENT_ID)
+where 
+  (DOCUMENT_TEXT LIKE '%自己責任%')
+  AND
+-- Wenn das nachfolge not auskommentiert ist, werden die ausgeschlossenen Blog angegeben, 
+-- ansonsten die Blogs, die durch den Filter durch kommen
+not 
+  (
+  (DOCUMENT_TEXT not LIKE '%自己責任の上で%')
+  AND
+  (DOCUMENT_TEXT not LIKE '%自己責任にてお願い%')
+  AND
+  (DOCUMENT_TEXT not LIKE '%自己責任でお願い%')
+  AND
+  (DOCUMENT_TEXT not LIKE '%自己責任でよろしく%')
+  AND
+  (DOCUMENT_TEXT not LIKE '%自己責任でください %')
+  )
+group by 
+       SUBSTR(URL 
+         FROM 1
+         FOR locate("/",URL, locate("/",URL, 8) + 1 ) 
+         ) 
+order by 
+   DOCUMENT_NUMBER desc
+   limit 50
+;
+```
 
 
 #### SQL Anfrage für die Dokumente eines Blogs für ein gegebenes Topic ####

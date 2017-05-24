@@ -2,10 +2,28 @@ TESTDIR = te-test
 
 all:	build
 
-build:	build-backend
+build:	build-frontend build-backend
 
 build-backend:
 	cabal install --force-reinstalls common/ creator/
+
+build-frontend:
+	cd frontend; make build
+
+
+nginx:	nginx.conf
+	nginx -c $(PWD)/$< -g 'daemon off;'
+
+%.conf:	%-template.conf
+	cat $< | \
+	    perl -p -e 's!CREATOR_SERVER!http://localhost:7200!g' | \
+	    perl -p -e 's!DOCUMENT_ROOT!$(PWD)/frontend/html!g' >$@
+
+
+run:	build
+	cd creator; cabal run creator-server -- --port 7200 \
+	    >>/tmp/creator.out 2>>/tmp/creator.err &
+	make nginx
 
 
 testgit:

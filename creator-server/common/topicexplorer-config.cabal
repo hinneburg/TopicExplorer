@@ -1,6 +1,6 @@
 Name:             topicexplorer-config
 Version:          0.0
-License:          BSD3
+License:          AGPL
 License-File:     LICENSE
 Author:           Henning Thielemann
 Maintainer:       Henning Thielemann <haskell@henning-thielemann.de>

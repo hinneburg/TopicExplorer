@@ -1,2 +1,5 @@
 common/dist
 creator/dist
+nginx.conf
+frontend/elm-stuff/
+frontend/html/index.html

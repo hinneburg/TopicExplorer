@@ -8,6 +8,8 @@
 *.local.properties
 .gitignore*
 pom.xml.versionsBackup
+creator-server/common/dist
+creator-server/creator/dist
 
 # But not these files
 !*/src/test/resources/*

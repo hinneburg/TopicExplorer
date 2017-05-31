@@ -6,7 +6,6 @@
 *.settings
 */target/*
 *.local.properties
-.gitignore*
 pom.xml.versionsBackup
 
 # But not these files

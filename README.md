@@ -19,8 +19,8 @@ The installation routine lets you chose a root password for the  mariadb
 #### Change some mariadb (mysql) defaults
 
   - allow `load local infile`
-This may not be neccessary in Ubuntu. You need to find maria(mysql)-server config file, 
-for Ubuntu this is at `/etc/mysql/my.cnf`. Insert `local-infile=1` into both sections 
+This may not be neccessary in Ubuntu. You need to find maria(mysql)-server config file,
+for Ubuntu this is at `/etc/mysql/my.cnf`. Insert `local-infile=1` into both sections
 under `[mysqld]` and `[mysql]`.
   - set `innodb_buffer_pool_size` to a large size like `8GB`
   - set `ft_min_word_len=1` in case of Japanese words to allow fulltext search of small words
@@ -52,7 +52,7 @@ using an IP of uni-halle.de, e.g. login to the vpn of Uni Halle.
 #### Load documents into database
 
 using some mysql client
-e.g. on Ubuntu 
+e.g. on Ubuntu
 ```
 mysql -u <user> -p -D <Maerchen Datenbank> < <Path to File>grimms_maerchen_without_duplicates.sql
 ```
@@ -86,7 +86,7 @@ malletNumTopics=<Number of Topics>
 TopicBestItemLimit=30
 ```
 file `database.local.properties`
-``` 
+```
 DbLocation=localhost:3306
 DbUser=<user>
 DbPassword=<password>
@@ -96,7 +96,7 @@ and file `log4j.local.properties`
 ```
 # Root logger option
 log4j.rootLogger=info, file, stdout
- 
+
 # Direct log messages to a log file
 log4j.appender.file=org.apache.log4j.RollingFileAppender
 log4j.appender.file.File=logs/<log-file-name>.log
@@ -104,7 +104,7 @@ log4j.appender.file.MaxFileSize=128MB
 log4j.appender.file.MaxBackupIndex=3
 log4j.appender.file.layout=org.apache.log4j.PatternLayout
 log4j.appender.file.layout.ConversionPattern=%d{yyyy-MM-dd HH:mm:ss} %-5p %c: %m%n
- 
+
 # Direct log messages to stdout
 log4j.appender.stdout=org.apache.log4j.ConsoleAppender
 log4j.appender.stdout.Target=System.out
@@ -117,8 +117,8 @@ In file `log4j.local.properties` you can replace `<log-file-name>` with your own
 
 See http://www.r-project.org . For Ubuntu see http://wiki.ubuntuusers.de/R .
 ```
-sudo apt-get install r-base 
-sudo apt-get install r-recommended 
+sudo apt-get install r-base
+sudo apt-get install r-recommended
 ```
 For other systems, make sure that `Rscript` command is in your general search path.
 
@@ -135,8 +135,8 @@ Select `Kepler - http://download.eclipse.org/releases/kepler` and chose the pack
    - m2e-WTP JSF...
    - m2e-WTP Maven Integration
 
-Download Apache TomCat 6.x zip file from 
-https://tomcat.apache.org/download-60.cgi 
+Download Apache TomCat 6.x zip file from
+https://tomcat.apache.org/download-60.cgi
 and extract it to some path.
 Create a new server Apache TomCat 6. and reference the chosen path
 File -> New -> Others -> Server
@@ -190,7 +190,7 @@ Make sure your local property files are in the right place
 ```
 ls resources/
 ```
-should show at least `config.local.properties`, `database.local.properties` and `log4j.local.properties`. 
+should show at least `config.local.properties`, `database.local.properties` and `log4j.local.properties`.
 When everything is fine, start the preprocessing
 ```
 ./bin/run-preprocessing.sh
@@ -198,8 +198,8 @@ When everything is fine, start the preprocessing
 This should create tables in your database, which are used by the web-based user interface.
 
 #### Start webapp
-Mouse right click on webapp -> Run -> Run on Server . 
-In case of errors, do refresh (F5) on TopicExplorer and mouse right click -> Maven -> Update Projects. 
-WebApp should appear in Eclipse-Browser. It is not functional there. 
-You may use the webapp in Firefox or Safari http://localhost:8080/webapp/index.html
 
+Mouse right click on webapp -> Run -> Run on Server .
+In case of errors, do refresh (F5) on TopicExplorer and mouse right click -> Maven -> Update Projects.
+WebApp should appear in Eclipse-Browser. It is not functional there.
+You may use the webapp in Firefox or Safari http://localhost:8080/webapp/index.html

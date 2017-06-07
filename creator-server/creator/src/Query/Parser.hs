@@ -4,6 +4,8 @@ import Query (Query(Literal, Not, And, Or))
 
 import qualified Text.ParserCombinators.Parsec.Expr as Expr
 import qualified Text.ParserCombinators.Parsec as Parsec
+import Text.ParserCombinators.Parsec.Language (emptyDef)
+import Text.ParserCombinators.Parsec.Token (TokenParser, makeTokenParser, stringLiteral)
 import Text.ParserCombinators.Parsec ((<?>), (<|>))
 
 import Control.Applicative ((<*))
@@ -23,7 +25,13 @@ parens = Parsec.between (string "(") (string ")")
 
 literal :: Parser Query
 literal =
-   fmap Literal $ lexeme $ Parsec.many1 $ Parsec.alphaNum
+   fmap Literal $
+      stringLiteral tokenParser
+      <|>
+      lexeme (Parsec.many1 Parsec.alphaNum)
+
+tokenParser :: TokenParser ()
+tokenParser = makeTokenParser emptyDef
 
 complete :: Parser (Maybe Query)
 complete = Parsec.optionMaybe expr <* Parsec.eof

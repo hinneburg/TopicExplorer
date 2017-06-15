@@ -135,6 +135,23 @@ order by NUMBER_OF_DOCUMENT_TOPIC desc
 limit 10
 ;
 ```
+```
+select
+  TOPIC_ID,
+  TERM_NAME,
+  NUMBER_OF_TOKEN_TOPIC,
+  NUMBER_OF_DOCUMENT_TOPIC
+from
+TERM_TOPIC join TERM using(TERM_ID) join TOPIC using (TOPIC_ID)
+where 
+  NUMBER_OF_TOKEN_TOPIC>100 and
+  HIERARCHICAL_TOPIC$START=HIERARCHICAL_TOPIC$END  
+order by
+  HIERARCHICAL_TOPIC$START , 
+  NUMBER_OF_TOKEN_TOPIC desc
+;
+```
+
 #### SQL Anfrage für verschiedene Dokument-Rankings für ein gegebenes Topic ####
 ```
 select

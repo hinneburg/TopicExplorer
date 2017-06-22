@@ -136,7 +136,7 @@ public class StartJobManagement {
 
 				getCsvSql += " AND ALL_TERMS.TERM NOT IN ('*'";
 				for (int j = 0; j < stopWords.size(); j++) {
-					getCsvSql += ",'" + stopWords.get(0) + "'";
+					getCsvSql += ",'" + stopWords.get(j) + "'";
 				}
 				getCsvSql += "))";
 

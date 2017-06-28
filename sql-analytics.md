@@ -167,6 +167,9 @@ select
   -- , DOCUMENT.TITLE AS KEYWORD_TITLE
   -- , CONCAT('[',DOCUMENT.BEST_TOPICS,']') AS TOP_TOPIC
    , TEXT$TITLE
+-- Mit Textstellen für Suchworte, z.B. '自己責任'
+  -- , SUBSTR(TEXT$FULLTEXT FROM POSITION('自己責任' in TEXT$FULLTEXT)-30  FOR 60)
+  -- , POSITION('自己責任' in TEXT$FULLTEXT)
    , DOCUMENT.LINK$URL
    , orgTable_meta.DOCUMENT_DATE
 from DOCUMENT 

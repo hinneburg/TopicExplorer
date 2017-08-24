@@ -186,11 +186,15 @@ from DOCUMENT
 where
   -- Ausgangsthema
   t.TOPIC_ID=77
+  -- Einschränkung auf Zeitraum
+  -- and DOCUMENT.TIME$TIME_STAMP between UNIX_TIMESTAMP('2015-01-19') and UNIX_TIMESTAMP('2015-01-26')
 ORDER BY
 --  PR_DOCUMENT_GIVEN_TOPIC DESC
 --  NonlinearilyNormalized DESC
 --  LinearilyNormalized DESC
- NUMBER_OF_TOKEN_TOPIC_IN_DOCUMENT DESC
+NUMBER_OF_TOKEN_TOPIC_IN_DOCUMENT DESC
+-- Zeitliche Sortierung
+-- DOCUMENT.TIME$TIME_STAMP asc
 LIMIT 30
 ;
 ```

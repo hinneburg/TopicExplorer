@@ -49,6 +49,8 @@ from
    join TOPIC t1 on (dt1.TOPIC_ID=t1.TOPIC_ID)
    join DOCUMENT_TOPIC dt2 on (dt1.DOCUMENT_ID=dt2.DOCUMENT_ID)
    join TOPIC t2 on (dt2.TOPIC_ID=t2.TOPIC_ID)
+   -- bitte Kommentar entfernen, falls mit Einschränkung auf Zeitraum gearbeitet wird
+   -- join DOCUMENT d on (d.DOCUMENT_ID=dt1.DOCUMENT_ID)   
 where
 -- Hier koennen Sie das Ausgangsthema aendern
 dt1.TOPIC_ID=142
@@ -64,6 +66,8 @@ not
   and t1.HIERARCHICAL_TOPIC$END  <= t2.HIERARCHICAL_TOPIC$END
   )
 and t2.TOPIC_ID<100
+-- Kommentar entfernen, um mit Einschränkung auf Zeitraum zu arbeiten, beachte auch Kommentar unter From für Join von d enfernen
+-- and d.TIME$TIME_STAMP between UNIX_TIMESTAMP('2015-01-10') and UNIX_TIMESTAMP('2015-01-18')
 group by
 dt1.TOPIC_ID,
 dt2.TOPIC_ID
@@ -115,6 +119,8 @@ where
 -- Hier koennen Sie das Ausgangsthema und das Zielthema aendern
     dt1.TOPIC_ID=142
 and dt2.TOPIC_ID=77
+-- Kommentar entfernen, um mit Einschränkung auf Zeitraum zu arbeiten
+-- and d.TIME$TIME_STAMP between UNIX_TIMESTAMP('2015-01-10') and UNIX_TIMESTAMP('2015-01-18')
 order by 
    Minimal_Number_of_Tokens desc
 --   Minimal_Percentage_of_Tokens desc

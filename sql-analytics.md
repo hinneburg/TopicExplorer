@@ -279,7 +279,10 @@ select
          ) as BlogAuthor
       , SUBSTR(TEXT$FULLTEXT FROM POSITION('自己責任' in TEXT$FULLTEXT)-5  FOR 15)   
       , count(*) as DOCUMENT_NUMBER
-from DOCUMENT 
+from DOCUMENT
+where 
+-- bitte Kommentar entfernen um mit Einschränkung auf Zeitraum zu arbeiten
+-- d.TIME$TIME_STAMP between UNIX_TIMESTAMP('2015-01-10') and UNIX_TIMESTAMP('2015-01-18') 
 group by 
        SUBSTR(LINK$URL 
          FROM 1

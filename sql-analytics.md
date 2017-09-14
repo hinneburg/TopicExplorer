@@ -10,7 +10,8 @@
 - [SQL Anfrage für die Dokumente eines Blogs für ein gegebenes Topic](https://github.com/hinneburg/TopicExplorer/blob/master/sql-analytics.md#sql-anfrage-f%C3%BCr-die-dokumente-eines-blogs-f%C3%BCr-ein-gegebenes-topic)
 - [SQL Anfrage für Ranking der Blog-URLs mit Phrasen um ein Suchwort](https://github.com/hinneburg/TopicExplorer/blob/master/sql-analytics.md#sql-anfrage-f%C3%BCr-ranking-der-blog-urls-mit-phrasen-um-ein-suchwort)
 - [SQL Anfrage zu Exportieren von einzelnen Dokumenten nach bestimmten Kriterien](https://github.com/hinneburg/TopicExplorer/blob/master/sql-analytics.md#sql-anfrage-zu-exportieren-von-einzelnen-dokumenten-nach-bestimmten-kriterien)
-- [SQL Anfrage um Häufigkeiten eines Wortes in Dokumenten eines Thema auszuwählen](https://github.com/hinneburg/TopicExplorer/blob/master/sql-analytics.md#sql-anfrage-um-h%C3%A4ufigkeiten-eines-wortes-in-dokumenten-eines-thema-auszuw%C3%A4hlen)- [] ()
+- [SQL Anfrage um Häufigkeiten eines Wortes in Dokumenten eines Thema auszuwählen](https://github.com/hinneburg/TopicExplorer/blob/master/sql-analytics.md#sql-anfrage-um-h%C3%A4ufigkeiten-eines-wortes-in-dokumenten-eines-thema-auszuw%C3%A4hlen)
+- [SQL-Anfrage um die Token- und Dokumentanzahlen für eine Menge von Themen und Zeitabschnitten mit Filtern nach mehreren Textteilstrings und Zeitabschnitten zu bestimmen](https://github.com/hinneburg/TopicExplorer/blob/master/sql-analytics.md#sql-anfrage-um-die-token-und-dokumentanzahlen-f%C3%BCr-eine-menge-von-themen-und-zeitabschnitten-mit-filtern-nach-mehreren-textteilstrings-und-zeitabschnitten-zu-bestimmen)
 
 #### SQL Anfrage um Zusammenhänge zwischen Themen zu finden ####
 
@@ -381,5 +382,49 @@ d.TEXT$TITLE,
 d.FULLTEXT$FULLTEXT
 order by Token_Anzahl desc
 limit 10
+;
+```
+#### SQL-Anfrage um die Token- und Dokumentanzahlen für eine Menge von Themen und Zeitabschnitten mit Filtern nach mehreren Textteilstrings und Zeitabschnitten zu bestimmen ####
+```
+select
+  DOCUMENT_TOPIC.TOPIC_ID
+  , CASE 
+    WHEN DOCUMENT.TIME$TIME_STAMP between UNIX_TIMESTAMP('2015-01-19') and UNIX_TIMESTAMP('2015-01-20') THEN 'Zeitraum 1' 
+    WHEN DOCUMENT.TIME$TIME_STAMP between UNIX_TIMESTAMP('2015-01-20') and UNIX_TIMESTAMP('2015-01-21') THEN 'Zeitraum 2' 
+    WHEN DOCUMENT.TIME$TIME_STAMP between UNIX_TIMESTAMP('2015-01-21') and UNIX_TIMESTAMP('2015-01-22') THEN 'Zeitraum 3' 
+    END as Zeitraum
+  , count(distinct DOCUMENT.DOCUMENT_ID) as Number_Of_Distinct_Documents
+  , sum(DOCUMENT_TOPIC.NUMBER_OF_TOKEN_TOPIC_IN_DOCUMENT) as Number_Of_Topic_Tokens
+  , sum(DOCUMENT.NUMBER_OF_TOKENS) as Total_Number_Of_Tokens
+from DOCUMENT 
+  join DOCUMENT_TOPIC on (DOCUMENT.DOCUMENT_ID=DOCUMENT_TOPIC.DOCUMENT_ID)
+--  join TOPIC t on (DOCUMENT_TOPIC.TOPIC_ID=t.TOPIC_ID)
+--  join orgTable_meta on (orgTable_meta.DOCUMENT_ID=DOCUMENT.DOCUMENT_ID)
+where
+  -- Ausgangsthemen
+  DOCUMENT_TOPIC.TOPIC_ID in (4,5)
+  -- Einschränkung auf Zeitraum
+   and (
+       (DOCUMENT.TIME$TIME_STAMP between UNIX_TIMESTAMP('2015-01-19') and UNIX_TIMESTAMP('2015-01-22'))
+       OR
+       (DOCUMENT.TIME$TIME_STAMP between UNIX_TIMESTAMP('2015-01-19') and UNIX_TIMESTAMP('2015-01-22'))
+       )
+  -- Einschränkung auf Suchstrings    
+--   and (
+--       POSITION('韓国' in DOCUMENT.TEXT$FULLTEXT)>0
+--       OR
+--       POSITION('韓国' in DOCUMENT.TEXT$FULLTEXT)>0
+--       )
+group by
+  DOCUMENT_TOPIC.TOPIC_ID
+  , CASE 
+    WHEN DOCUMENT.TIME$TIME_STAMP between UNIX_TIMESTAMP('2015-01-19') and UNIX_TIMESTAMP('2015-01-20') THEN 'Zeitraum 1' 
+    WHEN DOCUMENT.TIME$TIME_STAMP between UNIX_TIMESTAMP('2015-01-20') and UNIX_TIMESTAMP('2015-01-21') THEN 'Zeitraum 2' 
+    WHEN DOCUMENT.TIME$TIME_STAMP between UNIX_TIMESTAMP('2015-01-21') and UNIX_TIMESTAMP('2015-01-22') THEN 'Zeitraum 3' 
+    END
+order by 
+  Zeitraum
+  , 
+  DOCUMENT_TOPIC.TOPIC_ID
 ;
 ```

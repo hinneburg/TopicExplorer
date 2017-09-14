@@ -11,7 +11,7 @@
 - [SQL Anfrage für Ranking der Blog-URLs mit Phrasen um ein Suchwort](https://github.com/hinneburg/TopicExplorer/blob/master/sql-analytics.md#sql-anfrage-f%C3%BCr-ranking-der-blog-urls-mit-phrasen-um-ein-suchwort)
 - [SQL Anfrage zu Exportieren von einzelnen Dokumenten nach bestimmten Kriterien](https://github.com/hinneburg/TopicExplorer/blob/master/sql-analytics.md#sql-anfrage-zu-exportieren-von-einzelnen-dokumenten-nach-bestimmten-kriterien)
 - [SQL Anfrage um Häufigkeiten eines Wortes in Dokumenten eines Thema auszuwählen](https://github.com/hinneburg/TopicExplorer/blob/master/sql-analytics.md#sql-anfrage-um-h%C3%A4ufigkeiten-eines-wortes-in-dokumenten-eines-thema-auszuw%C3%A4hlen)
-- [SQL-Anfrage um die Token- und Dokumentanzahlen für eine Menge von Themen und Zeitabschnitten mit Filtern nach mehreren Textteilstrings und Zeitabschnitten zu bestimmen](https://github.com/hinneburg/TopicExplorer/blob/master/sql-analytics.md#sql-anfrage-um-die-token-und-dokumentanzahlen-f%C3%BCr-eine-menge-von-themen-und-zeitabschnitten-mit-filtern-nach-mehreren-textteilstrings-und-zeitabschnitten-zu-bestimmen)
+- [SQL-Anfrage um die Token- und Dokumentanzahlen für eine Menge von Themen und Zeitabschnitten mit Filtern nach mehreren Textteilstrings und Zeitabschnitten zu bestimmen](https://github.com/hinneburg/TopicExplorer/blob/master/sql-analytics.md#sql-anfrage-um-die-token--und-dokumentanzahlen-f%C3%BCr-eine-menge-von-themen-und-zeitabschnitten-mit-filtern-nach-mehreren-textteilstrings-und-zeitabschnitten-zu-bestimmen)
 
 #### SQL Anfrage um Zusammenhänge zwischen Themen zu finden ####
 

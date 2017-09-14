@@ -175,7 +175,7 @@ select
   -- , CONCAT('[',DOCUMENT.BEST_TOPICS,']') AS TOP_TOPIC
    , TEXT$TITLE
 -- Mit Textstellen für Suchworte, z.B. '自己責任'
-  -- , SUBSTR(TEXT$FULLTEXT FROM POSITION('自己責任' in TEXT$FULLTEXT)-30  FOR 60)
+  -- , CASE WHEN POSITION('自己責任' in TEXT$FULLTEXT)>0 THEN SUBSTR(TEXT$FULLTEXT FROM POSITION('自己責任' in TEXT$FULLTEXT)-30  FOR 60) ELSE 'nichts gefunden' END
   -- , POSITION('自己責任' in TEXT$FULLTEXT)
    , DOCUMENT.LINK$URL
    , orgTable_meta.DOCUMENT_DATE

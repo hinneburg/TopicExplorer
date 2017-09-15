@@ -55,6 +55,10 @@ from
 where
 -- Hier koennen Sie das Ausgangsthema aendern
 dt1.TOPIC_ID=142
+-- den folgenden Kommentar als Ersatz für die Bedingung des Ausgangthema in der vorhergehenden Zeile nutzen
+-- damit werden alle Themen mal Ausgangthema verwendet. 
+-- Achtung: limit am Ende des Statements entfernen und order by um dt1.TOPIC_IDerweitern
+-- dt1.TOPIC_ID<100
 -- alle Unterthemen von dt1 als Kandidaten fuer dt2 ausschliessen
 and not
   (   t1.HIERARCHICAL_TOPIC$START<= t2.HIERARCHICAL_TOPIC$START
@@ -74,6 +78,9 @@ dt1.TOPIC_ID,
 dt2.TOPIC_ID
 -- Wechseln der Ordnung zwischen s_min und s_min2
 order by s_min3 desc
+-- statt order by aus der vorhergehende Zeile nutze, wenn alle Themen mal als Ausgangsthema verwendet werden.
+-- order by dt1.TOPIC_ID, s_min3 desc
+-- entfernen, wenn alle Themen mal als Ausgangsthema verwendet werden.
 limit 10
 ;
 ```

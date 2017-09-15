@@ -219,6 +219,10 @@ from DOCUMENT
 where
   -- Ausgangsthema
   t.TOPIC_ID=32
+  -- die nächsten drei Zeilen bitte auskommentieren, wenn mit einer Einschränkung des Zeitraumes gearbeitet werden soll
+  -- and (
+  --     (DOCUMENT.TIME$TIME_STAMP between UNIX_TIMESTAMP('2015-01-19') and UNIX_TIMESTAMP('2015-01-22'))
+  --     )
 GROUP BY
        SUBSTR(LINK$URL 
          FROM 1

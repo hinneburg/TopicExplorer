@@ -9,6 +9,7 @@
 - [SQL Anfrage für Ranking der Blog-URLs für ein Corpus mit Wortfilter](https://github.com/hinneburg/TopicExplorer/blob/master/sql-analytics.md#sql-anfrage-f%C3%BCr-ranking-der-blog-urls-f%C3%BCr-ein-corpus-mit-wortfilter)
 - [SQL Anfrage für die Dokumente eines Blogs für ein gegebenes Topic](https://github.com/hinneburg/TopicExplorer/blob/master/sql-analytics.md#sql-anfrage-f%C3%BCr-die-dokumente-eines-blogs-f%C3%BCr-ein-gegebenes-topic)
 - [SQL Anfrage für Ranking der Blog-URLs mit Phrasen um ein Suchwort](https://github.com/hinneburg/TopicExplorer/blob/master/sql-analytics.md#sql-anfrage-f%C3%BCr-ranking-der-blog-urls-mit-phrasen-um-ein-suchwort)
+- [SQL Anfrage zum Bestimmen der Anzahl der Blog-Posts pro Blog-Anbieter](https://github.com/hinneburg/TopicExplorer/blob/master/sql-analytics.md#sql-anfrage-zum-bestimmen-der-Anzahl-der-blog-posts-pro-blog-anbieter)
 - [SQL Anfrage zu Exportieren von einzelnen Dokumenten nach bestimmten Kriterien](https://github.com/hinneburg/TopicExplorer/blob/master/sql-analytics.md#sql-anfrage-zu-exportieren-von-einzelnen-dokumenten-nach-bestimmten-kriterien)
 - [SQL Anfrage um Häufigkeiten eines Wortes in Dokumenten eines Thema auszuwählen](https://github.com/hinneburg/TopicExplorer/blob/master/sql-analytics.md#sql-anfrage-um-h%C3%A4ufigkeiten-eines-wortes-in-dokumenten-eines-thema-auszuw%C3%A4hlen)
 - [SQL-Anfrage um die Token- und Dokumentanzahlen für eine Menge von Themen und Zeitabschnitten mit Filtern nach mehreren Textteilstrings und Zeitabschnitten zu bestimmen](https://github.com/hinneburg/TopicExplorer/blob/master/sql-analytics.md#sql-anfrage-um-die-token--und-dokumentanzahlen-f%C3%BCr-eine-menge-von-themen-und-zeitabschnitten-mit-filtern-nach-mehreren-textteilstrings-und-zeitabschnitten-zu-bestimmen)
@@ -342,6 +343,39 @@ ORDER BY
 LIMIT 30
 ;
 ```
+#### SQL Anfrage zum Bestimmen der Anzahl der Blog-Posts pro Blog-Anbieter ####
+muss vielleicht noch um weitere Anbieter ergänzt werden, die den Blog-Namen in der Domain erwähnen. 
+```
+select
+CASE
+    WHEN locate('nifty.com',URL)>0 THEN 'http://nifty.com/'
+    WHEN locate('webry.info',URL)>0 THEN 'http://webry.info/'
+    WHEN locate('so-net.ne.jp',URL)>0 THEN 'http://so-net.ne.jp/'
+    WHEN locate('asablo.jp',URL)>0 THEN 'http://asablo.jp/'     
+    WHEN locate('a-thera.jp',URL)>0 THEN 'http://a-thera.jp/'
+    WHEN locate('shinobi.jp',URL)>0 THEN 'http://shinobi.jp/'     
+    ELSE SUBSTR( URL FROM 1 FOR locate("/",URL, 8) )    
+END 
+   as BlogAnbieter,
+count(*) as DOCUMENT_NUMBER
+from orgTable_meta
+group by
+CASE
+    WHEN locate('nifty.com',URL)>0 THEN 'http://nifty.com/'
+    WHEN locate('webry.info',URL)>0 THEN 'http://webry.info/'
+    WHEN locate('so-net.ne.jp',URL)>0 THEN 'http://so-net.ne.jp/'
+    WHEN locate('asablo.jp',URL)>0 THEN 'http://asablo.jp/'     
+    WHEN locate('a-thera.jp',URL)>0 THEN 'http://a-thera.jp/'
+    WHEN locate('shinobi.jp',URL)>0 THEN 'http://shinobi.jp/'     
+    ELSE SUBSTR( URL FROM 1 FOR locate("/",URL, 8) )    
+END 
+order by
+DOCUMENT_NUMBER desc
+limit 50
+;
+```
+
+
 #### SQL Anfrage zu Exportieren von einzelnen Dokumenten nach bestimmten Kriterien ####
 z.B. durch Abfrage mit '名無し' [Anonym] lassen sich Dokumente mit Forendiskussionen oder Kommentaren finden 
 ```

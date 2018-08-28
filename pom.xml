@@ -31,8 +31,8 @@
 		<module>plugin-mecab-initcorpus</module>
 		<module>plugin-time-preprocessing</module>
 		<module>plugin-time-webinterface</module>
-		<module>plugin-wiki-preprocessing</module>
-		<module>plugin-wordtype-preprocessing</module>
+<!--		<module>plugin-wiki-preprocessing</module> -->
+		<module>plugin-wordtype-preprocessing</module> 
 		<module>plugin-wordtype-webinterface</module>
 		<module>run-initcorpus</module>
 		<module>run-jobmanagement</module>
@@ -115,7 +115,7 @@
 			<!-- <resource> <directory>local/main/resources</directory> </resource> -->
 		</resources>
 	</build>
-
+<!--
 	<repositories>
 		<repository>
 			<id>snapshots</id>
@@ -126,7 +126,7 @@
 			<url>https://moon.informatik.uni-halle.de/archiva/repository/releases-db</url>
 		</repository>
 	</repositories>
-
+-->
 	<!-- <distributionManagement> <snapshotRepository> <id>snapshots</id> <name>archiva 
 		repository on moon</name> <url>https://moon.informatik.uni-halle.de/archiva/repository/snapshots-db</url> 
 		</snapshotRepository> </distributionManagement> -->

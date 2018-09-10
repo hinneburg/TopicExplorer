@@ -19,6 +19,19 @@ import Data.Maybe (listToMaybe, fromMaybe)
 import Text.Printf (printf)
 
 
+parseRelativeOrAbsoluteURINoQuery :: String -> Either String URI
+parseRelativeOrAbsoluteURINoQuery str =
+   case URI.parseURIReference str of
+      Nothing -> Left $ "not a valid URI: " ++ str
+      Just uri -> do
+         when (not $ null $ URI.uriQuery uri)
+            (Left $ "URI contains a query: " ++ str)
+         when (not $ null $ URI.uriFragment uri)
+            (Left $ "URI contains a fragment: " ++ str)
+         Right $
+            if ListHT.takeRev 1 (URI.uriPath uri) == "/"
+              then uri
+              else uri {URI.uriPath = URI.uriPath uri ++ "/"}
 
 parseURINoQuery :: String -> Either String URI
 parseURINoQuery str =

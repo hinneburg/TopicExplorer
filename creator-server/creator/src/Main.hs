@@ -15,6 +15,7 @@ import TopicExplorer.Creator.Corpus (Corpus(Corpus))
 import TopicExplorer.Configuration.Utility (
          withJsonBody, mimetypeJSON,
          parseURINoQuery, makeURI,
+         parseRelativeOrAbsoluteURINoQuery
          )
 import TopicExplorer.Configuration.Corpus
          (Keywords(Keywords), Identifier(Identifier))
@@ -315,7 +316,7 @@ optParser defltScriptDir =
          OP.metavar "DIR" <>
          OP.value defltScriptDir <>
          OP.help "Directory for Topic-Explorer shell scripts")
-      (OP.option (OP.eitherReader parseURINoQuery) $
+      (OP.option (OP.eitherReader parseRelativeOrAbsoluteURINoQuery) $
          OP.long "app-server" <>
          OP.metavar "URL" <>
          OP.value (makeURI "http://localhost:8080/") <>

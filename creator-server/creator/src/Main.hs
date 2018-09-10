@@ -142,10 +142,10 @@ jsonFromJob appServer corpus
          []) :
       (Mn.when (isFinished initializeTimes) $
        Map.singleton "url_nlp" $
-         Aeson.toJSON $ show appServer ++ identifier ++ "_nlp") :
+         Aeson.toJSON $ show appServer ++ identifier ++ "_nlp/") :
       (Mn.when (isFinished computeTimes) $
        Map.singleton "url_te" $
-         Aeson.toJSON $ show appServer ++ identifier ++ "_te") :
+         Aeson.toJSON $ show appServer ++ identifier ++ "_te/") :
       []
 
 

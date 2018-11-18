@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
@@ -52,12 +53,15 @@ public class JsonServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	private File tempPath;
+	private String classesPath; 
+
 
 	private void doGetAndPost(HttpServletRequest request, HttpServletResponse response) throws ServletException,
 			java.io.IOException {
 		synchronized (this) {
 
 			tempPath = new File(getServletContext().getRealPath("/") + "WEB-INF" + File.separator + "temp");
+			classesPath = getServletContext().getRealPath("/") + "WEB-INF" + File.separator + "classes";
 
 			String command = request.getParameter("Command");
 
@@ -387,13 +391,44 @@ public class JsonServlet extends HttpServlet {
 		try {
 			ZipOutputStream zos = new ZipOutputStream(outStream);
 			zos.setLevel(9);
+			
+			String [] fileEndings = {".local.properties", ".json", ".xml"};
+			String [] modifiedConfigFiles = {"config.local.properties"
+					, "database.local.properties"
+					, "frame.local.properties"
+					, "frameDelimiter-ja.xml"
+					, "wordtype.local.properties"
+					, "wordlist.json"
+					};
+			for (final String zipFileEntry :  modifiedConfigFiles) {
+				logger.info("adding zipEntry: " + tempPath + File.separator + zipFileEntry);
+				addFileToZip(tempPath + File.separator + zipFileEntry, zos);
+			}
+			
+			final File classesFolder = new File(classesPath).getCanonicalFile();
+			
+			logger.info("classFolder object created");
+			File [] localPropertyFiles = classesFolder.listFiles();
+			logger.info("classFolder list created");
+			
+			 for (final File fileEntry : localPropertyFiles ) {
 
-			addFileToZip(tempPath + "/config.local.properties", zos);
-			addFileToZip(tempPath + "/database.local.properties", zos);
-			addFileToZip(tempPath + "/frame.local.properties", zos);
-			addFileToZip(tempPath + "/frameDelimiter-ja.xml", zos);
-			addFileToZip(tempPath + "/wordtype.local.properties", zos);
-			addFileToZip(tempPath + "/wordlist.json", zos);
+				 boolean accept = false;
+				 for (String fileEnding:  fileEndings) {
+					 accept = accept || fileEntry.getName().endsWith(fileEnding);
+					 }
+					
+				 for (String zipFileEntry:  modifiedConfigFiles) {
+					 accept = accept &&  !fileEntry.getName().endsWith(zipFileEntry);
+					 }
+				 if (accept) {
+					 logger.info("adding file to zip: " + classesPath + File.separator + fileEntry.getName());
+					 addFileToZip(classesPath + File.separator + fileEntry.getName(), zos);
+				 } else {
+					 logger.info("not adding file to zip: " + classesPath + File.separator + fileEntry.getName());					 
+				 }
+			}
+			logger.info("classFolder file added");
 
 			zos.close();
 		} catch (IOException e) {

@@ -2,11 +2,9 @@ package cc.topicexplorer.dataimport;
 
 import java.io.BufferedReader;
 import java.io.File;
-//import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-//import java.sql.Clob;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -24,7 +22,6 @@ import org.apache.commons.cli.OptionGroup;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.IOUtils;
-//import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.text.StringSubstitutor;
 import org.apache.log4j.Logger;
 
@@ -106,8 +103,6 @@ public class ImportFolder {
 
 		logger.info("list of text files created");
 		
-//		insertDocumentsByEscapingSpecialChar(con, textFiles, corpusName);
-//		insertDocumentsByClob(con, textFiles, corpusName);
 		insertDocumentsByCharacterStream(con, textFiles, corpusName);
 		
 		logger.info("all text files imported");
@@ -151,87 +146,4 @@ public class ImportFolder {
 
 	}
 
-//	private static void insertDocumentsByClob(Connection con, File [] textFiles, String corpusName) throws IOException, SQLException {
-//		Integer documentId = 1;
-//		
-//		String sqlInsertMetaTemplate = readFileFromClasspath("insert-corpus-meta-table.sql");
-//		String sqlInsertTextTemplate = readFileFromClasspath("insert-corpus-text-table.sql");
-//
-//		HashMap<String, String> parameters = new HashMap<String, String>();
-//		parameters.put("corpus", corpusName);
-//		
-//		String sqlInsertMeta = StringSubstitutor.replace(sqlInsertMetaTemplate, parameters);
-//		String sqlInsertText = StringSubstitutor.replace(sqlInsertTextTemplate, parameters);
-//		
-//		PreparedStatement insertMeta = con.prepareStatement(sqlInsertMeta);
-//		PreparedStatement insertText = con.prepareStatement(sqlInsertText);
-//		
-//		
-//		for (final File fileEntry : textFiles ) {
-//			String fileName = fileEntry.getName();
-//			
-//			insertMeta.setInt(1, documentId);
-//			insertMeta.setString(2, fileName); // Title			
-//			insertMeta.setString(3, fileName ); // URL
-//			
-//			insertMeta.execute();
-//			
-//			String textFileContent = IOUtils.toString( new FileInputStream(fileEntry) ,"UTF-8");
-//			Clob documentContent=con.createClob();
-//			documentContent.setString(1, textFileContent);
-//			insertText.setInt(1,documentId);
-//			insertText.setClob(2, documentContent);
-//			
-//			insertText.execute();
-//			documentContent.free();
-//			
-//			documentId ++;
-//		}
-//
-//		
-//	}
-	
-	
-	// direct insert with escaping special chars is not working well
-	// a few chars from pdf2txt output can not be escaped
-//	private static void insertDocumentsByEscapingSpecialChar(Connection con, File [] textFiles, String corpusName) throws IOException, SQLException {
-//		
-//		HashMap<String, String> parameters = new HashMap<String, String>();
-//		parameters.put("corpus", corpusName);
-//
-//		Integer documentId = 1;
-//		
-//		String sqlInsertMetaTemplate = readFileFromClasspath("insert-corpus-meta-table.sql");
-//
-//		String sqlInsertTextTemplateContent = readFileFromClasspath("insert-corpus-text-table-with-content.sql");
-//		
-//		String sqlInsertMeta = StringSubstitutor.replace(sqlInsertMetaTemplate, parameters);
-//		
-//		PreparedStatement insertMeta = con.prepareStatement(sqlInsertMeta);
-//		
-//		
-//		for (final File fileEntry : textFiles ) {
-//			String fileName = fileEntry.getName();
-//			
-//			insertMeta.setInt(1, documentId);
-//			insertMeta.setString(2, fileName); // Title			
-//			insertMeta.setString(3, fileName ); // URL
-//			
-//			insertMeta.execute();
-//			
-//			String textFileContent = IOUtils.toString( new FileInputStream(fileEntry) ,"UTF-8");
-//
-//			parameters.put("documentid", documentId.toString());
-//			parameters.put("documenttext", StringEscapeUtils.escapeSql(textFileContent));
-//			
-//			String sqlInsertTextContent = StringSubstitutor.replace(sqlInsertTextTemplateContent, parameters);
-//
-//			Statement stmt = con.createStatement();
-//			stmt.executeUpdate(sqlInsertTextContent);
-//			
-//			documentId ++;
-//		}
-//		
-//	}
-//	
 }

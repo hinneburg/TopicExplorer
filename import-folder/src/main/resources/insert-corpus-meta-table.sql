@@ -1,0 +1,1 @@
+insert into COPRUS_${corpus} (DOCUMENT_ID,TITLE,URL,DOCUMENT_DATE) values(?,?,?,now());

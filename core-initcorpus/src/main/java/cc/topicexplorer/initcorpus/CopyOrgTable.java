@@ -82,8 +82,8 @@ public class CopyOrgTable implements Command {
 						+ "where" + "  TE_IDENTIFIER = '" + dbName + "';");
 				if (resultSetOfFilter.next()) {
 					corpusFilter = " " + " ( DOCUMENT_DATE BETWEEN " + "CAST('"
-							+ resultSetOfFilter.getString("FILTER_START_DATETIME") + "' AS DATE) AND " + "CAST('"
-							+ resultSetOfFilter.getString("FILTER_END_DATETIME") + "' AS DATE) " + ") AND ( "
+							+ resultSetOfFilter.getString("FILTER_START_DATETIME") + "' AS DATETIME) AND " + "CAST('"
+							+ resultSetOfFilter.getString("FILTER_END_DATETIME") + "' AS DATETIME) " + ") AND ( "
 							+ resultSetOfFilter.getString("FILTER_TEXT_SQL") + " ) ";
 
 				}

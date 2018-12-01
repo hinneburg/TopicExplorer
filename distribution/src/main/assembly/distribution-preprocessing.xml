@@ -36,6 +36,7 @@
 				<include>cc.topicexplorer:plugin-mecab-initcorpus</include>
 				<include>cc.topicexplorer:run-preprocessing</include>
 				<include>cc.topicexplorer:run-initcorpus</include>
+				<include>cc.topicexplorer:import-folder</include>
 				<include>cc.topicexplorer:run-jobmanagement</include>
 			</includes>
 			<sources>

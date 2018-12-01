@@ -18,7 +18,7 @@ public class DocumentCreate extends TableCreateCommand {
 		try {
 			database.executeUpdateQuery("create table `" + this.tableName + "` ("
 					+ "DOCUMENT_ID INTEGER(11) NOT NULL PRIMARY KEY, NUMBER_OF_TOKENS INTEGER(11) NOT NULL, "
-					+ "TITLE text, TEXT text, BEST_TOPICS text) "
+					+ "TITLE text, TEXT mediumtext, BEST_TOPICS text) "
 					+ "ENGINE=MyISAM;");
 		} catch (SQLException e) {
 			logger.error("Table " + this.tableName + " could not be created.");

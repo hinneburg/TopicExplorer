@@ -39,6 +39,7 @@
 		<module>run-preprocessing</module>
 		<module>webapp</module>
         <module>webapp-preprocessing</module>
+		<module>import-folder</module>
 	</modules>
 	<dependencies>
 		<dependency>

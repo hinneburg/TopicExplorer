@@ -127,7 +127,7 @@ public class PosTypeFill extends TableFillCommand {
 					+ "(115, 78000, 82999, '非自立', 108)");
 			} else if ("treetagger".equals(textAnalyzer)) {
 				String treeTaggerModel = properties.getProperty("Mecab_treetagger-model").trim();
-				if ("/german-utf8.par".equals(treeTaggerModel)) {
+				if ("/german.par".equals(treeTaggerModel)) {
 					this.database.executeUpdateQuery("INSERT INTO POS_TYPE"+
 							"(`POS`, `LOW`, `HIGH`, `DESCRIPTION`, `LONG_DESCRIPTION`, `PARENT_POS`) VALUES "+
 							"(0, 0, 999, 'N', 'Nomen', -1),"+
@@ -196,7 +196,7 @@ public class PosTypeFill extends TableFillCommand {
 							"(16, 16000, 16999, '$(', 'Sonstiges Satzzeichen', -1)"+
 							";"
                       );
-				} else if ("/english-utf8.par".equals(treeTaggerModel)) {
+				} else if ("/english.par".equals(treeTaggerModel)) {
 					this.database.executeUpdateQuery("INSERT INTO POS_TYPE"+
 							"(POS,LOW,HIGH,DESCRIPTION,LONG_DESCRIPTION,PARENT_POS) VALUES "+
 							"(1,1000,1999, 'CC', 'Coordinating conjunction',-1),"+

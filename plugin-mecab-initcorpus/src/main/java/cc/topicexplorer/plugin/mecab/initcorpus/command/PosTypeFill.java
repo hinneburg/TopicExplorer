@@ -199,60 +199,60 @@ public class PosTypeFill extends TableFillCommand {
 				} else if ("/english.par".equals(treeTaggerModel)) {
 					this.database.executeUpdateQuery("INSERT INTO POS_TYPE"+
 							"(POS,LOW,HIGH,DESCRIPTION,LONG_DESCRIPTION,PARENT_POS) VALUES "+
-							"(1,1000,1999, 'CC', 'Coordinating conjunction',-1),"+
-							"(2,2000,2999, 'CD', 'Cardinal number',-1),"+
-							"(3,3000,3999, 'DT', 'Determiner',-1),"+
-							"(4,4000,4999, 'EX', 'Existential there',-1),"+
-							"(5,5000,5999, 'FW', 'Foreign word',-1),"+
-							"(6,6000,6999, 'IN', 'Preposition or subordinating conjunction',-1),"+
-							"(7,7000,7999, 'JJ', 'Adjective',-1),"+
-							"(8,7100,7199, 'JJR', 'Adjective, comparative',7),"+
-							"(9,7200,7299, 'JJS', 'Adjective, superlative',7),"+
-							"(10,8000,1999, 'LS', 'List item marker',-1),"+
-							"(11,9000,1999, 'MD', 'Modal verb',-1),"+
-							"(12,10000,10999, 'N', 'Noun, general',-1),"+
-							"(13,10000,10599, 'NO', 'Noun, but not proper noun',12),"+
-							"(14,10000,10299, 'NN', 'Noun, singular or mass',13),"+
-							"(15,10300,10399, 'NNS', 'Noun, plural',13),"+
-							"(16,10600,10999, 'NOP', 'Proper noun, general',12),"+
-							"(17,10600,10799, 'NP', 'Proper noun, singular',16),"+
-							"(18,10800,10899, 'NPS', 'Proper noun, plural',16),"+
-							"(19,11000,11999, 'PDT', 'Predeterminer',-1),"+
-							"(20,12000,12999, 'POS', 'Possessive ending',-1),"+
-							"(21,13000,13999, 'PP', 'Personal pronoun',-1),"+
-							"(22,14000,14999, 'PP$', 'Possessive pronoun',-1),"+
-							"(23,15000,15999, 'RB', 'Adverb',-1),"+
-							"(24,15000,15599, 'RBR', 'Adverb, comparative',23),"+
-							"(25,15600,15999, 'RBS', 'Adverb, superlative',23),"+
-							"(26,16000,16999, 'RP', 'Particle',-1),"+
-							"(27,17000,17999, 'SYM', 'Symbol',-1),"+
-							"(28,18000,18999, 'TO', 'to',-1),"+
-							"(29,19000,19999, 'UH', 'Interjection',-1),"+
-							"(30,20000,20999, 'V', 'Verb, general',-1),"+
-							"(31,20000,20009, 'VB', 'Verb be, base form',30),"+
-							"(32,20010,20019, 'VBD', 'Verb be, past tense',30),"+
-							"(33,20020,20029, 'VBG', 'Verb be, gerund or present participle',30),"+
-							"(34,20030,20039, 'VBN', 'Verb be, past participle',30),"+
-							"(35,20040,20049, 'VBP', 'Verb be, non-3rd person singular present',30),"+
-							"(36,20050,20059, 'VBZ', 'Verb be, 3rd person singular present',30),"+
-							"(37,20060,20069, 'VV', 'Verb, base form',30),"+
-							"(38,20070,20079, 'VVD', 'Verb, past tense',30),"+
-							"(39,20080,20089, 'VVG', 'Verb, gerund or present participle',30),"+
-							"(40,20090,20099, 'VVN', 'Verb, past participle',30),"+
-							"(41,20100,20109, 'VVP', 'Verb, non-3rd person singular present',30),"+
-							"(42,20110,20119, 'VVZ', 'Verb, 3rd person singular present',30),"+
-							"(43,20120,20129, 'VH', 'Verb have, base form',30),"+
-							"(44,20130,20139, 'VHD', 'Verb have, past tense',30),"+
-							"(45,20140,20149, 'VHG', 'Verb have, gerund or present participle',30),"+
-							"(46,20150,20159, 'VHN', 'Verb have, past participle',30),"+
-							"(47,20160,20169, 'VHP', 'Verb have, non-3rd person singular present',30),"+
-							"(48,20170,20179, 'VHZ', 'Verb have, 3rd person singular present',30),"+
-							"(49,21000,21999, 'WDT', 'Wh-determiner',-1),"+
-							"(50,22000,22999, 'WP', 'Wh-pronoun',-1),"+
-							"(51,23000,23999, 'WP$', 'Possessive wh-pronoun',-1),"+
-							"(52,24000,24999, 'WRB', 'Wh-adverb',-1),"+ 
-							"(53,25000,25999, 'IN/that', 'Preposition or subordinating conjunction',-1),"+
-							"(54,26000,26999, ':', 'Unknown',-1);"
+							"(0,1000,1999, 'CC', 'Coordinating conjunction',-1),"+
+							"(1,2000,2999, 'CD', 'Cardinal number',-1),"+
+							"(2,3000,3999, 'DT', 'Determiner',-1),"+
+							"(3,4000,4999, 'EX', 'Existential there',-1),"+
+							"(4,5000,5999, 'FW', 'Foreign word',-1),"+
+							"(5,6000,6999, 'IN', 'Preposition or subordinating conjunction',-1),"+
+							"(6,7000,7999, 'JJ', 'Adjective',-1),"+
+							"(7,7100,7199, 'JJR', 'Adjective, comparative',7),"+
+							"(8,7200,7299, 'JJS', 'Adjective, superlative',7),"+
+							"(9,8000,1999, 'LS', 'List item marker',-1),"+
+							"(10,9000,1999, 'MD', 'Modal verb',-1),"+
+							"(11,10000,10999, 'N', 'Noun, general',-1),"+
+							"(12,10000,10599, 'NO', 'Noun, but not proper noun',12),"+
+							"(13,10000,10299, 'NN', 'Noun, singular or mass',13),"+
+							"(14,10300,10399, 'NNS', 'Noun, plural',13),"+
+							"(15,10600,10999, 'NOP', 'Proper noun, general',12),"+
+							"(16,10600,10799, 'NP', 'Proper noun, singular',16),"+
+							"(17,10800,10899, 'NPS', 'Proper noun, plural',16),"+
+							"(18,11000,11999, 'PDT', 'Predeterminer',-1),"+
+							"(19,12000,12999, 'POS', 'Possessive ending',-1),"+
+							"(20,13000,13999, 'PP', 'Personal pronoun',-1),"+
+							"(21,14000,14999, 'PP$', 'Possessive pronoun',-1),"+
+							"(22,15000,15999, 'RB', 'Adverb',-1),"+
+							"(23,15000,15599, 'RBR', 'Adverb, comparative',23),"+
+							"(24,15600,15999, 'RBS', 'Adverb, superlative',23),"+
+							"(25,16000,16999, 'RP', 'Particle',-1),"+
+							"(26,17000,17999, 'SYM', 'Symbol',-1),"+
+							"(27,18000,18999, 'TO', 'to',-1),"+
+							"(28,19000,19999, 'UH', 'Interjection',-1),"+
+							"(29,20000,20999, 'V', 'Verb, general',-1),"+
+							"(30,20000,20009, 'VB', 'Verb be, base form',30),"+
+							"(31,20010,20019, 'VBD', 'Verb be, past tense',30),"+
+							"(32,20020,20029, 'VBG', 'Verb be, gerund or present participle',30),"+
+							"(33,20030,20039, 'VBN', 'Verb be, past participle',30),"+
+							"(34,20040,20049, 'VBP', 'Verb be, non-3rd person singular present',30),"+
+							"(35,20050,20059, 'VBZ', 'Verb be, 3rd person singular present',30),"+
+							"(36,20060,20069, 'VV', 'Verb, base form',30),"+
+							"(37,20070,20079, 'VVD', 'Verb, past tense',30),"+
+							"(38,20080,20089, 'VVG', 'Verb, gerund or present participle',30),"+
+							"(39,20090,20099, 'VVN', 'Verb, past participle',30),"+
+							"(40,20100,20109, 'VVP', 'Verb, non-3rd person singular present',30),"+
+							"(41,20110,20119, 'VVZ', 'Verb, 3rd person singular present',30),"+
+							"(42,20120,20129, 'VH', 'Verb have, base form',30),"+
+							"(43,20130,20139, 'VHD', 'Verb have, past tense',30),"+
+							"(44,20140,20149, 'VHG', 'Verb have, gerund or present participle',30),"+
+							"(45,20150,20159, 'VHN', 'Verb have, past participle',30),"+
+							"(46,20160,20169, 'VHP', 'Verb have, non-3rd person singular present',30),"+
+							"(47,20170,20179, 'VHZ', 'Verb have, 3rd person singular present',30),"+
+							"(48,21000,21999, 'WDT', 'Wh-determiner',-1),"+
+							"(49,22000,22999, 'WP', 'Wh-pronoun',-1),"+
+							"(50,23000,23999, 'WP$', 'Possessive wh-pronoun',-1),"+
+							"(51,24000,24999, 'WRB', 'Wh-adverb',-1),"+ 
+							"(52,25000,25999, 'IN/that', 'Preposition or subordinating conjunction',-1),"+
+							"(53,26000,26999, ':', 'Unknown',-1);"
 							);
 //					VHZ
 				}

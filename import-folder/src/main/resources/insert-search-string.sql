@@ -5,7 +5,10 @@ insert into SEARCH_STRING
     , DESCRIPTIVE_IDENTIFIER
   )
 SELECT
-  MAX(search_string_id) +1
+  CASE 
+    WHEN (MAX(search_string_id) +1) is NULL THEN 1
+    ELSE (MAX(search_string_id) +1)
+  END 
   , '${corpus}'
   , '${corpus}'
 from 

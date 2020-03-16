@@ -10,7 +10,7 @@
 	SELECT
 	  MAX(search_string_id)
 	  , now()
-	  , 'COPRUS_${corpus}'
+	  , 'CORPUS_${corpus}'
 	  , 0
 	  , now()
 	  , 'import-folder'

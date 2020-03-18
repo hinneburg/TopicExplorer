@@ -41,7 +41,7 @@ public class Mallet implements Command {
 			}
 
 			try {
-				trainTopics(properties.getProperty("malletNumTopics"));
+				trainTopics(properties.getProperty("malletNumTopics"), properties.getProperty("malletNumThreads"));
 			} catch (IOException e3) {
 				logger.error("During topic training a file stream problem occured.");
 				return ResultState.failure("During topic training a file stream problem occured.", e3);
@@ -57,11 +57,11 @@ public class Mallet implements Command {
 		logger.info("import done");
 	}
 
-	private static void trainTopics(String malletNumTopics) throws IOException {
+	private static void trainTopics(String malletNumTopics, String malletNumThreads) throws IOException {
 		String[] malletArgs = { "--input", "temp/out.sequence.input", "--num-topics", malletNumTopics,
 				"--num-iterations", "500", "--optimize-interval", "10", "--optimize-burn-in", "1000", "--output-state",
 				"temp/out.topic-state.gz", "--output-doc-topics", "temp/out.doc-topics", "--inferencer-filename",
-				"temp/out.inferencer", "--num-threads", "4", "--num-top-words", "20", "--output-topic-keys",
+				"temp/out.inferencer", "--num-threads", malletNumThreads, "--num-top-words", "20", "--output-topic-keys",
 		"temp/out.topic-keys" };
 		Vectors2Topics.main(malletArgs);
 		logger.info("train topics done");

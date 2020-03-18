@@ -27,6 +27,7 @@ import org.apache.log4j.Logger;
 
 
 import cc.topicexplorer.utils.PropertiesUtil;
+import cc.topicexplorer.utils.LoggerUtil;
 
 public class ImportFolder {
 
@@ -38,6 +39,7 @@ public class ImportFolder {
 	}
 
 		public static void main(String[] args) throws Exception {
+                LoggerUtil.initializeLogger();
 
 		OptionGroup commandOptions = new OptionGroup();
 		commandOptions.setRequired(false);
@@ -56,9 +58,8 @@ public class ImportFolder {
 		try {
 			cmd = parser.parse(commands, args, true);
 		} catch (ParseException e) {
-			System.out.println(e.getMessage());
+			logger.error(e.getMessage());
 			formatter.printHelp("import-folder", commands);
-
 			System.exit(1);
 			return;
 		}
@@ -68,7 +69,7 @@ public class ImportFolder {
 		File importFolder = new File(pathToImportFolder);
 		
 		if (! importFolder.isDirectory()) {
-			System.out.println("specified folder "+ pathToImportFolder +" is not a folder.");
+			logger.error("specified folder "+ pathToImportFolder +" is not a folder.");
 			System.exit(1);
 			return;
 			

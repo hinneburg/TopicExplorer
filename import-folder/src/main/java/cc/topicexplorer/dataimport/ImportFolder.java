@@ -2,9 +2,11 @@ package cc.topicexplorer.dataimport;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -18,13 +20,15 @@ import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
-import org.apache.commons.cli.OptionGroup;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.text.StringSubstitutor;
 import org.apache.log4j.Logger;
-
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.parser.Parser;
 
 import cc.topicexplorer.utils.PropertiesUtil;
 import cc.topicexplorer.utils.LoggerUtil;
@@ -32,24 +36,25 @@ import cc.topicexplorer.utils.LoggerUtil;
 public class ImportFolder {
 
 	private static final Logger logger = Logger.getLogger(ImportFolder.class);
-	
+
 	private static String readFileFromClasspath(String fileName) throws IOException {
 		InputStream fis = ImportFolder.class.getResourceAsStream("/" + fileName);
 		return IOUtils.toString(fis, "UTF-8");
 	}
 
-		public static void main(String[] args) throws Exception {
-                LoggerUtil.initializeLogger();
+	public static void main(String[] args) throws Exception {
+        LoggerUtil.initializeLogger();
 
-		OptionGroup commandOptions = new OptionGroup();
-		commandOptions.setRequired(false);
 
-		Option folderOption = new Option("f", "folder", true, "folder with text files that are imported");
+		Option folderOption = new Option("f", "folder", true, "folder with files that are imported");
 		folderOption.setRequired(true);
-		commandOptions.addOption(folderOption);
 		
+		Option teiXmlOption = new Option("t", "tei", false, "files to be imported have TEI-XML format");
+		teiXmlOption.setRequired(false);
+
 		Options commands = new Options();
-		commands.addOptionGroup(commandOptions);
+		commands.addOption(folderOption);
+		commands.addOption(teiXmlOption);
 
 		CommandLineParser parser = new DefaultParser();
 		HelpFormatter formatter = new HelpFormatter();
@@ -65,6 +70,7 @@ public class ImportFolder {
 		}
 
 		String pathToImportFolder = cmd.getOptionValue("folder");
+		
 		
 		File importFolder = new File(pathToImportFolder);
 		
@@ -102,18 +108,25 @@ public class ImportFolder {
 		
 		File [] textFiles = importFolder.listFiles();
 
-		logger.info("list of text files created");
+		logger.info("list of files created");
 		
-		insertDocumentsByCharacterStream(con, textFiles, corpusName);
+		if (cmd.hasOption("tei")) {
+//			insertTeiXmlDocumentsByCharacterStream(null, textFiles, corpusName);
+			insertTeiXmlDocumentsByCharacterStream(con, textFiles, corpusName);
+		} else {
+//			insertDocumentsByCharacterStream(null, textFiles, corpusName);
+			insertDocumentsByCharacterStream(con, textFiles, corpusName);
+		}
 		
 		logger.info("all text files imported");
 
 		
 	}
 
-	private static void insertDocumentsByCharacterStream(Connection con, File [] textFiles, String corpusName) throws IOException, SQLException {
+	private static void insertTeiXmlDocumentsByCharacterStream(Connection con, File[] teiXmlFiles, String corpusName)
+			throws IOException, SQLException {
 		Integer documentId = 1;
-		
+
 		String sqlInsertMetaTemplate = readFileFromClasspath("insert-corpus-meta-table.sql");
 		String sqlInsertTextTemplate = readFileFromClasspath("insert-corpus-text-table.sql");
 
@@ -122,27 +135,102 @@ public class ImportFolder {
 
 		String sqlInsertMeta = StringSubstitutor.replace(sqlInsertMetaTemplate, parameters);
 		String sqlInsertText = StringSubstitutor.replace(sqlInsertTextTemplate, parameters);
-		
+
 		PreparedStatement insertMeta = con.prepareStatement(sqlInsertMeta);
 		PreparedStatement insertText = con.prepareStatement(sqlInsertText);
+
 		
-		
-		for (final File fileEntry : textFiles ) {
-			String fileName = fileEntry.getName();
+		for (final File teiXmlFileEntry : teiXmlFiles) {
+			Document doc = Jsoup.parse(new FileInputStream(teiXmlFileEntry), "UTF-8", "", Parser.xmlParser());
+					
+			String title = doc.selectFirst("TEI > teiHeader > fileDesc > titleStmt > title").text();
+			if ("".equals(title)) {
+				title = "file: " + teiXmlFileEntry.getName();
+			}
+
+			Element firstAuthorNode = doc.selectFirst("TEI > teiHeader > fileDesc > sourceDesc > biblStruct > analytic > author > persName > surname");
+			String firstAuthor = firstAuthorNode!=null ? firstAuthorNode.text() :"";
+			Element  yearNode = doc.selectFirst("TEI > teiHeader > fileDesc > publicationStmt > date[type='published']");
+			String year = yearNode!=null ? yearNode.attr("when") :"";
 			
+			Element  doiNode = doc.selectFirst("TEI > teiHeader > fileDesc > sourceDesc > biblStruct > idno[type='DOI']");
+			String doi = doiNode!=null ? doiNode.text() :"";
+						
+		    Element  abstractNode = doc.selectFirst("TEI > teiHeader > profileDesc > abstract");
+			String abstractText = abstractNode!=null ? abstractNode.text() :"";
+			
+			String documentText = abstractText;
+			Integer documentParts=0;
+			for(Element textPartNode: doc.select("TEI > text > body > div") ) {
+				for (Element refNode: textPartNode.select("ref")) {
+					refNode.remove();
+				}
+				for (Element refNode: textPartNode.select("head")) {
+					refNode.remove();
+				}
+				documentText += " " + textPartNode.text();
+				documentParts++;
+			}
+			
+			
+//			System.out.println("Doc " + documentId + ", " + teiXmlFileEntry.getName());
+//			System.out.println(title + ", " + firstAuthor + ", " + year + ", " + doi);
+//			System.out.println("Document Parts: " + documentParts);
+//			System.out.println("Text: " + documentText);
+			
+
 			insertMeta.setInt(1, documentId);
-			insertMeta.setString(2, fileName); // Title			
-			insertMeta.setString(3, fileName ); // URL
-			
+			insertMeta.setString(2, title + ", " + firstAuthor + ", " + year + ", " + doi); // Title
+			insertMeta.setString(3, teiXmlFileEntry.getName()); // URL
+
 			insertMeta.execute();
 			
-			insertText.setInt(1,documentId);
+			insertText.setInt(1, documentId);
+			StringReader readerDocumentText = new StringReader(documentText);
+			insertText.setCharacterStream(2, readerDocumentText);
+
+			insertText.execute();
+
+			documentId++;
+
+		}
+		
+	}
+
+	
+	
+	private static void insertDocumentsByCharacterStream(Connection con, File[] textFiles, String corpusName)
+			throws IOException, SQLException {
+		Integer documentId = 1;
+
+		String sqlInsertMetaTemplate = readFileFromClasspath("insert-corpus-meta-table.sql");
+		String sqlInsertTextTemplate = readFileFromClasspath("insert-corpus-text-table.sql");
+
+		HashMap<String, String> parameters = new HashMap<String, String>();
+		parameters.put("corpus", corpusName);
+
+		String sqlInsertMeta = StringSubstitutor.replace(sqlInsertMetaTemplate, parameters);
+		String sqlInsertText = StringSubstitutor.replace(sqlInsertTextTemplate, parameters);
+
+		PreparedStatement insertMeta = con.prepareStatement(sqlInsertMeta);
+		PreparedStatement insertText = con.prepareStatement(sqlInsertText);
+
+		for (final File fileEntry : textFiles) {
+			String fileName = fileEntry.getName();
+
+			insertMeta.setInt(1, documentId);
+			insertMeta.setString(2, fileName); // Title
+			insertMeta.setString(3, fileName); // URL
+
+			insertMeta.execute();
+
+			insertText.setInt(1, documentId);
 			BufferedReader readerTextFile = new BufferedReader(new FileReader(fileEntry));
 			insertText.setCharacterStream(2, readerTextFile);
-			
+
 			insertText.execute();
-			
-			documentId ++;
+
+			documentId++;
 		}
 
 	}

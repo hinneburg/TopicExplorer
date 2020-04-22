@@ -23,6 +23,7 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.text.StringSubstitutor;
 import org.apache.log4j.Logger;
 import org.jsoup.Jsoup;
@@ -178,9 +179,12 @@ public class ImportFolder {
 //			System.out.println("Document Parts: " + documentParts);
 //			System.out.println("Text: " + documentText);
 			
+			String titleToInsert = (title + ", " + firstAuthor + ", " + year + ", " + doi).length() < 255
+					? (title + ", " + firstAuthor + ", " + year + ", " + doi)
+					: StringUtils.abbreviate(title, 255 - (", " + firstAuthor + ", " + year + ", " + doi).length());
 
 			insertMeta.setInt(1, documentId);
-			insertMeta.setString(2, title + ", " + firstAuthor + ", " + year + ", " + doi); // Title
+			insertMeta.setString(2, titleToInsert); // Title
 			insertMeta.setString(3, teiXmlFileEntry.getName()); // URL
 
 			insertMeta.execute();

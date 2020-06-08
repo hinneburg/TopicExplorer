@@ -30,6 +30,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.parser.Parser;
+import org.jsoup.select.Evaluator.IsEmpty;
 
 import cc.topicexplorer.utils.PropertiesUtil;
 import cc.topicexplorer.utils.LoggerUtil;
@@ -44,12 +45,11 @@ public class ImportFolder {
 	}
 
 	public static void main(String[] args) throws Exception {
-        LoggerUtil.initializeLogger();
-
+		LoggerUtil.initializeLogger();
 
 		Option folderOption = new Option("f", "folder", true, "folder with files that are imported");
 		folderOption.setRequired(true);
-		
+
 		Option teiXmlOption = new Option("t", "tei", false, "files to be imported have TEI-XML format");
 		teiXmlOption.setRequired(false);
 
@@ -71,46 +71,45 @@ public class ImportFolder {
 		}
 
 		String pathToImportFolder = cmd.getOptionValue("folder");
-		
-		
+
 		File importFolder = new File(pathToImportFolder);
-		
-		if (! importFolder.isDirectory()) {
-			logger.error("specified folder "+ pathToImportFolder +" is not a folder.");
+
+		if (!importFolder.isDirectory()) {
+			logger.error("specified folder " + pathToImportFolder + " is not a folder.");
 			System.exit(1);
 			return;
-			
+
 		}
-		
-		String corpusName = importFolder.getName().toUpperCase();  // this returns just the last name in the path sequence 
-		
-		
+
+		String corpusName = importFolder.getName().toUpperCase(); // this returns just the last name in the path
+																	// sequence
+
 		Properties dbProps = PropertiesUtil.updateOptionalProperties(new Properties(), "cmdb", "");
 
-		Connection con = DriverManager.getConnection("jdbc:mysql://" + dbProps.getProperty("DbLocation")
-				+ "?useUnicode=true&characterEncoding=UTF-8&useCursorFetch=true", dbProps.getProperty("DbUser"),
-				dbProps.getProperty("DbPassword"));
+		Connection con = DriverManager.getConnection(
+				"jdbc:mysql://" + dbProps.getProperty("DbLocation")
+						+ "?useUnicode=true&characterEncoding=UTF-8&useCursorFetch=true",
+				dbProps.getProperty("DbUser"), dbProps.getProperty("DbPassword"));
 
-		String sqlStatementFiles[] = {"te-create-corpus-text-table.sql"
-				, "te-create-corpus-meta-table.sql"
-				, "insert-search-string.sql" // important: execute insert-search-string.sql before insert-crawl.sq
-				, "insert-crawl.sql"   // search_id is determined by max()
-				};
+		String sqlStatementFiles[] = { "te-create-corpus-text-table.sql", "te-create-corpus-meta-table.sql",
+				"insert-search-string.sql" // important: execute insert-search-string.sql before insert-crawl.sq
+				, "insert-crawl.sql" // search_id is determined by max()
+		};
 		HashMap<String, String> parameters = new HashMap<String, String>();
 		parameters.put("corpus", corpusName);
-		
-		for (final String sqlStatementFile : sqlStatementFiles ) {
+
+		for (final String sqlStatementFile : sqlStatementFiles) {
 			String sqlTemplate = readFileFromClasspath(sqlStatementFile);
 			String sqlStatement = StringSubstitutor.replace(sqlTemplate, parameters);
-			
+
 			Statement stmt = con.createStatement();
 			int createTableRS = stmt.executeUpdate(sqlStatement);
 		}
-		
-		File [] textFiles = importFolder.listFiles();
+
+		File[] textFiles = importFolder.listFiles();
 
 		logger.info("list of files created");
-		
+
 		if (cmd.hasOption("tei")) {
 //			insertTeiXmlDocumentsByCharacterStream(null, textFiles, corpusName);
 			insertTeiXmlDocumentsByCharacterStream(con, textFiles, corpusName);
@@ -118,10 +117,9 @@ public class ImportFolder {
 //			insertDocumentsByCharacterStream(null, textFiles, corpusName);
 			insertDocumentsByCharacterStream(con, textFiles, corpusName);
 		}
-		
+
 		logger.info("all text files imported");
 
-		
 	}
 
 	private static void insertTeiXmlDocumentsByCharacterStream(Connection con, File[] teiXmlFiles, String corpusName)
@@ -140,57 +138,19 @@ public class ImportFolder {
 		PreparedStatement insertMeta = con.prepareStatement(sqlInsertMeta);
 		PreparedStatement insertText = con.prepareStatement(sqlInsertText);
 
-		
 		for (final File teiXmlFileEntry : teiXmlFiles) {
-			Document doc = Jsoup.parse(new FileInputStream(teiXmlFileEntry), "UTF-8", "", Parser.xmlParser());
-					
-			String title = doc.selectFirst("TEI > teiHeader > fileDesc > titleStmt > title").text();
-			if ("".equals(title)) {
-				title = "file: " + teiXmlFileEntry.getName();
-			}
-
-			Element firstAuthorNode = doc.selectFirst("TEI > teiHeader > fileDesc > sourceDesc > biblStruct > analytic > author > persName > surname");
-			String firstAuthor = firstAuthorNode!=null ? firstAuthorNode.text() :"";
-			Element  yearNode = doc.selectFirst("TEI > teiHeader > fileDesc > publicationStmt > date[type='published']");
-			String year = yearNode!=null ? yearNode.attr("when") :"";
-			
-			Element  doiNode = doc.selectFirst("TEI > teiHeader > fileDesc > sourceDesc > biblStruct > idno[type='DOI']");
-			String doi = doiNode!=null ? doiNode.text() :"";
-						
-		    Element  abstractNode = doc.selectFirst("TEI > teiHeader > profileDesc > abstract");
-			String abstractText = abstractNode!=null ? abstractNode.text() :"";
-			
-			String documentText = abstractText;
-			Integer documentParts=0;
-			for(Element textPartNode: doc.select("TEI > text > body > div") ) {
-				for (Element refNode: textPartNode.select("ref")) {
-					refNode.remove();
-				}
-				for (Element refNode: textPartNode.select("head")) {
-					refNode.remove();
-				}
-				documentText += " " + textPartNode.text();
-				documentParts++;
-			}
-			
-			
-//			System.out.println("Doc " + documentId + ", " + teiXmlFileEntry.getName());
-//			System.out.println(title + ", " + firstAuthor + ", " + year + ", " + doi);
-//			System.out.println("Document Parts: " + documentParts);
-//			System.out.println("Text: " + documentText);
-			
-			String titleToInsert = (title + ", " + firstAuthor + ", " + year + ", " + doi).length() < 255
-					? (title + ", " + firstAuthor + ", " + year + ", " + doi)
-					: StringUtils.abbreviate(title, 255 - (", " + firstAuthor + ", " + year + ", " + doi).length());
+			TeiParseResult parsedFile = parseGrobIdTei(new FileInputStream(teiXmlFileEntry), teiXmlFileEntry.getName());
+			if (parsedFile.empty)
+				continue;
 
 			insertMeta.setInt(1, documentId);
-			insertMeta.setString(2, titleToInsert); // Title
+			insertMeta.setString(2, parsedFile.title); // Title
 			insertMeta.setString(3, teiXmlFileEntry.getName()); // URL
 
 			insertMeta.execute();
-			
+
 			insertText.setInt(1, documentId);
-			StringReader readerDocumentText = new StringReader(documentText);
+			StringReader readerDocumentText = new StringReader(parsedFile.text);
 			insertText.setCharacterStream(2, readerDocumentText);
 
 			insertText.execute();
@@ -198,11 +158,70 @@ public class ImportFolder {
 			documentId++;
 
 		}
-		
+
 	}
 
-	
-	
+	protected static TeiParseResult parseGrobIdTei(InputStream teiXmlFileStream, String fileName) throws IOException {
+		TeiParseResult result = new TeiParseResult();
+
+		Document doc = Jsoup.parse(teiXmlFileStream, "UTF-8", "", Parser.xmlParser());
+		if (doc.is(new IsEmpty())) {
+			result.empty = true;
+			return result;
+		} else {
+			result.empty = false;
+		}
+
+		Element titleNode = doc.selectFirst("TEI > teiHeader > fileDesc > titleStmt > title");
+		String title = titleNode != null ? titleNode.text() : "" ;
+		if ("".equals(title)) {
+			title = "file: " + fileName;
+		}
+
+		Element firstAuthorNode = doc.selectFirst(
+				"TEI > teiHeader > fileDesc > sourceDesc > biblStruct > analytic > author > persName > surname");
+		String firstAuthor = firstAuthorNode != null ? firstAuthorNode.text() : "";
+		Element yearNode = doc.selectFirst("TEI > teiHeader > fileDesc > publicationStmt > date[type='published']");
+		String year = yearNode != null ? yearNode.attr("when") : "";
+
+		Element doiNode = doc.selectFirst("TEI > teiHeader > fileDesc > sourceDesc > biblStruct > idno[type='DOI']");
+		String doi = doiNode != null ? doiNode.text() : "";
+
+		Element abstractNode = doc.selectFirst("TEI > teiHeader > profileDesc > abstract");
+		String abstractText = abstractNode != null ? abstractNode.text() : "";
+
+		result.text = abstractText;
+		Integer documentParts = 0;
+		for (Element textPartNode : doc.select("TEI > text > body > div")) {
+			for (Element refNode : textPartNode.select("ref")) {
+				refNode.remove();
+			}
+			for (Element refNode : textPartNode.select("head")) {
+				refNode.remove();
+			}
+			result.text += " " + textPartNode.text();
+			documentParts++;
+		}
+
+//		System.out.println("Doc " + documentId + ", " + teiXmlFileEntry.getName());
+//		System.out.println(title + ", " + firstAuthor + ", " + year + ", " + doi);
+//		System.out.println("Document Parts: " + documentParts);
+//		System.out.println("Text: " + documentText);
+
+		result.title = (title + ", " + firstAuthor + ", " + year + ", " + doi).length() < 255
+				? (title + ", " + firstAuthor + ", " + year + ", " + doi)
+				: StringUtils.abbreviate(title, 255 - (", " + firstAuthor + ", " + year + ", " + doi).length());
+
+		return result;
+
+	}
+
+	protected final static class TeiParseResult {
+		String title;
+		String text;
+		Boolean empty;
+	}
+
 	private static void insertDocumentsByCharacterStream(Connection con, File[] textFiles, String corpusName)
 			throws IOException, SQLException {
 		Integer documentId = 1;
